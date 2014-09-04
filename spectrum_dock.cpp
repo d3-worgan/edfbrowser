@@ -67,7 +67,7 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   }
   else
   {
-    dock = new QDockWidget("Power Spectral Density", w_parent);
+    dock = new QDockWidget("Power Spectrum", w_parent);
   }
 
   dock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
@@ -130,10 +130,10 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   amplitudeLabel->setMinimumSize(100, 15);
   amplitudeLabel->setAlignment(Qt::AlignHCenter);
 
-  sqrtButton = new QRadioButton;
+  sqrtButton = new QCheckBox;
   sqrtButton->setMinimumSize(50, 20);
   sqrtButton->setText("Amplitude");
-  sqrtButton->setAutoExclusive(false);
+  sqrtButton->setTristate(false);
   if(mainwindow->spectrumdock_sqrt)
   {
     sqrtButton->setChecked(true);
@@ -143,10 +143,10 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
     sqrtButton->setChecked(false);
   }
 
-  vlogButton = new QRadioButton;
+  vlogButton = new QCheckBox;
   vlogButton->setMinimumSize(50, 20);
   vlogButton->setText("Log");
-  vlogButton->setAutoExclusive(false);
+  vlogButton->setTristate(false);
   if(mainwindow->spectrumdock_vlog)
   {
     vlogButton->setChecked(true);
@@ -156,10 +156,10 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
     vlogButton->setChecked(false);
   }
 
-  colorBarButton = new QRadioButton;
+  colorBarButton = new QCheckBox;
   colorBarButton->setMinimumSize(50, 20);
   colorBarButton->setText("Colorbar");
-  colorBarButton->setAutoExclusive(false);
+  colorBarButton->setTristate(false);
 
   vlayout2 = new QVBoxLayout;
   vlayout2->setSpacing(10);
@@ -331,7 +331,7 @@ void UI_SpectrumDockWindow::sqrtButtonClicked(bool value)
   {
     mainwindow->spectrumdock_sqrt = 0;
 
-    sprintf(str, "Power Spectral Density %s", signallabel);
+    sprintf(str, "Power Spectrum %s", signallabel);
 
     dock->setWindowTitle(str);
 
@@ -1125,7 +1125,7 @@ void UI_SpectrumDockWindow::update_curve()
   }
   else
   {
-    snprintf(str, 512, "Power Spectral Density %s", signallabel);
+    snprintf(str, 512, "Power Spectrum %s", signallabel);
   }
 
   dock->setWindowTitle(str);

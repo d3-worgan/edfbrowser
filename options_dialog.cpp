@@ -442,7 +442,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   QObject::connect(ApplyButton2,   SIGNAL(clicked()),         this, SLOT(ApplyButton2Clicked()));
   QObject::connect(DefaultButton2, SIGNAL(clicked()),         this, SLOT(DefaultButton2Clicked()));
 
-  tabholder->addTab(tab3, "Powerspectrum");
+  tabholder->addTab(tab3, "Power Spectrum");
 
 /////////////////////////////////////// tab 4  Other ///////////////////////////////////////////////////////////////////////
 

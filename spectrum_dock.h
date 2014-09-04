@@ -45,7 +45,7 @@
 #include <QSlider>
 #include <QLabel>
 #include <QProgressDialog>
-#include <QRadioButton>
+#include <QCheckBox>
 #include <QString>
 #include <QStringList>
 #include <QMessageBox>
@@ -118,9 +118,9 @@ private:
          *centerLabel,
          *amplitudeLabel;
 
-  QRadioButton *sqrtButton,
-               *vlogButton,
-               *colorBarButton;
+  QCheckBox *sqrtButton,
+            *vlogButton,
+            *colorBarButton;
 
   int samples,
       steps,
