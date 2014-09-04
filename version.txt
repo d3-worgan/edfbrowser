@@ -11,7 +11,7 @@
 
  - Removed compile-errors when using Qt5 (due to bugs in Qt5, it's not advised to use Qt5 yet).
 
- - From now on, the MinGW-w64 compiler needs to be used for Windows. (see README.txt)
+ - From now on, the Mingw-w64 compiler needs to be used for Windows. (see README.txt)
 
 
 
