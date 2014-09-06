@@ -61,6 +61,10 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 
   SpectrumDialog = new QDialog;
 
+  flywheel_value = 1050;
+
+  init_maxvalue = 1;
+
   if(mainwindow->spectrumdock_sqrt)
   {
     dock = new QDockWidget("Amplitude Spectrum", w_parent);
@@ -117,6 +121,9 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
     dock->setWidget(curve1);
   }
 
+  flywheel1 = new UI_Flywheel;
+  flywheel1->setMinimumSize(20, 85);
+
   amplitudeSlider = new QSlider;
   amplitudeSlider->setOrientation(Qt::Vertical);
   amplitudeSlider->setMinimum(1);
@@ -161,11 +168,23 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   colorBarButton->setText("Colorbar");
   colorBarButton->setTristate(false);
 
+  vlayout3 = new QVBoxLayout;
+  vlayout3->addStretch(100);
+  vlayout3->addWidget(flywheel1, 100);
+  vlayout3->addStretch(100);
+
+  hlayout4 = new QHBoxLayout;
+  hlayout4->addStretch(100);
+  hlayout4->addLayout(vlayout3, 100);
+  hlayout4->addStretch(100);
+  hlayout4->addWidget(amplitudeSlider, 300);
+
   vlayout2 = new QVBoxLayout;
   vlayout2->setSpacing(10);
   vlayout2->addStretch(100);
   vlayout2->addWidget(amplitudeLabel, 0, Qt::AlignHCenter);
-  vlayout2->addWidget(amplitudeSlider, 0, Qt::AlignHCenter);
+  vlayout2->addLayout(hlayout4, 200);
+//  vlayout2->addWidget(amplitudeSlider, 0, Qt::AlignHCenter);
   vlayout2->addWidget(sqrtButton);
   vlayout2->addWidget(vlogButton);
   vlayout2->addWidget(colorBarButton);
@@ -234,6 +253,25 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   QObject::connect(colorBarButton,  SIGNAL(toggled(bool)),          this, SLOT(colorBarButtonClicked(bool)));
   QObject::connect(curve1,          SIGNAL(extra_button_clicked()), this, SLOT(print_to_txt()));
   QObject::connect(curve1,          SIGNAL(dashBoardClicked()),     this, SLOT(setdashboard()));
+  QObject::connect(flywheel1,       SIGNAL(dialMoved(int)),         this, SLOT(update_flywheel(int)));
+}
+
+
+void UI_SpectrumDockWindow::update_flywheel(int new_value)
+{
+  flywheel_value += new_value;
+
+  if(flywheel_value < 10)
+  {
+    flywheel_value = 10;
+  }
+
+  if(flywheel_value > 100000)
+  {
+    flywheel_value = 100000;
+  }
+
+  sliderMoved(0);
 }
 
 
@@ -430,22 +468,22 @@ void UI_SpectrumDockWindow::sliderMoved(int)
   {
     if(mainwindow->spectrumdock_vlog)
     {
-      curve1->drawCurve(buf5 + startstep, stopstep - startstep, (maxvalue_sqrt_vlog * 1.05 * (double)amplitudeSlider->value()) / 1000.0, minvalue_sqrt_vlog);
+      curve1->drawCurve(buf5 + startstep, stopstep - startstep, (maxvalue_sqrt_vlog * 1.05 * (((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value())) / 1000.0, minvalue_sqrt_vlog);
     }
     else
     {
-      curve1->drawCurve(buf3 + startstep, stopstep - startstep, (maxvalue_sqrt * 1.05 * (double)amplitudeSlider->value()) / 1000.0, 0.0);
+      curve1->drawCurve(buf3 + startstep, stopstep - startstep, (maxvalue_sqrt * 1.05 * (((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value())) / 1000.0, 0.0);
     }
   }
   else
   {
     if(mainwindow->spectrumdock_vlog)
     {
-      curve1->drawCurve(buf4 + startstep, stopstep - startstep, (maxvalue_vlog * 1.05 * (double)amplitudeSlider->value()) / 1000.0, minvalue_vlog);
+      curve1->drawCurve(buf4 + startstep, stopstep - startstep, (maxvalue_vlog * 1.05 * (((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value())) / 1000.0, minvalue_vlog);
     }
     else
     {
-      curve1->drawCurve(buf2 + startstep, stopstep - startstep, (maxvalue * 1.05 * (double)amplitudeSlider->value()) / 1000.0, 0.0);
+      curve1->drawCurve(buf2 + startstep, stopstep - startstep, (maxvalue * 1.05 * (((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value())) / 1000.0, 0.0);
     }
   }
 
@@ -482,6 +520,8 @@ void UI_SpectrumDockWindow::sliderMoved(int)
 void UI_SpectrumDockWindow::init(int signal_nr)
 {
   char str[600];
+
+  init_maxvalue = 1;
 
 
   if(signal_nr < 0)
@@ -542,6 +582,8 @@ void UI_SpectrumDockWindow::rescan()
 void UI_SpectrumDockWindow::clear()
 {
   int i;
+
+  init_maxvalue = 1;
 
   signalcomp = NULL;
 
@@ -877,12 +919,15 @@ void UI_SpectrumDockWindow::update_curve()
     return;
   }
 
-  maxvalue = 0.000001;
-  maxvalue_sqrt = 0.000001;
-  maxvalue_vlog = 0.000001;
-  maxvalue_sqrt_vlog = 0.000001;
-  minvalue_vlog = 0.0;
-  minvalue_sqrt_vlog = 0.0;
+  if(init_maxvalue)
+  {
+    maxvalue = 0.000001;
+    maxvalue_sqrt = 0.000001;
+    maxvalue_vlog = 0.000001;
+    maxvalue_sqrt_vlog = 0.000001;
+    minvalue_vlog = 0.0;
+    minvalue_sqrt_vlog = 0.0;
+  }
 
   kiss_fftr_cfg cfg;
 
@@ -974,36 +1019,39 @@ void UI_SpectrumDockWindow::update_curve()
       buf5[i] = log10(buf3[i]);
     }
 
-    if(i)  // don't use the dc-bin for the autogain of the screen
+    if(init_maxvalue)
     {
-      if(buf2[i] > maxvalue)
+      if(i)  // don't use the dc-bin for the autogain of the screen
       {
-        maxvalue = buf2[i];
-      }
+        if(buf2[i] > maxvalue)
+        {
+          maxvalue = buf2[i];
+        }
 
-      if(buf3[i] > maxvalue_sqrt)
-      {
-        maxvalue_sqrt = buf3[i];
-      }
+        if(buf3[i] > maxvalue_sqrt)
+        {
+          maxvalue_sqrt = buf3[i];
+        }
 
-      if(buf4[i] > maxvalue_vlog)
-      {
-        maxvalue_vlog = buf4[i];
-      }
+        if(buf4[i] > maxvalue_vlog)
+        {
+          maxvalue_vlog = buf4[i];
+        }
 
-      if(buf5[i] > maxvalue_sqrt_vlog)
-      {
-        maxvalue_sqrt_vlog = buf5[i];
-      }
+        if(buf5[i] > maxvalue_sqrt_vlog)
+        {
+          maxvalue_sqrt_vlog = buf5[i];
+        }
 
-      if((buf4[i] < minvalue_vlog) && (buf4[i] >= SPECT_LOG_MINIMUM_LOG))
-      {
-        minvalue_vlog = buf4[i];
-      }
+        if((buf4[i] < minvalue_vlog) && (buf4[i] >= SPECT_LOG_MINIMUM_LOG))
+        {
+          minvalue_vlog = buf4[i];
+        }
 
-      if((buf5[i] < minvalue_sqrt_vlog) && (buf5[i] >= SPECT_LOG_MINIMUM_LOG))
-      {
-        minvalue_sqrt_vlog = buf5[i];
+        if((buf5[i] < minvalue_sqrt_vlog) && (buf5[i] >= SPECT_LOG_MINIMUM_LOG))
+        {
+          minvalue_sqrt_vlog = buf5[i];
+        }
       }
     }
   }
@@ -1135,6 +1183,8 @@ void UI_SpectrumDockWindow::update_curve()
   curve1->setUpdatesEnabled(true);
 
   busy = 0;
+
+  init_maxvalue = 0;
 }
 
 

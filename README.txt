@@ -3,8 +3,9 @@ Requirements
 ============
 Qt (minimum version 4.7.1 or later, preferable 4.8.6, Do not use Qt 5.x.x to compile EDFbrowser!!) http://qt-project.org/
 
-The GCC compiler or Mingw-w64 on windows. <http://mingw-w64.sourceforge.net/>
+The GCC compiler on Linux or Mingw-w64 on windows. <http://mingw-w64.sourceforge.net/>
 
+http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/4.8.2/threads-posix/dwarf/i686-4.8.2-release-posix-dwarf-rt_v3-rev3.7z/download
 
 
 Introduction

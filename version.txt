@@ -13,6 +13,8 @@
 
  - From now on, the Mingw-w64 compiler needs to be used for Windows. (see README.txt)
 
+ - Qt has been updated to 4.8.6.
+
 
 
  version 1.53      December 10, 2013

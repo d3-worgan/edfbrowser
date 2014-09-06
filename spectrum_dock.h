@@ -61,6 +61,7 @@
 #include "utils.h"
 #include "filter.h"
 #include "ravg_filter.h"
+#include "flywheel.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -101,10 +102,12 @@ private:
 
   QHBoxLayout *hlayout1,
               *hlayout2,
-              *hlayout3;
+              *hlayout3,
+              *hlayout4;
 
   QVBoxLayout *vlayout1,
-              *vlayout2;
+              *vlayout2,
+              *vlayout3;
 
   SignalCurve *curve1;
 
@@ -122,11 +125,15 @@ private:
             *vlogButton,
             *colorBarButton;
 
+  UI_Flywheel *flywheel1;
+
   int samples,
       steps,
       spectrumdock_sqrt,
       spectrumdock_vlog,
-      dashboard;
+      dashboard,
+      flywheel_value,
+      init_maxvalue;
 
   volatile int busy;
 
@@ -158,6 +165,7 @@ void vlogButtonClicked(bool);
 void colorBarButtonClicked(bool);
 void print_to_txt();
 void setdashboard();
+void update_flywheel(int);
 
 };
 
