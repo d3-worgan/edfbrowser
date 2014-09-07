@@ -1056,11 +1056,14 @@ void UI_SpectrumDockWindow::update_curve()
     }
   }
 
-  if(minvalue_vlog < SPECT_LOG_MINIMUM_LOG)
-    minvalue_vlog = SPECT_LOG_MINIMUM_LOG;
+  if(init_maxvalue)
+  {
+    if(minvalue_vlog < SPECT_LOG_MINIMUM_LOG)
+      minvalue_vlog = SPECT_LOG_MINIMUM_LOG;
 
-  if(minvalue_sqrt_vlog < SPECT_LOG_MINIMUM_LOG)
-    minvalue_sqrt_vlog = SPECT_LOG_MINIMUM_LOG;
+    if(minvalue_sqrt_vlog < SPECT_LOG_MINIMUM_LOG)
+      minvalue_sqrt_vlog = SPECT_LOG_MINIMUM_LOG;
+  }
 
   if(samplesleft)
   {

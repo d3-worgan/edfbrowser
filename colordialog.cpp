@@ -160,6 +160,8 @@ void UI_ColorMenuDialog::ColorButton2_pressed(SpecialButton *)
 void UI_ColorMenuDialog::ColorButton3_pressed(SpecialButton *)
 {
   *color = Qt::darkRed;
+
+  colormenu_dialog->close();
 }
 
 
