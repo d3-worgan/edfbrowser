@@ -852,6 +852,11 @@ void UI_OptionsDialog::ApplyButton2Clicked()
   }
 
   ApplyButton2->setEnabled(false);
+
+  if(mainwindow->spectrumdock->dock->isVisible())
+  {
+    mainwindow->spectrumdock->rescan();
+  }
 }
 
 
