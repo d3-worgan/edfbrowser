@@ -78,6 +78,9 @@
   #ifndef CSIDL_PROGRAM_FILES
     #define CSIDL_PROGRAM_FILES 0x0026 // C:\Program Files
   #endif
+  #if QT_VERSION >= 0x050000
+  #define QT_WA(unicode, ansi) unicode
+  #endif
 #endif
 
 #include <QFileDialog>
@@ -93,6 +96,7 @@
 #include <QLocale>
 #include <QMessageBox>
 #include <QProgressDialog>
+#include <QList>
 
 #include <stdio.h>
 #include <stdlib.h>

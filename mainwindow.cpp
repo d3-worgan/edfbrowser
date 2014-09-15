@@ -1068,7 +1068,9 @@ void UI_Mainwindow::open_stream()
   {
     toolsmenu->setEnabled(false);
     timemenu->setEnabled(false);
-    windowmenu->setEnabled(false);
+//    windowmenu->setEnabled(false);
+    windowmenu->actions().at(0)->setEnabled(false);  // Annotations window
+    windowmenu->actions().at(1)->setEnabled(false);  // Annotation editor
     former_page_Act->setEnabled(false);
     shift_page_left_Act->setEnabled(false);
     shift_page_right_Act->setEnabled(false);
@@ -2628,7 +2630,9 @@ void UI_Mainwindow::close_all_files()
   live_stream_timer->stop();
   toolsmenu->setEnabled(true);
   timemenu->setEnabled(true);
-  windowmenu->setEnabled(true);
+//  windowmenu->setEnabled(true);
+  windowmenu->actions().at(0)->setEnabled(true);  // Annotations window
+  windowmenu->actions().at(1)->setEnabled(true);  // Annotation editor
   former_page_Act->setEnabled(true);
   shift_page_left_Act->setEnabled(true);
   shift_page_right_Act->setEnabled(true);
