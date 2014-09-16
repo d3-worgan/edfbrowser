@@ -1,11 +1,15 @@
 
- version 1.54
+ version 1.54      (not yet released)
  ------------
 
  - The Unisens to EDF converter now supports also files with binary format
    double, int64 or uint64.
 
- - The spectrumanalyzer now can plot a logarithmic vertical scale.
+ - The Power Spectrum now can plot a logarithmic vertical scale.
+
+ - The docked Power Spectrum now auto-adjust the y-scale only once.
+
+ - The docked Power Spectrum now can also be used in streaming mode.
 
  - Fixed a bug in the filter dialog that could cause some widgets not being shown.
 
