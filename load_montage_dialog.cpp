@@ -1340,6 +1340,15 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     mainwindow->maincurve->ruler_active = 1;
   }
 
+  if(spectrumdocksignalnum >= 0)
+  {
+    if(mainwindow->spectrumdock->dock->isVisible())
+    {
+      mainwindow->spectrumdock->clear();
+      mainwindow->spectrumdock->dock->hide();
+    }
+  }
+
   mainwindow->setup_viewbuf();
 
   if(spectrumdocksignalnum >= 0)
