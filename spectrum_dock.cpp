@@ -55,6 +55,8 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 
   signalcomp = NULL;
 
+  signal_nr = -1;
+
   mainwindow = (UI_Mainwindow *)w_parent;
 
   spectrum_color = mainwindow->spectrum_colorbar;
@@ -272,6 +274,12 @@ void UI_SpectrumDockWindow::update_flywheel(int new_value)
   }
 
   sliderMoved(0);
+}
+
+
+int UI_SpectrumDockWindow::getsignalnr(void)
+{
+  return signal_nr;
 }
 
 
@@ -517,14 +525,14 @@ void UI_SpectrumDockWindow::sliderMoved(int)
 }
 
 
-void UI_SpectrumDockWindow::init(int signal_nr)
+void UI_SpectrumDockWindow::init(int signal_num)
 {
   char str[600];
 
   init_maxvalue = 1;
 
 
-  if(signal_nr < 0)
+  if(signal_num < 0)
   {
     signalcomp = NULL;
 
@@ -532,7 +540,9 @@ void UI_SpectrumDockWindow::init(int signal_nr)
   }
   else
   {
-    signalcomp = mainwindow->signalcomp[signal_nr];
+    signal_nr = signal_num;
+
+    signalcomp = mainwindow->signalcomp[signal_num];
 
     viewbuf = mainwindow->viewbuf;
 
@@ -628,6 +638,8 @@ void UI_SpectrumDockWindow::clear()
   }
 
   curve1->clear();
+
+  signal_nr = -1;
 }
 
 

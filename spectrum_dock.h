@@ -95,6 +95,7 @@ public:
 void rescan();
 void init(int);
 void clear();
+int getsignalnr(void);
 
 private:
 
@@ -133,7 +134,8 @@ private:
       spectrumdock_vlog,
       dashboard,
       flywheel_value,
-      init_maxvalue;
+      init_maxvalue,
+      signal_nr;
 
   volatile int busy;
 

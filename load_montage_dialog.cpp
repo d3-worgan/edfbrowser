@@ -114,7 +114,8 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       model=0,
       size=0,
       amp_cat[3],
-      f_ruler_cnt=0;
+      f_ruler_cnt=0,
+      spectrumdocksignalnum=-1;
 
   char *result,
        scratchpad[2048],
@@ -1271,6 +1272,24 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     free(result);
   }
 
+  xml_goto_root(xml_hdl);
+
+  if(!(xml_goto_nth_element_inside(xml_hdl, "powerspectrumdock", 0)))
+  {
+    if(!(xml_goto_nth_element_inside(xml_hdl, "signalnum", 0)))
+    {
+      result = xml_get_content_of_element(xml_hdl);
+
+      n = atoi(result);
+      if((n >= 0) && (n < MAXSIGNALS) && (n < mainwindow->signalcomps))
+      {
+        spectrumdocksignalnum = n;
+      }
+
+      free(result);
+    }
+  }
+
   xml_close(xml_hdl);
 
   if(LoadMontageDialog!=NULL) LoadMontageDialog->close();
@@ -1322,6 +1341,11 @@ void UI_LoadMontagewindow::LoadButtonClicked()
   }
 
   mainwindow->setup_viewbuf();
+
+  if(spectrumdocksignalnum >= 0)
+  {
+    mainwindow->spectrumdock->init(spectrumdocksignalnum);
+  }
 }
 
 

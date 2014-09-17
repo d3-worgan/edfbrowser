@@ -55,6 +55,8 @@
 #include "global.h"
 #include "mainwindow.h"
 #include "xml.h"
+#include "spectrum_dock.h"
+
 
 
 

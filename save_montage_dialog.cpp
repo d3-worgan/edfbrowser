@@ -271,6 +271,19 @@ void UI_SaveMontagewindow::SaveButtonClicked()
   fprintf(mtgfile, "  <pagetime>%lli</pagetime>\n", mainwindow->pagetime);
 #endif
 
+  if(mainwindow->spectrumdock->dock->isVisible())
+  {
+    n = mainwindow->spectrumdock->getsignalnr();
+    if(n >= 0)
+    {
+      fprintf(mtgfile, "  <powerspectrumdock>\n");
+
+      fprintf(mtgfile, "    <signalnum>%i</signalnum>\n", n);
+
+      fprintf(mtgfile, "  </powerspectrumdock>\n");
+    }
+  }
+
   fprintf(mtgfile, "</" PROGRAM_NAME "_montage>\n");
 
   fclose(mtgfile);
