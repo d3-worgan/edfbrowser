@@ -57,6 +57,8 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 
   signal_nr = -1;
 
+  set_settings = 0;
+
   mainwindow = (UI_Mainwindow *)w_parent;
 
   spectrum_color = mainwindow->spectrum_colorbar;
@@ -259,6 +261,55 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 }
 
 
+void UI_SpectrumDockWindow::setsettings(struct spectrumdocksettings sett)
+{
+  settings = sett;
+
+  set_settings = 1;
+}
+
+
+void UI_SpectrumDockWindow::getsettings(struct spectrumdocksettings *sett)
+{
+  sett->signalnr = signal_nr;
+
+  sett->amp = amplitudeSlider->value();
+
+  sett->wheel = flywheel_value;
+
+  sett->span = spanSlider->value();
+
+  sett->center = centerSlider->value();
+
+  if(sqrtButton->isChecked() == true)
+  {
+    sett->sqrt = 1;
+  }
+  else
+  {
+    sett->sqrt = 0;
+  }
+
+  if(vlogButton->isChecked() == true)
+  {
+    sett->log = 1;
+  }
+  else
+  {
+    sett->log = 0;
+  }
+
+  if(colorBarButton->isChecked() == true)
+  {
+    sett->colorbar = 1;
+  }
+  else
+  {
+    sett->colorbar = 0;
+  }
+}
+
+
 void UI_SpectrumDockWindow::update_flywheel(int new_value)
 {
   flywheel_value += new_value;
@@ -274,12 +325,6 @@ void UI_SpectrumDockWindow::update_flywheel(int new_value)
   }
 
   sliderMoved(0);
-}
-
-
-int UI_SpectrumDockWindow::getsignalnr(void)
-{
-  return signal_nr;
 }
 
 
@@ -578,14 +623,14 @@ void UI_SpectrumDockWindow::init(int signal_num)
 
     dock->show();
 
-    t1->start(100);
+    t1->start(1);
   }
 }
 
 
 void UI_SpectrumDockWindow::rescan()
 {
-  t1->start(100);
+  t1->start(1);
 }
 
 
@@ -1192,6 +1237,58 @@ void UI_SpectrumDockWindow::update_curve()
   }
 
   dock->setWindowTitle(str);
+
+  if(set_settings)
+  {
+    set_settings = 0;
+
+    if((settings.amp >= 1) && (settings.amp <= 2000))
+    {
+      amplitudeSlider->setValue(settings.amp);
+    }
+
+    if((settings.span >= 10) && (settings.span <= 1000))
+    {
+      spanSlider->setValue(settings.span);
+    }
+
+    if((settings.center >= 0) && (settings.center <= 1000))
+    {
+      centerSlider->setValue(settings.center);
+    }
+
+    if(settings.sqrt > 0)
+    {
+      sqrtButton->setChecked(true);
+    }
+    else
+    {
+      sqrtButton->setChecked(false);
+    }
+
+    if(settings.log > 0)
+    {
+      vlogButton->setChecked(true);
+    }
+    else
+    {
+      vlogButton->setChecked(false);
+    }
+
+    if(settings.colorbar > 0)
+    {
+      colorBarButton->setChecked(true);
+    }
+    else
+    {
+      colorBarButton->setChecked(false);
+    }
+
+    if((flywheel_value >= 10) && (flywheel_value <= 100000))
+    {
+      flywheel_value = settings.wheel;
+    }
+  }
 
   sliderMoved(0);
 

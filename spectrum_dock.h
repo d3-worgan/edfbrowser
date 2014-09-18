@@ -72,6 +72,19 @@
 class UI_Mainwindow;
 
 
+struct spectrumdocksettings{
+                             int signalnr;
+                             int span;
+                             int center;
+                             int amp;
+                             int wheel;
+                             int log;
+                             int sqrt;
+                             int colorbar;
+                           };
+
+
+
 
 class UI_SpectrumDockWindow : public QObject
 {
@@ -95,7 +108,9 @@ public:
 void rescan();
 void init(int);
 void clear();
-int getsignalnr(void);
+void getsettings(struct spectrumdocksettings *);
+void setsettings(struct spectrumdocksettings);
+
 
 private:
 
@@ -135,7 +150,8 @@ private:
       dashboard,
       flywheel_value,
       init_maxvalue,
-      signal_nr;
+      signal_nr,
+      set_settings;
 
   volatile int busy;
 
@@ -156,6 +172,9 @@ private:
   char *viewbuf,
        signallabel[512],
        physdimension[9];
+
+  struct spectrumdocksettings settings;
+
 
 
 private slots:

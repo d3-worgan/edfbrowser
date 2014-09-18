@@ -271,14 +271,31 @@ void UI_SaveMontagewindow::SaveButtonClicked()
   fprintf(mtgfile, "  <pagetime>%lli</pagetime>\n", mainwindow->pagetime);
 #endif
 
+  struct spectrumdocksettings settings;
+
   if(mainwindow->spectrumdock->dock->isVisible())
   {
-    n = mainwindow->spectrumdock->getsignalnr();
-    if(n >= 0)
+    mainwindow->spectrumdock->getsettings(&settings);
+
+    if(settings.signalnr >= 0)
     {
       fprintf(mtgfile, "  <powerspectrumdock>\n");
 
-      fprintf(mtgfile, "    <signalnum>%i</signalnum>\n", n);
+      fprintf(mtgfile, "    <signalnum>%i</signalnum>\n", settings.signalnr);
+
+      fprintf(mtgfile, "    <amp>%i</amp>\n", settings.amp);
+
+      fprintf(mtgfile, "    <wheel>%i</wheel>\n", settings.wheel);
+
+      fprintf(mtgfile, "    <span>%i</span>\n", settings.span);
+
+      fprintf(mtgfile, "    <center>%i</center>\n", settings.center);
+
+      fprintf(mtgfile, "    <log>%i</log>\n", settings.log);
+
+      fprintf(mtgfile, "    <sqrt>%i</sqrt>\n", settings.sqrt);
+
+      fprintf(mtgfile, "    <colorbar>%i</colorbar>\n", settings.colorbar);
 
       fprintf(mtgfile, "  </powerspectrumdock>\n");
     }

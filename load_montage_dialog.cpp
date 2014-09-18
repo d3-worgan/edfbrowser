@@ -114,8 +114,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       model=0,
       size=0,
       amp_cat[3],
-      f_ruler_cnt=0,
-      spectrumdocksignalnum=-1;
+      f_ruler_cnt=0;
 
   char *result,
        scratchpad[2048],
@@ -1274,19 +1273,154 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
   xml_goto_root(xml_hdl);
 
+  struct spectrumdocksettings settings;
+
+  settings.signalnr = -1;
+
   if(!(xml_goto_nth_element_inside(xml_hdl, "powerspectrumdock", 0)))
   {
-    if(!(xml_goto_nth_element_inside(xml_hdl, "signalnum", 0)))
+    if(xml_goto_nth_element_inside(xml_hdl, "signalnum", 0))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      return;
+    }
+    else
     {
       result = xml_get_content_of_element(xml_hdl);
 
-      n = atoi(result);
-      if((n >= 0) && (n < MAXSIGNALS) && (n < mainwindow->signalcomps))
-      {
-        spectrumdocksignalnum = n;
-      }
+      settings.signalnr = atoi(result);
 
       free(result);
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "amp", 0))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      return;
+    }
+    else
+    {
+      result = xml_get_content_of_element(xml_hdl);
+
+      settings.amp = atoi(result);
+
+      free(result);
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "wheel", 0))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      return;
+    }
+    else
+    {
+      result = xml_get_content_of_element(xml_hdl);
+
+      settings.wheel = atoi(result);
+
+      free(result);
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "span", 0))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      return;
+    }
+    else
+    {
+      result = xml_get_content_of_element(xml_hdl);
+
+      settings.span = atoi(result);
+
+      free(result);
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "center", 0))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      return;
+    }
+    else
+    {
+      result = xml_get_content_of_element(xml_hdl);
+
+      settings.center = atoi(result);
+
+      free(result);
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "log", 0))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      return;
+    }
+    else
+    {
+      result = xml_get_content_of_element(xml_hdl);
+
+      settings.log = atoi(result);
+
+      free(result);
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "sqrt", 0))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      return;
+    }
+    else
+    {
+      result = xml_get_content_of_element(xml_hdl);
+
+      settings.sqrt = atoi(result);
+
+      free(result);
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "colorbar", 0))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      return;
+    }
+    else
+    {
+      result = xml_get_content_of_element(xml_hdl);
+
+      settings.colorbar = atoi(result);
+
+      free(result);
+
+      xml_go_up(xml_hdl);
     }
   }
 
@@ -1340,7 +1474,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     mainwindow->maincurve->ruler_active = 1;
   }
 
-  if(spectrumdocksignalnum >= 0)
+  if(settings.signalnr >= 0)
   {
     if(mainwindow->spectrumdock->dock->isVisible())
     {
@@ -1351,9 +1485,11 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
   mainwindow->setup_viewbuf();
 
-  if(spectrumdocksignalnum >= 0)
+  if((settings.signalnr >= 0) && (settings.signalnr < MAXSIGNALS) && (settings.signalnr < mainwindow->signalcomps))
   {
-    mainwindow->spectrumdock->init(spectrumdocksignalnum);
+    mainwindow->spectrumdock->init(settings.signalnr);
+
+    mainwindow->spectrumdock->setsettings(settings);
   }
 }
 

@@ -11,6 +11,8 @@
 
  - The docked Power Spectrum now can also be used in streaming mode.
 
+ - The settings of the docked Power Spectrum will be stored in the montage as well.
+
  - Fixed a bug in the filter dialog that could cause some widgets not being shown.
 
  - Removed compile-errors when using Qt5 (due to bugs in Qt5, it's not advised to use Qt5 yet).
