@@ -81,6 +81,12 @@ struct spectrumdocksettings{
                              int log;
                              int sqrt;
                              int colorbar;
+                             double maxvalue;
+                             double maxvalue_sqrt;
+                             double maxvalue_vlog;
+                             double maxvalue_sqrt_vlog;
+                             double minvalue_vlog;
+                             double minvalue_sqrt_vlog;
                            };
 
 

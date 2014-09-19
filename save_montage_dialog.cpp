@@ -297,6 +297,18 @@ void UI_SaveMontagewindow::SaveButtonClicked()
 
       fprintf(mtgfile, "    <colorbar>%i</colorbar>\n", settings.colorbar);
 
+      fprintf(mtgfile, "    <maxvalue>%.10f</maxvalue>\n", settings.maxvalue);
+
+      fprintf(mtgfile, "    <maxvalue_sqrt>%.10f</maxvalue_sqrt>\n", settings.maxvalue_sqrt);
+
+      fprintf(mtgfile, "    <maxvalue_vlog>%.10f</maxvalue_vlog>\n", settings.maxvalue_vlog);
+
+      fprintf(mtgfile, "    <maxvalue_sqrt_vlog>%.10f</maxvalue_sqrt_vlog>\n", settings.maxvalue_sqrt_vlog);
+
+      fprintf(mtgfile, "    <minvalue_vlog>%.10f</minvalue_vlog>\n", settings.minvalue_vlog);
+
+      fprintf(mtgfile, "    <minvalue_sqrt_vlog>%.10f</minvalue_sqrt_vlog>\n", settings.minvalue_sqrt_vlog);
+
       fprintf(mtgfile, "  </powerspectrumdock>\n");
     }
   }

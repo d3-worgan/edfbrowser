@@ -1422,6 +1422,114 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       xml_go_up(xml_hdl);
     }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "maxvalue", 0))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      return;
+    }
+    else
+    {
+      result = xml_get_content_of_element(xml_hdl);
+
+      settings.maxvalue = atof(result);
+
+      free(result);
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "maxvalue_sqrt", 0))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      return;
+    }
+    else
+    {
+      result = xml_get_content_of_element(xml_hdl);
+
+      settings.maxvalue_sqrt = atof(result);
+
+      free(result);
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "maxvalue_vlog", 0))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      return;
+    }
+    else
+    {
+      result = xml_get_content_of_element(xml_hdl);
+
+      settings.maxvalue_vlog = atof(result);
+
+      free(result);
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "maxvalue_sqrt_vlog", 0))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      return;
+    }
+    else
+    {
+      result = xml_get_content_of_element(xml_hdl);
+
+      settings.maxvalue_sqrt_vlog = atof(result);
+
+      free(result);
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "minvalue_vlog", 0))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      return;
+    }
+    else
+    {
+      result = xml_get_content_of_element(xml_hdl);
+
+      settings.minvalue_vlog = atof(result);
+
+      free(result);
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "minvalue_sqrt_vlog", 0))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      return;
+    }
+    else
+    {
+      result = xml_get_content_of_element(xml_hdl);
+
+      settings.minvalue_sqrt_vlog = atof(result);
+
+      free(result);
+
+      xml_go_up(xml_hdl);
+    }
   }
 
   xml_close(xml_hdl);

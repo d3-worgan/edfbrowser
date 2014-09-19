@@ -307,6 +307,18 @@ void UI_SpectrumDockWindow::getsettings(struct spectrumdocksettings *sett)
   {
     sett->colorbar = 0;
   }
+
+  sett->maxvalue = maxvalue;
+
+  sett->maxvalue_sqrt = maxvalue_sqrt;
+
+  sett->maxvalue_vlog = maxvalue_vlog;
+
+  sett->maxvalue_sqrt_vlog = maxvalue_sqrt_vlog;
+
+  sett->minvalue_vlog = minvalue_vlog;
+
+  sett->minvalue_sqrt_vlog = minvalue_sqrt_vlog;
 }
 
 
@@ -976,7 +988,7 @@ void UI_SpectrumDockWindow::update_curve()
     return;
   }
 
-  if(init_maxvalue)
+  if(init_maxvalue && !set_settings)
   {
     maxvalue = 0.000001;
     maxvalue_sqrt = 0.000001;
@@ -984,6 +996,16 @@ void UI_SpectrumDockWindow::update_curve()
     maxvalue_sqrt_vlog = 0.000001;
     minvalue_vlog = 0.0;
     minvalue_sqrt_vlog = 0.0;
+  }
+
+  if(set_settings)
+  {
+    maxvalue = settings.maxvalue;
+    maxvalue_sqrt = settings.maxvalue_sqrt;
+    maxvalue_vlog = settings.maxvalue_vlog;
+    maxvalue_sqrt_vlog = settings.maxvalue_sqrt_vlog;
+    minvalue_vlog = settings.minvalue_vlog;
+    minvalue_sqrt_vlog = settings.minvalue_sqrt_vlog;
   }
 
   kiss_fftr_cfg cfg;
@@ -1076,7 +1098,7 @@ void UI_SpectrumDockWindow::update_curve()
       buf5[i] = log10(buf3[i]);
     }
 
-    if(init_maxvalue)
+    if(init_maxvalue && !set_settings)
     {
       if(i)  // don't use the dc-bin for the autogain of the screen
       {
