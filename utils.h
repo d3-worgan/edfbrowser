@@ -82,6 +82,13 @@ int is_number(char *);
 
 int round_125_cat(double);  /* returns 10, 20 or 50, depending on the value */
 
+void hextoascii(char *);  /* inline copy */
+void bintoascii(char *);  /* inline copy */
+void bintohex(char *);    /* inline copy */
+void asciitohex(char *, const char *);  /* destination must have double the size of source! */
+void asciitobin(char *, const char *);  /* destination must have eight times the size of source! */
+void hextobin(char *, const char *);    /* destination must have four times the size of source! */
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

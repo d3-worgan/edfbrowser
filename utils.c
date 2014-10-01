@@ -1446,8 +1446,158 @@ int round_125_cat(double value)
 }
 
 
+void hextoascii(char *str)
+{
+  int i, len;
+
+  char scratchpad[4];
+
+  len = strlen(str) / 2;
+
+  for(i=0; i<len; i++)
+  {
+    scratchpad[0] = str[i*2];
+    scratchpad[1] = str[(i*2)+1];
+    scratchpad[2] = 0;
+
+    str[i] = strtol(scratchpad, NULL, 16);
+  }
+
+  str[i] = 0;
+}
 
 
+void bintoascii(char *str)
+{
+  int i, len;
+
+  char scratchpad[16];
+
+  len = strlen(str) / 8;
+
+  for(i=0; i<len; i++)
+  {
+    strncpy(scratchpad, str + (i * 8), 8);
+    scratchpad[8] = 0;
+
+    str[i] = strtol(scratchpad, NULL, 2);
+  }
+
+  str[i] = 0;
+}
+
+
+void bintohex(char *str)
+{
+  int i, len;
+
+  char scratchpad[16];
+
+  len = strlen(str) / 8;
+
+  for(i=0; i<len; i++)
+  {
+    strncpy(scratchpad, str + (i * 8), 8);
+    scratchpad[8] = 0;
+
+    sprintf(str + (i * 2), "%02x", (unsigned int)strtol(scratchpad, NULL, 2));
+  }
+
+  str[i * 2] = 0;
+}
+
+
+void asciitohex(char *dest, const char *str)
+{
+  int i, tmp, len;
+
+  len = strlen(str);
+
+  for(i=0; i<len; i++)
+  {
+    tmp = ((unsigned char *)str)[i] / 16;
+    if(tmp < 10)
+    {
+      dest[i*2] = tmp + '0';
+    }
+    else
+    {
+      dest[i*2] = tmp + 'a' - 10;
+    }
+
+    tmp = ((unsigned char *)str)[i] % 16;
+    if(tmp < 10)
+    {
+      dest[(i*2)+1] = tmp + '0';
+    }
+    else
+    {
+      dest[(i*2)+1] = tmp + 'a' - 10;
+    }
+  }
+
+  dest[i*2] = 0;
+}
+
+
+void asciitobin(char *dest, const char *str)
+{
+  int i, j, len;
+
+  len = strlen(str);
+
+  for(i=0; i<len; i++)
+  {
+    for(j=0; j<8; j++)
+    {
+      if(((unsigned char *)str)[i] & (1<<(7-j)))
+      {
+        dest[(i*8)+j] = '1';
+      }
+      else
+      {
+        dest[(i*8)+j] = '0';
+      }
+    }
+  }
+
+  dest[i*8] = 0;
+}
+
+
+void hextobin(char *dest, const char *str)
+{
+  int i, j, len;
+
+  unsigned int tmp;
+
+  char scratchpad[4];
+
+  len = strlen(str) / 2;
+
+  for(i=0; i<len; i++)
+  {
+    scratchpad[0] = str[i*2];
+    scratchpad[1] = str[(i*2)+1];
+    scratchpad[2] = 0;
+
+    tmp = strtol(scratchpad, NULL, 16);
+
+    for(j=0; j<8; j++)
+    {
+      if(tmp & (1<<(7-j)))
+      {
+        dest[(i*8)+j] = '1';
+      }
+      else
+      {
+        dest[(i*8)+j] = '0';
+      }
+    }
+  }
+
+  dest[i * 8] = 0;
+}
 
 
 
