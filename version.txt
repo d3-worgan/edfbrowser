@@ -13,6 +13,8 @@
 
  - The settings of the docked Power Spectrum will be stored in the montage as well.
 
+ - EDFbrowser can now play video's (Linux version only). Have a look at the manual for the details.
+
  - Fixed a bug in the filter dialog that could cause some widgets not being shown.
 
  - Removed compile-errors when using Qt5 (due to bugs in Qt5, it's not advised to use Qt5 yet).

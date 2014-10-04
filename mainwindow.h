@@ -97,6 +97,8 @@
 #include <QMessageBox>
 #include <QProgressDialog>
 #include <QList>
+#include <QProcess>
+#include <QProcessEnvironment>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -162,6 +164,7 @@
 #include "manscan2edf.h"
 #include "scp_ecg2edf.h"
 #include "unisens2edf.h"
+#include "date_time_stamp_parser.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -269,6 +272,8 @@ public:
 
   struct export_annotations_var_block *export_annotations_var;
 
+  struct video_player_struct *video_player;
+
   UI_Annotationswindow *annotations_dock[MAXFILES];
 
   UI_AnnotationEditwindow *annotationEditDock;
@@ -298,7 +303,9 @@ public:
 
   QAction      *save_act,
                *load_predefined_mtg_act[MAXPREDEFINEDMONTAGES],
-               *Escape_act;
+               *Escape_act,
+               *video_act,
+               *video_pause_act;
 
   QActionGroup *timelock_act_group,
                *sel_viewtime_act_group;
@@ -327,6 +334,7 @@ private:
                *print_img_menu;
 
   char path[MAX_PATH_LENGTH],
+       videopath[MAX_PATH_LENGTH],
        montagepath[MAX_PATH_LENGTH],
        recent_file_path[MAX_RECENTFILES][MAX_PATH_LENGTH];
 
@@ -401,7 +409,8 @@ private:
                *DisplayGroup,
                *load_predefined_mtg_group;
 
-  QTimer   *live_stream_timer;
+  QTimer   *live_stream_timer,
+           *video_poll_timer;
 
   QSplashScreen *splash;
 
@@ -410,6 +419,8 @@ private:
   QToolBar *slidertoolbar;
 
   QSlider  *positionslider;
+
+  QProcess *video_process;
 
   int cmdlineargument,
       oldwindowheight;
@@ -465,6 +476,7 @@ private slots:
   void jump_to_dialog();
   void jump_to_start();
   void jump_to_end();
+  void jump_to_time_millisec(long long);
   void show_annotations();
   void show_options_dialog();
   long long get_long_time(char *);
@@ -510,13 +522,19 @@ private slots:
   void biosemi2bdfplus_converter();
   void import_annotations();
   void open_stream();
+  void start_stop_video();
+  void stop_video_generic();
   void live_stream_timer_func();
+  void video_poll_timer_func();
   void organize_signals();
   void Escape_fun();
   void export_ecg_rr_interval_to_ascii();
   void convert_binary_to_edf();
   void convert_manscan_to_edf();
   void convert_scpecg_to_edf();
+  void video_process_error(QProcess::ProcessError);
+  void video_player_seek(int);
+  void video_player_toggle_pause();
 //  void search_pattern();
 
 protected:

@@ -265,6 +265,13 @@ struct crossHairStruct{
         long long time_relative;
        };
 
+struct video_player_struct{
+        int status;
+        int cntdwn_timer;
+        int poll_timer;
+        long long utc_starttime;
+       };
+
 #endif
 
 

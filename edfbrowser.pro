@@ -108,6 +108,7 @@ HEADERS += check_for_updates.h
 HEADERS += manscan2edf.h
 HEADERS += scp_ecg2edf.h
 HEADERS += unisens2edf.h
+HEADERS += date_time_stamp_parser.h
 
 HEADERS += third_party/fidlib/fidlib.h
 HEADERS += third_party/fidlib/fidmkf.h
@@ -189,6 +190,7 @@ SOURCES += check_for_updates.cpp
 SOURCES += manscan2edf.cpp
 SOURCES += scp_ecg2edf.cpp
 SOURCES += unisens2edf.cpp
+SOURCES += date_time_stamp_parser.c
 
 SOURCES += third_party/fidlib/fidlib.c
 

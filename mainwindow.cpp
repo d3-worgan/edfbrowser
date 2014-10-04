@@ -47,16 +47,22 @@
 #endif
 
 
+#define VIDEO_STATUS_STOPPED      0
+#define VIDEO_STATUS_STARTUP_1    1
+#define VIDEO_STATUS_STARTUP_2    2
+#define VIDEO_STATUS_STARTUP_3    3
+#define VIDEO_STATUS_STARTUP_4    4
+#define VIDEO_STATUS_STARTUP_5    5
+#define VIDEO_STATUS_PLAYING     16
+#define VIDEO_STATUS_PAUSED      17
+#define VIDEO_STATUS_ENDED       18
+
 
 
 UI_Mainwindow::UI_Mainwindow()
 {
   int i, j, k;
 
-
-  live_stream_timer = new QTimer;
-  live_stream_timer->setSingleShot(true);
-  QObject::connect(live_stream_timer, SIGNAL(timeout()), this, SLOT(live_stream_timer_func()));
 
   setMinimumSize(QSize(640, 480));
   setWindowTitle(PROGRAM_NAME);
@@ -254,6 +260,17 @@ UI_Mainwindow::UI_Mainwindow()
 
   read_color_settings();
 
+  video_player = (struct video_player_struct *)calloc(1, sizeof(struct video_player_struct));
+  video_player->poll_timer = 100;
+
+  live_stream_timer = new QTimer;
+  live_stream_timer->setSingleShot(true);
+  QObject::connect(live_stream_timer, SIGNAL(timeout()), this, SLOT(live_stream_timer_func()));
+
+  video_poll_timer = new QTimer;
+  video_poll_timer->setSingleShot(true);
+  QObject::connect(video_poll_timer, SIGNAL(timeout()), this, SLOT(video_poll_timer_func()));
+
   setCentralWidget(maincurve);
 
   menubar = menuBar();
@@ -286,11 +303,16 @@ UI_Mainwindow::UI_Mainwindow()
   save_act->setEnabled(false);
   connect(save_act, SIGNAL(triggered()), this, SLOT(save_file()));
 
+  video_act = new QAction("Start video", this);
+  connect(video_act, SIGNAL(triggered()), this, SLOT(start_stop_video()));
+
   filemenu = new QMenu(this);
   filemenu->setTitle("&File");
   filemenu->addAction("Open",         this, SLOT(open_new_file()), QKeySequence::Open);
   filemenu->addSeparator();
   filemenu->addAction("Open stream",  this, SLOT(open_stream()));
+  filemenu->addSeparator();
+  filemenu->addAction(video_act);
   filemenu->addSeparator();
   filemenu->addAction(save_act);
   filemenu->addMenu(recent_filesmenu);
@@ -758,9 +780,13 @@ UI_Mainwindow::UI_Mainwindow()
   positionslider->setSingleStep(10000);
   positionslider->setPageStep(100000);
 
+  video_pause_act = new QAction("Stopped", this);
+  connect(video_pause_act, SIGNAL(triggered()), this, SLOT(video_player_toggle_pause()));
+
   slidertoolbar = new QToolBar();
   slidertoolbar->setFloatable(false);
   slidertoolbar->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
+  slidertoolbar->addAction(video_pause_act);
   slidertoolbar->addWidget(positionslider);
   addToolBar(Qt::BottomToolBarArea, slidertoolbar);
   QObject::connect(positionslider, SIGNAL(valueChanged(int)), this, SLOT(slider_moved(int)));
@@ -1005,6 +1031,7 @@ void UI_Mainwindow::closeEvent(QCloseEvent *cl_event)
     free(zoomhistory);
     free(import_annotations_var);
     free(export_annotations_var);
+    free(video_player);
 
     cl_event->accept();
   }
@@ -1326,6 +1353,13 @@ void UI_Mainwindow::slider_moved(int value)
               new_viewtime -= tmp;
             }
 
+  if(video_player->status == VIDEO_STATUS_PLAYING)
+  {
+    video_player_seek((int)(new_viewtime / TIME_DIMENSION));
+
+    return;
+  }
+
   if(viewtime_sync==VIEWTIME_SYNCED_OFFSET)
   {
     for(i=0; i<files_open; i++)
@@ -1630,6 +1664,52 @@ void UI_Mainwindow::jump_to_start()
 }
 
 
+void UI_Mainwindow::jump_to_time_millisec(long long milliseconds)
+{
+  int i;
+
+  if(viewtime_sync==VIEWTIME_SYNCED_OFFSET)
+  {
+    for(i=0; i<files_open; i++)
+    {
+      edfheaderlist[i]->viewtime = milliseconds * (TIME_DIMENSION / 1000);
+    }
+  }
+
+  if(viewtime_sync==VIEWTIME_UNSYNCED)
+  {
+    edfheaderlist[sel_viewtime]->viewtime = milliseconds * (TIME_DIMENSION / 1000);
+  }
+
+  if(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)
+  {
+    edfheaderlist[sel_viewtime]->viewtime = milliseconds * (TIME_DIMENSION / 1000);
+
+    for(i=0; i<files_open; i++)
+    {
+      if(i!=sel_viewtime)
+      {
+        edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_DIMENSION);
+      }
+    }
+  }
+
+  if(viewtime_sync==VIEWTIME_USER_DEF_SYNCED)
+  {
+    for(i=0; i<files_open; i++)
+    {
+      if(i!=sel_viewtime)
+      {
+        edfheaderlist[i]->viewtime -= (edfheaderlist[sel_viewtime]->viewtime - milliseconds * (TIME_DIMENSION / 1000));
+      }
+    }
+
+    edfheaderlist[sel_viewtime]->viewtime = milliseconds * (TIME_DIMENSION / 1000);
+  }
+
+  setup_viewbuf();
+}
+
 
 void UI_Mainwindow::jump_to_end()
 {
@@ -1795,6 +1875,13 @@ void UI_Mainwindow::former_page()
 {
   int i;
 
+  if(video_player->status == VIDEO_STATUS_PLAYING)
+  {
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime - pagetime) / TIME_DIMENSION));
+
+    return;
+  }
+
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
   {
     for(i=0; i<files_open; i++)
@@ -1860,6 +1947,13 @@ void UI_Mainwindow::shift_page_right()
 void UI_Mainwindow::next_page()
 {
   int i;
+
+  if(video_player->status == VIDEO_STATUS_PLAYING)
+  {
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + pagetime) / TIME_DIMENSION));
+
+    return;
+  }
 
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
   {
@@ -1955,6 +2049,8 @@ void UI_Mainwindow::show_annotations()
 
 void UI_Mainwindow::annotation_editor()
 {
+  stop_video_generic();
+
   if(files_open==1)
   {
     if(edfheaderlist[0]->annots_not_read)
@@ -2559,6 +2655,8 @@ void UI_Mainwindow::remove_all_filters()
 void UI_Mainwindow::remove_all_signals()
 {
   int i;
+
+  stop_video_generic();
 
   spectrumdock->clear();
   spectrumdock->dock->hide();
@@ -6981,6 +7079,337 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
 
   return(newsignalcomp);
 }
+
+
+void UI_Mainwindow::start_stop_video()
+{
+  if(video_player->status != VIDEO_STATUS_STOPPED)
+  {
+    stop_video_generic();
+
+    return;
+  }
+
+  if(live_stream_active)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open a video during a live stream.");
+    messagewindow.exec();
+    return;
+  }
+
+  if(video_player->status != VIDEO_STATUS_STOPPED)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "There is already a video running.");
+    messagewindow.exec();
+    return;
+  }
+
+  if(signalcomps < 1)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Put some signals on the screen first.");
+    messagewindow.exec();
+    return;
+  }
+
+  if(annot_editor_active)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Close the annotation editor first.");
+    messagewindow.exec();
+    return;
+  }
+
+  strcpy(videopath, QFileDialog::getOpenFileName(this, "Select video", QString::fromLocal8Bit(recent_opendir),
+                                                 "Video files (*.ogv *.OGV *.ogg *.OGG *.mkv *.MKV *.avi *.AVI"
+                                                 " *.mp4 *.MP4 *.mpeg *.MPEG *.mpg *.MPG *.wmv *.WMV)").toLocal8Bit().data());
+
+  if(!strcmp(videopath, ""))
+  {
+    return;
+  }
+
+  get_directory_from_path(recent_opendir, videopath, MAX_PATH_LENGTH);
+
+  video_player->utc_starttime = parse_date_time_stamp(videopath);
+
+  if(video_player->utc_starttime < 0LL)
+  {
+    QMessageBox messagewindow(QMessageBox::Warning, "Warning", "Unable to get startdate and starttime from video filename.\n"
+                                                              "Assume video starttime equals EDF/BDF starttime?\n"
+                                                              "\n(Clicking \"No\" will cancel the operation.)\n ");
+    messagewindow.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    messagewindow.setDefaultButton(QMessageBox::Yes);
+    if(messagewindow.exec() == QMessageBox::No)  return;
+
+    video_player->utc_starttime = edfheaderlist[sel_viewtime]->utc_starttime;
+  }
+
+  video_process = new QProcess(this);
+
+#ifdef Q_OS_WIN32
+  QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+
+  env.insert("PATH", env.value("PATH") + ";C:\\Program Files\\VideoLAN\\VLC");
+
+  video_process->setProcessEnvironment(env);
+#endif
+
+  connect(video_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(video_process_error(QProcess::ProcessError)));
+
+  QStringList arguments;
+  arguments << "--video-on-top" << "-I" << "rc";
+
+  video_process->start("vlc", arguments);
+
+  if(video_process->waitForStarted(5000) == false)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Unable to start VLC mediaplayer.\n"
+                                                              "Check your installation of VLC.\n"
+                                                              "Also, check if VLC is present in the PATH evironment variable.");
+    messagewindow.exec();
+    return;
+  }
+
+  video_player->status = VIDEO_STATUS_STARTUP_1;
+
+  video_player->poll_timer = 100;
+
+  video_player->cntdwn_timer = 5000;
+
+  video_poll_timer->start(video_player->poll_timer);
+
+  video_act->setText("Stop video");
+}
+
+
+void UI_Mainwindow::video_poll_timer_func()
+{
+  int i, err, len, vpos=0;
+
+  char buf[4096];
+
+  if(video_player->status == VIDEO_STATUS_STOPPED)  return;
+
+  if(video_player->status != VIDEO_STATUS_PAUSED)
+  {
+    video_player->cntdwn_timer -= video_player->poll_timer;
+  }
+
+  if(video_player->cntdwn_timer <= 0)
+  {
+    stop_video_generic();
+
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Videoplayer: time-out.");
+    messagewindow.exec();
+    return;
+  }
+
+  len = video_process->readLine(buf, 4095);
+  if(len < 1)
+  {
+    video_poll_timer->start(video_player->poll_timer);
+
+    return;
+  }
+
+  if(!strncmp(buf, "> ", 2))
+  {
+    if(video_player->status == VIDEO_STATUS_STARTUP_1)
+    {
+      video_process->write("clear\n");
+
+      video_process->waitForBytesWritten(1000);
+
+      video_player->status = VIDEO_STATUS_STARTUP_2;
+
+      video_player->cntdwn_timer = 5000;
+    }
+    else if(video_player->status == VIDEO_STATUS_STARTUP_2)
+      {
+        strcpy(buf, "add ");
+
+        strcat(buf, videopath);
+
+        strcat(buf, "\n");
+
+        video_process->write(buf);
+
+        video_process->waitForBytesWritten(1000);
+
+        video_player->status = VIDEO_STATUS_STARTUP_3;
+
+        video_player->cntdwn_timer = 5000;
+      }
+      else if(video_player->status == VIDEO_STATUS_STARTUP_3)
+        {
+          video_process->write("volume 255\n");
+
+          video_player->status = VIDEO_STATUS_PLAYING;
+
+          video_pause_act->setText("Pause");
+
+          video_process->waitForBytesWritten(1000);
+
+          video_player->cntdwn_timer = 5000;
+        }
+  }
+
+  if(video_player->status == VIDEO_STATUS_PLAYING)
+  {
+    if((len > 3) && (buf[len-1] == '\n'))
+    {
+      if(!strncmp(buf, "> ", 2))
+      {
+        err = 0;
+
+        for(i=2; i<(len-1); i++)
+        {
+          if((buf[i] < '0') || (buf[i] > '9'))
+
+          err = 1;
+
+          break;
+        }
+
+        if(!err)
+        {
+          vpos = atoi(buf + 2);
+
+          jump_to_time_millisec(video_player->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime + (vpos * 1000LL));
+
+          video_player->cntdwn_timer = 5000;
+        }
+      }
+    }
+
+    video_process->write("get_time\n");
+  }
+  else
+  {
+    video_process->write("get_time\n");
+
+    video_process->waitForBytesWritten(1000);
+  }
+
+  video_poll_timer->start(video_player->poll_timer);
+}
+
+
+void UI_Mainwindow::video_player_seek(int sec)
+{
+  char str[512];
+
+  if((video_player->status != VIDEO_STATUS_PLAYING) && (video_player->status != VIDEO_STATUS_PAUSED))  return;
+
+  sprintf(str, "seek %i\n", sec);
+
+  video_process->write(str);
+}
+
+
+void UI_Mainwindow::video_player_toggle_pause()
+{
+  if(video_player->status == VIDEO_STATUS_STOPPED)
+  {
+    start_stop_video();
+
+    return;
+  }
+
+  if((video_player->status != VIDEO_STATUS_PLAYING) && (video_player->status != VIDEO_STATUS_PAUSED))  return;
+
+  video_process->write("pause\n");
+
+  if(video_player->status == VIDEO_STATUS_PLAYING)
+  {
+    video_player->status = VIDEO_STATUS_PAUSED;
+
+    video_pause_act->setText("Play");
+
+    video_player->cntdwn_timer = 5000;
+  }
+  else
+  {
+    video_player->status = VIDEO_STATUS_PLAYING;
+
+    video_pause_act->setText("Pause");
+  }
+}
+
+
+void UI_Mainwindow::stop_video_generic()
+{
+  video_poll_timer->stop();
+
+  if(video_player->status == VIDEO_STATUS_STOPPED)  return;
+
+  video_player->status = VIDEO_STATUS_STOPPED;
+
+  disconnect(video_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(video_process_error(QProcess::ProcessError)));
+
+  video_process->write("quit\n");
+
+  video_process->waitForFinished(1000);
+
+  video_process->kill();
+
+  delete video_process;
+
+  video_act->setText("Start video");
+
+  video_pause_act->setText("Stopped");
+}
+
+
+void UI_Mainwindow::video_process_error(QProcess::ProcessError err)
+{
+  char str[1024];
+
+  if(video_player->status == VIDEO_STATUS_STOPPED)  return;
+
+  stop_video_generic();
+
+  strcpy(str, "The process that runs the mediaplayer reported an error:\n");
+
+  if(err == QProcess::FailedToStart)
+  {
+    strcat(str, "\nFailed to start.");
+  }
+
+  if(err == QProcess::Crashed)
+  {
+    strcat(str, "\nCrashed.");
+  }
+
+  if(err == QProcess::Timedout)
+  {
+    strcat(str, "\nTimed out.");
+  }
+
+  if(err == QProcess::WriteError)
+  {
+    strcat(str, "\nWrite error.");
+  }
+
+  if(err == QProcess::ReadError)
+  {
+    strcat(str, "\nRead error.");
+  }
+
+  if(err == QProcess::UnknownError)
+  {
+    strcat(str, "\nUnknown error.");
+  }
+
+  QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+  messagewindow.exec();
+}
+
+
+
+
+
+
+
 
 
 

@@ -1752,6 +1752,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
         painter->drawLine(0, baseline - vert_ruler_offset, w, baseline - vert_ruler_offset);
 
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
+
         if(printing)
         {
           snprintf(string, 128, str2,
@@ -1777,6 +1779,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
           snprintf(string, 128, str2,
             (((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / painter_pixelsizefactor) - (signalcomp[i]->voltpercm * j)) * (double)signalcomp[i]->polarity);
         }
+
+#pragma GCC diagnostic warning "-Wformat-nonliteral"
 
         painter->drawText(5 * printsize_x_factor, baseline + vert_ruler_offset - (4 * printsize_y_factor), string);
       }
