@@ -312,8 +312,10 @@ UI_Mainwindow::UI_Mainwindow()
   filemenu->addSeparator();
   filemenu->addAction("Open stream",  this, SLOT(open_stream()));
   filemenu->addSeparator();
+#ifdef Q_OS_LINUX
   filemenu->addAction(video_act);
   filemenu->addSeparator();
+#endif
   filemenu->addAction(save_act);
   filemenu->addMenu(recent_filesmenu);
   filemenu->addMenu(printmenu);
@@ -786,7 +788,9 @@ UI_Mainwindow::UI_Mainwindow()
   slidertoolbar = new QToolBar();
   slidertoolbar->setFloatable(false);
   slidertoolbar->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
+#ifdef Q_OS_LINUX
   slidertoolbar->addAction(video_pause_act);
+#endif
   slidertoolbar->addWidget(positionslider);
   addToolBar(Qt::BottomToolBarArea, slidertoolbar);
   QObject::connect(positionslider, SIGNAL(valueChanged(int)), this, SLOT(slider_moved(int)));
