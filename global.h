@@ -282,6 +282,8 @@ struct video_player_struct{
         int poll_timer;
         long long utc_starttime;
         int starttime_diff;
+        int upcounter;
+        int fpos;
        };
 
 #endif

@@ -906,14 +906,14 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
 
   if(mainwindow->video_player->status == VIDEO_STATUS_PLAYING)
   {
-    mainwindow->video_player_seek((int)((mainwindow->edfheaderlist[file_num]->viewtime - (mainwindow->pagetime / 2) - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION));
+    mainwindow->video_player_seek((int)((annotation->onset - (mainwindow->pagetime / 2) - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION));
 
     return;
   }
 
   if(mainwindow->video_player->status == VIDEO_STATUS_PAUSED)
   {
-    mainwindow->video_player_seek((int)((mainwindow->edfheaderlist[file_num]->viewtime - (mainwindow->pagetime / 2) - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION));
+    mainwindow->video_player_seek((int)((annotation->onset - (mainwindow->pagetime / 2) - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION));
   }
 
   if(mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)

@@ -7180,6 +7180,10 @@ void UI_Mainwindow::start_stop_video()
     video_player->utc_starttime = edfheaderlist[sel_viewtime]->utc_starttime;
   }
 
+  video_player->upcounter = 0;
+
+  video_player->fpos = 0;
+
   video_player->starttime_diff = (int)(edfheaderlist[sel_viewtime]->utc_starttime - video_player->utc_starttime);
 
   if((edfheaderlist[sel_viewtime]->utc_starttime + edfheaderlist[sel_viewtime]->recording_len_sec) < video_player->utc_starttime)
@@ -7240,6 +7244,8 @@ void UI_Mainwindow::video_poll_timer_func()
 
   char buf[4096];
 
+  video_player->upcounter++;
+
   if(video_player->status == VIDEO_STATUS_STOPPED)  return;
 
   if(video_player->status != VIDEO_STATUS_PAUSED)
@@ -7296,11 +7302,11 @@ void UI_Mainwindow::video_poll_timer_func()
         {
           video_process->write("volume 255\n");
 
+          video_process->waitForBytesWritten(1000);
+
           video_player->status = VIDEO_STATUS_PLAYING;
 
           video_pause_act->setText("Pause");
-
-          video_process->waitForBytesWritten(1000);
 
           video_player->cntdwn_timer = 5000;
         }
@@ -7327,20 +7333,43 @@ void UI_Mainwindow::video_poll_timer_func()
         {
           vpos = atoi(buf + 2);
 
-          jump_to_time_millisec(video_player->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime + (vpos * 1000LL));
+          if(video_player->fpos != vpos)
+          {
+            jump_to_time_millisec(video_player->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime + (vpos * 1000LL));
+
+            video_player->fpos = vpos;
+          }
 
           video_player->cntdwn_timer = 5000;
         }
       }
     }
 
-    video_process->write("get_time\n");
+//     if(!(video_player->upcounter % 10))
+//     {
+//       video_process->write("status\n");
+//
+//       video_process->waitForBytesWritten(1000);
+//     }
+//     else
+//     {
+      video_process->write("get_time\n");
+
+      video_process->waitForBytesWritten(1000);
+//    }
   }
   else
   {
     video_process->write("get_time\n");
 
     video_process->waitForBytesWritten(1000);
+  }
+
+  if(!strncmp(buf, "( state stopped )", 17))
+  {
+    stop_video_generic();
+
+    return;
   }
 
   video_poll_timer->start(video_player->poll_timer);
@@ -7353,9 +7382,15 @@ void UI_Mainwindow::video_player_seek(int sec)
 
   if((video_player->status != VIDEO_STATUS_PLAYING) && (video_player->status != VIDEO_STATUS_PAUSED))  return;
 
-  sprintf(str, "seek %i\n", sec + (video_player->starttime_diff));
+  sec += video_player->starttime_diff;
+
+  if(sec < 0)  sec = 0;
+
+  sprintf(str, "seek %i\n", sec);
 
   video_process->write(str);
+
+  video_process->waitForBytesWritten(1000);
 }
 
 
