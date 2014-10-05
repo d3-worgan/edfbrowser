@@ -305,7 +305,8 @@ public:
                *load_predefined_mtg_act[MAXPREDEFINEDMONTAGES],
                *Escape_act,
                *video_act,
-               *video_pause_act;
+               *video_pause_act,
+               *video_stop_act;
 
   QActionGroup *timelock_act_group,
                *sel_viewtime_act_group;
@@ -439,6 +440,8 @@ private:
 public slots:
   void remove_all_signals();
   void edfplus_annotation_remove_duplicates();
+  void video_player_seek(int);
+  void video_player_toggle_pause();
 
 private slots:
   void open_new_file();
@@ -533,8 +536,6 @@ private slots:
   void convert_manscan_to_edf();
   void convert_scpecg_to_edf();
   void video_process_error(QProcess::ProcessError);
-  void video_player_seek(int);
-  void video_player_toggle_pause();
 //  void search_pattern();
 
 protected:

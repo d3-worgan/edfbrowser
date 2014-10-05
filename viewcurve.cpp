@@ -312,6 +312,20 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
   }
   else
   {
+    if((mainwindow->video_player->status == VIDEO_STATUS_PLAYING) || (mainwindow->video_player->status == VIDEO_STATUS_PAUSED))
+    {
+      if(wheel_event->delta() > 0)
+      {
+        mainwindow->video_player_seek((int)((mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime - (mainwindow->pagetime / mainwindow->mousewheelsens)) / TIME_DIMENSION));
+      }
+      else
+      {
+        mainwindow->video_player_seek((int)((mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime + (mainwindow->pagetime / mainwindow->mousewheelsens)) / TIME_DIMENSION));
+      }
+
+      if(mainwindow->video_player->status == VIDEO_STATUS_PLAYING)  return;
+    }
+
     if((mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
     {
       for(i=0; i<mainwindow->files_open; i++)

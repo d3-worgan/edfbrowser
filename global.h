@@ -57,6 +57,16 @@
 #define ANNOT_ID_NK_TRIGGER   0
 #define ANNOT_ID_BS_TRIGGER   1
 
+#define VIDEO_STATUS_STOPPED      0
+#define VIDEO_STATUS_STARTUP_1    1
+#define VIDEO_STATUS_STARTUP_2    2
+#define VIDEO_STATUS_STARTUP_3    3
+#define VIDEO_STATUS_STARTUP_4    4
+#define VIDEO_STATUS_STARTUP_5    5
+#define VIDEO_STATUS_PLAYING     16
+#define VIDEO_STATUS_PAUSED      17
+#define VIDEO_STATUS_ENDED       18
+
 #include <stdio.h>
 
 #include "filter.h"
@@ -270,6 +280,7 @@ struct video_player_struct{
         int cntdwn_timer;
         int poll_timer;
         long long utc_starttime;
+        int starttime_diff;
        };
 
 #endif

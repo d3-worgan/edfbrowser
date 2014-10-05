@@ -47,16 +47,6 @@
 #endif
 
 
-#define VIDEO_STATUS_STOPPED      0
-#define VIDEO_STATUS_STARTUP_1    1
-#define VIDEO_STATUS_STARTUP_2    2
-#define VIDEO_STATUS_STARTUP_3    3
-#define VIDEO_STATUS_STARTUP_4    4
-#define VIDEO_STATUS_STARTUP_5    5
-#define VIDEO_STATUS_PLAYING     16
-#define VIDEO_STATUS_PAUSED      17
-#define VIDEO_STATUS_ENDED       18
-
 
 
 UI_Mainwindow::UI_Mainwindow()
@@ -782,13 +772,17 @@ UI_Mainwindow::UI_Mainwindow()
   positionslider->setSingleStep(10000);
   positionslider->setPageStep(100000);
 
-  video_pause_act = new QAction("Stopped", this);
+  video_pause_act = new QAction("Play", this);
   connect(video_pause_act, SIGNAL(triggered()), this, SLOT(video_player_toggle_pause()));
+
+  video_stop_act = new QAction("Stop", this);
+  connect(video_stop_act, SIGNAL(triggered()), this, SLOT(start_stop_video()));
 
   slidertoolbar = new QToolBar();
   slidertoolbar->setFloatable(false);
   slidertoolbar->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
 #ifdef Q_OS_LINUX
+  slidertoolbar->addAction(video_stop_act);
   slidertoolbar->addAction(video_pause_act);
 #endif
   slidertoolbar->addWidget(positionslider);
@@ -1364,6 +1358,11 @@ void UI_Mainwindow::slider_moved(int value)
     return;
   }
 
+  if(video_player->status == VIDEO_STATUS_PAUSED)
+  {
+    video_player_seek((int)(new_viewtime / TIME_DIMENSION));
+  }
+
   if(viewtime_sync==VIEWTIME_SYNCED_OFFSET)
   {
     for(i=0; i<files_open; i++)
@@ -1886,6 +1885,11 @@ void UI_Mainwindow::former_page()
     return;
   }
 
+  if(video_player->status == VIDEO_STATUS_PAUSED)
+  {
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime - pagetime) / TIME_DIMENSION));
+  }
+
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
   {
     for(i=0; i<files_open; i++)
@@ -1908,6 +1912,18 @@ void UI_Mainwindow::shift_page_left()
 {
   int i;
 
+  if(video_player->status == VIDEO_STATUS_PLAYING)
+  {
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime - (pagetime / 10)) / TIME_DIMENSION));
+
+    return;
+  }
+
+  if(video_player->status == VIDEO_STATUS_PAUSED)
+  {
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime - (pagetime / 10)) / TIME_DIMENSION));
+  }
+
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
   {
     for(i=0; i<files_open; i++)
@@ -1929,6 +1945,18 @@ void UI_Mainwindow::shift_page_left()
 void UI_Mainwindow::shift_page_right()
 {
   int i;
+
+  if(video_player->status == VIDEO_STATUS_PLAYING)
+  {
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 10)) / TIME_DIMENSION));
+
+    return;
+  }
+
+  if(video_player->status == VIDEO_STATUS_PAUSED)
+  {
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 10)) / TIME_DIMENSION));
+  }
 
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
   {
@@ -1957,6 +1985,11 @@ void UI_Mainwindow::next_page()
     video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + pagetime) / TIME_DIMENSION));
 
     return;
+  }
+
+  if(video_player->status == VIDEO_STATUS_PAUSED)
+  {
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + pagetime) / TIME_DIMENSION));
   }
 
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
@@ -7147,6 +7180,8 @@ void UI_Mainwindow::start_stop_video()
     video_player->utc_starttime = edfheaderlist[sel_viewtime]->utc_starttime;
   }
 
+  video_player->starttime_diff = (int)(edfheaderlist[sel_viewtime]->utc_starttime - video_player->utc_starttime);
+
   video_process = new QProcess(this);
 
 #ifdef Q_OS_WIN32
@@ -7304,7 +7339,7 @@ void UI_Mainwindow::video_player_seek(int sec)
 
   if((video_player->status != VIDEO_STATUS_PLAYING) && (video_player->status != VIDEO_STATUS_PAUSED))  return;
 
-  sprintf(str, "seek %i\n", sec);
+  sprintf(str, "seek %i\n", sec + (video_player->starttime_diff));
 
   video_process->write(str);
 }
@@ -7360,7 +7395,7 @@ void UI_Mainwindow::stop_video_generic()
 
   video_act->setText("Start video");
 
-  video_pause_act->setText("Stopped");
+  video_pause_act->setText("Play");
 }
 
 
