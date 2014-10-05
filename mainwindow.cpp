@@ -7182,6 +7182,20 @@ void UI_Mainwindow::start_stop_video()
 
   video_player->starttime_diff = (int)(edfheaderlist[sel_viewtime]->utc_starttime - video_player->utc_starttime);
 
+  if((edfheaderlist[sel_viewtime]->utc_starttime + edfheaderlist[sel_viewtime]->recording_len_sec) < video_player->utc_starttime)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The video registration and the EDF/BDF registration do not overlap (in time)!");
+    messagewindow.exec();
+    return;
+  }
+
+  if((video_player->utc_starttime + 259200LL) < edfheaderlist[sel_viewtime]->utc_starttime)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The video registration and the EDF/BDF registration do not overlap (in time)!");
+    messagewindow.exec();
+    return;
+  }
+
   video_process = new QProcess(this);
 
 #ifdef Q_OS_WIN32

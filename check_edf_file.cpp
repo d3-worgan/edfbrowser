@@ -1662,6 +1662,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     edfhdr->edfparam[i].offset = edfhdr->edfparam[i].phys_max / edfhdr->edfparam[i].bitvalue - edfhdr->edfparam[i].dig_max;
   }
 
+  edfhdr->recording_len_sec = (int)((edfhdr->datarecords * edfhdr->long_data_record_duration) / TIME_DIMENSION);
+
   txt_string[0] = 0;
 
   free(edf_hdr);

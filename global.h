@@ -134,6 +134,7 @@ struct edfhdrblock{
         long long starttime_offset;
         long long prefiltertime;
         int       annots_not_read;
+        int       recording_len_sec;
         struct edfparamblock *edfparam;
       };
 
