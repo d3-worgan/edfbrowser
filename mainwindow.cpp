@@ -7171,11 +7171,10 @@ void UI_Mainwindow::start_stop_video()
   if(video_player->utc_starttime < 0LL)
   {
     QMessageBox messagewindow(QMessageBox::Warning, "Warning", "Unable to get startdate and starttime from video filename.\n"
-                                                              "Assume video starttime equals EDF/BDF starttime?\n"
-                                                              "\n(Clicking \"No\" will cancel the operation.)\n ");
-    messagewindow.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                                                              " \nAssume video starttime equals EDF/BDF starttime?\n ");
+    messagewindow.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
     messagewindow.setDefaultButton(QMessageBox::Yes);
-    if(messagewindow.exec() == QMessageBox::No)  return;
+    if(messagewindow.exec() == QMessageBox::Cancel)  return;
 
     video_player->utc_starttime = edfheaderlist[sel_viewtime]->utc_starttime;
   }
