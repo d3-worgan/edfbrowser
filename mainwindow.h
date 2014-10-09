@@ -436,6 +436,8 @@ private:
   QString specialFolder(int);
 #endif
   long long check_edf_file_datarecords(struct edfhdrblock *);
+  inline void mpr_write(const char *);
+  inline int mpr_read(char *, int);
 
 public slots:
   void remove_all_signals();

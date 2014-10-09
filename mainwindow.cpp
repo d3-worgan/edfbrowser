@@ -48,6 +48,12 @@
 
 
 
+// #define DEBUG_VIDEOPLAYER
+
+#ifdef DEBUG_VIDEOPLAYER
+  FILE *debug_vpr;
+#endif
+
 
 UI_Mainwindow::UI_Mainwindow()
 {
@@ -7118,6 +7124,9 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
 }
 
 
+// Next parts of code are tested wit VLC media player 2.1.2 Rincewind on Linux.
+// On windows it's disabled because the console interface of VLC on windows is broken.
+// Once they (videolan.org) has fixed this, we can test it and hopefully enable it on windows too.
 void UI_Mainwindow::start_stop_video()
 {
   if(video_player->status != VIDEO_STATUS_STOPPED)
@@ -7225,6 +7234,10 @@ void UI_Mainwindow::start_stop_video()
     return;
   }
 
+#ifdef DEBUG_VIDEOPLAYER
+  debug_vpr = fopen("debug_vpr.txt", "wb");
+#endif
+
   video_player->status = VIDEO_STATUS_STARTUP_1;
 
   video_player->poll_timer = 100;
@@ -7261,7 +7274,7 @@ void UI_Mainwindow::video_poll_timer_func()
     return;
   }
 
-  len = video_process->readLine(buf, 4095);
+  len = mpr_read(buf, 4095);
   if(len < 1)
   {
     video_poll_timer->start(video_player->poll_timer);
@@ -7269,27 +7282,21 @@ void UI_Mainwindow::video_poll_timer_func()
     return;
   }
 
-  if(!strncmp(buf, "> ", 2))
+  if(video_player->status == VIDEO_STATUS_STARTUP_1)
   {
-    if(video_player->status == VIDEO_STATUS_STARTUP_1)
+    if(!strncmp(buf, "Command Line Interface initialized.", 35))
     {
-      video_process->write("clear\n");
-
-      video_process->waitForBytesWritten(1000);
-
       video_player->status = VIDEO_STATUS_STARTUP_2;
-
-      video_player->cntdwn_timer = 5000;
     }
-    else if(video_player->status == VIDEO_STATUS_STARTUP_2)
+  }
+
+  if(video_player->status < VIDEO_STATUS_PLAYING)
+  {
+    if(!strncmp(buf, "> ", 2))
+    {
+      if(video_player->status == VIDEO_STATUS_STARTUP_2)
       {
-        strcpy(buf, "add ");
-
-        strcat(buf, videopath);
-
-        strcat(buf, "\n");
-
-        video_process->write(buf);
+        mpr_write("clear\n");
 
         video_process->waitForBytesWritten(1000);
 
@@ -7299,16 +7306,37 @@ void UI_Mainwindow::video_poll_timer_func()
       }
       else if(video_player->status == VIDEO_STATUS_STARTUP_3)
         {
-          video_process->write("volume 255\n");
+          strcpy(buf, "add ");
+
+          strcat(buf, videopath);
+
+          strcat(buf, "\n");
+
+          mpr_write(buf);
 
           video_process->waitForBytesWritten(1000);
 
-          video_player->status = VIDEO_STATUS_PLAYING;
-
-          video_pause_act->setText("Pause");
+          video_player->status = VIDEO_STATUS_STARTUP_4;
 
           video_player->cntdwn_timer = 5000;
         }
+        else if(video_player->status == VIDEO_STATUS_STARTUP_4)
+          {
+            mpr_write("volume 255\n");
+
+            video_process->waitForBytesWritten(1000);
+
+            video_player->status = VIDEO_STATUS_PLAYING;
+
+            video_pause_act->setText("Pause");
+
+            video_player->cntdwn_timer = 5000;
+          }
+    }
+
+    video_poll_timer->start(video_player->poll_timer);
+
+    return;
   }
 
   if(video_player->status == VIDEO_STATUS_PLAYING)
@@ -7346,23 +7374,23 @@ void UI_Mainwindow::video_poll_timer_func()
 
 //     if(!(video_player->upcounter % 10))
 //     {
-//       video_process->write("status\n");
+//       mpr_write("status\n");
 //
 //       video_process->waitForBytesWritten(1000);
 //     }
 //     else
 //     {
-      video_process->write("get_time\n");
+      mpr_write("get_time\n");
 
       video_process->waitForBytesWritten(1000);
 //    }
   }
-  else
-  {
-    video_process->write("get_time\n");
-
-    video_process->waitForBytesWritten(1000);
-  }
+//   else
+//   {
+//     mpr_write("get_time\n");
+//
+//     video_process->waitForBytesWritten(1000);
+//   }
 
   if(!strncmp(buf, "( state stopped )", 17))
   {
@@ -7387,9 +7415,11 @@ void UI_Mainwindow::video_player_seek(int sec)
 
   sprintf(str, "seek %i\n", sec);
 
-  video_process->write(str);
+  mpr_write(str);
 
   video_process->waitForBytesWritten(1000);
+
+  video_player->cntdwn_timer = 5000;
 }
 
 
@@ -7404,7 +7434,7 @@ void UI_Mainwindow::video_player_toggle_pause()
 
   if((video_player->status != VIDEO_STATUS_PLAYING) && (video_player->status != VIDEO_STATUS_PAUSED))  return;
 
-  video_process->write("pause\n");
+  mpr_write("pause\n");
 
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
@@ -7433,7 +7463,7 @@ void UI_Mainwindow::stop_video_generic()
 
   disconnect(video_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(video_process_error(QProcess::ProcessError)));
 
-  video_process->write("quit\n");
+  mpr_write("quit\n");
 
   video_process->waitForFinished(1000);
 
@@ -7444,6 +7474,10 @@ void UI_Mainwindow::stop_video_generic()
   video_act->setText("Start video");
 
   video_pause_act->setText("Play");
+
+#ifdef DEBUG_VIDEOPLAYER
+  fclose(debug_vpr);
+#endif
 }
 
 
@@ -7492,10 +7526,33 @@ void UI_Mainwindow::video_process_error(QProcess::ProcessError err)
 }
 
 
+inline void UI_Mainwindow::mpr_write(const char *cmd_str)
+{
+#ifdef DEBUG_VIDEOPLAYER
+  fprintf(debug_vpr, "edfbr: %s", cmd_str);
+#endif
+
+  video_process->write(cmd_str);
+}
 
 
+inline int UI_Mainwindow::mpr_read(char *buf, int sz)
+{
+#ifdef DEBUG_VIDEOPLAYER
+  int n;
 
+  n = video_process->readLine(buf, sz);
 
+  if(n > 0)
+  {
+    fprintf(debug_vpr, "vlc: %s\n", buf);
+  }
+
+  return n;
+#else
+  return video_process->readLine(buf, sz);
+#endif
+}
 
 
 
