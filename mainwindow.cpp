@@ -7124,7 +7124,7 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
 }
 
 
-// Next parts of code are tested wit VLC media player 2.1.2 Rincewind on Linux.
+// Next parts of code are tested with VLC media player 2.1.2 and later with 2.1.5 Rincewind on Linux.
 // On windows it's disabled because the console interface of VLC on windows is broken.
 // Once they (videolan.org) has fixed this, we can test it and hopefully enable it on windows too.
 void UI_Mainwindow::start_stop_video()
@@ -7188,7 +7188,7 @@ void UI_Mainwindow::start_stop_video()
     video_player->utc_starttime = edfheaderlist[sel_viewtime]->utc_starttime;
   }
 
-  video_player->upcounter = 0;
+  video_player->stop_det_counter = 0;
 
   video_player->fpos = 0;
 
@@ -7255,8 +7255,6 @@ void UI_Mainwindow::video_poll_timer_func()
   int i, err, len, vpos=0;
 
   char buf[4096];
-
-  video_player->upcounter++;
 
   if(video_player->status == VIDEO_STATUS_STOPPED)  return;
 
@@ -7341,9 +7339,9 @@ void UI_Mainwindow::video_poll_timer_func()
 
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
-    if((len > 3) && (buf[len-1] == '\n'))
+    if(!strncmp(buf, "> ", 2))
     {
-      if(!strncmp(buf, "> ", 2))
+      if((len > 4) && (buf[len-1] == '\n'))
       {
         err = 0;
 
@@ -7365,32 +7363,33 @@ void UI_Mainwindow::video_poll_timer_func()
             jump_to_time_millisec(video_player->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime + (vpos * 1000LL));
 
             video_player->fpos = vpos;
+
+            video_player->stop_det_counter = 0;
           }
 
           video_player->cntdwn_timer = 5000;
         }
       }
+      else if(buf[2] == '\r')
+      {
+        video_player->stop_det_counter += video_player->poll_timer;
+
+        if(video_player->stop_det_counter > 1500)
+        {
+          stop_video_generic();
+
+          QMessageBox messagewindow(QMessageBox::NoIcon, "Stopped", "  \nVideo has reached the end       \n");
+          messagewindow.exec();
+
+          return;
+        }
+      }
     }
 
-//     if(!(video_player->upcounter % 10))
-//     {
-//       mpr_write("status\n");
-//
-//       video_process->waitForBytesWritten(1000);
-//     }
-//     else
-//     {
-      mpr_write("get_time\n");
+    mpr_write("get_time\n");
 
-      video_process->waitForBytesWritten(1000);
-//    }
+    video_process->waitForBytesWritten(1000);
   }
-//   else
-//   {
-//     mpr_write("get_time\n");
-//
-//     video_process->waitForBytesWritten(1000);
-//   }
 
   if(!strncmp(buf, "( state stopped )", 17))
   {
@@ -7545,7 +7544,14 @@ inline int UI_Mainwindow::mpr_read(char *buf, int sz)
 
   if(n > 0)
   {
-    fprintf(debug_vpr, "vlc: %s\n", buf);
+    fprintf(debug_vpr, "vlc: %s ", buf);
+
+    for(int i=0; i<n; i++)
+    {
+      fprintf(debug_vpr, " 0x%02X", buf[i]);
+    }
+
+    fprintf(debug_vpr, "\n");
   }
 
   return n;
