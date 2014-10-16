@@ -204,4 +204,44 @@ win32 {
  RC_FILE = edfbrowser.rc
 }
 
+unix {
+target.path = /usr/bin
+target.files = edfbrowser
+INSTALLS += target
+
+documentation.path = /usr/share/doc/edfbrowser
+documentation.files = doc/*
+INSTALLS += documentation
+
+icon_a.path = /usr/share/icons
+icon_a.files = images/edf.png
+INSTALLS += icon_a
+
+icon_b.path += /usr/share/pixmaps
+icon_b.files = images/edf.png
+INSTALLS += icon_b
+
+icon_c.path += /usr/share/icons/hicolor/48x48/apps
+icon_c.files = images/edf.png
+INSTALLS += icon_c
+
+icon_d.path += /usr/share/icons/hicolor/48x48/mimetypes
+icon_d.files = images/edf.png
+INSTALLS += icon_d
+
+desktop_link.path += /usr/share/applications
+desktop_link.files += install/edfbrowser.desktop
+INSTALLS += desktop_link
+
+mime.path += /usr/share/mime/packages
+mime.files += install/edfbrowser.xml
+INSTALLS += mime
+}
+
+
+
+
+
+
+
 
