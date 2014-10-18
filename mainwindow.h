@@ -42,29 +42,17 @@
 #include <QToolBar>
 #include <QSlider>
 #include <QStyle>
+#include <QCloseEvent>
+
 #if QT_VERSION < 0x050000
   #include <QPlastiqueStyle>
   #include <QGtkStyle>
   #include <QWindowsStyle>
+  #ifdef Q_OS_MAC
+    #include <QMacStyle>
+  #endif
 #else
   #include <QStyleFactory>
-#endif
-#include <QtGlobal>
-#include <QCloseEvent>
-
-#ifdef Q_OS_LINUX
-  #include <sys/types.h>
-  #include <sys/stat.h>
-#endif
-
-#ifdef Q_OS_MAC
-#if QT_VERSION < 0x050000
-  #include <QMacStyle>
-#else
-  #include <QStyleFactory>
-#endif
-  #include <sys/types.h>
-  #include <sys/stat.h>
 #endif
 
 #ifdef Q_OS_WIN32
@@ -80,8 +68,11 @@
     #define CSIDL_PROGRAM_FILES 0x0026 // C:\Program Files
   #endif
   #if QT_VERSION >= 0x050000
-  #define QT_WA(unicode, ansi) unicode
+    #define QT_WA(unicode, ansi) unicode
   #endif
+#else
+  #include <sys/types.h>
+  #include <sys/stat.h>
 #endif
 
 #include <QFileDialog>

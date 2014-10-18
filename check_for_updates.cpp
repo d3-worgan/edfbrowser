@@ -49,12 +49,12 @@ Check_for_updates::Check_for_updates()
   request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " OS_UNKNOWN");
 #ifdef Q_OS_LINUX
   request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_LINUX");
-#endif
-#ifdef Q_OS_MAC
+#elif defined (Q_OS_MAC)
   request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_MAC");
-#endif
-#ifdef Q_OS_WIN32
+#elif defined (Q_OS_WIN32)
   request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_WIN32");
+#else
+  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_OTHER");
 #endif
   request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
 

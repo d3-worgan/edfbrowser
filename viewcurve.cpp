@@ -1373,17 +1373,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     w = w_width;
     h = w_height;
 
-#ifdef Q_OS_LINUX
     printfont->setPixelSize((int)((double)w / 104.0));
-#endif
-
-#ifdef Q_OS_MAC
-    printfont->setPixelSize((int)((double)w / 104.0));
-#endif
-
-#ifdef Q_OS_WIN32
-    printfont->setPixelSize((int)((double)w / 104.0));
-#endif
 
     painter->setFont(*printfont);
 

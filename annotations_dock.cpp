@@ -698,24 +698,13 @@ void UI_Annotationswindow::updateList(void)
 
   selected = -1;
 
-
-#ifdef Q_OS_LINUX
-  QFont specialfont("andale mono", 12, QFont::Normal, true);
-
-  specialfont.setPixelSize(12);
-#endif
-
-#ifdef Q_OS_MAC
-  QFont specialfont("andale mono", 12, QFont::Normal, true);
-
-  specialfont.setPixelSize(12);
-#endif
-
 #ifdef Q_OS_WIN32
   QFont specialfont("courier", 11, QFont::Normal, true);
+#else
+  QFont specialfont("andale mono", 12, QFont::Normal, true);
+#endif
 
   specialfont.setPixelSize(12);
-#endif
 
   list->clear();
 

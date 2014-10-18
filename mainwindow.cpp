@@ -68,31 +68,21 @@ UI_Mainwindow::UI_Mainwindow()
 
   monofont = new QFont;
 
-#ifdef Q_OS_LINUX
-  QApplication::setFont(*myfont);
-
-  myfont->setFamily("Arial");
-  myfont->setPixelSize(12);
-
-  monofont->setFamily("andale mono");
-  monofont->setPixelSize(12);
-#endif
-
-#ifdef Q_OS_MAC
-  QApplication::setFont(*myfont);
-
-  myfont->setFamily("Arial");
-  myfont->setPixelSize(12);
-
-  monofont->setFamily("andale mono");
-  monofont->setPixelSize(12);
-#endif
-
 #ifdef Q_OS_WIN32
+  QApplication::setFont(*myfont);
+
   myfont->setFamily("Tahoma");
   myfont->setPixelSize(11);
 
   monofont->setFamily("courier");
+  monofont->setPixelSize(12);
+#else
+  QApplication::setFont(*myfont);
+
+  myfont->setFamily("Arial");
+  myfont->setPixelSize(12);
+
+  monofont->setFamily("andale mono");
   monofont->setPixelSize(12);
 #endif
 
@@ -4545,23 +4535,16 @@ void UI_Mainwindow::read_color_settings()
 
   cfg_path[0] = 0;
 
-#ifdef Q_OS_LINUX
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "/settings.xml");
-#endif
-#ifdef Q_OS_MAC
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "/settings.xml");
-#endif
 #ifdef Q_OS_WIN32
   strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
   strcat(cfg_path, "\\");
   strcat(cfg_path, PROGRAM_NAME);
   strcat(cfg_path, "\\settings.xml");
+#else
+  strcpy(cfg_path, getenv("HOME"));
+  strcat(cfg_path, "/.");
+  strcat(cfg_path, PROGRAM_NAME);
+  strcat(cfg_path, "/settings.xml");
 #endif
 
   xml_hdl = xml_get_handle(cfg_path);
@@ -4728,23 +4711,16 @@ void UI_Mainwindow::read_recent_file_settings()
 
   cfg_path[0] = 0;
 
-#ifdef Q_OS_LINUX
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "/settings.xml");
-#endif
-#ifdef Q_OS_MAC
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "/settings.xml");
-#endif
 #ifdef Q_OS_WIN32
   strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
   strcat(cfg_path, "\\");
   strcat(cfg_path, PROGRAM_NAME);
   strcat(cfg_path, "\\settings.xml");
+#else
+  strcpy(cfg_path, getenv("HOME"));
+  strcat(cfg_path, "/.");
+  strcat(cfg_path, PROGRAM_NAME);
+  strcat(cfg_path, "/settings.xml");
 #endif
 
   xml_hdl = xml_get_handle(cfg_path);
@@ -4953,23 +4929,16 @@ void UI_Mainwindow::read_general_settings()
 
   cfg_path[0] = 0;
 
-#ifdef Q_OS_LINUX
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "/settings.xml");
-#endif
-#ifdef Q_OS_MAC
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "/settings.xml");
-#endif
 #ifdef Q_OS_WIN32
   strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
   strcat(cfg_path, "\\");
   strcat(cfg_path, PROGRAM_NAME);
   strcat(cfg_path, "\\settings.xml");
+#else
+  strcpy(cfg_path, getenv("HOME"));
+  strcat(cfg_path, "/.");
+  strcat(cfg_path, PROGRAM_NAME);
+  strcat(cfg_path, "/settings.xml");
 #endif
 
   xml_hdl = xml_get_handle(cfg_path);
@@ -6321,26 +6290,18 @@ void UI_Mainwindow::write_settings()
 
   cfg_path[0] = 0;
 
-#ifdef Q_OS_LINUX
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  mkdir(cfg_path,  S_IRWXU);
-  strcat(cfg_path, "/settings.xml");
-#endif
-#ifdef Q_OS_MAC
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  mkdir(cfg_path,  S_IRWXU);
-  strcat(cfg_path, "/settings.xml");
-#endif
 #ifdef Q_OS_WIN32
   strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
   strcat(cfg_path, "\\");
   strcat(cfg_path, PROGRAM_NAME);
   mkdir(cfg_path);
   strcat(cfg_path, "\\settings.xml");
+#else
+  strcpy(cfg_path, getenv("HOME"));
+  strcat(cfg_path, "/.");
+  strcat(cfg_path, PROGRAM_NAME);
+  mkdir(cfg_path,  S_IRWXU);
+  strcat(cfg_path, "/settings.xml");
 #endif
 
   cfgfile = fopeno(cfg_path, "wb");
