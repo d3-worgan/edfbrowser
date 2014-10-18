@@ -69,22 +69,20 @@ UI_Mainwindow::UI_Mainwindow()
   monofont = new QFont;
 
 #ifdef Q_OS_WIN32
-  QApplication::setFont(*myfont);
-
   myfont->setFamily("Tahoma");
   myfont->setPixelSize(11);
 
   monofont->setFamily("courier");
   monofont->setPixelSize(12);
 #else
-  QApplication::setFont(*myfont);
-
   myfont->setFamily("Arial");
   myfont->setPixelSize(12);
 
   monofont->setFamily("andale mono");
   monofont->setPixelSize(12);
 #endif
+
+  QApplication::setFont(*myfont);
 
   setlocale(LC_NUMERIC, "C");
 
