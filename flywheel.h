@@ -34,6 +34,7 @@
 #ifndef FLYWHEELBUTTON_H
 #define FLYWHEELBUTTON_H
 
+#include <QtGlobal>
 #include <QWidget>
 #include <QPainter>
 #include <QMouseEvent>

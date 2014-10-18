@@ -35,6 +35,7 @@
 #define FILTERCURVE_H
 
 
+#include <QtGlobal>
 #include <QWidget>
 #include <QPainter>
 #include <QPen>

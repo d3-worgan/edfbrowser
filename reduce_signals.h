@@ -34,6 +34,7 @@
 #define UI_REDUCESIGNALSFORM_H
 
 
+#include <QtGlobal>
 #include <QApplication>
 #include <QDialog>
 #include <QLabel>

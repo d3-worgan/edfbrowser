@@ -34,6 +34,7 @@
 #define CHECKFORUPDATES_H
 
 
+#include <QtGlobal>
 #include <QApplication>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>

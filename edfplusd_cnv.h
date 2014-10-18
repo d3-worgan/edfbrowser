@@ -34,6 +34,7 @@
 #define UI_EDFD2EDFCFORM_H
 
 
+#include <QtGlobal>
 #include <QApplication>
 #include <QDialog>
 #include <QPushButton>

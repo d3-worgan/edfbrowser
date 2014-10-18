@@ -37,6 +37,7 @@
 
 
 
+#include <QtGlobal>
 #include <QApplication>
 #include <QObject>
 #include <QDialog>
@@ -44,7 +45,6 @@
 #include <QTextEdit>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QtGlobal>
 
 #include "global.h"
 #include "mainwindow.h"

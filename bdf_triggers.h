@@ -37,6 +37,7 @@
 #define BDF_TRIGGERS_H
 
 
+#include <QtGlobal>
 #include <QApplication>
 #include <QMessageBox>
 #include <QProgressDialog>

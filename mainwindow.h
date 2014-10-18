@@ -33,6 +33,7 @@
 #ifndef UI_VIEW_MAINFORM_H
 #define UI_VIEW_MAINFORM_H
 
+#include <QtGlobal>
 #include <QApplication>
 #include <QMainWindow>
 #include <QMenuBar>

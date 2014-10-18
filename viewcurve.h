@@ -34,6 +34,7 @@
 #ifndef VIEWCURVE_H
 #define VIEWCURVE_H
 
+#include <QtGlobal>
 #include <QWidget>
 #include <QPainter>
 #include <QMouseEvent>

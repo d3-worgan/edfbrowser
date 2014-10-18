@@ -34,6 +34,7 @@
 #define UI_MANSCAN2EDFFORM_H
 
 
+#include <QtGlobal>
 #include <QApplication>
 #include <QDialog>
 #include <QPushButton>

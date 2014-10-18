@@ -34,6 +34,7 @@
 #define UI_HEADEREDITORFORM_H
 
 
+#include <QtGlobal>
 #include <QApplication>
 #include <QObject>
 #include <QDialog>

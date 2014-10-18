@@ -35,6 +35,7 @@
 #define SIGNALCURVE_H
 
 
+#include <QtGlobal>
 #include <QWidget>
 #include <QMouseEvent>
 #include <QPainter>

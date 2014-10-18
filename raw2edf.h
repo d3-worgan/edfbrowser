@@ -34,6 +34,7 @@
 #define UI_RAW2EDFFORM_H
 
 
+#include <QtGlobal>
 #include <QApplication>
 #include <QObject>
 #include <QDialog>

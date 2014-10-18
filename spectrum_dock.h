@@ -36,6 +36,7 @@
 
 
 
+#include <QtGlobal>
 #include <QApplication>
 #include <QDialog>
 #include <QDockWidget>

@@ -36,6 +36,7 @@
 
 #include <string.h>
 
+#include <QtGlobal>
 #include <QWidget>
 #include <QPainter>
 #include <QMouseEvent>

@@ -37,6 +37,7 @@
 
 
 
+#include <QtGlobal>
 #include <QApplication>
 #include <QObject>
 #include <QListWidget>

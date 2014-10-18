@@ -34,6 +34,7 @@
 #define UI_BI98002EDFFORM_H
 
 
+#include <QtGlobal>
 #include <QApplication>
 #include <QObject>
 #include <QDialog>
