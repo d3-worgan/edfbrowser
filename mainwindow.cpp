@@ -3212,7 +3212,7 @@ void UI_Mainwindow::fit_signals_dc_offset()
 
   for(i=0; i<signalcomps; i++)
   {
-    signalcomp[i]->screen_offset = ((signalcomp[i]->max_dig_value + signalcomp[i]->min_dig_value) / 2.0) * signalcomp[i]->sensitivity[0];
+    signalcomp[i]->screen_offset = ((signalcomp[i]->max_dig_value + signalcomp[i]->min_dig_value) / 2.0) * signalcomp[i]->sensitivity[0] * signalcomp[i]->polarity;
   }
 
   maincurve->drawCurve_stage_1();
