@@ -3197,7 +3197,7 @@ void UI_Mainwindow::fit_signals_to_pane()
      signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue
      / (signalcomp[i]->sensitivity[0] * pixelsizefactor);
 
-    signalcomp[i]->screen_offset = ((signalcomp[i]->max_dig_value + signalcomp[i]->min_dig_value) / 2.0) * signalcomp[i]->sensitivity[0];
+    signalcomp[i]->screen_offset = ((signalcomp[i]->max_dig_value + signalcomp[i]->min_dig_value) / 2.0) * signalcomp[i]->sensitivity[0] * signalcomp[i]->polarity;
   }
 
   maincurve->drawCurve_stage_1();
