@@ -3280,14 +3280,9 @@ void ViewCurve::signalInvert()
     return;
   }
 
-  if(mainwindow->signalcomp[signal_nr]->polarity != 1)
-  {
-    mainwindow->signalcomp[signal_nr]->polarity = 1;
-  }
-  else
-  {
-    mainwindow->signalcomp[signal_nr]->polarity = -1;
-  }
+  mainwindow->signalcomp[signal_nr]->polarity *= -1;
+
+  mainwindow->signalcomp[signal_nr]->screen_offset *= -1;
 
   mainwindow->setup_viewbuf();
 }

@@ -1,4 +1,12 @@
 
+ version 1.55      to be released
+ ------------
+
+ - Correct the screen-offset when inverting a signal.
+
+
+
+
  version 1.54      October 11, 2014
  ------------
 

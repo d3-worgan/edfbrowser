@@ -444,14 +444,9 @@ void UI_SignalChooser::signalInvert()
 
     selected_signals[k] = j;
 
-    if(mainwindow->signalcomp[j]->polarity != 1)
-    {
-      mainwindow->signalcomp[j]->polarity = 1;
-    }
-    else
-    {
-      mainwindow->signalcomp[j]->polarity = -1;
-    }
+    mainwindow->signalcomp[j]->polarity *= -1;
+
+    mainwindow->signalcomp[j]->screen_offset *= -1;
   }
 
   load_signalcomps();
