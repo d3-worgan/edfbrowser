@@ -413,7 +413,14 @@ void UI_FilterDialog::filtermodelboxvaluechanged(int model)
 
     if((type == FILTERTYPE_BANDPASS) || (type == FILTERTYPE_BANDSTOP))
     {
-      orderbox->setMaximum(16);
+      if(model == FILTERMODEL_BESSEL)
+      {
+        orderbox->setMaximum(10);
+      }
+      else
+      {
+        orderbox->setMaximum(16);
+      }
     }
     else
     {
@@ -578,7 +585,14 @@ void UI_FilterDialog::filtertypeboxvaluechanged(int type)
     orderboxlabel->setVisible(true);
     if((type == FILTERTYPE_BANDPASS) || (type == FILTERTYPE_BANDSTOP))
     {
-      orderbox->setMaximum(16);
+      if(last_model == FILTERMODEL_BESSEL)
+      {
+        orderbox->setMaximum(10);
+      }
+      else
+      {
+        orderbox->setMaximum(16);
+      }
       orderbox->setSingleStep(2);
       orderbox->setMinimum(2);
       orderbox->setValue(last_order * 2);
