@@ -196,7 +196,7 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
 
     if(type == 2)
     {
-      sprintf(txtbuf + strlen(txtbuf), "Notch (resonator)");
+      sprintf(txtbuf, "Notch (resonator)");
     }
 
     if(type == 3)
