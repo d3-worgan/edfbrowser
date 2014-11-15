@@ -157,6 +157,8 @@
 #include "scp_ecg2edf.h"
 #include "unisens2edf.h"
 #include "date_time_stamp_parser.h"
+#include "spike_filter.h"
+#include "spike_filter_dialog.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -467,7 +469,9 @@ private slots:
   void export_to_ascii();
   void check_edf_compatibility();
   void add_new_filter();
+  void add_spike_filter();
   void remove_all_filters();
+  void remove_all_spike_filters();
 //  void add_new_math_func();
 //  void remove_all_math_funcs();
   void jump_to_dialog();

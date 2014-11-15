@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
+* Copyright (C) 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -31,39 +31,35 @@
 
 
 
-
-#ifndef LOADMONTAGEFORM1_H
-#define LOADMONTAGEFORM1_H
+#ifndef ADD_SPIKE_FILTERFORM1_H
+#define ADD_SPIKE_FILTERFORM1_H
 
 
 
 #include <QtGlobal>
 #include <QApplication>
 #include <QObject>
-#include <QDialog>
-#include <QLabel>
-#include <QFileDialog>
-#include <QPushButton>
 #include <QListWidget>
+#include <QListWidgetItem>
 #include <QList>
-#include <QMessageBox>
+#include <QDialog>
+#include <QPushButton>
+#include <QComboBox>
+#include <QDoubleSpinBox>
+#include <QLabel>
+#include <QSpinBox>
 #include <QString>
+#include <QMessageBox>
+#include <QVariant>
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "global.h"
 #include "mainwindow.h"
-#include "xml.h"
-#include "filter.h"
 #include "spike_filter.h"
 #include "popup_messagewindow.h"
-#include "utc_date_time.h"
 #include "utils.h"
-#include "spectrum_dock.h"
-
-#include "third_party/fidlib/fidlib.h"
 
 
 
@@ -71,40 +67,48 @@ class UI_Mainwindow;
 
 
 
-class UI_LoadMontagewindow : public QObject
+class UI_SpikeFilterDialog : public QObject
 {
   Q_OBJECT
 
 public:
-  UI_LoadMontagewindow(QWidget *parent, char *path = NULL);
+  UI_SpikeFilterDialog(QWidget *parent=0);
 
   UI_Mainwindow *mainwindow;
 
 
 private:
 
-  QDialog      *LoadMontageDialog;
+QDialog        *spikefilterdialog;
 
-  QLabel       *label1;
+QPushButton    *CancelButton,
+               *ApplyButton;
 
-  QListWidget  *filelist;
+QListWidget    *list;
 
-  QPushButton  *CloseButton,
-               *LoadButton;
+QLabel         *listlabel,
+               *velocityLabel,
+               *holdOffLabel;
 
-  char mtg_path[MAX_PATH_LENGTH];
+QDoubleSpinBox *velocitySpinBox;
 
-  void strip_types_from_label(char *);
+QSpinBox       *holdOffSpinBox;
 
 
 private slots:
 
-  void LoadButtonClicked();
+void ApplyButtonClicked();
 
 };
 
 
 
-#endif // LOADMONTAGEFORM1_H
+#endif // ADD_SPIKE_FILTERFORM1_H
+
+
+
+
+
+
 
 

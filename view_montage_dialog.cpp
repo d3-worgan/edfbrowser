@@ -101,6 +101,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       filters_read,
       color,
       filter_cnt=0,
+      spike_filter_cnt=0,
       ravg_filter_cnt=0,
       fidfilter_cnt=0,
       islpf,
@@ -111,7 +112,8 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       model,
       type,
       size,
-      polarity=1;
+      polarity=1,
+      holdoff=100;
 
   char *result,
        composition_txt[2048],
@@ -122,7 +124,8 @@ void UI_ViewMontagewindow::SelectButtonClicked()
          voltpercm,
          ripple,
          timescale,
-         d_tmp;
+         d_tmp,
+         velocity;
 
   QStandardItem *parentItem,
                 *signalItem,
@@ -243,6 +246,14 @@ void UI_ViewMontagewindow::SelectButtonClicked()
     color = atoi(result);
     free(result);
     xml_go_up(xml_hdl);
+
+    if(!(xml_goto_nth_element_inside(xml_hdl, "spike_filter_cnt", 0)))
+    {
+      result = xml_get_content_of_element(xml_hdl);
+      spike_filter_cnt = atoi(result);
+      free(result);
+      xml_go_up(xml_hdl);
+    }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "filter_cnt", 0)))
     {
@@ -388,6 +399,55 @@ void UI_ViewMontagewindow::SelectButtonClicked()
     filterItem = new QStandardItem("Filters");
 
     signalItem->appendRow(filterItem);
+
+    for(filters_read=0; filters_read<spike_filter_cnt; filters_read++)
+    {
+      if(xml_goto_nth_element_inside(xml_hdl, "spike_filter", filters_read))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file. (filter)");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "velocity", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file. (velocity)");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      result = xml_get_content_of_element(xml_hdl);
+      velocity = atof(result);
+      if(velocity < 0.0001)  velocity = 0.0001;
+      if(velocity > 10E9)  velocity = 10E9;
+      free(result);
+
+      xml_go_up(xml_hdl);
+      if(xml_goto_nth_element_inside(xml_hdl, "holdoff", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file. (holdoff)");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      result = xml_get_content_of_element(xml_hdl);
+      holdoff = atoi(result);
+      if(holdoff < 10)  holdoff = 10;
+      if(holdoff > 1000)  holdoff = 1000;
+      free(result);
+
+      sprintf(composition_txt, "Spike: Velocity: %.8f", velocity);
+
+      remove_trailing_zeros(composition_txt);
+
+      sprintf(composition_txt + strlen(composition_txt), "  Hold-off: %i milli-Sec.", holdoff);
+
+      filterItem->appendRow(new QStandardItem(composition_txt));
+
+      xml_go_up(xml_hdl);
+      xml_go_up(xml_hdl);
+    }
 
     for(filters_read=0; filters_read<filter_cnt; filters_read++)
     {

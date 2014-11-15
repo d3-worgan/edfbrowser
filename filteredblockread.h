@@ -44,6 +44,7 @@
 
 #include "global.h"
 #include "filter.h"
+#include "spike_filter.h"
 #include "ravg_filter.h"
 
 #include "third_party/fidlib/fidlib.h"

@@ -177,6 +177,19 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
 
     signalItem->appendRow(filterItem);
 
+    for(j=0; j<mainwindow->signalcomp[i]->spike_filter_cnt; j++)
+    {
+      sprintf(txtbuf, "Spike: %.8f", mainwindow->signalcomp[i]->spike_filter_velocity[j]);
+
+      remove_trailing_zeros(txtbuf);
+
+      sprintf(txtbuf + strlen(txtbuf), " %s/Sec.  Hold-off: %i milli-Sec.",
+              mainwindow->signalcomp[i]->physdimension,
+              mainwindow->signalcomp[i]->spike_filter_holdoff[j]);
+
+      filterItem->appendRow(new QStandardItem(txtbuf));
+    }
+
     for(j=0; j<mainwindow->signalcomp[i]->filter_cnt; j++)
     {
       if(mainwindow->signalcomp[i]->filter[j]->is_LPF == 1)

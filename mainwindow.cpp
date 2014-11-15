@@ -566,6 +566,9 @@ UI_Mainwindow::UI_Mainwindow()
   filtermenu->addAction("New", this, SLOT(add_new_filter()));
   filtermenu->addAction("Adjust", this, SLOT(filterproperties_dialog()));
   filtermenu->addAction("Remove all", this, SLOT(remove_all_filters()));
+  filtermenu->addSeparator();
+  filtermenu->addAction("Spike", this, SLOT(add_spike_filter()));
+  filtermenu->addAction("Remove all spike filters", this, SLOT(remove_all_spike_filters()));
   menubar->addMenu(filtermenu);
 
 //   math_func_menu = new QMenu(this);
@@ -1767,6 +1770,12 @@ void UI_Mainwindow::add_new_filter()
 }
 
 
+void UI_Mainwindow::add_spike_filter()
+{
+  UI_SpikeFilterDialog spikefilterdialog(this);
+}
+
+
 
 // void UI_Mainwindow::add_new_math_func()
 // {
@@ -2683,6 +2692,31 @@ void UI_Mainwindow::remove_all_filters()
 
 
 
+void UI_Mainwindow::remove_all_spike_filters()
+{
+  int i, j,
+      update_scr=0;
+
+  for(i=0; i<signalcomps; i++)
+  {
+    for(j=0; j<signalcomp[i]->spike_filter_cnt; j++)
+    {
+      free_spike_filter(signalcomp[i]->spike_filter[j]);
+
+      update_scr = 1;
+    }
+
+    signalcomp[i]->spike_filter_cnt = 0;
+  }
+
+  if(update_scr)
+  {
+    setup_viewbuf();
+  }
+}
+
+
+
 void UI_Mainwindow::remove_all_signals()
 {
   int i;
@@ -2728,6 +2762,8 @@ void UI_Mainwindow::remove_all_signals()
   maincurve->crosshair_2.moving = 0;
 
   remove_all_filters();
+
+  remove_all_spike_filters();
 
   for(i=0; i<signalcomps; i++)
   {
@@ -3584,6 +3620,16 @@ void UI_Mainwindow::setup_viewbuf()
       }
     }
 
+    if(signalcomp[i]->spike_filter_cnt)
+    {
+      hasprefilter = 1;
+
+      if(pre_time < 5.0)
+      {
+        pre_time = 5.0;
+      }
+    }
+
     if(signalcomp[i]->ravg_filter_cnt)
     {
       hasprefilter = 1;
@@ -3635,7 +3681,7 @@ void UI_Mainwindow::setup_viewbuf()
   {
     for(i=0; i<signalcomps; i++)
     {
-      if((signalcomp[i]->filter_cnt) || (signalcomp[i]->ravg_filter_cnt) || (signalcomp[i]->fidfilter_cnt) || (signalcomp[i]->ecg_filter != NULL) || (signalcomp[i]->zratio_filter != NULL))
+      if((signalcomp[i]->filter_cnt) || (signalcomp[i]->spike_filter_cnt) || (signalcomp[i]->ravg_filter_cnt) || (signalcomp[i]->fidfilter_cnt) || (signalcomp[i]->ecg_filter != NULL) || (signalcomp[i]->zratio_filter != NULL))
       {
         signalcomp[i]->edfhdr->prefiltertime = (long long)(pre_time * ((double)TIME_DIMENSION));
         if(signalcomp[i]->edfhdr->prefiltertime>signalcomp[i]->edfhdr->viewtime)
@@ -3822,7 +3868,7 @@ void UI_Mainwindow::setup_viewbuf()
 
     for(i=0; i<signalcomps; i++)
     {
-      if((!signalcomp[i]->filter_cnt) && (!signalcomp[i]->ravg_filter_cnt) && (!signalcomp[i]->fidfilter_cnt) && (signalcomp[i]->ecg_filter == NULL) && (signalcomp[i]->zratio_filter == NULL)) continue;
+      if((!signalcomp[i]->filter_cnt) && (!signalcomp[i]->spike_filter_cnt) && (!signalcomp[i]->ravg_filter_cnt) && (!signalcomp[i]->fidfilter_cnt) && (signalcomp[i]->ecg_filter == NULL) && (signalcomp[i]->zratio_filter == NULL)) continue;
 
       for(s=0; s<signalcomp[i]->samples_in_prefilterbuf; s++)
       {
@@ -3873,6 +3919,11 @@ void UI_Mainwindow::setup_viewbuf()
           temp *= signalcomp[i]->factor[k];
 
           dig_value += temp;
+        }
+
+        for(j=0; j<signalcomp[i]->spike_filter_cnt; j++)
+        {
+          dig_value = run_spike_filter(dig_value, signalcomp[i]->spike_filter[j]);
         }
 
         for(j=0; j<signalcomp[i]->filter_cnt; j++)
@@ -6944,6 +6995,18 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
   }
 
   memcpy(newsignalcomp, original_signalcomp, sizeof(struct signalcompblock));
+
+  for(i=0; i<newsignalcomp->spike_filter_cnt; i++)
+  {
+    newsignalcomp->spike_filter[i] = create_spike_filter_copy(original_signalcomp->spike_filter[i]);
+    if(newsignalcomp->spike_filter[i] == NULL)
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "malloc() error");
+      messagewindow.exec();
+      free(signalcomp);
+      return(NULL);
+    }
+  }
 
   for(i=0; i<newsignalcomp->filter_cnt; i++)
   {

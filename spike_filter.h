@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
+* Copyright (C) 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -32,79 +32,43 @@
 
 
 
-#ifndef LOADMONTAGEFORM1_H
-#define LOADMONTAGEFORM1_H
+
+#ifndef spike_filter_INCLUDED
+#define spike_filter_INCLUDED
 
 
 
-#include <QtGlobal>
-#include <QApplication>
-#include <QObject>
-#include <QDialog>
-#include <QLabel>
-#include <QFileDialog>
-#include <QPushButton>
-#include <QListWidget>
-#include <QList>
-#include <QMessageBox>
-#include <QString>
-
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "global.h"
-#include "mainwindow.h"
-#include "xml.h"
-#include "filter.h"
-#include "spike_filter.h"
-#include "popup_messagewindow.h"
-#include "utc_date_time.h"
-#include "utils.h"
-#include "spectrum_dock.h"
-
-#include "third_party/fidlib/fidlib.h"
 
 
 
-class UI_Mainwindow;
+struct spike_filter_settings{
+                       double sf;
+                       int holdoff;
+                       int holdoff_set;
+                       int holdoff_ms;
+                       int cutoff;
+                       int cutoff_set;
+                       double smpl_1;
+                       double smpl_2;
+                       double smpl_base;
+                       double velocity;
+                       int polarity;
+                       int p_det_1;
+                       int second_flank_det;
+                      };
 
 
 
-class UI_LoadMontagewindow : public QObject
-{
-  Q_OBJECT
-
-public:
-  UI_LoadMontagewindow(QWidget *parent, char *path = NULL);
-
-  UI_Mainwindow *mainwindow;
+struct spike_filter_settings * create_spike_filter(double, double, int);
+double run_spike_filter(double, struct spike_filter_settings *);
+void free_spike_filter(struct spike_filter_settings *);
+void reset_spike_filter(struct spike_filter_settings *);
+struct spike_filter_settings * create_spike_filter_copy(struct spike_filter_settings *);
 
 
-private:
-
-  QDialog      *LoadMontageDialog;
-
-  QLabel       *label1;
-
-  QListWidget  *filelist;
-
-  QPushButton  *CloseButton,
-               *LoadButton;
-
-  char mtg_path[MAX_PATH_LENGTH];
-
-  void strip_types_from_label(char *);
-
-
-private slots:
-
-  void LoadButtonClicked();
-
-};
-
-
-
-#endif // LOADMONTAGEFORM1_H
+#endif
 
 

@@ -694,6 +694,23 @@ struct date_time_struct date_time;
     p++;
     if(p) p++;
 
+    for(j=0; j<signalcomp[i]->spike_filter_cnt; j++)
+    {
+      p += sprintf(scratchpad + p, "Spike:%f", signalcomp[i]->spike_filter[j]->velocity);
+
+      for(k=(p-1); k>0; k--)
+      {
+        if(scratchpad[k]!='0')  break;
+      }
+
+      if(scratchpad[k]=='.')  scratchpad[k] = 0;
+      else  scratchpad[k+1] = 0;
+
+      p = strlen(scratchpad);
+
+      if(p>80)  break;
+    }
+
     for(j=0; j<signalcomp[i]->filter_cnt; j++)
     {
       if(signalcomp[i]->filter[j]->is_LPF == 1)
@@ -922,6 +939,19 @@ struct date_time_struct date_time;
             }
 
             dig_value += temp;
+          }
+
+          for(p=0; p<signalcomp[i]->spike_filter_cnt; p++)
+          {
+            if(smpls_written[i]==signalcomp[i]->sample_start)
+            {
+              if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime==0)
+              {
+                reset_spike_filter(signalcomp[i]->spike_filter[p]);
+              }
+            }
+
+            dig_value = run_spike_filter(dig_value, signalcomp[i]->spike_filter[p]);
           }
 
           for(p=0; p<signalcomp[i]->filter_cnt; p++)

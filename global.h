@@ -72,6 +72,7 @@
 #include "filter.h"
 #include "third_party/fidlib/fidlib.h"
 #include "ravg_filter.h"
+#include "spike_filter.h"
 #include "ecg_filter.h"
 #include "z_ratio_filter.h"
 
@@ -209,6 +210,10 @@ struct signalcompblock{
         int ravg_filter_setup[MAXFILTERS];
         struct ravg_filter_settings *ravg_filter[MAXFILTERS];
         struct ecg_filter_settings *ecg_filter;
+        int spike_filter_cnt;
+        double spike_filter_velocity[MAXFILTERS];
+        int spike_filter_holdoff[MAXFILTERS];
+        struct spike_filter_settings *spike_filter[MAXFILTERS];
         struct zratio_filter_settings *zratio_filter;
         double zratio_crossoverfreq;
         int spectr_dialog[MAXSPECTRUMDIALOGS];

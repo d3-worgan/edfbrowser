@@ -2378,6 +2378,19 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
           dig_value += f_tmp;
         }
 
+        for(k=0; k<signalcomp[i]->spike_filter_cnt; k++)
+        {
+          if(s==signalcomp[i]->sample_start)
+          {
+            if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime==0)
+            {
+              reset_spike_filter(signalcomp[i]->spike_filter[k]);
+            }
+          }
+
+          dig_value = run_spike_filter(dig_value, signalcomp[i]->spike_filter[k]);
+        }
+
         for(k=0; k<signalcomp[i]->filter_cnt; k++)
         {
           if(s==signalcomp[i]->sample_start)
@@ -2814,6 +2827,19 @@ void drawCurve_stage_1_thread::run()
         f_tmp *= signalcomp->factor[j];
 
         dig_value += f_tmp;
+      }
+
+      for(k=0; k<signalcomp->spike_filter_cnt; k++)
+      {
+        if(s==signalcomp->sample_start)
+        {
+          if(mainwindow->edfheaderlist[signalcomp->filenum]->viewtime==0)
+          {
+            reset_spike_filter(signalcomp->spike_filter[k]);
+          }
+        }
+
+        dig_value = run_spike_filter(dig_value, signalcomp->spike_filter[k]);
       }
 
       for(k=0; k<signalcomp->filter_cnt; k++)
@@ -3794,6 +3820,13 @@ void ViewCurve::RemovesignalButton()
   }
 
   mainwindow->signalcomp[signal_nr]->filter_cnt = 0;
+
+  for(j=0; j<mainwindow->signalcomp[signal_nr]->spike_filter_cnt; j++)
+  {
+    free_spike_filter(mainwindow->signalcomp[signal_nr]->spike_filter[j]);
+  }
+
+  mainwindow->signalcomp[signal_nr]->spike_filter_cnt = 0;
 
   for(j=0; j<mainwindow->signalcomp[signal_nr]->ravg_filter_cnt; j++)
   {

@@ -105,6 +105,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       signals_read,
       signal_cnt,
       filters_read,
+      spike_filter_cnt=0,
       filter_cnt=0,
       ravg_filter_cnt=0,
       fidfilter_cnt=0,
@@ -114,7 +115,8 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       model=0,
       size=0,
       amp_cat[3],
-      f_ruler_cnt=0;
+      f_ruler_cnt=0,
+      holdoff=100;
 
   char *result,
        scratchpad[2048],
@@ -125,7 +127,8 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
   double frequency=1.0,
          frequency2=2.0,
-         ripple=1.0;
+         ripple=1.0,
+         velocity=1.0;
 
 
   struct xml_handle *xml_hdl;
@@ -220,6 +223,13 @@ void UI_LoadMontagewindow::LoadButtonClicked()
           mainwindow->signalcomp[i]->hascursor2 = 0;
         }
       }
+
+      for(i=0; i<mainwindow->signalcomp[k]->spike_filter_cnt; i++)
+      {
+        free_spike_filter(mainwindow->signalcomp[k]->spike_filter[i]);
+      }
+
+      mainwindow->signalcomp[k]->spike_filter_cnt = 0;
 
       for(i=0; i<mainwindow->signalcomp[k]->filter_cnt; i++)
       {
@@ -409,6 +419,17 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       filter_cnt = atoi(result);
       if(filter_cnt < 0)  filter_cnt = 0;
       if(filter_cnt > MAXFILTERS)  filter_cnt = MAXFILTERS;
+      free(result);
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(!(xml_goto_nth_element_inside(xml_hdl, "spike_filter_cnt", 0)))
+    {
+      result = xml_get_content_of_element(xml_hdl);
+      spike_filter_cnt = atoi(result);
+      if(spike_filter_cnt < 0)  filter_cnt = 0;
+      if(spike_filter_cnt > MAXFILTERS)  spike_filter_cnt = MAXFILTERS;
       free(result);
 
       xml_go_up(xml_hdl);
@@ -611,6 +632,69 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
     strcpy(newsignalcomp->physdimension, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension);
     remove_trailing_spaces(newsignalcomp->physdimension);
+
+    for(filters_read=0; filters_read<spike_filter_cnt; filters_read++)
+    {
+      if(xml_goto_nth_element_inside(xml_hdl, "spike_filter", filters_read))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        free(newsignalcomp);
+        xml_close(xml_hdl);
+        return;
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "velocity", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        free(newsignalcomp);
+        xml_close(xml_hdl);
+        return;
+      }
+      result = xml_get_content_of_element(xml_hdl);
+      velocity = atof(result);
+      if(velocity < 0.0001)  velocity = 0.0001;
+      if(velocity > 10E9)  velocity = 10E9;
+      free(result);
+
+      xml_go_up(xml_hdl);
+      if(xml_goto_nth_element_inside(xml_hdl, "holdoff", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        free(newsignalcomp);
+        xml_close(xml_hdl);
+        return;
+      }
+      result = xml_get_content_of_element(xml_hdl);
+      holdoff = atoi(result);
+      if(holdoff < 10)  holdoff = 10;
+      if(holdoff > 1000)  holdoff = 1000;
+      free(result);
+
+      newsignalcomp->spike_filter[filters_read] = create_spike_filter(
+        (double)(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record) /
+        newsignalcomp->edfhdr->data_record_duration,
+        velocity / newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue,
+        holdoff);
+
+      if(newsignalcomp->spike_filter[filters_read] == NULL)
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred when creating a spike filter.");
+        messagewindow.exec();
+        free(newsignalcomp);
+        xml_close(xml_hdl);
+        return;
+      }
+
+      newsignalcomp->spike_filter_velocity[newsignalcomp->spike_filter_cnt] = velocity;
+
+      newsignalcomp->spike_filter_cnt = filters_read + 1;
+
+      xml_go_up(xml_hdl);
+      xml_go_up(xml_hdl);
+    }
 
     for(filters_read=0; filters_read<filter_cnt; filters_read++)
     {

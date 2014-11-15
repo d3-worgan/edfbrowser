@@ -60,6 +60,7 @@
 #include "popup_messagewindow.h"
 #include "utils.h"
 #include "filter.h"
+#include "spike_filter.h"
 #include "ravg_filter.h"
 #include "flywheel.h"
 

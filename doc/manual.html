@@ -34,6 +34,7 @@
   <li><a href="#Averaging_EP">Averaging (evoked potentials or other triggers)</a></li>
   <li><a href="#ECG_detection">ECG heartrate detection</a></li>
   <li><a href="#HR_statistics">Heart Rate statistics</a></li>
+  <li><a href="#Spike_filter">Spike filter</a></li>
   <li><a href="#Zoomfunction">Zoomfunction</a></li>
   <li><a href="#Floatingruler">Floating ruler</a></li>
   <li><a href="#Crosshairs">Crosshairs</a></li>
@@ -485,6 +486,27 @@
   - pNN50, the proportion of NN50 divided by total number of RR's as a percentage.<br>
 <br>
   The data used for the statistics is derived from the timewindow that is visible on the screen.
+</p>
+
+<p><br></p>
+
+<p><a href="#Table_of_Contents">Table of Contents</a></p>
+
+<p><br><br></p>
+
+<h3><a name="Spike_filter">Spike filter</a></h3>
+
+<p>
+  The Spike filter can be used to filter out spikes, fast transients or pacemaker impulses.<br>
+  Velocity is expressed in units (e.g. uV) per second. If the filter detects two consecutive samples<br>
+  which have higher velocity, it will consider it the flank of an impulse which will be suppressed<br>
+  by the filter. The suppression period starts at a value of 1 milli-Sec. and will increase in steps of<br>
+  1 milli-Sec. if the impulse width period is longer.<br>
+  Setting the value of Velocity too high, will cause the spikes not to be detected.<br>
+  Setting the value of Velocity too low, will cause false triggers.<br>
+  Hold-off is used to prevent a re-trigger of the filter within the hold-off period after the last trigger.<br>
+  The maximum impulse width that can be suppressed is limited to 50 milli-Sec and the value of Hold-off.<br>
+  The Spike filter can not be used with samplerates lower than 1000 Hz.
 </p>
 
 <p><br></p>
