@@ -866,11 +866,14 @@ UI_Mainwindow::UI_Mainwindow()
 
   annotationEditDock->dockedit->hide();
 
-  spectrumdock = new UI_SpectrumDockWindow(this);
+  for(i=0; i<MAXSPECTRUMDOCKS; i++)
+  {
+    spectrumdock[i] = new UI_SpectrumDockWindow(this);
 
-  addDockWidget(Qt::TopDockWidgetArea, spectrumdock->dock, Qt::Horizontal);
+    addDockWidget(Qt::TopDockWidgetArea, spectrumdock[i]->dock, Qt::Horizontal);
 
-  spectrumdock->dock->hide();
+    spectrumdock[i]->dock->hide();
+  }
 
   setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
   setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
@@ -948,7 +951,10 @@ UI_Mainwindow::~UI_Mainwindow()
   delete monofont;
   delete maincurve;
   delete annotationEditDock;
-  delete spectrumdock;
+  for(int i=0; i<MAXSPECTRUMDOCKS; i++)
+  {
+    delete spectrumdock[i];
+  }
   delete live_stream_timer;
   if(update_checker != NULL)  delete update_checker;
 }
@@ -2723,8 +2729,11 @@ void UI_Mainwindow::remove_all_signals()
 
   stop_video_generic();
 
-  spectrumdock->clear();
-  spectrumdock->dock->hide();
+  for(i=0; i<MAXSPECTRUMDOCKS; i++)
+  {
+    spectrumdock[i]->clear();
+    spectrumdock[i]->dock->hide();
+  }
 
   for(i=0; i<MAXSPECTRUMDIALOGS; i++)
   {
@@ -3577,7 +3586,7 @@ void UI_Mainwindow::load_predefined_mtg(QAction *action)
 
 void UI_Mainwindow::setup_viewbuf()
 {
-  int i, j, k, s,
+  int i, j, k, r, s,
       temp=0,
       skip,
       totalsize,
@@ -4372,9 +4381,12 @@ void UI_Mainwindow::setup_viewbuf()
       }
     }
 
-    if(spectrumdock->dock->isVisible())
+    for(r=0; r<MAXSPECTRUMDOCKS; r++)
     {
-      spectrumdock->rescan();
+      if(spectrumdock[r]->dock->isVisible())
+      {
+        spectrumdock[r]->rescan();
+      }
     }
   }
 }

@@ -46,6 +46,7 @@
 #include <QDialog>
 #include <QPushButton>
 #include <QVariant>
+#include <QMessageBox>
 
 #include "global.h"
 #include "mainwindow.h"

@@ -3747,10 +3747,13 @@ void ViewCurve::RemovesignalButton()
     return;
   }
 
-  if(mainwindow->spectrumdock->signalcomp == mainwindow->signalcomp[signal_nr])
+  for(i=0; i<MAXSPECTRUMDOCKS; i++)
   {
-    mainwindow->spectrumdock->clear();
-    mainwindow->spectrumdock->dock->hide();
+    if(mainwindow->spectrumdock[i]->signalcomp == mainwindow->signalcomp[signal_nr])
+    {
+      mainwindow->spectrumdock[i]->clear();
+      mainwindow->spectrumdock[i]->dock->hide();
+    }
   }
 
   for(i=0; i<MAXSPECTRUMDIALOGS; i++)

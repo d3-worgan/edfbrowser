@@ -274,6 +274,8 @@ public:
 
   UI_FreqSpectrumWindow *spectrumdialog[MAXSPECTRUMDIALOGS];
 
+  UI_SpectrumDockWindow *spectrumdock[MAXSPECTRUMDOCKS];
+
   UI_AverageCurveWindow *averagecurvedialog[MAXAVERAGECURVEDIALOGS];
 
   UI_ZScoreWindow *zscoredialog[MAXZSCOREDIALOGS];
@@ -304,8 +306,6 @@ public:
 
   QActionGroup *timelock_act_group,
                *sel_viewtime_act_group;
-
-  UI_SpectrumDockWindow *spectrumdock;
 
 
 private:

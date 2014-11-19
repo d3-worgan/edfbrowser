@@ -2,6 +2,8 @@
  version 1.55      to be released
  ------------
 
+ - Allow to open multiple docked Power Spectrum windows.
+
  - Correct the screen-offset when inverting a signal that contains a dc-offset.
 
  - Removed a bug that caused a crash when selecting a bessel bandstop/pass filter with an order > 10.

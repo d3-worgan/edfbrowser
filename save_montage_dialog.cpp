@@ -286,43 +286,46 @@ void UI_SaveMontagewindow::SaveButtonClicked()
 
   struct spectrumdocksettings settings;
 
-  if(mainwindow->spectrumdock->dock->isVisible())
+  for(i=0; i<MAXSPECTRUMDOCKS; i++)
   {
-    mainwindow->spectrumdock->getsettings(&settings);
-
-    if(settings.signalnr >= 0)
+    if(mainwindow->spectrumdock[i]->dock->isVisible())
     {
-      fprintf(mtgfile, "  <powerspectrumdock>\n");
+      mainwindow->spectrumdock[i]->getsettings(&settings);
 
-      fprintf(mtgfile, "    <signalnum>%i</signalnum>\n", settings.signalnr);
+      if(settings.signalnr >= 0)
+      {
+        fprintf(mtgfile, "  <powerspectrumdock>\n");
 
-      fprintf(mtgfile, "    <amp>%i</amp>\n", settings.amp);
+        fprintf(mtgfile, "    <signalnum>%i</signalnum>\n", settings.signalnr);
 
-      fprintf(mtgfile, "    <wheel>%i</wheel>\n", settings.wheel);
+        fprintf(mtgfile, "    <amp>%i</amp>\n", settings.amp);
 
-      fprintf(mtgfile, "    <span>%i</span>\n", settings.span);
+        fprintf(mtgfile, "    <wheel>%i</wheel>\n", settings.wheel);
 
-      fprintf(mtgfile, "    <center>%i</center>\n", settings.center);
+        fprintf(mtgfile, "    <span>%i</span>\n", settings.span);
 
-      fprintf(mtgfile, "    <log>%i</log>\n", settings.log);
+        fprintf(mtgfile, "    <center>%i</center>\n", settings.center);
 
-      fprintf(mtgfile, "    <sqrt>%i</sqrt>\n", settings.sqrt);
+        fprintf(mtgfile, "    <log>%i</log>\n", settings.log);
 
-      fprintf(mtgfile, "    <colorbar>%i</colorbar>\n", settings.colorbar);
+        fprintf(mtgfile, "    <sqrt>%i</sqrt>\n", settings.sqrt);
 
-      fprintf(mtgfile, "    <maxvalue>%.10f</maxvalue>\n", settings.maxvalue);
+        fprintf(mtgfile, "    <colorbar>%i</colorbar>\n", settings.colorbar);
 
-      fprintf(mtgfile, "    <maxvalue_sqrt>%.10f</maxvalue_sqrt>\n", settings.maxvalue_sqrt);
+        fprintf(mtgfile, "    <maxvalue>%.10f</maxvalue>\n", settings.maxvalue);
 
-      fprintf(mtgfile, "    <maxvalue_vlog>%.10f</maxvalue_vlog>\n", settings.maxvalue_vlog);
+        fprintf(mtgfile, "    <maxvalue_sqrt>%.10f</maxvalue_sqrt>\n", settings.maxvalue_sqrt);
 
-      fprintf(mtgfile, "    <maxvalue_sqrt_vlog>%.10f</maxvalue_sqrt_vlog>\n", settings.maxvalue_sqrt_vlog);
+        fprintf(mtgfile, "    <maxvalue_vlog>%.10f</maxvalue_vlog>\n", settings.maxvalue_vlog);
 
-      fprintf(mtgfile, "    <minvalue_vlog>%.10f</minvalue_vlog>\n", settings.minvalue_vlog);
+        fprintf(mtgfile, "    <maxvalue_sqrt_vlog>%.10f</maxvalue_sqrt_vlog>\n", settings.maxvalue_sqrt_vlog);
 
-      fprintf(mtgfile, "    <minvalue_sqrt_vlog>%.10f</minvalue_sqrt_vlog>\n", settings.minvalue_sqrt_vlog);
+        fprintf(mtgfile, "    <minvalue_vlog>%.10f</minvalue_vlog>\n", settings.minvalue_vlog);
 
-      fprintf(mtgfile, "  </powerspectrumdock>\n");
+        fprintf(mtgfile, "    <minvalue_sqrt_vlog>%.10f</minvalue_sqrt_vlog>\n", settings.minvalue_sqrt_vlog);
+
+        fprintf(mtgfile, "  </powerspectrumdock>\n");
+      }
     }
   }
 

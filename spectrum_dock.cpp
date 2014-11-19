@@ -529,25 +529,37 @@ void UI_SpectrumDockWindow::sliderMoved(int)
 
   stopstep = startstep + spanstep;
 
-  if(mainwindow->spectrumdock_sqrt)
+  if(sqrtButton->checkState() == Qt::Checked)
   {
-    if(mainwindow->spectrumdock_vlog)
+    mainwindow->spectrumdock_sqrt = 1;
+
+    if(vlogButton->checkState() == Qt::Checked)
     {
+      mainwindow->spectrumdock_vlog = 1;
+
       curve1->drawCurve(buf5 + startstep, stopstep - startstep, (maxvalue_sqrt_vlog * 1.05 * (((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value())) / 1000.0, minvalue_sqrt_vlog);
     }
     else
     {
+      mainwindow->spectrumdock_vlog = 0;
+
       curve1->drawCurve(buf3 + startstep, stopstep - startstep, (maxvalue_sqrt * 1.05 * (((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value())) / 1000.0, 0.0);
     }
   }
   else
   {
-    if(mainwindow->spectrumdock_vlog)
+    mainwindow->spectrumdock_sqrt = 0;
+
+    if(vlogButton->checkState() == Qt::Checked)
     {
+      mainwindow->spectrumdock_vlog = 1;
+
       curve1->drawCurve(buf4 + startstep, stopstep - startstep, (maxvalue_vlog * 1.05 * (((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value())) / 1000.0, minvalue_vlog);
     }
     else
     {
+      mainwindow->spectrumdock_vlog = 0;
+
       curve1->drawCurve(buf2 + startstep, stopstep - startstep, (maxvalue * 1.05 * (((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value())) / 1000.0, 0.0);
     }
   }
@@ -609,24 +621,36 @@ void UI_SpectrumDockWindow::init(int signal_num)
 
     if(mainwindow->spectrumdock_sqrt)
     {
+      sqrtButton->setChecked(true);
+
       if(mainwindow->spectrumdock_vlog)
       {
+        vlogButton->setChecked(true);
+
         snprintf(str, 512, "log10(%s)", physdimension);
         curve1->setV_label(str);
       }
       else
       {
+        vlogButton->setChecked(false);
+
         curve1->setV_label(physdimension);
       }
     }
     else
     {
+      sqrtButton->setChecked(false);
+
       if(mainwindow->spectrumdock_vlog)
       {
+        vlogButton->setChecked(true);
+
         snprintf(str, 512, "log((%s)^2/Hz)", physdimension);
       }
       else
       {
+        vlogButton->setChecked(false);
+
         snprintf(str, 512, "(%s)^2/Hz", physdimension);
       }
 

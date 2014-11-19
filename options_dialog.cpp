@@ -783,7 +783,7 @@ void UI_OptionsDialog::spinBoxValueChanged(double)
 
 void UI_OptionsDialog::ApplyButton2Clicked()
 {
-  int row;
+  int i, row;
 
   char str[256];
 
@@ -853,9 +853,12 @@ void UI_OptionsDialog::ApplyButton2Clicked()
 
   ApplyButton2->setEnabled(false);
 
-  if(mainwindow->spectrumdock->dock->isVisible())
+  for(i=0; i<MAXSPECTRUMDOCKS; i++)
   {
-    mainwindow->spectrumdock->rescan();
+    if(mainwindow->spectrumdock[i]->dock->isVisible())
+    {
+      mainwindow->spectrumdock[i]->rescan();
+    }
   }
 }
 

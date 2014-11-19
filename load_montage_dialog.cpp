@@ -175,10 +175,13 @@ void UI_LoadMontagewindow::LoadButtonClicked()
   {
     if(mainwindow->signalcomp[k]->filenum==n)
     {
-      if(mainwindow->spectrumdock->signalcomp == mainwindow->signalcomp[k])
+      for(i=0; i<MAXSPECTRUMDOCKS; i++)
       {
-        mainwindow->spectrumdock->clear();
-        mainwindow->spectrumdock->dock->hide();
+        if(mainwindow->spectrumdock[i]->signalcomp == mainwindow->signalcomp[k])
+        {
+          mainwindow->spectrumdock[i]->clear();
+          mainwindow->spectrumdock[i]->dock->hide();
+        }
       }
 
       for(i=0; i<MAXSPECTRUMDIALOGS; i++)
@@ -1357,262 +1360,274 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
   xml_goto_root(xml_hdl);
 
-  struct spectrumdocksettings settings;
+  struct spectrumdocksettings settings[MAXSPECTRUMDOCKS];
 
-  settings.signalnr = -1;
-
-  if(!(xml_goto_nth_element_inside(xml_hdl, "powerspectrumdock", 0)))
+  for(i=0; i<MAXSPECTRUMDOCKS; i++)
   {
-    if(xml_goto_nth_element_inside(xml_hdl, "signalnum", 0))
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      return;
-    }
-    else
-    {
-      result = xml_get_content_of_element(xml_hdl);
+    settings[i].signalnr = -1;
+  }
 
-      settings.signalnr = atoi(result);
+  for(i=0; i<MAXSPECTRUMDOCKS; i++)
+  {
+    if(!(xml_goto_nth_element_inside(xml_hdl, "powerspectrumdock", i)))
+    {
+      if(xml_goto_nth_element_inside(xml_hdl, "signalnum", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      else
+      {
+        result = xml_get_content_of_element(xml_hdl);
 
-      free(result);
+        settings[i].signalnr = atoi(result);
+
+        free(result);
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "amp", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      else
+      {
+        result = xml_get_content_of_element(xml_hdl);
+
+        settings[i].amp = atoi(result);
+
+        free(result);
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "wheel", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      else
+      {
+        result = xml_get_content_of_element(xml_hdl);
+
+        settings[i].wheel = atoi(result);
+
+        free(result);
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "span", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      else
+      {
+        result = xml_get_content_of_element(xml_hdl);
+
+        settings[i].span = atoi(result);
+
+        free(result);
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "center", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      else
+      {
+        result = xml_get_content_of_element(xml_hdl);
+
+        settings[i].center = atoi(result);
+
+        free(result);
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "log", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      else
+      {
+        result = xml_get_content_of_element(xml_hdl);
+
+        settings[i].log = atoi(result);
+
+        free(result);
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "sqrt", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      else
+      {
+        result = xml_get_content_of_element(xml_hdl);
+
+        settings[i].sqrt = atoi(result);
+
+        free(result);
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "colorbar", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      else
+      {
+        result = xml_get_content_of_element(xml_hdl);
+
+        settings[i].colorbar = atoi(result);
+
+        free(result);
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "maxvalue", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      else
+      {
+        result = xml_get_content_of_element(xml_hdl);
+
+        settings[i].maxvalue = atof(result);
+
+        free(result);
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "maxvalue_sqrt", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      else
+      {
+        result = xml_get_content_of_element(xml_hdl);
+
+        settings[i].maxvalue_sqrt = atof(result);
+
+        free(result);
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "maxvalue_vlog", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      else
+      {
+        result = xml_get_content_of_element(xml_hdl);
+
+        settings[i].maxvalue_vlog = atof(result);
+
+        free(result);
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "maxvalue_sqrt_vlog", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      else
+      {
+        result = xml_get_content_of_element(xml_hdl);
+
+        settings[i].maxvalue_sqrt_vlog = atof(result);
+
+        free(result);
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "minvalue_vlog", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      else
+      {
+        result = xml_get_content_of_element(xml_hdl);
+
+        settings[i].minvalue_vlog = atof(result);
+
+        free(result);
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "minvalue_sqrt_vlog", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      else
+      {
+        result = xml_get_content_of_element(xml_hdl);
+
+        settings[i].minvalue_sqrt_vlog = atof(result);
+
+        free(result);
+
+        xml_go_up(xml_hdl);
+      }
 
       xml_go_up(xml_hdl);
     }
-
-    if(xml_goto_nth_element_inside(xml_hdl, "amp", 0))
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      return;
-    }
     else
     {
-      result = xml_get_content_of_element(xml_hdl);
-
-      settings.amp = atoi(result);
-
-      free(result);
-
-      xml_go_up(xml_hdl);
-    }
-
-    if(xml_goto_nth_element_inside(xml_hdl, "wheel", 0))
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      return;
-    }
-    else
-    {
-      result = xml_get_content_of_element(xml_hdl);
-
-      settings.wheel = atoi(result);
-
-      free(result);
-
-      xml_go_up(xml_hdl);
-    }
-
-    if(xml_goto_nth_element_inside(xml_hdl, "span", 0))
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      return;
-    }
-    else
-    {
-      result = xml_get_content_of_element(xml_hdl);
-
-      settings.span = atoi(result);
-
-      free(result);
-
-      xml_go_up(xml_hdl);
-    }
-
-    if(xml_goto_nth_element_inside(xml_hdl, "center", 0))
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      return;
-    }
-    else
-    {
-      result = xml_get_content_of_element(xml_hdl);
-
-      settings.center = atoi(result);
-
-      free(result);
-
-      xml_go_up(xml_hdl);
-    }
-
-    if(xml_goto_nth_element_inside(xml_hdl, "log", 0))
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      return;
-    }
-    else
-    {
-      result = xml_get_content_of_element(xml_hdl);
-
-      settings.log = atoi(result);
-
-      free(result);
-
-      xml_go_up(xml_hdl);
-    }
-
-    if(xml_goto_nth_element_inside(xml_hdl, "sqrt", 0))
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      return;
-    }
-    else
-    {
-      result = xml_get_content_of_element(xml_hdl);
-
-      settings.sqrt = atoi(result);
-
-      free(result);
-
-      xml_go_up(xml_hdl);
-    }
-
-    if(xml_goto_nth_element_inside(xml_hdl, "colorbar", 0))
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      return;
-    }
-    else
-    {
-      result = xml_get_content_of_element(xml_hdl);
-
-      settings.colorbar = atoi(result);
-
-      free(result);
-
-      xml_go_up(xml_hdl);
-    }
-
-    if(xml_goto_nth_element_inside(xml_hdl, "maxvalue", 0))
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      return;
-    }
-    else
-    {
-      result = xml_get_content_of_element(xml_hdl);
-
-      settings.maxvalue = atof(result);
-
-      free(result);
-
-      xml_go_up(xml_hdl);
-    }
-
-    if(xml_goto_nth_element_inside(xml_hdl, "maxvalue_sqrt", 0))
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      return;
-    }
-    else
-    {
-      result = xml_get_content_of_element(xml_hdl);
-
-      settings.maxvalue_sqrt = atof(result);
-
-      free(result);
-
-      xml_go_up(xml_hdl);
-    }
-
-    if(xml_goto_nth_element_inside(xml_hdl, "maxvalue_vlog", 0))
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      return;
-    }
-    else
-    {
-      result = xml_get_content_of_element(xml_hdl);
-
-      settings.maxvalue_vlog = atof(result);
-
-      free(result);
-
-      xml_go_up(xml_hdl);
-    }
-
-    if(xml_goto_nth_element_inside(xml_hdl, "maxvalue_sqrt_vlog", 0))
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      return;
-    }
-    else
-    {
-      result = xml_get_content_of_element(xml_hdl);
-
-      settings.maxvalue_sqrt_vlog = atof(result);
-
-      free(result);
-
-      xml_go_up(xml_hdl);
-    }
-
-    if(xml_goto_nth_element_inside(xml_hdl, "minvalue_vlog", 0))
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      return;
-    }
-    else
-    {
-      result = xml_get_content_of_element(xml_hdl);
-
-      settings.minvalue_vlog = atof(result);
-
-      free(result);
-
-      xml_go_up(xml_hdl);
-    }
-
-    if(xml_goto_nth_element_inside(xml_hdl, "minvalue_sqrt_vlog", 0))
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      return;
-    }
-    else
-    {
-      result = xml_get_content_of_element(xml_hdl);
-
-      settings.minvalue_sqrt_vlog = atof(result);
-
-      free(result);
-
-      xml_go_up(xml_hdl);
+      break;
     }
   }
 
@@ -1666,22 +1681,28 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     mainwindow->maincurve->ruler_active = 1;
   }
 
-  if(settings.signalnr >= 0)
+  for(i=0; i<MAXSPECTRUMDOCKS; i++)
   {
-    if(mainwindow->spectrumdock->dock->isVisible())
+    if(settings[i].signalnr >= 0)
     {
-      mainwindow->spectrumdock->clear();
-      mainwindow->spectrumdock->dock->hide();
+      if(mainwindow->spectrumdock[i]->dock->isVisible())
+      {
+        mainwindow->spectrumdock[i]->clear();
+        mainwindow->spectrumdock[i]->dock->hide();
+      }
     }
   }
 
   mainwindow->setup_viewbuf();
 
-  if((settings.signalnr >= 0) && (settings.signalnr < MAXSIGNALS) && (settings.signalnr < mainwindow->signalcomps))
+  for(i=0; i<MAXSPECTRUMDOCKS; i++)
   {
-    mainwindow->spectrumdock->init(settings.signalnr);
+    if((settings[i].signalnr >= 0) && (settings[i].signalnr < MAXSIGNALS) && (settings[i].signalnr < mainwindow->signalcomps))
+    {
+      mainwindow->spectrumdock[i]->init(settings[i].signalnr);
 
-    mainwindow->spectrumdock->setsettings(settings);
+      mainwindow->spectrumdock[i]->setsettings(settings[i]);
+    }
   }
 }
 

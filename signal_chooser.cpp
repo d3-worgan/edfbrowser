@@ -143,6 +143,8 @@ void UI_SignalChooser::load_signalcomps(void)
 
 void UI_SignalChooser::call_sidemenu(QListWidgetItem *)
 {
+  int i;
+
   if(task == 3) return;
 
   signalchooser_dialog->hide();
@@ -154,7 +156,21 @@ void UI_SignalChooser::call_sidemenu(QListWidgetItem *)
 
   if(task == 1)
   {
-    mainwindow->spectrumdock->init(list->currentRow());
+    for(i=0; i<MAXSPECTRUMDOCKS; i++)
+    {
+      if(mainwindow->spectrumdock[i]->dock->isHidden())  break;
+    }
+
+    if(i<MAXSPECTRUMDOCKS)
+    {
+      mainwindow->spectrumdock[i]->init(list->currentRow());
+    }
+    else
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "The maximum number of docked Power Spectrum windows has been reached.\n"
+                                                                "Close one first.");
+      messagewindow.exec();
+    }
   }
 
   if(task == 2)
@@ -315,10 +331,13 @@ void UI_SignalChooser::signalDelete()
 
     sigcomp_nr -= k;
 
-    if(mainwindow->spectrumdock->signalcomp == mainwindow->signalcomp[sigcomp_nr])
+    for(i=0; i<MAXSPECTRUMDOCKS; i++)
     {
-      mainwindow->spectrumdock->clear();
-      mainwindow->spectrumdock->dock->hide();
+      if(mainwindow->spectrumdock[i]->signalcomp == mainwindow->signalcomp[sigcomp_nr])
+      {
+        mainwindow->spectrumdock[i]->clear();
+        mainwindow->spectrumdock[i]->dock->hide();
+      }
     }
 
     for(i=0; i<MAXSPECTRUMDIALOGS; i++)

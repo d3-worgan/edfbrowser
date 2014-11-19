@@ -459,6 +459,10 @@ void AdjustFilterSettings::update_filter()
     return;
   }
 
+  QObject::disconnect(freq1box, SIGNAL(valueChanged(double)), this, SLOT(freqbox1valuechanged(double)));
+  QObject::disconnect(freq2box, SIGNAL(valueChanged(double)), this, SLOT(freqbox2valuechanged(double)));
+  QObject::disconnect(orderbox, SIGNAL(valueChanged(int)),    this, SLOT(orderboxvaluechanged(int)));
+
   if(brand[filter_nr] == 0)  // fidfilter
   {
     frequency1 = freq1box->value();
@@ -652,6 +656,10 @@ void AdjustFilterSettings::update_filter()
   }
 
   mainwindow->setup_viewbuf();
+
+  QObject::connect(freq1box, SIGNAL(valueChanged(double)), this, SLOT(freqbox1valuechanged(double)));
+  QObject::connect(freq2box, SIGNAL(valueChanged(double)), this, SLOT(freqbox2valuechanged(double)));
+  QObject::connect(orderbox, SIGNAL(valueChanged(int)),    this, SLOT(orderboxvaluechanged(int)));
 }
 
 
