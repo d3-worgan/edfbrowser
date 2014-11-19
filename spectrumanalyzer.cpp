@@ -196,6 +196,14 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   amplitudeSlider->setInvertedAppearance(true);
   amplitudeSlider->setMinimumSize(15, 280);
 
+  log_minslider = new QSlider;
+  log_minslider->setOrientation(Qt::Vertical);
+  log_minslider->setMinimum(1);
+  log_minslider->setMaximum(2000);
+  log_minslider->setValue(1000);
+  log_minslider->setInvertedAppearance(false);
+  log_minslider->setMinimumSize(15, 280);
+
   amplitudeLabel = new QLabel;
   amplitudeLabel->setText("Amplitude");
   amplitudeLabel->setMinimumSize(100, 15);
@@ -219,10 +227,14 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   if(mainwindow->spectrum_vlog)
   {
     VlogCheckBox->setCheckState(Qt::Checked);
+
+    log_minslider->setVisible(true);
   }
   else
   {
     VlogCheckBox->setCheckState(Qt::Unchecked);
+
+    log_minslider->setVisible(false);
   }
 
   BWCheckBox = new QCheckBox("B/W");
@@ -247,6 +259,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   hlayout4->addLayout(vlayout3, 100);
   hlayout4->addStretch(100);
   hlayout4->addWidget(amplitudeSlider, 300);
+  hlayout4->addWidget(log_minslider, 300);
 
   vlayout2 = new QVBoxLayout;
   vlayout2->setSpacing(10);
@@ -308,10 +321,11 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   t1 = new QTimer(this);
   t1->setSingleShot(true);
-  t1->start(100);
+  t1->start(10);
 
   QObject::connect(t1,                SIGNAL(timeout()),              this, SLOT(update_curve()));
   QObject::connect(amplitudeSlider,   SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
+  QObject::connect(log_minslider,     SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
   QObject::connect(spanSlider,        SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
   QObject::connect(centerSlider,      SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
   QObject::connect(sqrtCheckBox,      SIGNAL(stateChanged(int)),      this, SLOT(sliderMoved(int)));
@@ -423,10 +437,14 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
   if(VlogCheckBox->checkState() == Qt::Checked)
   {
     mainwindow->spectrum_vlog = 1;
+
+    log_minslider->setVisible(true);
   }
   else
   {
     mainwindow->spectrum_vlog = 0;
+
+    log_minslider->setVisible(false);
   }
 
   if(sqrtCheckBox->checkState() == Qt::Checked)
@@ -503,7 +521,7 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
   {
     if(mainwindow->spectrum_vlog)
     {
-      curve1->drawCurve(buf5 + startstep, stopstep - startstep, (maxvalue_sqrt_vlog * ((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value()) / 1000.0, minvalue_sqrt_vlog);
+      curve1->drawCurve(buf5 + startstep, stopstep - startstep, (maxvalue_sqrt_vlog * ((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value()) / 1000.0, minvalue_sqrt_vlog * (double)log_minslider->value() / 1000.0);
     }
     else
     {
@@ -514,7 +532,7 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
   {
     if(mainwindow->spectrum_vlog)
     {
-      curve1->drawCurve(buf4 + startstep, stopstep - startstep, (maxvalue_vlog * ((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value()) / 1000.0, minvalue_vlog);
+      curve1->drawCurve(buf4 + startstep, stopstep - startstep, (maxvalue_vlog * ((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value()) / 1000.0, minvalue_vlog * (double)log_minslider->value() / 1000.0);
     }
     else
     {

@@ -1407,6 +1407,21 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         xml_go_up(xml_hdl);
       }
 
+      if(xml_goto_nth_element_inside(xml_hdl, "log_min_sl", 0))
+      {
+        settings[i].log_min_sl = 1000;
+      }
+      else
+      {
+        result = xml_get_content_of_element(xml_hdl);
+
+        settings[i].log_min_sl = atoi(result);
+
+        free(result);
+
+        xml_go_up(xml_hdl);
+      }
+
       if(xml_goto_nth_element_inside(xml_hdl, "wheel", 0))
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");

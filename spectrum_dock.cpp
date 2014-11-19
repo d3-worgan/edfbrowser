@@ -136,6 +136,14 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   amplitudeSlider->setInvertedAppearance(true);
   amplitudeSlider->setMinimumSize(15, 110);
 
+  log_minslider = new QSlider;
+  log_minslider->setOrientation(Qt::Vertical);
+  log_minslider->setMinimum(1);
+  log_minslider->setMaximum(2000);
+  log_minslider->setValue(1000);
+  log_minslider->setInvertedAppearance(false);
+  log_minslider->setMinimumSize(15, 110);
+
   amplitudeLabel = new QLabel;
   amplitudeLabel->setText("Amplitude");
   amplitudeLabel->setMinimumSize(100, 15);
@@ -161,10 +169,14 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   if(mainwindow->spectrumdock_vlog)
   {
     vlogButton->setChecked(true);
+
+    log_minslider->setVisible(true);
   }
   else
   {
     vlogButton->setChecked(false);
+
+    log_minslider->setVisible(false);
   }
 
   colorBarButton = new QCheckBox;
@@ -182,6 +194,7 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   hlayout4->addLayout(vlayout3, 100);
   hlayout4->addStretch(100);
   hlayout4->addWidget(amplitudeSlider, 300);
+  hlayout4->addWidget(log_minslider, 300);
 
   vlayout2 = new QVBoxLayout;
   vlayout2->setSpacing(10);
@@ -250,6 +263,7 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 
   QObject::connect(t1,              SIGNAL(timeout()),              this, SLOT(update_curve()));
   QObject::connect(amplitudeSlider, SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
+  QObject::connect(log_minslider,   SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
   QObject::connect(spanSlider,      SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
   QObject::connect(centerSlider,    SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
   QObject::connect(sqrtButton,      SIGNAL(toggled(bool)),          this, SLOT(sqrtButtonClicked(bool)));
@@ -274,6 +288,8 @@ void UI_SpectrumDockWindow::getsettings(struct spectrumdocksettings *sett)
   sett->signalnr = signal_nr;
 
   sett->amp = amplitudeSlider->value();
+
+  sett->log_min_sl = log_minslider->value();
 
   sett->wheel = flywheel_value;
 
@@ -491,6 +507,8 @@ void UI_SpectrumDockWindow::vlogButtonClicked(bool value)
     }
 
     curve1->setV_label(str);
+
+    log_minslider->setVisible(false);
   }
   else
   {
@@ -506,6 +524,8 @@ void UI_SpectrumDockWindow::vlogButtonClicked(bool value)
     }
 
     curve1->setV_label(str);
+
+    log_minslider->setVisible(true);
   }
 
   sliderMoved(0);
@@ -537,7 +557,7 @@ void UI_SpectrumDockWindow::sliderMoved(int)
     {
       mainwindow->spectrumdock_vlog = 1;
 
-      curve1->drawCurve(buf5 + startstep, stopstep - startstep, (maxvalue_sqrt_vlog * 1.05 * (((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value())) / 1000.0, minvalue_sqrt_vlog);
+      curve1->drawCurve(buf5 + startstep, stopstep - startstep, (maxvalue_sqrt_vlog * 1.05 * (((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value())) / 1000.0, minvalue_sqrt_vlog * (double)log_minslider->value() / 1000.0);
     }
     else
     {
@@ -554,7 +574,7 @@ void UI_SpectrumDockWindow::sliderMoved(int)
     {
       mainwindow->spectrumdock_vlog = 1;
 
-      curve1->drawCurve(buf4 + startstep, stopstep - startstep, (maxvalue_vlog * 1.05 * (((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value())) / 1000.0, minvalue_vlog);
+      curve1->drawCurve(buf4 + startstep, stopstep - startstep, (maxvalue_vlog * 1.05 * (((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value())) / 1000.0, minvalue_vlog * (double)log_minslider->value() / 1000.0);
     }
     else
     {
@@ -656,6 +676,10 @@ void UI_SpectrumDockWindow::init(int signal_num)
 
       curve1->setV_label(str);
     }
+
+    amplitudeSlider->setValue(1000);
+
+    log_minslider->setValue(1000);
 
     dock->show();
 
@@ -1298,6 +1322,11 @@ void UI_SpectrumDockWindow::update_curve()
       amplitudeSlider->setValue(settings.amp);
     }
 
+    if((settings.log_min_sl >= 1) && (settings.log_min_sl <= 2000))
+    {
+      log_minslider->setValue(settings.log_min_sl);
+    }
+
     if((settings.span >= 10) && (settings.span <= 1000))
     {
       spanSlider->setValue(settings.span);
@@ -1320,10 +1349,14 @@ void UI_SpectrumDockWindow::update_curve()
     if(settings.log > 0)
     {
       vlogButton->setChecked(true);
+
+      log_minslider->setVisible(true);
     }
     else
     {
       vlogButton->setChecked(false);
+
+      log_minslider->setVisible(false);
     }
 
     if(settings.colorbar > 0)

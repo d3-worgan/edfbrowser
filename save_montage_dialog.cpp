@@ -300,6 +300,8 @@ void UI_SaveMontagewindow::SaveButtonClicked()
 
         fprintf(mtgfile, "    <amp>%i</amp>\n", settings.amp);
 
+        fprintf(mtgfile, "    <log_min_sl>%i</log_min_sl>\n", settings.log_min_sl);
+
         fprintf(mtgfile, "    <wheel>%i</wheel>\n", settings.wheel);
 
         fprintf(mtgfile, "    <span>%i</span>\n", settings.span);

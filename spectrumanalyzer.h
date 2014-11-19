@@ -107,7 +107,8 @@ private:
 
   QSlider *amplitudeSlider,
           *spanSlider,
-          *centerSlider;
+          *centerSlider,
+          *log_minslider;
 
   QLabel *spanLabel,
          *centerLabel,

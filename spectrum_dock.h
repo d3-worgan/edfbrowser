@@ -79,6 +79,7 @@ struct spectrumdocksettings{
                              int span;
                              int center;
                              int amp;
+                             int log_min_sl;
                              int wheel;
                              int log;
                              int sqrt;
@@ -139,7 +140,8 @@ private:
 
   QSlider *amplitudeSlider,
           *spanSlider,
-          *centerSlider;
+          *centerSlider,
+          *log_minslider;
 
   QLabel *spanLabel,
          *centerLabel,
