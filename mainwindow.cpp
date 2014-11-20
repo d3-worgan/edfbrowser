@@ -294,7 +294,7 @@ UI_Mainwindow::UI_Mainwindow()
   filemenu->setTitle("&File");
   filemenu->addAction("Open",         this, SLOT(open_new_file()), QKeySequence::Open);
   filemenu->addSeparator();
-  filemenu->addAction("Open stream",  this, SLOT(open_stream()));
+  filemenu->addAction("Open stream",  this, SLOT(open_stream()), QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_O));
   filemenu->addSeparator();
 #ifdef Q_OS_LINUX
   filemenu->addAction(video_act);
@@ -6802,10 +6802,12 @@ void UI_Mainwindow::show_kb_shortcuts()
    "Insert\tzoom in\n"
 #ifdef Q_OS_WIN32
    "\nCtrl+O\tOpen a file\n"
+   "Ctrl+Shift+O\tOpen a stream\n"
    "Ctrl+F4\tClose all files\n"
    "Alt+F4\tExit program\n"
 #else
    "\nCtrl+O\tOpen a file\n"
+   "Ctrl+Shift+O\tOpen a stream\n"
    "Ctrl+W\tClose all files\n"
    "Ctrl+Q\tExit program\n"
 #endif
