@@ -1382,7 +1382,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
          h_step=0.0,
          value,
          pixelsPerUnit,
-         max_colorbar_value,
+         sum_colorbar_value,
          p_pixels_per_unit,
          p2_pixels_per_unit;
 
@@ -1662,47 +1662,89 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
 /////////////////////////////////// draw the colorbars /////////////////////////////////////////
 
+  int t;
+
   if(spectrum_color != NULL)
   {
-    max_colorbar_value = 0.0;
+    if(spectrum_color->auto_adjust)
+    {
+      spectrum_color->max_colorbar_value = 0.0;
+    }
+    sum_colorbar_value = 0.0;
 
     for(i=0; i < spectrum_color->items; i++)
     {
-      if(spectrum_color->value[i] > max_colorbar_value)
+      sum_colorbar_value += spectrum_color->value[i];
+
+      if(spectrum_color->auto_adjust)
       {
-        max_colorbar_value = spectrum_color->value[i];
+        if(spectrum_color->value[i] > spectrum_color->max_colorbar_value)
+        {
+          spectrum_color->max_colorbar_value = spectrum_color->value[i];
+        }
       }
     }
 
-    max_colorbar_value *= 1.05;
+    if(spectrum_color->auto_adjust)
+    {
+      spectrum_color->max_colorbar_value *= 1.05;
+    }
 
     pixelsPerUnit = (double)curve_w / (h_ruler_endvalue - h_ruler_startvalue);
 
     if((spectrum_color->freq[0] > h_ruler_startvalue) && (spectrum_color->items > 1))
     {
-      painter->fillRect(0,
-                        (max_colorbar_value - spectrum_color->value[0]) * ((double)curve_h / max_colorbar_value),
-                        (spectrum_color->freq[0] - h_ruler_startvalue) * pixelsPerUnit,
-                        curve_h,
-                        (Qt::GlobalColor)spectrum_color->color[0]);
+      t = (spectrum_color->max_colorbar_value - spectrum_color->value[0]) * ((double)curve_h / spectrum_color->max_colorbar_value);
+      if(t < 0)  t = 0;
 
+      if(t <= curve_h)
+      {
+        painter->fillRect(0,
+                          t,
+                          (spectrum_color->freq[0] - h_ruler_startvalue) * pixelsPerUnit,
+                          curve_h - t,
+                          (Qt::GlobalColor)spectrum_color->color[0]);
+      }
+
+      strcpy(str, spectrum_color->label[0]);
+      if(spectrum_color->method == 0)
+      {
+        sprintf(str + strlen(str), " (%.1f%%)", (spectrum_color->value[i] * 100.0) / sum_colorbar_value);
+      }
       painter->setPen(Qt::lightGray);
-      painter->drawText(10, 20, spectrum_color->label[0]);
+      painter->drawText(10, 20, str);
     }
 
     for(i=1; i < spectrum_color->items; i++)
     {
       if(spectrum_color->freq[i] > h_ruler_startvalue)
       {
-        painter->fillRect((spectrum_color->freq[i-1] - h_ruler_startvalue) * pixelsPerUnit,
-                          (max_colorbar_value - spectrum_color->value[i]) * ((double)curve_h / max_colorbar_value),
-                          (spectrum_color->freq[i] - spectrum_color->freq[i-1]) * pixelsPerUnit,
-                          curve_h,
-                          (Qt::GlobalColor)spectrum_color->color[i]);
+        t = (spectrum_color->max_colorbar_value - spectrum_color->value[i]) * ((double)curve_h / spectrum_color->max_colorbar_value);
+        if(t < 0)  t = 0;
 
+        if(t <= curve_h)
+        {
+          painter->fillRect((spectrum_color->freq[i-1] - h_ruler_startvalue) * pixelsPerUnit,
+                            t,
+                            (spectrum_color->freq[i] - spectrum_color->freq[i-1]) * pixelsPerUnit,
+                            curve_h - t,
+                            (Qt::GlobalColor)spectrum_color->color[i]);
+        }
+
+        strcpy(str, spectrum_color->label[i]);
+        if(spectrum_color->method == 0)
+        {
+          sprintf(str + strlen(str), " (%.1f%%)", (spectrum_color->value[i] * 100.0) / sum_colorbar_value);
+        }
         painter->setPen(Qt::lightGray);
-        painter->drawText((spectrum_color->freq[i-1] - h_ruler_startvalue) * pixelsPerUnit + 10, 20, spectrum_color->label[i]);
+        painter->drawText((spectrum_color->freq[i-1] - h_ruler_startvalue) * pixelsPerUnit + 10, 20 + ((i%2) * 20), str);
       }
+    }
+
+    if(spectrum_color->method == 0)
+    {
+      sprintf(str, "Total Power: %.1f", sum_colorbar_value);
+      painter->drawText(curve_w - 200, 20 + ((i%2) * 20), str);
     }
   }
 

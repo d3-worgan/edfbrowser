@@ -161,7 +161,8 @@ QLabel         *label1,
                *label1_3,
                *label2_3,
                *label3_3,
-               *label3_4;
+               *label3_4,
+               *label3_5;
 
 QSpinBox       *spinbox2_1,
                *spinbox2_2,
@@ -170,6 +171,8 @@ QSpinBox       *spinbox2_1,
                *spinbox4_2,
                *spinbox4_3;
 
+QDoubleSpinBox *dspinbox3_2;
+
 QComboBox      *combobox4_1,
                *combobox4_2,
                *combobox4_3;
@@ -177,6 +180,7 @@ QComboBox      *combobox4_1,
 QCheckBox      *checkbox1,
                *checkbox2,
                *checkbox3,
+               *checkbox3_1,
                *checkbox4,
                *checkbox4_1,
                *checkbox4_2,
@@ -212,6 +216,7 @@ void checkbox1Clicked(int);
 void checkbox2Clicked(int);
 void checkbox3Clicked(int);
 void checkbox4Clicked(int);
+void checkbox3_1Clicked(int);
 void checkbox4_1Clicked(int);
 void checkbox4_2Clicked(int);
 void checkbox4_3Clicked(int);
@@ -225,7 +230,8 @@ void checkBoxChanged(int);
 void ApplyButton2Clicked();
 void radioButtonToggled(bool);
 void spinBoxValueChanged(double);
-void spinBox3_3ValueChanged(int);
+void spinBox3_1ValueChanged(int);
+void dspinBox3_2ValueChanged(double);
 void labelEdited(const QString  &);
 void calibrate_checkbox_stateChanged(int);
 void spinBox4_1ValueChanged(int);

@@ -69,6 +69,8 @@ struct spectrum_markersblock{
         char label[MAXSPECTRUMMARKERS][17];
         double value[MAXSPECTRUMMARKERS];
         int method;
+        double max_colorbar_value;
+        int auto_adjust;
        };
 
 

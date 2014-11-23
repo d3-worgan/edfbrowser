@@ -168,7 +168,9 @@ UI_Mainwindow::UI_Mainwindow()
   spectrum_colorbar->color[2] = Qt::darkBlue;
   spectrum_colorbar->color[3] = Qt::darkCyan;
   spectrum_colorbar->color[4] = Qt::darkMagenta;
-  spectrum_colorbar->method = 1;
+  spectrum_colorbar->method = 0;
+  spectrum_colorbar->auto_adjust = 1;
+  spectrum_colorbar->max_colorbar_value = 10.0;
 
   maxdftblocksize = 1000;
 
@@ -5262,6 +5264,47 @@ void UI_Mainwindow::read_general_settings()
     free(result);
 
     xml_go_up(xml_hdl);
+
+    if(!xml_goto_nth_element_inside(xml_hdl, "auto_adjust", 0))
+    {
+      result = xml_get_content_of_element(xml_hdl);
+      if(result==NULL)
+      {
+        xml_close(xml_hdl);
+        return;
+      }
+
+      spectrum_colorbar->auto_adjust = atoi(result);
+      free(result);
+
+      if((spectrum_colorbar->auto_adjust > 1) || (spectrum_colorbar->auto_adjust < 0))
+      {
+        spectrum_colorbar->auto_adjust = 1;
+      }
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(!xml_goto_nth_element_inside(xml_hdl, "max_colorbar_value", 0))
+    {
+      result = xml_get_content_of_element(xml_hdl);
+      if(result==NULL)
+      {
+        xml_close(xml_hdl);
+        return;
+      }
+
+      spectrum_colorbar->max_colorbar_value = atof(result);
+      free(result);
+
+      if((spectrum_colorbar->max_colorbar_value > 100000.0) || (spectrum_colorbar->max_colorbar_value < 0.0001))
+      {
+        spectrum_colorbar->max_colorbar_value = 1.0;
+      }
+
+      xml_go_up(xml_hdl);
+    }
+
     if(xml_goto_nth_element_inside(xml_hdl, "frequency", 0))
     {
       xml_close(xml_hdl);
@@ -6573,6 +6616,10 @@ void UI_Mainwindow::write_settings()
     }
 
     fprintf(cfgfile, "      <method>%i</method>\n", spectrum_colorbar->method);
+
+    fprintf(cfgfile, "      <auto_adjust>%i</auto_adjust>\n", spectrum_colorbar->auto_adjust);
+
+    fprintf(cfgfile, "      <max_colorbar_value>%.8f</max_colorbar_value>\n", spectrum_colorbar->max_colorbar_value);
 
     fprintf(cfgfile, "    </spectrummarkerblock>\n");
 
