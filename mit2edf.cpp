@@ -1,0 +1,779 @@
+/*
+***************************************************************************
+*
+* Author: Teunis van Beelen
+*
+* Copyright (C) 2014 Teunis van Beelen
+*
+* teuniz@gmail.com
+*
+***************************************************************************
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation version 2 of the License.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*
+***************************************************************************
+*
+* This version of GPL is at http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+*
+***************************************************************************
+*/
+
+
+
+
+#include "mit2edf.h"
+
+
+#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
+
+#define fopeno fopen
+
+#else
+
+#define fseeko fseeko64
+#define ftello ftello64
+#define fopeno fopen64
+
+#endif
+
+
+
+
+UI_MIT2EDFwindow::UI_MIT2EDFwindow(char *recent_dir, char *save_dir)
+{
+  char txt_string[2048];
+
+  recent_opendir = recent_dir;
+  recent_savedir = save_dir;
+
+  myobjectDialog = new QDialog;
+
+  myobjectDialog->setMinimumSize(600, 480);
+  myobjectDialog->setMaximumSize(600, 480);
+  myobjectDialog->setWindowTitle("MIT to EDF+ converter");
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
+
+  pushButton1 = new QPushButton(myobjectDialog);
+  pushButton1->setGeometry(20, 430, 100, 26);
+  pushButton1->setText("Select File");
+
+  pushButton2 = new QPushButton(myobjectDialog);
+  pushButton2->setGeometry(480, 430, 100, 26);
+  pushButton2->setText("Close");
+
+  textEdit1 = new QTextEdit(myobjectDialog);
+  textEdit1->setGeometry(20, 20, 560, 380);
+  textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+  textEdit1->setReadOnly(true);
+  textEdit1->setLineWrapMode(QTextEdit::NoWrap);
+  sprintf(txt_string, "MIT to EDF+ converter.\n");
+  textEdit1->append(txt_string);
+
+  QObject::connect(pushButton1, SIGNAL(clicked()), this, SLOT(SelectFileButton()));
+  QObject::connect(pushButton2, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
+
+  myobjectDialog->exec();
+}
+
+
+void UI_MIT2EDFwindow::SelectFileButton()
+{
+  FILE *header_inputfile=NULL,
+       *data_inputfile=NULL;
+
+  int i, j, p, len, hdl, *buf;
+
+  char header_filename[MAX_PATH_LENGTH],
+       txt_string[2048],
+       edf_filename[MAX_PATH_LENGTH],
+       data_filename[MAX_PATH_LENGTH],
+       filename_x[MAX_PATH_LENGTH],
+       scratchpad[4096],
+       *charpntr;
+
+  long long filesize;
+
+  pushButton1->setEnabled(false);
+
+  strcpy(header_filename, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "MIT header files (*.hea *.HEA)").toLocal8Bit().data());
+
+  if(!strcmp(header_filename, ""))
+  {
+    pushButton1->setEnabled(true);
+    return;
+  }
+
+  get_directory_from_path(recent_opendir, header_filename, MAX_PATH_LENGTH);
+
+  header_inputfile = fopeno(header_filename, "rb");
+  if(header_inputfile==NULL)
+  {
+    snprintf(txt_string, 2048, "Can not open file %s for reading.\n", header_filename);
+    textEdit1->append(QString::fromLocal8Bit(txt_string));
+    pushButton1->setEnabled(true);
+    return;
+  }
+
+  get_filename_from_path(filename_x, header_filename, MAX_PATH_LENGTH);
+
+  snprintf(txt_string, 2048, "Read file: %s", filename_x);
+  textEdit1->append(QString::fromLocal8Bit(txt_string));
+
+  remove_extension_from_filename(filename_x);
+
+  charpntr = fgets(scratchpad, 4095, header_inputfile);
+  if(charpntr == NULL)
+  {
+    textEdit1->append("Can not read header file. (error 1)\n");
+
+    fclose(header_inputfile);
+
+    return;
+  }
+
+  len = strlen(charpntr);
+  if(len < 6)
+  {
+    textEdit1->append("Can not read header file. (error 2)\n");
+
+    fclose(header_inputfile);
+
+    return;
+  }
+
+  for(i=0; i<len; i++)
+  {
+    if(charpntr[i] == ' ')
+    {
+      charpntr[i] = 0;
+
+      break;
+    }
+  }
+
+  if(i == len)
+  {
+    textEdit1->append("Can not read header file. (error 3)\n");
+
+    fclose(header_inputfile);
+
+    return;
+  }
+
+  if(strcmp(charpntr, filename_x))
+  {
+    textEdit1->append("Can not read header file. (error 4)\n");
+
+    fclose(header_inputfile);
+
+    return;
+  }
+
+  p = ++i;
+
+  for(; i<len; i++)
+  {
+    if(charpntr[i] == ' ')
+    {
+      charpntr[i] = 0;
+
+      break;
+    }
+  }
+
+  if(i == p)
+  {
+    textEdit1->append("Can not read header file. (error 5)\n");
+
+    fclose(header_inputfile);
+
+    return;
+  }
+
+  mit_hdr.chns = atoi(charpntr + p);
+
+  if(mit_hdr.chns < 1)
+  {
+    textEdit1->append("Error, number of signals is less than one. (error 6)\n");
+
+    fclose(header_inputfile);
+
+    return;
+  }
+
+  if(mit_hdr.chns > MAXSIGNALS)
+  {
+    textEdit1->append("Error, Too many signals in header. (error 7)\n");
+
+    fclose(header_inputfile);
+
+    return;
+  }
+
+  p = ++i;
+
+  for(; i<len; i++)
+  {
+    if(charpntr[i] == ' ')
+    {
+      charpntr[i] = 0;
+
+      break;
+    }
+  }
+
+  if(i == p)
+  {
+    textEdit1->append("Can not read header file. (error 8)\n");
+
+    fclose(header_inputfile);
+
+    return;
+  }
+
+  mit_hdr.sf = atoi(charpntr + p);
+
+  if(mit_hdr.sf < 1)
+  {
+    textEdit1->append("Error, samplefrequency is less than 1 Hz. (error 9)\n");
+
+    fclose(header_inputfile);
+
+    return;
+  }
+
+  if(mit_hdr.sf > 100000)
+  {
+    textEdit1->append("Error, samplefrequency is more than 100000 Hz. (error 10)\n");
+
+    fclose(header_inputfile);
+
+    return;
+  }
+
+  strcat(filename_x, ".dat");
+
+  for(j=0; j<mit_hdr.chns; j++)
+  {
+    mit_hdr.adc_gain[j] = 200.0;
+
+    mit_hdr.adc_resolution[j] = 12;
+
+    mit_hdr.adc_zero[j] = 0;
+
+    mit_hdr.init_val[j] = 0;
+
+    sprintf(mit_hdr.label[j], "chan. %i", j + 1);
+
+    charpntr = fgets(scratchpad, 4095, header_inputfile);
+    if(charpntr == NULL)
+    {
+      textEdit1->append("Can not read header file. (error 11)\n");
+
+      fclose(header_inputfile);
+
+      return;
+    }
+
+    len = strlen(charpntr);
+    if(len < 6)
+    {
+      textEdit1->append("Can not read header file. (error 12)\n");
+
+      fclose(header_inputfile);
+
+      return;
+    }
+
+    for(i=0; i<len; i++)
+    {
+      if(charpntr[i] == ' ')
+      {
+        charpntr[i] = 0;
+
+        break;
+      }
+    }
+
+    if(i == len)
+    {
+      textEdit1->append("Can not read header file. (error 13)\n");
+
+      fclose(header_inputfile);
+
+      return;
+    }
+
+    if(strcmp(charpntr, filename_x))
+    {
+      textEdit1->append("Error, filenames are different. (error 14)\n");
+
+      fclose(header_inputfile);
+
+      return;
+    }
+
+    p = ++i;
+
+    for(; i<len; i++)
+    {
+      if(charpntr[i] == ' ')
+      {
+        charpntr[i] = 0;
+
+        break;
+      }
+    }
+
+    if(i == len)
+    {
+      textEdit1->append("Can not read header file. (error 15)\n");
+
+      fclose(header_inputfile);
+
+      return;
+    }
+
+    mit_hdr.format[j] = atoi(charpntr + p);
+
+    if(mit_hdr.format[j] != 212)
+    {
+      textEdit1->append("Error, unsupported format. (error 16)\n");
+
+      fclose(header_inputfile);
+
+      return;
+    }
+
+    if(j>0)
+    {
+      if(mit_hdr.format[j] != mit_hdr.format[0])
+      {
+        textEdit1->append("Error, different formats in the same file. (error 17)\n");
+
+        fclose(header_inputfile);
+
+        return;
+      }
+    }
+
+    p = ++i;
+
+    for(; i<len; i++)
+    {
+      if(charpntr[i] == ' ')
+      {
+        charpntr[i] = 0;
+
+        break;
+      }
+    }
+
+    if(i == p)
+    {
+      continue;
+    }
+
+    mit_hdr.adc_gain[j] = atoi(charpntr + p);
+
+    p = ++i;
+
+    for(; i<len; i++)
+    {
+      if(charpntr[i] == ' ')
+      {
+        charpntr[i] = 0;
+
+        break;
+      }
+    }
+
+    if(i == p)
+    {
+      continue;
+    }
+
+    mit_hdr.adc_resolution[j] = atoi(charpntr + p);
+
+    p = ++i;
+
+    for(; i<len; i++)
+    {
+      if(charpntr[i] == ' ')
+      {
+        charpntr[i] = 0;
+
+        break;
+      }
+    }
+
+    if(i == p)
+    {
+      continue;
+    }
+
+    mit_hdr.adc_zero[j] = atoi(charpntr + p);
+
+    p = ++i;
+
+    for(; i<len; i++)
+    {
+      if(charpntr[i] == ' ')
+      {
+        charpntr[i] = 0;
+
+        break;
+      }
+    }
+
+    if(i == p)
+    {
+      continue;
+    }
+
+    mit_hdr.init_val[j] = atoi(charpntr + p);
+
+    p = ++i;
+
+    for(; i<len; i++)
+    {
+      if(charpntr[i] == ' ')
+      {
+        charpntr[i] = 0;
+
+        break;
+      }
+    }
+
+    if(i == p)
+    {
+      continue;
+    }
+
+    // skip
+
+    p = ++i;
+
+    for(; i<len; i++)
+    {
+      if(charpntr[i] == ' ')
+      {
+        charpntr[i] = 0;
+
+        break;
+      }
+    }
+
+    if(i == p)
+    {
+      continue;
+    }
+
+    // skip
+
+    p = ++i;
+
+    for(; i<len; i++)
+    {
+      if(charpntr[i] == ' ')
+      {
+        charpntr[i] = 0;
+
+        break;
+      }
+    }
+
+    if(i == p)
+    {
+      continue;
+    }
+
+    strncpy(mit_hdr.label[j], charpntr + p, 16);
+
+    mit_hdr.label[j][16] = 0;
+  }
+
+  fclose(header_inputfile);
+
+  strcpy(data_filename, header_filename);
+
+  remove_extension_from_filename(data_filename);
+
+  strcpy(edf_filename, data_filename);
+
+  strcat(data_filename, ".dat");
+
+  strcat(edf_filename, ".edf");
+
+  data_inputfile = fopeno(data_filename, "rb");
+  if(data_inputfile==NULL)
+  {
+    snprintf(txt_string, 2048, "Can not open file %s for reading.\n", data_filename);
+    textEdit1->append(QString::fromLocal8Bit(txt_string));
+    pushButton1->setEnabled(true);
+    return;
+  }
+
+  fseeko(data_inputfile, 0LL, SEEK_END);
+  filesize = ftello(data_inputfile);
+  if(filesize < (mit_hdr.chns * mit_hdr.sf * 45 / 10))
+  {
+    textEdit1->append("Error, .dat filesize is too small.\n");
+    fclose(data_inputfile);
+    pushButton1->setEnabled(true);
+    return;
+  }
+
+  mit_hdr.sf_div = 1;
+
+  mit_hdr.sf_block = mit_hdr.sf;
+
+  if(!(mit_hdr.sf % 2))
+  {
+    mit_hdr.sf_div = 2;
+
+    mit_hdr.sf_block /= mit_hdr.sf_div;
+  }
+
+  hdl = edfopen_file_writeonly(edf_filename, EDFLIB_FILETYPE_EDFPLUS, mit_hdr.chns);
+
+  if(hdl<0)
+  {
+    snprintf(txt_string, 2048, "Can not open file %s for writing.\n", edf_filename);
+    textEdit1->append(QString::fromLocal8Bit(txt_string));
+    fclose(data_inputfile);
+    pushButton1->setEnabled(true);
+    return;
+  }
+
+  for(i=0; i<mit_hdr.chns; i++)
+  {
+    if(edf_set_samplefrequency(hdl, i, mit_hdr.sf_block))
+    {
+      textEdit1->append("Error: edf_set_samplefrequency()\n");
+      fclose(data_inputfile);
+      edfclose_file(hdl);
+      pushButton1->setEnabled(true);
+      return;
+    }
+  }
+
+  for(i=0; i<mit_hdr.chns; i++)
+  {
+    if(edf_set_digital_minimum(hdl, i, -32768))
+    {
+      textEdit1->append("Error: edf_set_digital_minimum()\n");
+      fclose(data_inputfile);
+      edfclose_file(hdl);
+      pushButton1->setEnabled(true);
+      return;
+    }
+  }
+
+  for(i=0; i<mit_hdr.chns; i++)
+  {
+    if(edf_set_digital_maximum(hdl, i, 32767))
+    {
+      textEdit1->append("Error: edf_set_digital_maximum()\n");
+      fclose(data_inputfile);
+      edfclose_file(hdl);
+      pushButton1->setEnabled(true);
+      return;
+    }
+  }
+
+  for(i=0; i<mit_hdr.chns; i++)
+  {
+    if(edf_set_label(hdl, i, mit_hdr.label[i]))
+    {
+      textEdit1->append("Error: edf_set_label()\n");
+      fclose(data_inputfile);
+      edfclose_file(hdl);
+      pushButton1->setEnabled(true);
+      return;
+    }
+  }
+
+  for(i=0; i<mit_hdr.chns; i++)
+  {
+    if(edf_set_physical_dimension(hdl, i, "uV"))
+    {
+      textEdit1->append("Error: edf_set_physical_dimension()\n");
+      fclose(data_inputfile);
+      edfclose_file(hdl);
+      pushButton1->setEnabled(true);
+      return;
+    }
+
+    if(edf_set_physical_maximum(hdl, i, (double)((32767 - mit_hdr.adc_zero[i]) * 1000) / mit_hdr.adc_gain[i]))
+    {
+      textEdit1->append("Error: edf_set_physical_maximum()\n");
+      fclose(data_inputfile);
+      edfclose_file(hdl);
+      pushButton1->setEnabled(true);
+      return;
+    }
+
+    if(edf_set_physical_minimum(hdl, i, (double)((-32768 - mit_hdr.adc_zero[i]) * 1000) / mit_hdr.adc_gain[i]))
+    {
+      textEdit1->append("Error: edf_set_physical_minimum()\n");
+      fclose(data_inputfile);
+      edfclose_file(hdl);
+      pushButton1->setEnabled(true);
+      return;
+    }
+  }
+
+  if(edf_set_datarecord_duration(hdl, 100000 / mit_hdr.sf_div))
+  {
+    textEdit1->append("Error: edf_set_datarecord_duration()\n");
+    fclose(data_inputfile);
+    edfclose_file(hdl);
+    pushButton1->setEnabled(true);
+    return;
+  }
+
+  buf = (int *)malloc(mit_hdr.sf_block * mit_hdr.chns * sizeof(int));
+  if(buf == NULL)
+  {
+    textEdit1->append("Malloc() error (buf)\n");
+    fclose(data_inputfile);
+    edfclose_file(hdl);
+    pushButton1->setEnabled(true);
+    return;
+  }
+
+/////////////////// Start conversion //////////////////////////////////////////
+
+  int k, blocks, tmp1, tmp2;
+
+  fseeko(data_inputfile, 0LL, SEEK_SET);
+
+  blocks = filesize / (mit_hdr.sf_block * mit_hdr.chns);
+
+  QProgressDialog progress("Converting ...", "Abort", 0, blocks);
+  progress.setWindowModality(Qt::WindowModal);
+  progress.setMinimumDuration(200);
+
+  if(mit_hdr.format[0] == 212)
+  {
+    blocks *= 10;
+    blocks /= 15;
+
+    progress.setMaximum(blocks);
+
+    for(k=0; k<blocks; k++)
+    {
+      if(!(k % 100))
+      {
+        progress.setValue(k);
+
+        qApp->processEvents();
+
+        if(progress.wasCanceled() == true)
+        {
+          textEdit1->append("Conversion aborted by user.\n");
+          fclose(data_inputfile);
+          edfclose_file(hdl);
+          free(buf);
+          pushButton1->setEnabled(true);
+          return;
+        }
+      }
+
+      for(i=0; i<mit_hdr.sf_block; i++)
+      {
+        for(j=0; j<mit_hdr.chns; j++)
+        {
+          if(j % 2)
+          {
+            tmp1 = fgetc(data_inputfile);
+            tmp2 = fgetc(data_inputfile);
+
+            if(tmp2 == EOF)
+            {
+              goto OUT;
+            }
+
+            buf[j * mit_hdr.sf_block + i] = (tmp1 & 0xf0) << 4;
+            buf[j * mit_hdr.sf_block + i] += tmp2;
+            if(buf[j * mit_hdr.sf_block + i] & 0x800)
+            {
+              buf[j * mit_hdr.sf_block + i] |= 0xfffff000;
+            }
+          }
+          else
+          {
+            tmp1 = fgetc(data_inputfile);
+            tmp2 = fgetc(data_inputfile);
+
+            buf[j * mit_hdr.sf_block + i] = (tmp2 & 0x0f) << 8;
+            buf[j * mit_hdr.sf_block + i] += tmp1;
+            if(buf[j * mit_hdr.sf_block + i] & 0x800)
+            {
+              buf[j * mit_hdr.sf_block + i] |= 0xfffff000;
+            }
+
+            fseeko(data_inputfile, -1LL, SEEK_CUR);
+          }
+        }
+      }
+
+      if(edf_blockwrite_digital_samples(hdl, buf))
+      {
+        progress.reset();
+        textEdit1->append("A write error occurred during conversion.\n");
+        fclose(data_inputfile);
+        edfclose_file(hdl);
+        free(buf);
+        pushButton1->setEnabled(true);
+        return;
+      }
+    }
+  }
+
+OUT:
+
+  progress.reset();
+
+/////////////////// End conversion //////////////////////////////////////////
+
+  edfclose_file(hdl);
+
+  fclose(data_inputfile);
+
+  free(buf);
+
+  textEdit1->append("Ready.\n");
+
+  pushButton1->setEnabled(true);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

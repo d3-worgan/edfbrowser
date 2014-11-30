@@ -647,6 +647,7 @@ UI_Mainwindow::UI_Mainwindow()
   toolsmenu->addAction("Convert ASCII to EDF/BDF", this, SLOT(convert_ascii_to_edf()));
   toolsmenu->addAction("Convert Manscan to EDF+", this, SLOT(convert_manscan_to_edf()));
   toolsmenu->addAction("Convert SCP ECG to EDF+", this, SLOT(convert_scpecg_to_edf()));
+  toolsmenu->addAction("Convert MIT to EDF+", this, SLOT(convert_mit_to_edf()));
   toolsmenu->addAction("Convert Finometer to EDF", this, SLOT(convert_fino_to_edf()));
   toolsmenu->addAction("Convert Nexfin to EDF", this, SLOT(convert_nexfin_to_edf()));
   toolsmenu->addAction("Convert Emsa to EDF+", this, SLOT(convert_emsa_to_edf()));
@@ -1554,6 +1555,12 @@ void UI_Mainwindow::convert_emsa_to_edf()
 void UI_Mainwindow::convert_manscan_to_edf()
 {
   UI_MANSCAN2EDFwindow manscan2edf(recent_opendir, recent_savedir);
+}
+
+
+void UI_Mainwindow::convert_mit_to_edf()
+{
+  UI_MIT2EDFwindow mit2edf(recent_opendir, recent_savedir);
 }
 
 

@@ -159,6 +159,7 @@
 #include "date_time_stamp_parser.h"
 #include "spike_filter.h"
 #include "spike_filter_dialog.h"
+#include "mit2edf.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -533,6 +534,7 @@ private slots:
   void convert_binary_to_edf();
   void convert_manscan_to_edf();
   void convert_scpecg_to_edf();
+  void convert_mit_to_edf();
   void video_process_error(QProcess::ProcessError);
 //  void search_pattern();
 

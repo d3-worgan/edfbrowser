@@ -2,6 +2,11 @@
  version 1.55      to be released
  ------------
 
+ - Added a MIT to EDF+ converter (to convert files from PhysioBank at physionet.org).
+   This is a work in progress. At this moment there is only basic support for
+   "Format 212". Most of the signal files in PhysioBank are written in format 212.
+   Other formats will be probably added in future.
+
  - docked Power Spectrum: show percentage when using colorbars,
    in the settingsmenu, it's now possible to select between auto-gain or manual
    sensitivity for the colorbars.
