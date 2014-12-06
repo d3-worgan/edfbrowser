@@ -3,9 +3,10 @@
  ------------
 
  - Added a MIT to EDF+ converter (to convert files from PhysioBank at physionet.org).
-   This is a work in progress. At this moment there is only basic support for
-   "Format 212". Most of the signal files in PhysioBank are written in format 212.
+   This is a work in progress. At this moment it supports the "Format 212".
+   Most of the signal files in PhysioBank are written in format 212.
    Other formats will be probably added in future.
+   Annotations (in the *.atr file) will be read and converted to EDF+ as well.
 
  - docked Power Spectrum: show percentage when using colorbars,
    in the settingsmenu, it's now possible to select between auto-gain or manual

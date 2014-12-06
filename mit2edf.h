@@ -87,6 +87,7 @@ struct {
         int sf;
         int sf_div;
         int sf_block;
+        long long smp_period;
         int format[MAXSIGNALS];
         double adc_gain[MAXSIGNALS];
         int adc_resolution[MAXSIGNALS];
