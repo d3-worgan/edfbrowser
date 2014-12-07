@@ -55,6 +55,7 @@
   <li><a href="#Nihon_Kohden_to_EDF_format_converter">Nihon Kohden to EDF(+) format converter</a></li>
   <li><a href="#UNISENS_TO_EDFPLUS">Unisens to EDF+ format converter</a></li>
   <li><a href="#SCP_ECG_to_EDFplus">SCP ECG to EDF+ format converter</a></li>
+  <li><a href="#MIT_to_EDFplus">MIT to EDF+ format converter</a></li>
   <li><a href="#Manscan_to_EDFplus">Manscan to EDF+ format converter</a></li>
   <li><a href="#Biosemi_to_BDFplus">Biosemi to BDF+ format converter</a></li>
   <li><a href="#Fino_to_EDF">Finometer to EDF format converter</a></li>
@@ -1095,6 +1096,22 @@
   Encoding using the default Huffman table is supported.<br>
   Customized Huffman tables are not supported.<br>
   Bimodal compression is not supported. Character-encoding other than ASCII/Latin-1 is not supported.
+</p>
+
+<p><br></p>
+
+<p><a href="#Table_of_Contents">Table of Contents</a></p>
+
+<p><br><br></p>
+
+<h3><a name="MIT_to_EDFplus">MIT to EDF+ format converter</a></h3>
+
+<p>
+  This tool converts the waveform data and annotations from the MIT-format to EDF+.<br>
+  It's used for files from PhysioBank at physionet.org.<br>
+  At this moment it supports the "Format 212" and "Format 16".<br>
+  Most of the signal files in PhysioBank are written in format 212.<br>
+  Annotations (in the *.atr or *.ari file) will be read and converted to EDF+ as well.
 </p>
 
 <p><br></p>

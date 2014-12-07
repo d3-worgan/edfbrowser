@@ -173,7 +173,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
        scratchpad[4096],
        *charpntr;
 
-  unsigned char a_buf[4096];
+  unsigned char a_buf[16];
 
   long long filesize;
 
@@ -209,9 +209,8 @@ void UI_MIT2EDFwindow::SelectFileButton()
   if(charpntr == NULL)
   {
     textEdit1->append("Can not read header file. (error 1)\n");
-
     fclose(header_inputfile);
-
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -219,9 +218,8 @@ void UI_MIT2EDFwindow::SelectFileButton()
   if(len < 6)
   {
     textEdit1->append("Can not read header file. (error 2)\n");
-
     fclose(header_inputfile);
-
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -238,18 +236,16 @@ void UI_MIT2EDFwindow::SelectFileButton()
   if(i == len)
   {
     textEdit1->append("Can not read header file. (error 3)\n");
-
     fclose(header_inputfile);
-
+    pushButton1->setEnabled(true);
     return;
   }
 
   if(strcmp(charpntr, filename_x))
   {
     textEdit1->append("Can not read header file. (error 4)\n");
-
     fclose(header_inputfile);
-
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -268,9 +264,8 @@ void UI_MIT2EDFwindow::SelectFileButton()
   if(i == p)
   {
     textEdit1->append("Can not read header file. (error 5)\n");
-
     fclose(header_inputfile);
-
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -279,18 +274,16 @@ void UI_MIT2EDFwindow::SelectFileButton()
   if(mit_hdr.chns < 1)
   {
     textEdit1->append("Error, number of signals is less than one. (error 6)\n");
-
     fclose(header_inputfile);
-
+    pushButton1->setEnabled(true);
     return;
   }
 
   if(mit_hdr.chns > MAXSIGNALS)
   {
     textEdit1->append("Error, Too many signals in header. (error 7)\n");
-
     fclose(header_inputfile);
-
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -309,9 +302,8 @@ void UI_MIT2EDFwindow::SelectFileButton()
   if(i == p)
   {
     textEdit1->append("Can not read header file. (error 8)\n");
-
     fclose(header_inputfile);
-
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -320,18 +312,16 @@ void UI_MIT2EDFwindow::SelectFileButton()
   if(mit_hdr.sf < 1)
   {
     textEdit1->append("Error, samplefrequency is less than 1 Hz. (error 9)\n");
-
     fclose(header_inputfile);
-
+    pushButton1->setEnabled(true);
     return;
   }
 
   if(mit_hdr.sf > 100000)
   {
     textEdit1->append("Error, samplefrequency is more than 100000 Hz. (error 10)\n");
-
     fclose(header_inputfile);
-
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -355,9 +345,8 @@ void UI_MIT2EDFwindow::SelectFileButton()
     if(charpntr == NULL)
     {
       textEdit1->append("Can not read header file. (error 11)\n");
-
       fclose(header_inputfile);
-
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -365,9 +354,8 @@ void UI_MIT2EDFwindow::SelectFileButton()
     if(len < 6)
     {
       textEdit1->append("Can not read header file. (error 12)\n");
-
       fclose(header_inputfile);
-
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -384,18 +372,16 @@ void UI_MIT2EDFwindow::SelectFileButton()
     if(i == len)
     {
       textEdit1->append("Can not read header file. (error 13)\n");
-
       fclose(header_inputfile);
-
+      pushButton1->setEnabled(true);
       return;
     }
 
     if(strcmp(charpntr, filename_x))
     {
       textEdit1->append("Error, filenames are different. (error 14)\n");
-
       fclose(header_inputfile);
-
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -414,20 +400,19 @@ void UI_MIT2EDFwindow::SelectFileButton()
     if(i == len)
     {
       textEdit1->append("Can not read header file. (error 15)\n");
-
       fclose(header_inputfile);
-
+      pushButton1->setEnabled(true);
       return;
     }
 
     mit_hdr.format[j] = atoi(charpntr + p);
 
-    if(mit_hdr.format[j] != 212)
+    if((mit_hdr.format[j] != 212) && (mit_hdr.format[j] != 16))
     {
-      textEdit1->append("Error, unsupported format. (error 16)\n");
-
+      snprintf(txt_string, 2048, "Error, unsupported format: %i  (error 16)\n", mit_hdr.format[j]);
+      textEdit1->append(txt_string);
       fclose(header_inputfile);
-
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -436,9 +421,8 @@ void UI_MIT2EDFwindow::SelectFileButton()
       if(mit_hdr.format[j] != mit_hdr.format[0])
       {
         textEdit1->append("Error, different formats in the same file. (error 17)\n");
-
         fclose(header_inputfile);
-
+        pushButton1->setEnabled(true);
         return;
       }
     }
@@ -840,6 +824,65 @@ void UI_MIT2EDFwindow::SelectFileButton()
     }
   }
 
+  if(mit_hdr.format[0] == 16)
+  {
+    blocks /= 2;
+
+    progress.setMaximum(blocks);
+
+    for(k=0; k<blocks; k++)
+    {
+      if(!(k % 100))
+      {
+        progress.setValue(k);
+
+        qApp->processEvents();
+
+        if(progress.wasCanceled() == true)
+        {
+          textEdit1->append("Conversion aborted by user.\n");
+          fclose(data_inputfile);
+          edfclose_file(hdl);
+          free(buf);
+          pushButton1->setEnabled(true);
+          return;
+        }
+      }
+
+      for(i=0; i<mit_hdr.sf_block; i++)
+      {
+        for(j=0; j<mit_hdr.chns; j++)
+        {
+          tmp1 = fgetc(data_inputfile);
+          if(tmp1 == EOF)
+          {
+            goto OUT;
+          }
+
+          tmp1 += (fgetc(data_inputfile) << 8);
+
+          if(tmp1 & 0x8000)
+          {
+            tmp1 |= 0xffff0000;
+          }
+
+         buf[j * mit_hdr.sf_block + i] = tmp1;
+        }
+      }
+
+      if(edf_blockwrite_digital_samples(hdl, buf))
+      {
+        progress.reset();
+        textEdit1->append("A write error occurred during conversion.\n");
+        fclose(data_inputfile);
+        edfclose_file(hdl);
+        free(buf);
+        pushButton1->setEnabled(true);
+        return;
+      }
+    }
+  }
+
 OUT:
 
   progress.reset();
@@ -854,17 +897,26 @@ OUT:
 
   int annot_code, tc=0, skip;
 
+  get_filename_from_path(filename_x, annot_filename, MAX_PATH_LENGTH);
+
   annot_inputfile = fopeno(annot_filename, "rb");
   if(annot_inputfile==NULL)
   {
+    remove_extension_from_filename(annot_filename);
+
+    strcat(annot_filename, ".ari");
+
+    annot_inputfile = fopeno(annot_filename, "rb");
+  }
+
+  if(annot_inputfile==NULL)
+  {
     snprintf(txt_string, 2048, "Can not open file %s for reading.\n"
-                               "Annotations can not be included.", annot_filename);
+                               "Annotations can not be included.", filename_x);
     textEdit1->append(QString::fromLocal8Bit(txt_string));
   }
   else
   {
-    get_filename_from_path(filename_x, annot_filename, MAX_PATH_LENGTH);
-
     snprintf(txt_string, 2048, "Read file: %s", filename_x);
     textEdit1->append(QString::fromLocal8Bit(txt_string));
 
@@ -944,11 +996,11 @@ OUT:
         filesize += skip;
       }
     }
+
+    fclose(annot_inputfile);
   }
 
   progress.reset();
-
-  fclose(annot_inputfile);
 
   edfclose_file(hdl);
 
