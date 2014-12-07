@@ -545,7 +545,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
     for(; i<len; i++)
     {
-      if(charpntr[i] == ' ')
+      if((charpntr[i] == '\n') || (charpntr[i] == '\r'))
       {
         charpntr[i] = 0;
 
@@ -905,6 +905,15 @@ OUT:
     remove_extension_from_filename(annot_filename);
 
     strcat(annot_filename, ".ari");
+
+    annot_inputfile = fopeno(annot_filename, "rb");
+  }
+
+  if(annot_inputfile==NULL)
+  {
+    remove_extension_from_filename(annot_filename);
+
+    strcat(annot_filename, ".ecg");
 
     annot_inputfile = fopeno(annot_filename, "rb");
   }
