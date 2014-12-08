@@ -173,7 +173,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
        scratchpad[4096],
        *charpntr;
 
-  unsigned char a_buf[16];
+  unsigned char a_buf[128];
 
   long long filesize;
 
@@ -897,6 +897,8 @@ OUT:
 
   int annot_code, tc=0, skip;
 
+  long long bytes_read;
+
   get_filename_from_path(filename_x, annot_filename, MAX_PATH_LENGTH);
 
   annot_inputfile = fopeno(annot_filename, "rb");
@@ -938,11 +940,11 @@ OUT:
 
     fseeko(annot_inputfile, 0LL, SEEK_SET);
 
-    for(filesize=0LL; ; filesize += 2LL)
+    for(bytes_read=0LL; bytes_read < filesize; bytes_read += 2LL)
     {
-      if(!(filesize % 100))
+      if(!(bytes_read % 100))
       {
-        progress.setValue(filesize);
+        progress.setValue(bytes_read);
 
         qApp->processEvents();
 
@@ -961,26 +963,34 @@ OUT:
         break;
       }
 
+#pragma GCC diagnostic ignored "-Wstrict-aliasing"
+
+      if(*((unsigned short *)a_buf) == 0)  // end of file
+      {
+        break;
+      }
+
       annot_code = a_buf[1] >> 2;
 
       if(annot_code == 59)
       {
-        skip = 4;
+        if(fread(a_buf, 4, 1, annot_inputfile) != 1)
+        {
+          break;
+        }
+
+        tc += (*((unsigned short *)a_buf) << 16);
+
+        tc += *((unsigned short *)(a_buf + 2));
       }
       else if(annot_code == 63)
         {
-#pragma GCC diagnostic ignored "-Wstrict-aliasing"
-
           skip = *((unsigned short *)a_buf) & 0x3ff;
-
-#pragma GCC diagnostic warning "-Wstrict-aliasing"
 
           if(skip % 2) skip++;
         }
         else if((annot_code >= 0) && (annot_code <= ACMAX))
           {
-#pragma GCC diagnostic ignored "-Wstrict-aliasing"
-
             tc += *((unsigned short *)a_buf) & 0x3ff;
 
 #pragma GCC diagnostic warning "-Wstrict-aliasing"
@@ -1002,7 +1012,7 @@ OUT:
           break;
         }
 
-        filesize += skip;
+        bytes_read += skip;
       }
     }
 
