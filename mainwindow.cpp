@@ -959,6 +959,7 @@ UI_Mainwindow::~UI_Mainwindow()
     delete spectrumdock[i];
   }
   delete live_stream_timer;
+  delete video_poll_timer;
   if(update_checker != NULL)  delete update_checker;
 }
 
