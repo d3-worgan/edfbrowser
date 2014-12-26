@@ -143,7 +143,7 @@ struct edfhdrblock{
         long long starttime_offset;
         double    data_record_duration;
         long long long_data_record_duration;
-        long long annots_in_file;
+        int       annots_in_file;
         int       annotlist_sz;
         int       total_annot_bytes;
         int       eq_sf;
@@ -364,22 +364,11 @@ int edfopen_file_readonly(const char *path, struct edf_hdr_struct *edfhdr, int r
   edfhdr->datarecords_in_file = hdr->datarecords;
   edfhdr->datarecord_duration = hdr->long_data_record_duration;
 
-  annotationslist[edfhdr->handle] = (struct edf_annotationblock *)malloc(sizeof(struct edf_annotationblock) * EDFLIB_ANNOT_MEMBLOCKSZ);
-  if(annotationslist[edfhdr->handle]==NULL)
-  {
-    edfhdr->filetype = EDFLIB_MALLOC_ERROR;
+  annotationslist[edfhdr->handle] = NULL;
 
-    fclose(file);
+  hdr->annotlist_sz = 0;
 
-    free(hdr->edfparam);
-    free(hdr);
-
-    return(-1);
-  }
-
-  hdr->annotlist_sz = EDFLIB_ANNOT_MEMBLOCKSZ;
-
-  hdr->annots_in_file = 0LL;
+  hdr->annots_in_file = 0;
 
   edfhdr->annotations_in_file = 0LL;
 
@@ -3673,19 +3662,11 @@ int edfopen_file_writeonly(const char *path, int filetype, int number_of_signals
     return(EDFLIB_MAXFILES_REACHED);
   }
 
-  write_annotationslist[handle] = (struct edf_write_annotationblock *)calloc(1, sizeof(struct edf_write_annotationblock) * EDFLIB_ANNOT_MEMBLOCKSZ);
-  if(write_annotationslist[handle]==NULL)
-  {
-    free(hdr->edfparam);
+  write_annotationslist[handle] = NULL;
 
-    free(hdr);
+  hdr->annotlist_sz = 0;
 
-    return(EDFLIB_MALLOC_ERROR);
-  }
-
-  hdr->annotlist_sz = EDFLIB_ANNOT_MEMBLOCKSZ;
-
-  hdr->annots_in_file = 0LL;
+  hdr->annots_in_file = 0;
 
   file = fopeno(path, "wb");
   if(file==NULL)
