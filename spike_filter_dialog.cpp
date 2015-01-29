@@ -118,9 +118,9 @@ UI_SpikeFilterDialog::UI_SpikeFilterDialog(QWidget *w_parent)
 
 void UI_SpikeFilterDialog::ApplyButtonClicked()
 {
-  int i, s, n, holdoff;
+  int i, s, n, sf, holdoff;
 
-  double sf, velocity;
+  double velocity;
 
   QListWidgetItem *item;
 
@@ -143,7 +143,7 @@ void UI_SpikeFilterDialog::ApplyButtonClicked()
 
     if(mainwindow->signalcomp[s]->spike_filter_cnt > MAXFILTERS - 1)
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "The maximum amount of spike filters per signal has been reached.\n"
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "The maximum number of spike filters per signal has been reached.\n"
                                                                          "Remove some spike filters first.");
       messagewindow.exec();
       return;
@@ -155,12 +155,12 @@ void UI_SpikeFilterDialog::ApplyButtonClicked()
     item = selectedlist.at(i);
     s = list->row(item);
 
-    sf = (double)(mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].smp_per_record) /
-         mainwindow->signalcomp[s]->edfhdr->data_record_duration;
+    sf = ((long long)mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].smp_per_record * TIME_DIMENSION) /
+         mainwindow->signalcomp[s]->edfhdr->long_data_record_duration;
 
-    if(sf < 1000.0)
+    if(sf < 4000)
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Spike filters can only be used when the samplerate is at least 1000Hz.");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Spike filters can only be used when the samplerate is at least 4000Hz.");
       messagewindow.exec();
       spikefilterdialog->close();
       return;

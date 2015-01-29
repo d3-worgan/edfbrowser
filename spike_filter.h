@@ -38,6 +38,7 @@
 
 
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -45,24 +46,25 @@
 
 
 struct spike_filter_settings{
-                       double sf;
+                       int sf;
                        int holdoff;
                        int holdoff_set;
                        int holdoff_ms;
                        int cutoff;
                        int cutoff_set;
-                       double smpl_1;
-                       double smpl_2;
+                       double array[256];
+                       int idx;
+                       int n_max;
                        double smpl_base;
                        double velocity;
                        int polarity;
-                       int p_det_1;
                        int second_flank_det;
+                       int run_in;
                       };
 
 
 
-struct spike_filter_settings * create_spike_filter(double, double, int);
+struct spike_filter_settings * create_spike_filter(int, double, int);
 double run_spike_filter(double, struct spike_filter_settings *);
 void free_spike_filter(struct spike_filter_settings *);
 void reset_spike_filter(struct spike_filter_settings *);

@@ -498,16 +498,16 @@
 <h3><a name="Spike_filter">Spike filter</a></h3>
 
 <p>
-  The Spike filter can be used to filter out spikes, fast transients or pacemaker impulses.<br>
-  Velocity is expressed in units (e.g. uV) per second. If the filter detects two consecutive samples<br>
-  which have higher velocity, it will consider it the flank of an impulse which will be suppressed<br>
-  by the filter. The suppression period starts at a value of 1 milli-Sec. and will increase in steps of<br>
+  The Spike filter can be used to filter out spikes, fast transients, glitches or pacemaker impulses.<br>
+  Velocity is expressed in units (e.g. uV) per second. If the filter detects a high velocity within 0.5 milli-Sec.,<br>
+  it will consider it the flank of a spike which will be suppressed by the filter.<br>
+  The suppression period starts at a value of 1 milli-Sec. and will increase in steps of<br>
   1 milli-Sec. if the impulse width period is longer.<br>
   Setting the value of Velocity too high, will cause the spikes not to be detected.<br>
   Setting the value of Velocity too low, will cause false triggers.<br>
   Hold-off is used to prevent a re-trigger of the filter within the hold-off period after the last trigger.<br>
-  The maximum impulse width that can be suppressed is limited to 50 milli-Sec and the value of Hold-off.<br>
-  The Spike filter can not be used with samplerates lower than 1000 Hz.
+  The maximum spike width that can be suppressed is limited to 50 milli-Sec and the value of Hold-off.<br>
+  The Spike filter can not be used with samplerates lower than 4000 Hz.
 </p>
 
 <p><br></p>
