@@ -58,66 +58,66 @@ UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
 
   myobjectDialog = new QDialog;
 
-  myobjectDialog->setMinimumSize(665, 526);
-  myobjectDialog->setMaximumSize(665, 526);
+  myobjectDialog->setMinimumSize(715, 526);
+  myobjectDialog->setMaximumSize(715, 526);
   myobjectDialog->setWindowTitle("Reduce signals and/or duration");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   label1 = new QLabel(myobjectDialog);
-  label1->setGeometry(20, 20, 635, 25);
+  label1->setGeometry(20, 20, 685, 25);
 
   label2 = new QLabel(myobjectDialog);
-  label2->setGeometry(435, 307, 100, 25);
+  label2->setGeometry(485, 307, 100, 25);
   label2->setText("from datarecord");
   label2->setEnabled(false);
 
   label3 = new QLabel(myobjectDialog);
-  label3->setGeometry(435, 372, 100, 25);
+  label3->setGeometry(485, 372, 100, 25);
   label3->setText("to datarecord");
   label3->setEnabled(false);
 
   label4 = new QLabel(myobjectDialog);
-  label4->setGeometry(555, 332, 100, 25);
+  label4->setGeometry(605, 332, 100, 25);
   label4->setEnabled(false);
 
   label5 = new QLabel(myobjectDialog);
-  label5->setGeometry(555, 397, 100, 25);
+  label5->setGeometry(605, 397, 100, 25);
   label5->setEnabled(false);
 
   radioButton1 = new QRadioButton("whole duration", myobjectDialog);
-  radioButton1->setGeometry(435, 247, 100, 25);
+  radioButton1->setGeometry(485, 247, 100, 25);
   radioButton1->setChecked(true);
   radioButton1->setEnabled(false);
 
   radioButton2 = new QRadioButton("selection", myobjectDialog);
-  radioButton2->setGeometry(435, 272, 100, 25);
+  radioButton2->setGeometry(485, 272, 100, 25);
   radioButton2->setEnabled(false);
 
   spinBox1 = new QSpinBox(myobjectDialog);
-  spinBox1->setGeometry(435, 332, 100, 25);
+  spinBox1->setGeometry(485, 332, 100, 25);
   spinBox1->setRange(1, 2147483647);
   spinBox1->setValue(1);
   spinBox1->setEnabled(false);
 
   spinBox2 = new QSpinBox(myobjectDialog);
-  spinBox2->setGeometry(435, 397, 100, 25);
+  spinBox2->setGeometry(485, 397, 100, 25);
   spinBox2->setRange(1, 2147483647);
   spinBox2->setValue(2147483647);
   spinBox2->setEnabled(false);
 
   spinBox3 = new QSpinBox(myobjectDialog);
-  spinBox3->setGeometry(545, 170, 100, 25);
+  spinBox3->setGeometry(595, 170, 100, 25);
   spinBox3->setRange(1, 100000);
   spinBox3->setValue(1);
   spinBox3->setEnabled(false);
 
   SignalsTablewidget = new QTableWidget(myobjectDialog);
-  SignalsTablewidget->setGeometry(20, 66, 355, 380);
+  SignalsTablewidget->setGeometry(20, 66, 405, 380);
   SignalsTablewidget->setSelectionMode(QAbstractItemView::NoSelection);
   SignalsTablewidget->setColumnCount(2);
   SignalsTablewidget->setColumnWidth(0, 180);
-  SignalsTablewidget->setColumnWidth(1, 130);
+  SignalsTablewidget->setColumnWidth(1, 180);
 
   QStringList horizontallabels;
   horizontallabels += "Label";
@@ -138,17 +138,17 @@ UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
   pushButton3->setEnabled(false);
 
   pushButton4 = new QPushButton(myobjectDialog);
-  pushButton4->setGeometry(395, 66, 140, 25);
+  pushButton4->setGeometry(445, 66, 140, 25);
   pushButton4->setText("Select all signals");
   pushButton4->setEnabled(false);
 
   pushButton5 = new QPushButton(myobjectDialog);
-  pushButton5->setGeometry(395, 118, 140, 25);
+  pushButton5->setGeometry(445, 118, 140, 25);
   pushButton5->setText("Deselect all signals");
   pushButton5->setEnabled(false);
 
   pushButton6 = new QPushButton(myobjectDialog);
-  pushButton6->setGeometry(395, 170, 140, 25);
+  pushButton6->setGeometry(445, 170, 140, 25);
   pushButton6->setText("Set samplerate divider:");
   pushButton6->setEnabled(false);
 
