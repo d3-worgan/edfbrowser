@@ -171,7 +171,7 @@ void UI_SpikeFilterDialog::ApplyButtonClicked()
 
     holdoff = holdOffSpinBox->value();
 
-    mainwindow->signalcomp[s]->spike_filter[mainwindow->signalcomp[s]->spike_filter_cnt] = create_spike_filter(sf, velocity, holdoff, NULL);
+    mainwindow->signalcomp[s]->spike_filter[mainwindow->signalcomp[s]->spike_filter_cnt] = create_spike_filter(sf, velocity, holdoff, NULL, NULL);
     if(mainwindow->signalcomp[s]->spike_filter[mainwindow->signalcomp[s]->spike_filter_cnt] == NULL)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while creating a spike filter.");

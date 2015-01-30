@@ -68,12 +68,13 @@ struct spike_filter_settings{
                        int second_flank_det_sav;
                        int run_in;
                        int run_in_sav;
+                       int *pd_sig;
                        void (*callback_func)(void);
                       };
 
 
 
-struct spike_filter_settings * create_spike_filter(int, double, int, void (*)(void));
+struct spike_filter_settings * create_spike_filter(int, double, int, int *, void (*)(void));
 double run_spike_filter(double, struct spike_filter_settings *);
 void free_spike_filter(struct spike_filter_settings *);
 void reset_spike_filter(struct spike_filter_settings *);

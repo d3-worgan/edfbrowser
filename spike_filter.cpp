@@ -37,7 +37,7 @@
 
 
 
-struct spike_filter_settings * create_spike_filter(int sf, double sv, int ho, void (*callback_func_handler)(void))
+struct spike_filter_settings * create_spike_filter(int sf, double sv, int ho, int *pace_detected, void (*callback_func_handler)(void))
 {
   struct spike_filter_settings *st;
 
@@ -61,6 +61,8 @@ struct spike_filter_settings * create_spike_filter(int sf, double sv, int ho, vo
   st->holdoff_ms = ho;
 
   st->velocity = (sv / sf) * st->n_max;
+
+  st->pd_sig = pace_detected;
 
   st->callback_func = callback_func_handler;
 
@@ -87,6 +89,8 @@ void reset_spike_filter(struct spike_filter_settings *st)
   st->idx = 0;
 
   st->run_in = 0;
+
+  if(st->pd_sig)  *st->pd_sig = 0;
 }
 
 
@@ -111,6 +115,11 @@ double run_spike_filter(double x, struct spike_filter_settings *st)
       pol=1;
 
   double d_tmp;
+
+  if(st->pd_sig != NULL)
+  {
+    *st->pd_sig = 0;
+  }
 
   if(st->run_in < st->n_max)
   {
@@ -198,6 +207,11 @@ double run_spike_filter(double x, struct spike_filter_settings *st)
     st->array[st->idx++] = x;
 
     st->idx %= st->n_max;
+
+    if(st->pd_sig != NULL)
+    {
+      *st->pd_sig = 1;
+    }
 
     if(st->callback_func != NULL)  // If set, call the external function
     {
