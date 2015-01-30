@@ -2954,16 +2954,19 @@ void UI_Mainwindow::set_page_div2()
         edfheaderlist[i]->viewtime += (pagetime / 4);
       }
 
-      l_tmp = edfheaderlist[i]->viewtime % TIME_DIMENSION;
-
-      if(l_tmp < trshld)
+      if(viewtime_sync!=VIEWTIME_USER_DEF_SYNCED)
       {
-        edfheaderlist[i]->viewtime -= l_tmp;
-      }
+        l_tmp = edfheaderlist[i]->viewtime % TIME_DIMENSION;
 
-      if(l_tmp > (TIME_DIMENSION - trshld))
-      {
-        edfheaderlist[i]->viewtime += (TIME_DIMENSION - l_tmp);
+        if(l_tmp < trshld)
+        {
+          edfheaderlist[i]->viewtime -= l_tmp;
+        }
+
+        if(l_tmp > (TIME_DIMENSION - trshld))
+        {
+          edfheaderlist[i]->viewtime += (TIME_DIMENSION - l_tmp);
+        }
       }
     }
   }
@@ -2979,17 +2982,17 @@ void UI_Mainwindow::set_page_div2()
       edfheaderlist[sel_viewtime]->viewtime += (pagetime / 4);
     }
 
-      l_tmp = edfheaderlist[sel_viewtime]->viewtime % TIME_DIMENSION;
+    l_tmp = edfheaderlist[sel_viewtime]->viewtime % TIME_DIMENSION;
 
-      if(l_tmp < trshld)
-      {
-        edfheaderlist[sel_viewtime]->viewtime -= l_tmp;
-      }
+    if(l_tmp < trshld)
+    {
+      edfheaderlist[sel_viewtime]->viewtime -= l_tmp;
+    }
 
-      if(l_tmp > (TIME_DIMENSION - trshld))
-      {
-        edfheaderlist[sel_viewtime]->viewtime += (TIME_DIMENSION - l_tmp);
-      }
+    if(l_tmp > (TIME_DIMENSION - trshld))
+    {
+      edfheaderlist[sel_viewtime]->viewtime += (TIME_DIMENSION - l_tmp);
+    }
   }
 
   if(timescale_doubler == 10)
@@ -3037,16 +3040,19 @@ void UI_Mainwindow::set_page_mult2()
         edfheaderlist[i]->viewtime -= (pagetime / 2);
       }
 
-      l_tmp = edfheaderlist[i]->viewtime % TIME_DIMENSION;
-
-      if(l_tmp < trshld)
+      if(viewtime_sync!=VIEWTIME_USER_DEF_SYNCED)
       {
-        edfheaderlist[i]->viewtime -= l_tmp;
-      }
+        l_tmp = edfheaderlist[i]->viewtime % TIME_DIMENSION;
 
-      if(l_tmp > (TIME_DIMENSION - trshld))
-      {
-        edfheaderlist[i]->viewtime += (TIME_DIMENSION - l_tmp);
+        if(l_tmp < trshld)
+        {
+          edfheaderlist[i]->viewtime -= l_tmp;
+        }
+
+        if(l_tmp > (TIME_DIMENSION - trshld))
+        {
+          edfheaderlist[i]->viewtime += (TIME_DIMENSION - l_tmp);
+        }
       }
     }
   }
@@ -3060,6 +3066,18 @@ void UI_Mainwindow::set_page_mult2()
     else
     {
       edfheaderlist[sel_viewtime]->viewtime -= (pagetime / 2);
+    }
+
+    l_tmp = edfheaderlist[sel_viewtime]->viewtime % TIME_DIMENSION;
+
+    if(l_tmp < trshld)
+    {
+      edfheaderlist[sel_viewtime]->viewtime -= l_tmp;
+    }
+
+    if(l_tmp > (TIME_DIMENSION - trshld))
+    {
+      edfheaderlist[sel_viewtime]->viewtime += (TIME_DIMENSION - l_tmp);
     }
   }
 
