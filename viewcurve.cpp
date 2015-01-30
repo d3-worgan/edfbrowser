@@ -2382,9 +2382,13 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
         {
           if(s==signalcomp[i]->sample_start)
           {
-            if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime==0)
+            if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime<=0)
             {
               reset_spike_filter(signalcomp[i]->spike_filter[k]);
+            }
+            else
+            {
+              spike_filter_restore_buf(signalcomp[i]->spike_filter[k]);
             }
           }
 
@@ -2833,9 +2837,13 @@ void drawCurve_stage_1_thread::run()
       {
         if(s==signalcomp->sample_start)
         {
-          if(mainwindow->edfheaderlist[signalcomp->filenum]->viewtime==0)
+          if(mainwindow->edfheaderlist[signalcomp->filenum]->viewtime<=0)
           {
             reset_spike_filter(signalcomp->spike_filter[k]);
+          }
+          else
+          {
+            spike_filter_restore_buf(signalcomp->spike_filter[k]);
           }
         }
 

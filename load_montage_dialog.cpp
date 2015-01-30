@@ -680,7 +680,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         (double)(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record) /
         newsignalcomp->edfhdr->data_record_duration,
         velocity / newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue,
-        holdoff);
+        holdoff, NULL);
 
       if(newsignalcomp->spike_filter[filters_read] == NULL)
       {

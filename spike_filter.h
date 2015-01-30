@@ -48,27 +48,38 @@
 struct spike_filter_settings{
                        int sf;
                        int holdoff;
+                       int holdoff_sav;
                        int holdoff_set;
                        int holdoff_ms;
                        int cutoff;
+                       int cutoff_sav;
                        int cutoff_set;
                        double array[256];
+                       double array_sav[256];
                        int idx;
+                       int idx_sav;
                        int n_max;
                        double smpl_base;
+                       double smpl_base_sav;
                        double velocity;
                        int polarity;
+                       int polarity_sav;
                        int second_flank_det;
+                       int second_flank_det_sav;
                        int run_in;
+                       int run_in_sav;
+                       void (*callback_func)(void);
                       };
 
 
 
-struct spike_filter_settings * create_spike_filter(int, double, int);
+struct spike_filter_settings * create_spike_filter(int, double, int, void (*)(void));
 double run_spike_filter(double, struct spike_filter_settings *);
 void free_spike_filter(struct spike_filter_settings *);
 void reset_spike_filter(struct spike_filter_settings *);
 struct spike_filter_settings * create_spike_filter_copy(struct spike_filter_settings *);
+void spike_filter_save_buf(struct spike_filter_settings *);
+void spike_filter_restore_buf(struct spike_filter_settings *);
 
 
 #endif

@@ -4004,6 +4004,11 @@ void UI_Mainwindow::setup_viewbuf()
     {
       if(signalcomp[i]->samples_in_prefilterbuf > 0)
       {
+        for(j=0; j<signalcomp[i]->spike_filter_cnt; j++)
+        {
+          spike_filter_save_buf(signalcomp[i]->spike_filter[j]);
+        }
+
         for(j=0; j<signalcomp[i]->filter_cnt; j++)
         {
           signalcomp[i]->filterpreset_a[j] = signalcomp[i]->filter[j]->old_input;

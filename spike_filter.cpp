@@ -37,7 +37,7 @@
 
 
 
-struct spike_filter_settings * create_spike_filter(int sf, double sv, int ho)
+struct spike_filter_settings * create_spike_filter(int sf, double sv, int ho, void (*callback_func_handler)(void))
 {
   struct spike_filter_settings *st;
 
@@ -61,6 +61,8 @@ struct spike_filter_settings * create_spike_filter(int sf, double sv, int ho)
   st->holdoff_ms = ho;
 
   st->velocity = (sv / sf) * st->n_max;
+
+  st->callback_func = callback_func_handler;
 
   return(st);
 }
@@ -181,7 +183,7 @@ double run_spike_filter(double x, struct spike_filter_settings *st)
     return st->array[st->idx];
   }
 
-  if(p_det)
+  if(p_det)  // We decided that we have found a new spike
   {
     st->smpl_base = st->array[st->idx];
 
@@ -197,6 +199,11 @@ double run_spike_filter(double x, struct spike_filter_settings *st)
 
     st->idx %= st->n_max;
 
+    if(st->callback_func != NULL)  // If set, call the external function
+    {
+      st->callback_func();
+    }
+
     return st->smpl_base;
   }
 
@@ -211,6 +218,32 @@ double run_spike_filter(double x, struct spike_filter_settings *st)
 void free_spike_filter(struct spike_filter_settings *st)
 {
   free(st);
+}
+
+
+void spike_filter_save_buf(struct spike_filter_settings *st)
+{
+  st->holdoff_sav = st->holdoff;
+  st->cutoff_sav = st->cutoff;
+  for(int i=0; i<st->n_max; i++) st->array_sav[i] = st->array[i];
+  st->idx_sav = st->idx;
+  st->smpl_base_sav = st->smpl_base;
+  st->polarity_sav = st->polarity;
+  st->second_flank_det_sav = st->second_flank_det;
+  st->run_in_sav = st->run_in;
+}
+
+
+void spike_filter_restore_buf(struct spike_filter_settings *st)
+{
+  st->holdoff = st->holdoff_sav;
+  st->cutoff = st->cutoff_sav;
+  for(int i=0; i<st->n_max; i++) st->array[i] = st->array_sav[i];
+  st->idx = st->idx_sav;
+  st->smpl_base = st->smpl_base_sav;
+  st->polarity = st->polarity_sav;
+  st->second_flank_det = st->second_flank_det_sav;
+  st->run_in = st->run_in_sav;
 }
 
 

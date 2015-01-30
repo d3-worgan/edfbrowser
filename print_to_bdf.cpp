@@ -985,9 +985,13 @@ struct date_time_struct date_time;
           {
             if(smpls_written[i]==signalcomp[i]->sample_start)
             {
-              if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime==0)
+              if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime<=0)
               {
                 reset_spike_filter(signalcomp[i]->spike_filter[p]);
+              }
+              else
+              {
+                spike_filter_restore_buf(signalcomp[i]->spike_filter[p]);
               }
             }
 

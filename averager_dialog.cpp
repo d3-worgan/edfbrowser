@@ -571,6 +571,16 @@ void UI_AveragerWindow::process_avg(struct signalcompblock *signalcomp)
       dig_value += f_tmp;
     }
 
+    for(k=0; k<signalcomp->spike_filter_cnt; k++)
+    {
+      if(s==signalcomp->sample_start)
+      {
+        spike_filter_restore_buf(signalcomp->spike_filter[k]);
+      }
+
+      dig_value = run_spike_filter(dig_value, signalcomp->spike_filter[k]);
+    }
+
     for(k=0; k<signalcomp->filter_cnt; k++)
     {
       dig_value = first_order_filter(dig_value, signalcomp->filter[k]);

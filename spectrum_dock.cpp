@@ -891,6 +891,11 @@ void UI_SpectrumDockWindow::update_curve()
 
     for(k=0; k<signalcomp->spike_filter_cnt; k++)
     {
+      if(s==signalcomp->sample_start)
+      {
+        spike_filter_restore_buf(signalcomp->spike_filter[k]);
+      }
+
       dig_value = run_spike_filter(dig_value, signalcomp->spike_filter[k]);
     }
 
