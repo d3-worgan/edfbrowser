@@ -102,7 +102,7 @@ void reset_spike_filter(struct spike_filter_settings *st)
 
   st->run_in_sav = 0;
 
-  if(st->pd_sig)  *st->pd_sig = 0;
+  if(st->pd_sig)  *st->pd_sig = SPIKEFILTER_SPIKE_NO;
 }
 
 
@@ -128,11 +128,6 @@ double run_spike_filter(double x, struct spike_filter_settings *st)
 
   double d_tmp;
 
-  if(st->pd_sig != NULL)
-  {
-    *st->pd_sig = 0;
-  }
-
   if(st->run_in < st->n_max)
   {
     st->array[st->idx++] = x;
@@ -140,6 +135,11 @@ double run_spike_filter(double x, struct spike_filter_settings *st)
     st->idx %= st->n_max;
 
     st->run_in++;
+
+    if(st->pd_sig != NULL)
+    {
+      *st->pd_sig = SPIKEFILTER_SPIKE_NO;
+    }
 
     return x;
   }
@@ -166,11 +166,23 @@ double run_spike_filter(double x, struct spike_filter_settings *st)
 
     if(p_det && (pol != st->polarity) && (!st->second_flank_det))  // did we detect the second flank of the spike?
     {
+      st->second_flank_det = 1;
+
       if((st->cutoff_set > (st->sf / 500)) && ((st->cutoff_set - st->cutoff) > (st->sf / 1000)))  // adapt the suppression period to the measured pulsewidth
       {
         st->cutoff_set -= st->sf / 1000;  // decrease impulse suppression period with 1 milliSecond
+      }
 
-        st->second_flank_det = 1;
+      if(st->pd_sig != NULL)
+      {
+        *st->pd_sig = SPIKEFILTER_SPIKE_STOP;
+      }
+    }
+    else
+    {
+      if(st->pd_sig != NULL)
+      {
+        *st->pd_sig = SPIKEFILTER_SPIKE_NO;
       }
     }
 
@@ -195,6 +207,18 @@ double run_spike_filter(double x, struct spike_filter_settings *st)
       }
 
       st->second_flank_det = 1;
+
+      if(st->pd_sig != NULL)
+      {
+        *st->pd_sig = SPIKEFILTER_SPIKE_STOP;
+      }
+    }
+    else
+    {
+      if(st->pd_sig != NULL)
+      {
+        *st->pd_sig = SPIKEFILTER_SPIKE_NO;
+      }
     }
 
     st->array[st->idx++] = x;
@@ -222,7 +246,7 @@ double run_spike_filter(double x, struct spike_filter_settings *st)
 
     if(st->pd_sig != NULL)
     {
-      *st->pd_sig = 1;
+      *st->pd_sig = SPIKEFILTER_SPIKE_ONSET;
     }
 
     if(st->callback_func != NULL)  // If set, call the external function
@@ -231,6 +255,13 @@ double run_spike_filter(double x, struct spike_filter_settings *st)
     }
 
     return st->smpl_base;
+  }
+  else
+  {
+    if(st->pd_sig != NULL)
+    {
+      *st->pd_sig = SPIKEFILTER_SPIKE_NO;
+    }
   }
 
   st->array[st->idx++] = x;
