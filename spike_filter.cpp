@@ -78,17 +78,29 @@ void reset_spike_filter(struct spike_filter_settings *st)
 
   st->cutoff = 0;
 
+  st->cutoff_sav = 0;
+
   st->holdoff = 0;
+
+  st->holdoff_sav = 0;
 
   st->second_flank_det = 0;
 
+  st->second_flank_det_sav = 0;
+
   st->polarity = 0;
+
+  st->polarity_sav = 0;
 
   for(int i=0; i<st->n_max; i++)  st->array[i] = 0;
 
   st->idx = 0;
 
+  st->idx_sav = 0;
+
   st->run_in = 0;
+
+  st->run_in_sav = 0;
 
   if(st->pd_sig)  *st->pd_sig = 0;
 }
