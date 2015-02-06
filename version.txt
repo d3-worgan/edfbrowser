@@ -16,6 +16,9 @@
 
  - Correct the screen-offset when inverting a signal that contains a dc-offset.
 
+ - Removed a bug in the "Organize signals" dialog that caused a crash when selecting signals
+   in reverse order.
+
  - Removed a bug that caused a crash when selecting a bessel bandstop/pass filter with an order > 10.
 
  - Increased the maximum number of filters from 8 to 16.

@@ -197,14 +197,10 @@ void UI_SignalChooser::signalUp()
       sigcomp_nr,
       selected_signals[MAXSIGNALS];
 
-  QList<QListWidgetItem *> selectedlist;
-
   struct signalcompblock *signalcomp;
 
 
-  selectedlist = list->selectedItems();
-
-  n = selectedlist.size();
+  n = get_selectionlist(selected_signals);
 
   if(n < 1)
   {
@@ -218,22 +214,20 @@ void UI_SignalChooser::signalUp()
     return;
   }
 
-  if(selectedlist.at(0)->data(Qt::UserRole).toInt() < 1)
+  if(selected_signals[0] < 1)
   {
     return;
   }
 
   for(i=0; i<n; i++)
   {
-    sigcomp_nr = selectedlist.at(i)->data(Qt::UserRole).toInt();
+    sigcomp_nr = selected_signals[i];
 
     signalcomp = mainwindow->signalcomp[sigcomp_nr];
 
     mainwindow->signalcomp[sigcomp_nr] = mainwindow->signalcomp[sigcomp_nr - 1];
 
     mainwindow->signalcomp[sigcomp_nr - 1] = signalcomp;
-
-    selected_signals[i] = sigcomp_nr;
   }
 
   load_signalcomps();
@@ -254,14 +248,10 @@ void UI_SignalChooser::signalDown()
       sigcomp_nr,
       selected_signals[MAXSIGNALS];
 
-  QList<QListWidgetItem *> selectedlist;
-
   struct signalcompblock *signalcomp;
 
 
-  selectedlist = list->selectedItems();
-
-  n = selectedlist.size();
+  n = get_selectionlist(selected_signals);
 
   if(n < 1)
   {
@@ -275,14 +265,14 @@ void UI_SignalChooser::signalDown()
     return;
   }
 
-  if(selectedlist.at(n - 1)->data(Qt::UserRole).toInt() > (size - 2))
+  if(selected_signals[n-1] > (size - 2))
   {
     return;
   }
 
   for(i=(n-1); i>=0; i--)
   {
-    sigcomp_nr = selectedlist.at(i)->data(Qt::UserRole).toInt();
+    sigcomp_nr = selected_signals[i];
 
     signalcomp = mainwindow->signalcomp[sigcomp_nr];
 
@@ -304,10 +294,9 @@ void UI_SignalChooser::signalDown()
 }
 
 
-void UI_SignalChooser::signalDelete()
+int UI_SignalChooser::get_selectionlist(int *slist)
 {
-  int i, j, k, n, p,
-      sigcomp_nr;
+  int i, j, n, tmp;
 
   QListWidgetItem *item;
 
@@ -320,14 +309,51 @@ void UI_SignalChooser::signalDelete()
 
   if(n < 1)
   {
+    return 0;
+  }
+
+  for(i=0; i<n; i++)
+  {
+    item = selectedlist.at(i);
+
+    slist[i] = item->data(Qt::UserRole).toInt();
+
+    for(j=i; j>0; j--)  // Sort the list!!
+    {
+      if(slist[j] > slist[j-1])
+      {
+        break;
+      }
+
+      tmp = slist[j];
+
+      slist[j] = slist[j-1];
+
+      slist[j-1] = tmp;
+    }
+  }
+
+  return n;
+}
+
+
+void UI_SignalChooser::signalDelete()
+{
+  int i, j, k, n, p,
+      sigcomp_nr,
+      selected_signr[MAXSIGNALS];
+
+
+  n = get_selectionlist(selected_signr);
+
+  if(n < 1)
+  {
     return;
   }
 
   for(k=0; k<n; k++)
   {
-    item = selectedlist.at(k);
-
-    sigcomp_nr = item->data(Qt::UserRole).toInt();
+    sigcomp_nr = selected_signr[k];
 
     sigcomp_nr -= k;
 
@@ -361,6 +387,18 @@ void UI_SignalChooser::signalDelete()
         delete mainwindow->averagecurvedialog[p - 1];
 
         mainwindow->averagecurvedialog[p - 1] = NULL;
+      }
+    }
+
+    for(i=0; i<MAXZSCOREDIALOGS; i++)
+    {
+      p = mainwindow->signalcomp[sigcomp_nr]->zscoredialog[i];
+
+      if(p != 0)
+      {
+        delete mainwindow->zscoredialog[p - 1];
+
+        mainwindow->zscoredialog[p - 1] = NULL;
       }
     }
 
@@ -442,30 +480,22 @@ void UI_SignalChooser::signalDelete()
 
 void UI_SignalChooser::signalInvert()
 {
-  int i, j, k, n,
+  int i, n,
       selected_signals[MAXSIGNALS];
 
-  QList<QListWidgetItem *> selectedlist;
 
-
-  selectedlist = list->selectedItems();
-
-  n = selectedlist.size();
+  n = get_selectionlist(selected_signals);
 
   if(n < 1)
   {
     return;
   }
 
-  for(k=0; k<n; k++)
+  for(i=0; i<n; i++)
   {
-    j = selectedlist.at(k)->data(Qt::UserRole).toInt();
+    mainwindow->signalcomp[selected_signals[i]]->polarity *= -1;
 
-    selected_signals[k] = j;
-
-    mainwindow->signalcomp[j]->polarity *= -1;
-
-    mainwindow->signalcomp[j]->screen_offset *= -1;
+    mainwindow->signalcomp[selected_signals[i]]->screen_offset *= -1;
   }
 
   load_signalcomps();

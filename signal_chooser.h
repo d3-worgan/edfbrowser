@@ -92,6 +92,8 @@ void strip_types_from_label(char *);
 
 void load_signalcomps(void);
 
+int get_selectionlist(int *);
+
 private slots:
 
 void call_sidemenu(QListWidgetItem *);
