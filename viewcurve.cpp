@@ -2378,21 +2378,21 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
           dig_value += f_tmp;
         }
 
-        for(k=0; k<signalcomp[i]->spike_filter_cnt; k++)
+        if(signalcomp[i]->spike_filter)
         {
           if(s==signalcomp[i]->sample_start)
           {
             if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime<=0)
             {
-              reset_spike_filter(signalcomp[i]->spike_filter[k]);
+              reset_spike_filter(signalcomp[i]->spike_filter);
             }
             else
             {
-              spike_filter_restore_buf(signalcomp[i]->spike_filter[k]);
+              spike_filter_restore_buf(signalcomp[i]->spike_filter);
             }
           }
 
-          dig_value = run_spike_filter(dig_value, signalcomp[i]->spike_filter[k]);
+          dig_value = run_spike_filter(dig_value, signalcomp[i]->spike_filter);
         }
 
         for(k=0; k<signalcomp[i]->filter_cnt; k++)
@@ -2833,21 +2833,21 @@ void drawCurve_stage_1_thread::run()
         dig_value += f_tmp;
       }
 
-      for(k=0; k<signalcomp->spike_filter_cnt; k++)
+      if(signalcomp->spike_filter)
       {
         if(s==signalcomp->sample_start)
         {
           if(mainwindow->edfheaderlist[signalcomp->filenum]->viewtime<=0)
           {
-            reset_spike_filter(signalcomp->spike_filter[k]);
+            reset_spike_filter(signalcomp->spike_filter);
           }
           else
           {
-            spike_filter_restore_buf(signalcomp->spike_filter[k]);
+            spike_filter_restore_buf(signalcomp->spike_filter);
           }
         }
 
-        dig_value = run_spike_filter(dig_value, signalcomp->spike_filter[k]);
+        dig_value = run_spike_filter(dig_value, signalcomp->spike_filter);
       }
 
       for(k=0; k<signalcomp->filter_cnt; k++)
@@ -3832,12 +3832,12 @@ void ViewCurve::RemovesignalButton()
 
   mainwindow->signalcomp[signal_nr]->filter_cnt = 0;
 
-  for(j=0; j<mainwindow->signalcomp[signal_nr]->spike_filter_cnt; j++)
+  if(mainwindow->signalcomp[signal_nr]->spike_filter)
   {
-    free_spike_filter(mainwindow->signalcomp[signal_nr]->spike_filter[j]);
-  }
+    free_spike_filter(mainwindow->signalcomp[signal_nr]->spike_filter);
 
-  mainwindow->signalcomp[signal_nr]->spike_filter_cnt = 0;
+    mainwindow->signalcomp[signal_nr]->spike_filter = NULL;
+  }
 
   for(j=0; j<mainwindow->signalcomp[signal_nr]->ravg_filter_cnt; j++)
   {

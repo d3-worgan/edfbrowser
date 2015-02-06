@@ -164,7 +164,10 @@ void UI_SaveMontagewindow::SaveButtonClicked()
 
       fprintf(mtgfile, "    <color>%i</color>\n", mainwindow->signalcomp[i]->color);
 
-      fprintf(mtgfile, "    <spike_filter_cnt>%i</spike_filter_cnt>\n", mainwindow->signalcomp[i]->spike_filter_cnt);
+      if(mainwindow->signalcomp[i]->spike_filter)
+      {
+        fprintf(mtgfile, "    <spike_filter_cnt>%i</spike_filter_cnt>\n", 1);
+      }
 
       fprintf(mtgfile, "    <filter_cnt>%i</filter_cnt>\n", mainwindow->signalcomp[i]->filter_cnt);
 
@@ -187,13 +190,13 @@ void UI_SaveMontagewindow::SaveButtonClicked()
         fprintf(mtgfile, "    </signal>\n");
       }
 
-      for(j=0; j<mainwindow->signalcomp[i]->spike_filter_cnt; j++)
+      if(mainwindow->signalcomp[i]->spike_filter)
       {
         fprintf(mtgfile, "    <spike_filter>\n");
 
-        fprintf(mtgfile, "      <velocity>%.16f</velocity>\n", mainwindow->signalcomp[i]->spike_filter_velocity[j]);
+        fprintf(mtgfile, "      <velocity>%.16f</velocity>\n", mainwindow->signalcomp[i]->spike_filter_velocity);
 
-        fprintf(mtgfile, "      <holdoff>%i</holdoff>\n", mainwindow->signalcomp[i]->spike_filter_holdoff[j]);
+        fprintf(mtgfile, "      <holdoff>%i</holdoff>\n", mainwindow->signalcomp[i]->spike_filter_holdoff);
 
         fprintf(mtgfile, "    </spike_filter>\n");
       }

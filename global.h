@@ -211,10 +211,9 @@ struct signalcompblock{
         int ravg_filter_setup[MAXFILTERS];
         struct ravg_filter_settings *ravg_filter[MAXFILTERS];
         struct ecg_filter_settings *ecg_filter;
-        int spike_filter_cnt;
-        double spike_filter_velocity[MAXFILTERS];
-        int spike_filter_holdoff[MAXFILTERS];
-        struct spike_filter_settings *spike_filter[MAXFILTERS];
+        double spike_filter_velocity;
+        int spike_filter_holdoff;
+        struct spike_filter_settings *spike_filter;
         struct zratio_filter_settings *zratio_filter;
         double zratio_crossoverfreq;
         int spectr_dialog[MAXSPECTRUMDIALOGS];

@@ -23,7 +23,7 @@
 
  - Increased the maximum number of filters from 8 to 16.
 
- - Added a Spike filter which can be used to filter out spikes, fast transients or pacemaker impulses.
+ - Added a Spike filter which can be used to filter out spikes, glitches, fast transients or pacemaker impulses.
 
 
 

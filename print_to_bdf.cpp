@@ -699,9 +699,9 @@ struct date_time_struct date_time;
     p++;
     if(p) p++;
 
-    for(j=0; j<signalcomp[i]->spike_filter_cnt; j++)
+    if(signalcomp[i]->spike_filter)
     {
-      p += sprintf(scratchpad + p, "Spike:%f", signalcomp[i]->spike_filter[j]->velocity);
+      p += sprintf(scratchpad + p, "Spike:%f", signalcomp[i]->spike_filter->velocity);
 
       for(k=(p-1); k>0; k--)
       {
@@ -981,21 +981,21 @@ struct date_time_struct date_time;
             dig_value += temp;
           }
 
-          for(p=0; p<signalcomp[i]->spike_filter_cnt; p++)
+          if(signalcomp[i]->spike_filter)
           {
             if(smpls_written[i]==signalcomp[i]->sample_start)
             {
               if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime<=0)
               {
-                reset_spike_filter(signalcomp[i]->spike_filter[p]);
+                reset_spike_filter(signalcomp[i]->spike_filter);
               }
               else
               {
-                spike_filter_restore_buf(signalcomp[i]->spike_filter[p]);
+                spike_filter_restore_buf(signalcomp[i]->spike_filter);
               }
             }
 
-            dig_value = run_spike_filter(dig_value, signalcomp[i]->spike_filter[p]);
+            dig_value = run_spike_filter(dig_value, signalcomp[i]->spike_filter);
           }
 
           for(p=0; p<signalcomp[i]->filter_cnt; p++)

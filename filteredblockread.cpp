@@ -256,9 +256,9 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_start)
 
     if(!skip_filters)
     {
-      for(k=0; k<signalcomp->spike_filter_cnt; k++)
+      if(signalcomp->spike_filter)
       {
-        dig_value = run_spike_filter(dig_value, signalcomp->spike_filter[k]);
+        dig_value = run_spike_filter(dig_value, signalcomp->spike_filter);
       }
 
       for(k=0; k<signalcomp->filter_cnt; k++)

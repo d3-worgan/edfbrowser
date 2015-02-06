@@ -141,10 +141,10 @@ void UI_SpikeFilterDialog::ApplyButtonClicked()
     item = selectedlist.at(i);
     s = item->data(Qt::UserRole).toInt();
 
-    if(mainwindow->signalcomp[s]->spike_filter_cnt > MAXFILTERS - 1)
+    if(mainwindow->signalcomp[s]->spike_filter)
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "The maximum number of spike filters per signal has been reached.\n"
-                                                                         "Remove some spike filters first.");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There is already a spike filter active on this signal.\n"
+                                                                         "Remove the spike filters first.");
       messagewindow.exec();
       return;
     }
@@ -153,7 +153,7 @@ void UI_SpikeFilterDialog::ApplyButtonClicked()
   for(i=0; i<n; i++)
   {
     item = selectedlist.at(i);
-    s = list->row(item);
+    s = item->data(Qt::UserRole).toInt();
 
     sf = ((long long)mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].smp_per_record * TIME_DIMENSION) /
          mainwindow->signalcomp[s]->edfhdr->long_data_record_duration;
@@ -171,8 +171,8 @@ void UI_SpikeFilterDialog::ApplyButtonClicked()
 
     holdoff = holdOffSpinBox->value();
 
-    mainwindow->signalcomp[s]->spike_filter[mainwindow->signalcomp[s]->spike_filter_cnt] = create_spike_filter(sf, velocity, holdoff, NULL, NULL);
-    if(mainwindow->signalcomp[s]->spike_filter[mainwindow->signalcomp[s]->spike_filter_cnt] == NULL)
+    mainwindow->signalcomp[s]->spike_filter = create_spike_filter(sf, velocity, holdoff, NULL, NULL);
+    if(mainwindow->signalcomp[s]->spike_filter == NULL)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while creating a spike filter.");
       messagewindow.exec();
@@ -180,11 +180,9 @@ void UI_SpikeFilterDialog::ApplyButtonClicked()
       return;
     }
 
-    mainwindow->signalcomp[s]->spike_filter_velocity[mainwindow->signalcomp[s]->spike_filter_cnt] = velocitySpinBox->value();
+    mainwindow->signalcomp[s]->spike_filter_velocity = velocitySpinBox->value();
 
-    mainwindow->signalcomp[s]->spike_filter_holdoff[mainwindow->signalcomp[s]->spike_filter_cnt] = holdOffSpinBox->value();
-
-    mainwindow->signalcomp[s]->spike_filter_cnt++;
+    mainwindow->signalcomp[s]->spike_filter_holdoff = holdOffSpinBox->value();
   }
 
   spikefilterdialog->close();

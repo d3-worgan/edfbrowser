@@ -2710,19 +2710,19 @@ void UI_Mainwindow::remove_all_filters()
 
 void UI_Mainwindow::remove_all_spike_filters()
 {
-  int i, j,
+  int i,
       update_scr=0;
 
   for(i=0; i<signalcomps; i++)
   {
-    for(j=0; j<signalcomp[i]->spike_filter_cnt; j++)
+    if(signalcomp[i]->spike_filter)
     {
-      free_spike_filter(signalcomp[i]->spike_filter[j]);
+      free_spike_filter(signalcomp[i]->spike_filter);
+
+      signalcomp[i]->spike_filter = NULL;
 
       update_scr = 1;
     }
-
-    signalcomp[i]->spike_filter_cnt = 0;
   }
 
   if(update_scr)
@@ -3657,7 +3657,7 @@ void UI_Mainwindow::setup_viewbuf()
       }
     }
 
-    if(signalcomp[i]->spike_filter_cnt)
+    if(signalcomp[i]->spike_filter)
     {
       hasprefilter = 1;
 
@@ -3718,7 +3718,7 @@ void UI_Mainwindow::setup_viewbuf()
   {
     for(i=0; i<signalcomps; i++)
     {
-      if((signalcomp[i]->filter_cnt) || (signalcomp[i]->spike_filter_cnt) || (signalcomp[i]->ravg_filter_cnt) || (signalcomp[i]->fidfilter_cnt) || (signalcomp[i]->ecg_filter != NULL) || (signalcomp[i]->zratio_filter != NULL))
+      if((signalcomp[i]->filter_cnt) || (signalcomp[i]->spike_filter) || (signalcomp[i]->ravg_filter_cnt) || (signalcomp[i]->fidfilter_cnt) || (signalcomp[i]->ecg_filter != NULL) || (signalcomp[i]->zratio_filter != NULL))
       {
         signalcomp[i]->edfhdr->prefiltertime = (long long)(pre_time * ((double)TIME_DIMENSION));
         if(signalcomp[i]->edfhdr->prefiltertime>signalcomp[i]->edfhdr->viewtime)
@@ -3905,7 +3905,7 @@ void UI_Mainwindow::setup_viewbuf()
 
     for(i=0; i<signalcomps; i++)
     {
-      if((!signalcomp[i]->filter_cnt) && (!signalcomp[i]->spike_filter_cnt) && (!signalcomp[i]->ravg_filter_cnt) && (!signalcomp[i]->fidfilter_cnt) && (signalcomp[i]->ecg_filter == NULL) && (signalcomp[i]->zratio_filter == NULL)) continue;
+      if((!signalcomp[i]->filter_cnt) && (!signalcomp[i]->spike_filter) && (!signalcomp[i]->ravg_filter_cnt) && (!signalcomp[i]->fidfilter_cnt) && (signalcomp[i]->ecg_filter == NULL) && (signalcomp[i]->zratio_filter == NULL)) continue;
 
       for(s=0; s<signalcomp[i]->samples_in_prefilterbuf; s++)
       {
@@ -3958,9 +3958,9 @@ void UI_Mainwindow::setup_viewbuf()
           dig_value += temp;
         }
 
-        for(j=0; j<signalcomp[i]->spike_filter_cnt; j++)
+        if(signalcomp[i]->spike_filter)
         {
-          dig_value = run_spike_filter(dig_value, signalcomp[i]->spike_filter[j]);
+          dig_value = run_spike_filter(dig_value, signalcomp[i]->spike_filter);
         }
 
         for(j=0; j<signalcomp[i]->filter_cnt; j++)
@@ -4004,9 +4004,9 @@ void UI_Mainwindow::setup_viewbuf()
     {
       if(signalcomp[i]->samples_in_prefilterbuf > 0)
       {
-        for(j=0; j<signalcomp[i]->spike_filter_cnt; j++)
+        if(signalcomp[i]->spike_filter)
         {
-          spike_filter_save_buf(signalcomp[i]->spike_filter[j]);
+          spike_filter_save_buf(signalcomp[i]->spike_filter);
         }
 
         for(j=0; j<signalcomp[i]->filter_cnt; j++)
@@ -7088,10 +7088,10 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
 
   memcpy(newsignalcomp, original_signalcomp, sizeof(struct signalcompblock));
 
-  for(i=0; i<newsignalcomp->spike_filter_cnt; i++)
+  if(newsignalcomp->spike_filter)
   {
-    newsignalcomp->spike_filter[i] = create_spike_filter_copy(original_signalcomp->spike_filter[i]);
-    if(newsignalcomp->spike_filter[i] == NULL)
+    newsignalcomp->spike_filter = create_spike_filter_copy(original_signalcomp->spike_filter);
+    if(newsignalcomp->spike_filter == NULL)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "malloc() error");
       messagewindow.exec();

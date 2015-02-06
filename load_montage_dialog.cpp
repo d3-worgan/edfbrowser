@@ -227,12 +227,12 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         }
       }
 
-      for(i=0; i<mainwindow->signalcomp[k]->spike_filter_cnt; i++)
+      if(mainwindow->signalcomp[k]->spike_filter)
       {
-        free_spike_filter(mainwindow->signalcomp[k]->spike_filter[i]);
-      }
+        free_spike_filter(mainwindow->signalcomp[k]->spike_filter);
 
-      mainwindow->signalcomp[k]->spike_filter_cnt = 0;
+        mainwindow->signalcomp[k]->spike_filter = NULL;
+      }
 
       for(i=0; i<mainwindow->signalcomp[k]->filter_cnt; i++)
       {
@@ -432,7 +432,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       result = xml_get_content_of_element(xml_hdl);
       spike_filter_cnt = atoi(result);
       if(spike_filter_cnt < 0)  filter_cnt = 0;
-      if(spike_filter_cnt > MAXFILTERS)  spike_filter_cnt = MAXFILTERS;
+      if(spike_filter_cnt > 1)  spike_filter_cnt = 1;
       free(result);
 
       xml_go_up(xml_hdl);
@@ -636,9 +636,9 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     strcpy(newsignalcomp->physdimension, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension);
     remove_trailing_spaces(newsignalcomp->physdimension);
 
-    for(filters_read=0; filters_read<spike_filter_cnt; filters_read++)
+    if(spike_filter_cnt)
     {
-      if(xml_goto_nth_element_inside(xml_hdl, "spike_filter", filters_read))
+      if(xml_goto_nth_element_inside(xml_hdl, "spike_filter", 0))
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
         messagewindow.exec();
@@ -676,13 +676,13 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       if(holdoff > 1000)  holdoff = 1000;
       free(result);
 
-      newsignalcomp->spike_filter[filters_read] = create_spike_filter(
+      newsignalcomp->spike_filter = create_spike_filter(
         (double)(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record) /
         newsignalcomp->edfhdr->data_record_duration,
         velocity / newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue,
         holdoff, NULL, NULL);
 
-      if(newsignalcomp->spike_filter[filters_read] == NULL)
+      if(newsignalcomp->spike_filter == NULL)
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred when creating a spike filter.");
         messagewindow.exec();
@@ -691,9 +691,9 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         return;
       }
 
-      newsignalcomp->spike_filter_velocity[newsignalcomp->spike_filter_cnt] = velocity;
+      newsignalcomp->spike_filter_velocity = velocity;
 
-      newsignalcomp->spike_filter_cnt = filters_read + 1;
+      newsignalcomp->spike_filter_holdoff = holdoff;
 
       xml_go_up(xml_hdl);
       xml_go_up(xml_hdl);
