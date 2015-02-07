@@ -792,6 +792,8 @@ void UI_ViewMontagewindow::SelectButtonClicked()
   }
 
   xml_close(xml_hdl);
+
+  tree->expandAll();
 }
 
 

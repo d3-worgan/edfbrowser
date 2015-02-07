@@ -37,9 +37,11 @@
 
 UI_SpikeFilterDialog::UI_SpikeFilterDialog(QWidget *w_parent)
 {
-  int i;
+  int i, n, s, sf=0;
 
   QListWidgetItem *item;
+
+  QList<QListWidgetItem *> selectedlist;
 
 
   mainwindow = (UI_Mainwindow *)w_parent;
@@ -57,19 +59,19 @@ UI_SpikeFilterDialog::UI_SpikeFilterDialog(QWidget *w_parent)
   velocityLabel->setText("Velocity");
 
   velocitySpinBox = new QDoubleSpinBox(spikefilterdialog);
-  velocitySpinBox->setGeometry(90, 45, 190, 20);
+  velocitySpinBox->setGeometry(90, 45, 230, 20);
   velocitySpinBox->setDecimals(6);
-  velocitySpinBox->setSuffix(" units/Sec");
-  velocitySpinBox->setMinimum(0.0001);
-  velocitySpinBox->setMaximum(10E9);
-  velocitySpinBox->setValue(2000000.0);
+  velocitySpinBox->setSuffix(" units/(0.5 mSec)");
+  velocitySpinBox->setMinimum(0.000001);
+  velocitySpinBox->setMaximum(1E10);
+  velocitySpinBox->setValue(1000.0);
 
   holdOffLabel = new QLabel(spikefilterdialog);
   holdOffLabel->setGeometry(20, 90, 60, 20);
   holdOffLabel->setText("Hold-off");
 
   holdOffSpinBox = new QSpinBox(spikefilterdialog);
-  holdOffSpinBox->setGeometry(90, 90, 190, 20);
+  holdOffSpinBox->setGeometry(90, 90, 230, 20);
   holdOffSpinBox->setSuffix(" milliSec");
   holdOffSpinBox->setMinimum(10);
   holdOffSpinBox->setMaximum(1000);
@@ -86,14 +88,23 @@ UI_SpikeFilterDialog::UI_SpikeFilterDialog(QWidget *w_parent)
 
   CancelButton = new QPushButton(spikefilterdialog);
   CancelButton->setGeometry(300, 320, 100, 25);
-  CancelButton->setText("&Cancel");
+  CancelButton->setText("&Close");
 
   ApplyButton = new QPushButton(spikefilterdialog);
   ApplyButton->setGeometry(20, 320, 100, 25);
   ApplyButton->setText("&Apply");
+  ApplyButton->setVisible(false);
 
   for(i=0; i<mainwindow->signalcomps; i++)
   {
+    sf = ((long long)mainwindow->signalcomp[i]->edfhdr->edfparam[mainwindow->signalcomp[i]->edfsignal[0]].smp_per_record * TIME_DIMENSION) /
+         mainwindow->signalcomp[i]->edfhdr->long_data_record_duration;
+
+    if(sf < 4000)
+    {
+      continue;
+    }
+
     item = new QListWidgetItem;
     if(mainwindow->signalcomp[i]->alias[0] != 0)
     {
@@ -107,10 +118,32 @@ UI_SpikeFilterDialog::UI_SpikeFilterDialog(QWidget *w_parent)
     list->addItem(item);
   }
 
-  list->setCurrentRow(0);
+  n = list->count();
 
-  QObject::connect(ApplyButton,  SIGNAL(clicked()), this,              SLOT(ApplyButtonClicked()));
-  QObject::connect(CancelButton, SIGNAL(clicked()), spikefilterdialog, SLOT(close()));
+  for(i=0; i<n; i++)
+  {
+    item = list->item(i);
+    s = item->data(Qt::UserRole).toInt();
+
+    if(mainwindow->signalcomp[s]->spike_filter != NULL)
+    {
+      velocitySpinBox->setValue(mainwindow->signalcomp[s]->spike_filter_velocity);
+
+      holdOffSpinBox->setValue(mainwindow->signalcomp[s]->spike_filter_holdoff);
+
+      item->setSelected(true);
+    }
+    else
+    {
+      item->setSelected(false);
+    }
+  }
+
+  QObject::connect(ApplyButton,     SIGNAL(clicked()),              this,              SLOT(ApplyButtonClicked()));
+  QObject::connect(CancelButton,    SIGNAL(clicked()),              spikefilterdialog, SLOT(close()));
+  QObject::connect(list,            SIGNAL(itemSelectionChanged()), this,              SLOT(ApplyButtonClicked()));
+  QObject::connect(velocitySpinBox, SIGNAL(valueChanged(double)),   this,              SLOT(ApplyButtonClicked()));
+  QObject::connect(holdOffSpinBox,  SIGNAL(valueChanged(int)),      this,              SLOT(ApplyButtonClicked()));
 
   spikefilterdialog->exec();
 }
@@ -126,66 +159,46 @@ void UI_SpikeFilterDialog::ApplyButtonClicked()
 
   QList<QListWidgetItem *> selectedlist;
 
+  for(i=0; i<mainwindow->signalcomps; i++)
+  {
+    if(mainwindow->signalcomp[i]->spike_filter)
+    {
+      free_spike_filter(mainwindow->signalcomp[i]->spike_filter);
+
+      mainwindow->signalcomp[i]->spike_filter = NULL;
+    }
+  }
+
   selectedlist = list->selectedItems();
 
   n = selectedlist.size();
 
-  if(!n)
-  {
-    spikefilterdialog->close();
-    return;
-  }
-
   for(i=0; i<n; i++)
   {
     item = selectedlist.at(i);
     s = item->data(Qt::UserRole).toInt();
-
-    if(mainwindow->signalcomp[s]->spike_filter)
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There is already a spike filter active on this signal.\n"
-                                                                         "Remove the spike filters first.");
-      messagewindow.exec();
-      return;
-    }
-  }
-
-  for(i=0; i<n; i++)
-  {
-    item = selectedlist.at(i);
-    s = item->data(Qt::UserRole).toInt();
-
-    sf = ((long long)mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].smp_per_record * TIME_DIMENSION) /
-         mainwindow->signalcomp[s]->edfhdr->long_data_record_duration;
-
-    if(sf < 4000)
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Spike filters can only be used when the samplerate is at least 4000Hz.");
-      messagewindow.exec();
-      spikefilterdialog->close();
-      return;
-    }
 
     velocity = velocitySpinBox->value() /
                mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].bitvalue;
 
+    if(velocity < 0) velocity *= -1;
+
     holdoff = holdOffSpinBox->value();
 
-    mainwindow->signalcomp[s]->spike_filter = create_spike_filter(sf, velocity, holdoff, NULL, NULL);
+    sf = ((long long)mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].smp_per_record * TIME_DIMENSION) /
+         mainwindow->signalcomp[s]->edfhdr->long_data_record_duration;
+
+    mainwindow->signalcomp[s]->spike_filter = create_spike_filter(sf, velocity, holdoff, NULL);
     if(mainwindow->signalcomp[s]->spike_filter == NULL)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while creating a spike filter.");
       messagewindow.exec();
-      spikefilterdialog->close();
-      return;
     }
 
     mainwindow->signalcomp[s]->spike_filter_velocity = velocitySpinBox->value();
 
     mainwindow->signalcomp[s]->spike_filter_holdoff = holdOffSpinBox->value();
   }
-
-  spikefilterdialog->close();
 
   mainwindow->setup_viewbuf();
 }

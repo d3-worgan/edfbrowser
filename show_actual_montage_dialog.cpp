@@ -183,7 +183,7 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
 
       remove_trailing_zeros(txtbuf);
 
-      sprintf(txtbuf + strlen(txtbuf), " %s/Sec.  Hold-off: %i milli-Sec.",
+      sprintf(txtbuf + strlen(txtbuf), " %s/0.5mSec.  Hold-off: %i mSec.",
               mainwindow->signalcomp[i]->physdimension,
               mainwindow->signalcomp[i]->spike_filter_holdoff);
 
@@ -338,6 +338,8 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
   parentItem->appendRow(new QStandardItem(txtbuf));
 
   tree->setModel(t_model);
+
+  tree->expandAll();
 
   ShowMontageDialog->exec();
 }

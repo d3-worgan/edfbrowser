@@ -44,41 +44,43 @@
 
 #define SPIKEFILTER_SPIKE_NO      0
 #define SPIKEFILTER_SPIKE_ONSET   1
-#define SPIKEFILTER_SPIKE_STOP    2
 
 
 
 
 struct spike_filter_settings{
-                       int sf;
-                       int holdoff;
-                       int holdoff_sav;
-                       int holdoff_set;
-                       int holdoff_ms;
-                       int cutoff;
-                       int cutoff_sav;
-                       int cutoff_set;
-                       double array[256];
-                       double array_sav[256];
-                       int idx;
-                       int idx_sav;
-                       int n_max;
-                       double smpl_base;
-                       double smpl_base_sav;
-                       double velocity;
-                       int polarity;
-                       int polarity_sav;
-                       int second_flank_det;
-                       int second_flank_det_sav;
-                       int run_in;
-                       int run_in_sav;
-                       int *pd_sig;
-                       void (*callback_func)(void);
-                      };
+    int sf;
+    int holdoff;
+    int holdoff_sav;
+    int holdoff_set;
+    int cutoff;
+    int cutoff_sav;
+    int spikewidth;
+    int spikewidth_sav;
+    double array[1024];
+    double array_sav[1024];
+    int idx;
+    int idx_sav;
+    int n_max;
+    int bufsz;
+    double velocity;
+    int polarity;
+    int polarity_sav;
+    int flank_det;
+    int flank_det_sav;
+    int flank_det_set;
+    int run_in;
+    int run_in_sav;
+    double base_smpl;
+    double base_smpl_sav;
+    int spike_pos;
+    int spike_pos_sav;
+    int *pd_sig;
+  };
 
 
 
-struct spike_filter_settings * create_spike_filter(int, double, int, int *, void (*)(void));
+struct spike_filter_settings * create_spike_filter(int, double, int, int *);
 double run_spike_filter(double, struct spike_filter_settings *);
 void free_spike_filter(struct spike_filter_settings *);
 void reset_spike_filter(struct spike_filter_settings *);

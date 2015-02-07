@@ -499,15 +499,23 @@
 
 <p>
   The Spike filter can be used to filter out spikes, fast transients, glitches or pacemaker impulses.<br>
-  Velocity is expressed in units (e.g. uV) per second. If the filter detects a high velocity within 0.5 milli-Sec.,<br>
-  it will consider it the flank of a spike which will be suppressed by the filter.<br>
-  The suppression period starts at a value of 1 milli-Sec. and will increase in steps of<br>
-  1 milli-Sec. if the impulse width period is longer.<br>
-  Setting the value of Velocity too high, will cause the spikes not to be detected.<br>
-  Setting the value of Velocity too low, will cause false triggers.<br>
+  Velocity is expressed in units (e.g. uV) per 0.5 milli-Seconds. If the filter detects two fast transients<br>
+  with opposite polarity and within 3 milli-Seconds, it will consider it a spike which will be suppressed.<br>
+<br>
+  The transient is measured for every sample with a delta t of 0.5 milli-Seconds.<br>
+  (The sample will be compared with an older sample 0.5 milli-Seconds before.)<br>
+<br>
+  Setting the value of velocity too high, will cause the spikes not to be detected.<br>
+  Setting the value of velocity too low, will cause false triggers.<br>
+<br>
   Hold-off is used to prevent a re-trigger of the filter within the hold-off period after the last trigger.<br>
-  The maximum spike width that can be suppressed is limited to 50 milli-Sec and the value of Hold-off.<br>
-  The Spike filter can not be used with samplerates lower than 4000 Hz.
+<br>
+  The Spike filter can not be used with samplerates lower than 4000 Hz.<br>
+  Signals with lower samplerates will not be visible in the Spike filter dialog.<br>
+<br>
+  The Spike filter dialog has no apply button. Activating or de-activating the spike filter is simply done<br>
+  by selecting or de-selecting one or more signals.<br>
+  Changing the value of velocity or holdoff will cause an immediate update of the screen.
 </p>
 
 <p><br></p>
