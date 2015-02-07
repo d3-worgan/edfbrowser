@@ -1,9 +1,9 @@
 
- version 1.55      to be released
+ version 1.55      February 7, 2015
  ------------
 
  - Added a MIT to EDF+ converter (to convert files from PhysioBank at physionet.org).
-   This is a work in progress. At this moment it supports the "Format 212" and "Format 16".
+   At this moment it supports the "Format 212" and "Format 16".
    Most of the signal files in PhysioBank are written in format 212.
    Other formats will be probably added in future.
    Annotations (in the *.atr or *.ari file) will be read and converted to EDF+ as well.
@@ -16,14 +16,16 @@
 
  - Correct the screen-offset when inverting a signal that contains a dc-offset.
 
- - Removed a bug in the "Organize signals" dialog that caused a crash when selecting signals
-   in reverse order.
+ - Removed a bug in the "Organize signals" dialog that caused a crash when selecting
+   signals in reverse order.
 
- - Removed a bug that caused a crash when selecting a bessel bandstop/pass filter with an order > 10.
+ - Removed a bug that caused a crash when selecting a bessel bandstop/pass filter with
+   an order > 10.
 
  - Increased the maximum number of filters from 8 to 16.
 
- - Added a Spike filter which can be used to filter out spikes, glitches, fast transients or pacemaker impulses.
+ - Added a Spike filter which can be used to filter out spikes, glitches, fast transients or
+   pacemaker impulses.
 
 
 
