@@ -103,9 +103,11 @@ QSpinBox       *orderbox;
 QDoubleSpinBox *freq1box,
                *freq2box;
 
-QPushButton    *CloseButton;
+QPushButton    *CloseButton,
+               *RemoveButton;
 
 void update_filter(void);
+void loadFilterSettings(void);
 
 
 private slots:
@@ -115,6 +117,7 @@ void freqbox2valuechanged(double);
 void orderboxvaluechanged(int);
 void stepsizeboxchanged(int);
 void filterboxchanged(int);
+void removeButtonClicked();
 
 };
 

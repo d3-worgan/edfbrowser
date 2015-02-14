@@ -63,7 +63,6 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
 
   char txtbuf[2048];
 
-
   signalcomp = signal_comp;
 
   maincurve = (ViewCurve *)w_parent;
@@ -138,13 +137,39 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
   stepsizebox->addItem("100Hz");
   stepsizebox->setCurrentIndex(2);
 
+  RemoveButton = new QPushButton(filtersettings_dialog);
+  RemoveButton->setGeometry(120, 220, 80, 25);
+  RemoveButton->setText("Remove");
+
   CloseButton = new QPushButton(filtersettings_dialog);
-  CloseButton->setGeometry(270, 220, 80, 25);
+  CloseButton->setGeometry(360, 220, 80, 25);
   CloseButton->setText("Close");
 
   filter_cnt = 0;
 
+  loadFilterSettings();
+
+  QObject::connect(freq1box,     SIGNAL(valueChanged(double)),                      this, SLOT(freqbox1valuechanged(double)));
+  QObject::connect(freq2box,     SIGNAL(valueChanged(double)),                      this, SLOT(freqbox2valuechanged(double)));
+  QObject::connect(orderbox,     SIGNAL(valueChanged(int)),                         this, SLOT(orderboxvaluechanged(int)));
+  QObject::connect(filterbox,    SIGNAL(currentIndexChanged(int)),                  this, SLOT(filterboxchanged(int)));
+  QObject::connect(stepsizebox,  SIGNAL(currentIndexChanged(int)),                  this, SLOT(stepsizeboxchanged(int)));
+  QObject::connect(RemoveButton, SIGNAL(clicked()),                                 this, SLOT(removeButtonClicked()));
+  QObject::connect(CloseButton,  SIGNAL(clicked()),                filtersettings_dialog, SLOT(close()));
+
+  filtersettings_dialog->exec();
+}
+
+
+void AdjustFilterSettings::loadFilterSettings(void)
+{
+  int i;
+
+  char txtbuf[2048];
+
   txtbuf[0] = 0;
+
+  filterbox->clear();
 
   for(i=0; i<signalcomp->fidfilter_cnt; i++)
   {
@@ -268,15 +293,6 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
   }
 
   filterboxchanged(filterbox->currentIndex());
-
-  QObject::connect(freq1box,    SIGNAL(valueChanged(double)),                      this, SLOT(freqbox1valuechanged(double)));
-  QObject::connect(freq2box,    SIGNAL(valueChanged(double)),                      this, SLOT(freqbox2valuechanged(double)));
-  QObject::connect(orderbox,    SIGNAL(valueChanged(int)),                         this, SLOT(orderboxvaluechanged(int)));
-  QObject::connect(filterbox,   SIGNAL(currentIndexChanged(int)),                  this, SLOT(filterboxchanged(int)));
-  QObject::connect(stepsizebox, SIGNAL(currentIndexChanged(int)),                  this, SLOT(stepsizeboxchanged(int)));
-  QObject::connect(CloseButton, SIGNAL(clicked()),                filtersettings_dialog, SLOT(close()));
-
-  filtersettings_dialog->exec();
 }
 
 
@@ -442,6 +458,57 @@ void AdjustFilterSettings::filterboxchanged(int i)
   QObject::connect(orderbox, SIGNAL(valueChanged(int)),    this, SLOT(orderboxvaluechanged(int)));
 }
 
+
+void AdjustFilterSettings::removeButtonClicked()
+{
+  int i;
+
+  filter_nr = filterbox->currentIndex();
+
+  if(filter_nr < 0)
+  {
+    return;
+  }
+
+  QObject::disconnect(freq1box, SIGNAL(valueChanged(double)), this, SLOT(freqbox1valuechanged(double)));
+  QObject::disconnect(freq2box, SIGNAL(valueChanged(double)), this, SLOT(freqbox2valuechanged(double)));
+  QObject::disconnect(orderbox, SIGNAL(valueChanged(int)),    this, SLOT(orderboxvaluechanged(int)));
+
+  if(brand[filter_nr] == 0)  // fidfilter
+  {
+    free(signalcomp->fidfilter[filter_nr]);
+    fid_run_free(signalcomp->fid_run[filter_nr]);
+    fid_run_freebuf(signalcomp->fidbuf[filter_nr]);
+    fid_run_freebuf(signalcomp->fidbuf2[filter_nr]);
+
+    for(i=filter_nr; i<(signalcomp->fidfilter_cnt - 1); i++)
+    {
+      signalcomp->fidfilter[i] = signalcomp->fidfilter[i + 1];
+      signalcomp->fid_run[i] = signalcomp->fid_run[i + 1];
+      signalcomp->fidbuf[i] = signalcomp->fidbuf[i + 1];
+      signalcomp->fidbuf2[i] = signalcomp->fidbuf2[i + 1];
+    }
+
+    signalcomp->fidfilter_cnt--;
+  }
+  else if(brand[filter_nr] == 1)  // moving average filter
+    {
+      filter_nr -= signalcomp->fidfilter_cnt;
+
+      free_ravg_filter(signalcomp->ravg_filter[filter_nr]);
+
+      for(i=filter_nr; i<(signalcomp->ravg_filter_cnt - 1); i++)
+      {
+        signalcomp->ravg_filter[i] = signalcomp->ravg_filter[i + 1];
+      }
+
+      signalcomp->ravg_filter_cnt--;
+    }
+
+  loadFilterSettings();
+
+  mainwindow->setup_viewbuf();
+}
 
 
 void AdjustFilterSettings::update_filter()
