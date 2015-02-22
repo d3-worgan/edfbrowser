@@ -1,4 +1,15 @@
 
+ to be released
+ --------------
+
+ - Added an anti-aliasing filter to the samplerate divider/decimator
+   in the file reducer tool. The order of this filter can be choosen.
+
+ - Make it possible to remove just one filter.
+   (Before, you could only remove all filters.)
+
+
+
  version 1.55      February 7, 2015
  ------------
 
