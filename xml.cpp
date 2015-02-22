@@ -910,7 +910,7 @@ int xml_goto_next_element_at_same_level(struct xml_handle *handle_p)
 
 int xml_goto_nth_element_inside(struct xml_handle *handle_p, const char *name, int n)
 {
-  int len, offset, deep=0, cnt=0, ts_len;
+  int len, offset, deep=0, cnt=0, ts_len, has_endslash;
 
   struct xml_handle *new_handle_p;
 
@@ -954,8 +954,14 @@ int xml_goto_nth_element_inside(struct xml_handle *handle_p, const char *name, i
       {
         ts_len = strlen(handle_p->tag_search_result);
 
-        if(handle_p->tag_search_result[ts_len - 1]!='/')
+        if(handle_p->tag_search_result[ts_len - 1] == '/')
         {
+          has_endslash = 1;
+        }
+        else
+        {
+          has_endslash = 0;
+
           deep++;
         }
 
@@ -963,42 +969,45 @@ int xml_goto_nth_element_inside(struct xml_handle *handle_p, const char *name, i
       }
     }
 
-    if((int)strlen(handle_p->tag_search_result)>=len)
+    if((deep + has_endslash) == 1)
     {
-      if(!strncmp(handle_p->tag_search_result, name, len))
+      if((int)strlen(handle_p->tag_search_result)>=len)
       {
-        if((handle_p->tag_search_result[len]==' ')||(handle_p->tag_search_result[len]==0))
+        if(!strncmp(handle_p->tag_search_result, name, len))
         {
-          if(cnt==n)
+          if((handle_p->tag_search_result[len]==' ')||(handle_p->tag_search_result[len]==0))
           {
-            new_handle_p = (struct xml_handle *)calloc(1, sizeof(struct xml_handle));
-            if(new_handle_p==NULL)
+            if(cnt==n)
             {
-              return(1);
+              new_handle_p = (struct xml_handle *)calloc(1, sizeof(struct xml_handle));
+              if(new_handle_p==NULL)
+              {
+                return(1);
+              }
+
+              handle_p->child_handle_p = new_handle_p;
+
+              new_handle_p->file = handle_p->file;
+              new_handle_p->level = handle_p->level + 1;
+              new_handle_p->offset = offset;
+              new_handle_p->len = 0;
+              new_handle_p->elementname = NULL;
+              new_handle_p->attributes = NULL;
+              new_handle_p->parent_handle_p = handle_p;
+              new_handle_p->child_handle_p = NULL;
+              new_handle_p->tag_search_result = NULL;
+              new_handle_p->encoding = handle_p->encoding;
+
+              if(process_tag(handle_p->tag_search_result, new_handle_p))
+              {
+                return(1);
+              }
+
+              return(0);
             }
 
-            handle_p->child_handle_p = new_handle_p;
-
-            new_handle_p->file = handle_p->file;
-            new_handle_p->level = handle_p->level + 1;
-            new_handle_p->offset = offset;
-            new_handle_p->len = 0;
-            new_handle_p->elementname = NULL;
-            new_handle_p->attributes = NULL;
-            new_handle_p->parent_handle_p = handle_p;
-            new_handle_p->child_handle_p = NULL;
-            new_handle_p->tag_search_result = NULL;
-            new_handle_p->encoding = handle_p->encoding;
-
-            if(process_tag(handle_p->tag_search_result, new_handle_p))
-            {
-              return(1);
-            }
-
-            return(0);
+            cnt++;
           }
-
-          cnt++;
         }
       }
     }
