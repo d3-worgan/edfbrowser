@@ -398,13 +398,11 @@ int xml_attribute(const char *data, const char *item, char *result, int result_l
 
     if(!strncmp(data + i, item, item_len))
     {
-      i += item_len;
-
-      if(i < (data_len - 3))
+      if((i + item_len) < (data_len - 3))
       {
-        if(!strncmp(data + i, "=\"", 2))
+        if(!strncmp(data + i + item_len, "=\"", 2))
         {
-          i += 2;
+          i += (item_len + 2);
 
           for(j=i; j<data_len; j++)
           {
@@ -412,7 +410,6 @@ int xml_attribute(const char *data, const char *item, char *result, int result_l
             {
               if((j - i) < result_len)
               {
-                // strncpy(result, data + i, j - i);
                 xml_strncpy_decode_entity(result, data + i, j - i);
                 result[j - i] = 0;
 
@@ -421,6 +418,7 @@ int xml_attribute(const char *data, const char *item, char *result, int result_l
             }
           }
         }
+        else  continue;
       }
 
       return(-1);
