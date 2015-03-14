@@ -177,7 +177,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
     char_encoding = 1;  // fallback to ISO-8859-1 (Latin1)
   }
 
-  if(strcmp(xml_hdl->elementname, "unisens"))
+  if(strcmp(xml_hdl->elementname[xml_hdl->level], "unisens"))
   {
     textEdit1->append("Error, can not find root element \"unisens\".\n");
     xml_close(xml_hdl);

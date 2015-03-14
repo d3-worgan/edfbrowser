@@ -1604,7 +1604,7 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
 {
   char path[MAX_PATH_LENGTH],
        scratchpad[2048],
-       *result;
+       result[XML_STRBUFLEN];
 
   struct xml_handle *xml_hdl;
 
@@ -1627,7 +1627,7 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
     return;
   }
 
-  if(strcmp(xml_hdl->elementname, PROGRAM_NAME "_colorschema"))
+  if(strcmp(xml_hdl->elementname[xml_hdl->level], PROGRAM_NAME "_colorschema"))
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this colorschema.");
     messagewindow.exec();
@@ -1654,14 +1654,12 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
     xml_close(xml_hdl);
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     xml_close(xml_hdl);
     return;
   }
   mainwindow->maincurve->signal_color = atoi(result);
-  free(result);
 
   xml_go_up(xml_hdl);
 
@@ -1670,14 +1668,12 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
     xml_close(xml_hdl);
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     xml_close(xml_hdl);
     return;
   }
   mainwindow->maincurve->floating_ruler_color = atoi(result);
-  free(result);
 
   xml_go_up(xml_hdl);
 
@@ -1686,14 +1682,12 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
     xml_close(xml_hdl);
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     xml_close(xml_hdl);
     return;
   }
   mainwindow->maincurve->blackwhite_printing = atoi(result);
-  free(result);
 
   xml_go_up(xml_hdl);
 
@@ -1702,14 +1696,12 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
     xml_close(xml_hdl);
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     xml_close(xml_hdl);
     return;
   }
   mainwindow->show_annot_markers = atoi(result);
-  free(result);
 
   xml_go_up(xml_hdl);
 
@@ -1718,14 +1710,12 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
     xml_close(xml_hdl);
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     xml_close(xml_hdl);
     return;
   }
   mainwindow->show_baselines = atoi(result);
-  free(result);
 
   xml_go_up(xml_hdl);
 
@@ -1734,14 +1724,12 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
     xml_close(xml_hdl);
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     xml_close(xml_hdl);
     return;
   }
   mainwindow->clip_to_pane = atoi(result);
-  free(result);
 
   xml_go_up(xml_hdl);
 
@@ -1750,14 +1738,12 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
     xml_close(xml_hdl);
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     xml_close(xml_hdl);
     return;
   }
   mainwindow->maincurve->crosshair_1.color = atoi(result);
-  free(result);
 
   xml_go_up(xml_hdl);
 
@@ -1766,14 +1752,12 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
     xml_close(xml_hdl);
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     xml_close(xml_hdl);
     return;
   }
   mainwindow->maincurve->crosshair_2.color = atoi(result);
-  free(result);
 
   xml_close(xml_hdl);
 

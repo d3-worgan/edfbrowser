@@ -535,7 +535,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
   char path[MAX_PATH_LENGTH],
        last_description[256],
-       *result,
+       result[XML_STRBUFLEN],
        duration[32];
 
   long long onset=0LL,
@@ -592,7 +592,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
     return(1);
   }
 
-  if(strcmp(xml_hdl->elementname, "annotationlist"))
+  if(strcmp(xml_hdl->elementname[xml_hdl->level], "annotationlist"))
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find root element \"annotationlist\".");
     messagewindow.exec();
@@ -626,7 +626,14 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
       continue;
     }
 
-    result = xml_get_content_of_element(xml_hdl);
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      QApplication::restoreOverrideCursor();
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not get content of element \"annotation\".");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      return(1);
+    }
 
     if(strlen(result) > 17)
     {
@@ -682,7 +689,14 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
     if(!xml_goto_nth_element_inside(xml_hdl, "duration", 0))
     {
-      result = xml_get_content_of_element(xml_hdl);
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        QApplication::restoreOverrideCursor();
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not get content of element \"duration\".");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return(1);
+      }
 
       strncpy(duration, result, 16);
       duration[15] = 0;
@@ -695,8 +709,6 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
         duration[0] = 0;
       }
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
@@ -706,7 +718,14 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
       continue;
     }
 
-    result = xml_get_content_of_element(xml_hdl);
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      QApplication::restoreOverrideCursor();
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not get content of element \"description\".");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      return(1);
+    }
 
     if((!ignore_consecutive) || (strcmp(result, last_description)))
     {
@@ -716,7 +735,6 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
         QApplication::restoreOverrideCursor();
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
         messagewindow.exec();
-        free(result);
         xml_close(xml_hdl);
         return(1);
       }
@@ -732,8 +750,6 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
       strcpy(last_description, result);
     }
-
-    free(result);
 
     xml_go_up(xml_hdl);
 

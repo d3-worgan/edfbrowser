@@ -735,7 +735,7 @@ void UI_RAW2EDFapp::loadbuttonpressed()
 {
 
   char path[MAX_PATH_LENGTH],
-       *result;
+       result[XML_STRBUFLEN];
 
   struct xml_handle *xml_hdl;
 
@@ -756,7 +756,7 @@ void UI_RAW2EDFapp::loadbuttonpressed()
     return;
   }
 
-  if(strcmp(xml_hdl->elementname, PROGRAM_NAME "_raw2edf_template"))
+  if(strcmp(xml_hdl->elementname[xml_hdl->level], PROGRAM_NAME "_raw2edf_template"))
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this template.");
     messagewindow.exec();
@@ -766,8 +766,7 @@ void UI_RAW2EDFapp::loadbuttonpressed()
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "sf", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -777,15 +776,12 @@ void UI_RAW2EDFapp::loadbuttonpressed()
     if(raw2edf_var->sf < 1)  raw2edf_var->sf = 1;
     if(raw2edf_var->sf > 1000000)  raw2edf_var->sf = 1000000;
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "chns", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -795,15 +791,12 @@ void UI_RAW2EDFapp::loadbuttonpressed()
     if(raw2edf_var->chns < 1)  raw2edf_var->chns = 1;
     if(raw2edf_var->chns > 256)  raw2edf_var->chns = 256;
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "phys_max", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -813,15 +806,12 @@ void UI_RAW2EDFapp::loadbuttonpressed()
     if(raw2edf_var->phys_max < 1)  raw2edf_var->phys_max = 1;
     if(raw2edf_var->phys_max > 10000000)  raw2edf_var->phys_max = 10000000;
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "straightbinary", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -831,15 +821,12 @@ void UI_RAW2EDFapp::loadbuttonpressed()
     if(raw2edf_var->straightbinary < 0)  raw2edf_var->straightbinary = 0;
     if(raw2edf_var->straightbinary > 1)  raw2edf_var->straightbinary = 1;
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "endianness", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -849,15 +836,12 @@ void UI_RAW2EDFapp::loadbuttonpressed()
     if(raw2edf_var->endianness < 0)  raw2edf_var->endianness = 0;
     if(raw2edf_var->endianness > 1)  raw2edf_var->endianness = 1;
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "samplesize", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -867,15 +851,12 @@ void UI_RAW2EDFapp::loadbuttonpressed()
     if(raw2edf_var->samplesize < 1)  raw2edf_var->samplesize = 1;
     if(raw2edf_var->samplesize > 2)  raw2edf_var->samplesize = 2;
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "offset", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -885,15 +866,12 @@ void UI_RAW2EDFapp::loadbuttonpressed()
     if(raw2edf_var->offset < 0)  raw2edf_var->offset = 0;
     if(raw2edf_var->offset > 1000000)  raw2edf_var->offset = 1000000;
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "skipblocksize", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -903,15 +881,12 @@ void UI_RAW2EDFapp::loadbuttonpressed()
     if(raw2edf_var->skipblocksize < 0)  raw2edf_var->skipblocksize = 0;
     if(raw2edf_var->skipblocksize > 1000000)  raw2edf_var->skipblocksize = 1000000;
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "skipbytes", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -921,15 +896,12 @@ void UI_RAW2EDFapp::loadbuttonpressed()
     if(raw2edf_var->skipbytes < 1)  raw2edf_var->skipbytes = 1;
     if(raw2edf_var->skipbytes > 1000000)  raw2edf_var->skipbytes = 1000000;
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "phys_dim", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -940,8 +912,6 @@ void UI_RAW2EDFapp::loadbuttonpressed()
     latin1_to_ascii(raw2edf_var->phys_dim, 16);
     remove_leading_spaces(raw2edf_var->phys_dim);
     remove_trailing_spaces(raw2edf_var->phys_dim);
-
-    free(result);
 
     xml_go_up(xml_hdl);
   }

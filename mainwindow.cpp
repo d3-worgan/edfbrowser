@@ -4563,7 +4563,7 @@ long long UI_Mainwindow::get_long_time(char *str)
 
 void UI_Mainwindow::get_rgbcolor_settings(struct xml_handle *xml_hdl, const char *id, int cnt, QColor *rgb_color)
 {
-  char *result;
+  char result[XML_STRBUFLEN];
 
   QColor tmp_color;
 
@@ -4577,13 +4577,11 @@ void UI_Mainwindow::get_rgbcolor_settings(struct xml_handle *xml_hdl, const char
   {
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     return;
   }
   tmp_color.setRed(atoi(result));
-  free(result);
 
   xml_go_up(xml_hdl);
 
@@ -4591,13 +4589,11 @@ void UI_Mainwindow::get_rgbcolor_settings(struct xml_handle *xml_hdl, const char
   {
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     return;
   }
   tmp_color.setGreen(atoi(result));
-  free(result);
 
   xml_go_up(xml_hdl);
 
@@ -4605,13 +4601,11 @@ void UI_Mainwindow::get_rgbcolor_settings(struct xml_handle *xml_hdl, const char
   {
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     return;
   }
   tmp_color.setBlue(atoi(result));
-  free(result);
 
   *rgb_color = tmp_color;
 
@@ -4623,7 +4617,7 @@ void UI_Mainwindow::get_rgbcolor_settings(struct xml_handle *xml_hdl, const char
 void UI_Mainwindow::read_color_settings()
 {
   char cfg_path[MAX_PATH_LENGTH],
-       *result;
+       result[XML_STRBUFLEN];
 
   struct xml_handle *xml_hdl;
 
@@ -4647,7 +4641,7 @@ void UI_Mainwindow::read_color_settings()
     return;
   }
 
-  if(strcmp(xml_hdl->elementname, "config"))
+  if(strcmp(xml_hdl->elementname[xml_hdl->level], "config"))
   {
     xml_close(xml_hdl);
     return;
@@ -4684,14 +4678,12 @@ void UI_Mainwindow::read_color_settings()
     xml_close(xml_hdl);
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     xml_close(xml_hdl);
     return;
   }
   maincurve->signal_color = atoi(result);
-  free(result);
 
   xml_go_up(xml_hdl);
 
@@ -4700,14 +4692,12 @@ void UI_Mainwindow::read_color_settings()
     xml_close(xml_hdl);
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     xml_close(xml_hdl);
     return;
   }
   maincurve->floating_ruler_color = atoi(result);
-  free(result);
 
   xml_go_up(xml_hdl);
 
@@ -4716,14 +4706,12 @@ void UI_Mainwindow::read_color_settings()
     xml_close(xml_hdl);
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     xml_close(xml_hdl);
     return;
   }
   maincurve->blackwhite_printing = atoi(result);
-  free(result);
 
   xml_go_up(xml_hdl);
 
@@ -4732,14 +4720,12 @@ void UI_Mainwindow::read_color_settings()
     xml_close(xml_hdl);
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     xml_close(xml_hdl);
     return;
   }
   show_annot_markers = atoi(result);
-  free(result);
 
   xml_go_up(xml_hdl);
 
@@ -4748,14 +4734,12 @@ void UI_Mainwindow::read_color_settings()
     xml_close(xml_hdl);
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     xml_close(xml_hdl);
     return;
   }
   show_baselines = atoi(result);
-  free(result);
 
   xml_go_up(xml_hdl);
 
@@ -4764,14 +4748,12 @@ void UI_Mainwindow::read_color_settings()
     xml_close(xml_hdl);
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     xml_close(xml_hdl);
     return;
   }
   maincurve->crosshair_1.color = atoi(result);
-  free(result);
 
   xml_go_up(xml_hdl);
 
@@ -4780,14 +4762,12 @@ void UI_Mainwindow::read_color_settings()
     xml_close(xml_hdl);
     return;
   }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     xml_close(xml_hdl);
     return;
   }
   maincurve->crosshair_2.color = atoi(result);
-  free(result);
 
   xml_close(xml_hdl);
 }
@@ -4799,7 +4779,7 @@ void UI_Mainwindow::read_recent_file_settings()
   int i;
 
   char cfg_path[MAX_PATH_LENGTH],
-       *result;
+       result[XML_STRBUFLEN];
 
   struct xml_handle *xml_hdl;
 
@@ -4823,7 +4803,7 @@ void UI_Mainwindow::read_recent_file_settings()
     return;
   }
 
-  if(strcmp(xml_hdl->elementname, "config"))
+  if(strcmp(xml_hdl->elementname[xml_hdl->level], "config"))
   {
     xml_close(xml_hdl);
     return;
@@ -4837,8 +4817,7 @@ void UI_Mainwindow::read_recent_file_settings()
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "recent_montagedir", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -4846,15 +4825,13 @@ void UI_Mainwindow::read_recent_file_settings()
 
     strncpy(recent_montagedir, result, MAX_PATH_LENGTH);
     recent_montagedir[MAX_PATH_LENGTH - 1] = 0;
-    free(result);
 
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "recent_savedir", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -4862,15 +4839,13 @@ void UI_Mainwindow::read_recent_file_settings()
 
     strncpy(recent_savedir, result, MAX_PATH_LENGTH);
     recent_savedir[MAX_PATH_LENGTH - 1] = 0;
-    free(result);
 
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "recent_opendir", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -4878,15 +4853,13 @@ void UI_Mainwindow::read_recent_file_settings()
 
     strncpy(recent_opendir, result, MAX_PATH_LENGTH);
     recent_opendir[MAX_PATH_LENGTH - 1] = 0;
-    free(result);
 
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "recent_colordir", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -4894,15 +4867,13 @@ void UI_Mainwindow::read_recent_file_settings()
 
     strncpy(recent_colordir, result, MAX_PATH_LENGTH);
     recent_opendir[MAX_PATH_LENGTH - 1] = 0;
-    free(result);
 
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "recent_file", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -4912,7 +4883,6 @@ void UI_Mainwindow::read_recent_file_settings()
       strncpy(&recent_file_path[0][0], result, MAX_PATH_LENGTH);
       recent_file_path[0][MAX_PATH_LENGTH - 1] = 0;
       recent_filesmenu->addAction(QString::fromLocal8Bit(&recent_file_path[0][0]));
-      free(result);
 
       for(i=1; i<MAX_RECENTFILES; i++)
       {
@@ -4920,26 +4890,19 @@ void UI_Mainwindow::read_recent_file_settings()
         {
           break;
         }
-        result = xml_get_content_of_element(xml_hdl);
-        if(result==NULL)
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
           xml_close(xml_hdl);
           return;
         }
         if(result[0] == 0)
         {
-          free(result);
           break;
         }
         strncpy(&recent_file_path[i][0], result, MAX_PATH_LENGTH);
         recent_file_path[i][MAX_PATH_LENGTH - 1] = 0;
         recent_filesmenu->addAction(QString::fromLocal8Bit(&recent_file_path[i][0]));
-        free(result);
       }
-    }
-    else
-    {
-      free(result);
     }
 
     xml_go_up(xml_hdl);
@@ -4947,30 +4910,26 @@ void UI_Mainwindow::read_recent_file_settings()
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "recent_file_mtg", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
     }
     strncpy(&recent_file_mtg_path[0][0], result, MAX_PATH_LENGTH);
     recent_file_mtg_path[0][MAX_PATH_LENGTH - 1] = 0;
-    free(result);
     for(i=1; i<MAX_RECENTFILES; i++)
     {
       if(xml_goto_next_element_with_same_name(xml_hdl))
       {
         break;
       }
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
       }
       strncpy(&recent_file_mtg_path[i][0], result, MAX_PATH_LENGTH);
       recent_file_mtg_path[i][MAX_PATH_LENGTH - 1] = 0;
-      free(result);
     }
 
     xml_go_up(xml_hdl);
@@ -4978,15 +4937,13 @@ void UI_Mainwindow::read_recent_file_settings()
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "predefined_mtg_path", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
     }
     strncpy(&predefined_mtg_path[0][0], result, MAX_PATH_LENGTH);
     predefined_mtg_path[0][MAX_PATH_LENGTH - 1] = 0;
-    free(result);
 
     for(i=1; i < MAXPREDEFINEDMONTAGES; i++)
     {
@@ -4994,14 +4951,12 @@ void UI_Mainwindow::read_recent_file_settings()
       {
         break;
       }
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         break;
       }
       strncpy(&predefined_mtg_path[i][0], result, MAX_PATH_LENGTH);
       predefined_mtg_path[i][MAX_PATH_LENGTH - 1] = 0;
-      free(result);
     }
 
     xml_go_up(xml_hdl);
@@ -5017,7 +4972,7 @@ void UI_Mainwindow::read_general_settings()
   int i;
 
   char cfg_path[MAX_PATH_LENGTH],
-       *result;
+       result[XML_STRBUFLEN];
 
   struct xml_handle *xml_hdl;
 
@@ -5041,7 +4996,7 @@ void UI_Mainwindow::read_general_settings()
     return;
   }
 
-  if(strcmp(xml_hdl->elementname, "config"))
+  if(strcmp(xml_hdl->elementname[xml_hdl->level], "config"))
   {
     xml_close(xml_hdl);
     return;
@@ -5049,8 +5004,7 @@ void UI_Mainwindow::read_general_settings()
 
   if(!xml_goto_nth_element_inside(xml_hdl, "cfg_app_version", 0))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5058,8 +5012,6 @@ void UI_Mainwindow::read_general_settings()
 
     strncpy(cfg_app_version, result, 16);
     cfg_app_version[16] = 0;
-
-    free(result);
 
     xml_go_up(xml_hdl);
   }
@@ -5076,8 +5028,7 @@ void UI_Mainwindow::read_general_settings()
     return;
   }
 
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
+  if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
     xml_close(xml_hdl);
     return;
@@ -5088,14 +5039,12 @@ void UI_Mainwindow::read_general_settings()
   {
     pixelsizefactor = 0.0294382;
   }
-  free(result);
 
   xml_go_up(xml_hdl);
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "auto_dpi", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5106,15 +5055,13 @@ void UI_Mainwindow::read_general_settings()
     {
       auto_dpi = 1;
     }
-    free(result);
 
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "x_pixelsizefactor", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5125,15 +5072,13 @@ void UI_Mainwindow::read_general_settings()
     {
       x_pixelsizefactor = 0.0294382;
     }
-    free(result);
 
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "clip_to_pane", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5144,15 +5089,13 @@ void UI_Mainwindow::read_general_settings()
     {
       clip_to_pane = 0;
     }
-    free(result);
 
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "auto_reload_mtg", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5163,15 +5106,13 @@ void UI_Mainwindow::read_general_settings()
     {
       auto_reload_mtg = 1;
     }
-    free(result);
 
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "read_biosemi_status_signal", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5182,15 +5123,13 @@ void UI_Mainwindow::read_general_settings()
     {
       read_biosemi_status_signal = 1;
     }
-    free(result);
 
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "read_nk_trigger_signal", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5201,15 +5140,13 @@ void UI_Mainwindow::read_general_settings()
     {
       read_nk_trigger_signal = 1;
     }
-    free(result);
 
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "maxfilesize_to_readin_annotations", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5220,15 +5157,13 @@ void UI_Mainwindow::read_general_settings()
     {
       maxfilesize_to_readin_annotations = 10485760000LL;
     }
-    free(result);
 
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "use_threads", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5239,7 +5174,6 @@ void UI_Mainwindow::read_general_settings()
     {
       use_threads = 1;
     }
-    free(result);
 
     xml_go_up(xml_hdl);
   }
@@ -5252,8 +5186,7 @@ void UI_Mainwindow::read_general_settings()
       return;
     }
 
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5262,12 +5195,10 @@ void UI_Mainwindow::read_general_settings()
     if((atoi(result) > MAXSPECTRUMMARKERS) || (atoi(result) < 0))
     {
       xml_close(xml_hdl);
-      free(result);
       return;
     }
 
     spectrum_colorbar->items = atoi(result);
-    free(result);
 
     xml_go_up(xml_hdl);
 
@@ -5277,8 +5208,7 @@ void UI_Mainwindow::read_general_settings()
       return;
     }
 
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5287,26 +5217,22 @@ void UI_Mainwindow::read_general_settings()
     if((atoi(result) > 2) || (atoi(result) < 0))
     {
       xml_close(xml_hdl);
-      free(result);
       return;
     }
 
     spectrum_colorbar->method = atoi(result);
-    free(result);
 
     xml_go_up(xml_hdl);
 
     if(!xml_goto_nth_element_inside(xml_hdl, "auto_adjust", 0))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
       }
 
       spectrum_colorbar->auto_adjust = atoi(result);
-      free(result);
 
       if((spectrum_colorbar->auto_adjust > 1) || (spectrum_colorbar->auto_adjust < 0))
       {
@@ -5318,15 +5244,13 @@ void UI_Mainwindow::read_general_settings()
 
     if(!xml_goto_nth_element_inside(xml_hdl, "max_colorbar_value", 0))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
       }
 
       spectrum_colorbar->max_colorbar_value = atof(result);
-      free(result);
 
       if((spectrum_colorbar->max_colorbar_value > 100000.0) || (spectrum_colorbar->max_colorbar_value < 0.0001))
       {
@@ -5342,8 +5266,7 @@ void UI_Mainwindow::read_general_settings()
       return;
     }
 
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5352,12 +5275,10 @@ void UI_Mainwindow::read_general_settings()
     if((atof(result) > 1000000.0) || (atof(result) < 0.00001))
     {
       xml_close(xml_hdl);
-      free(result);
       return;
     }
 
     spectrum_colorbar->freq[0] = atof(result);
-    free(result);
 
     for(i=1; i < spectrum_colorbar->items; i++)
     {
@@ -5367,8 +5288,7 @@ void UI_Mainwindow::read_general_settings()
         return;
       }
 
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5379,13 +5299,11 @@ void UI_Mainwindow::read_general_settings()
         if((atof(result) > 1000000.0) || (atof(result) <= spectrum_colorbar->freq[i-1]))
         {
           xml_close(xml_hdl);
-          free(result);
           return;
         }
       }
 
       spectrum_colorbar->freq[i] = atof(result);
-      free(result);
     }
 
     xml_go_up(xml_hdl);
@@ -5396,8 +5314,7 @@ void UI_Mainwindow::read_general_settings()
       return;
     }
 
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5406,12 +5323,10 @@ void UI_Mainwindow::read_general_settings()
     if((atoi(result) > 18) || (atoi(result) < 2))
     {
       xml_close(xml_hdl);
-      free(result);
       return;
     }
 
     spectrum_colorbar->color[0] = atoi(result);
-    free(result);
 
     for(i=1; i < spectrum_colorbar->items; i++)
     {
@@ -5421,8 +5336,7 @@ void UI_Mainwindow::read_general_settings()
         return;
       }
 
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5431,20 +5345,17 @@ void UI_Mainwindow::read_general_settings()
       if((atoi(result) > 18) || (atoi(result) < 2))
       {
         xml_close(xml_hdl);
-        free(result);
         return;
       }
 
       spectrum_colorbar->color[i] = atoi(result);
-      free(result);
     }
 
     xml_go_up(xml_hdl);
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "label", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5452,7 +5363,6 @@ void UI_Mainwindow::read_general_settings()
 
       strncpy(spectrum_colorbar->label[0], result, 16);
       spectrum_colorbar->label[0][16] = 0;
-      free(result);
 
       for(i=1; i < spectrum_colorbar->items; i++)
       {
@@ -5462,8 +5372,7 @@ void UI_Mainwindow::read_general_settings()
           return;
         }
 
-        result = xml_get_content_of_element(xml_hdl);
-        if(result==NULL)
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
           xml_close(xml_hdl);
           return;
@@ -5471,7 +5380,6 @@ void UI_Mainwindow::read_general_settings()
 
         strncpy(spectrum_colorbar->label[i], result, 16);
         spectrum_colorbar->label[i][16] = 0;
-        free(result);
       }
 
       xml_go_up(xml_hdl);
@@ -5482,8 +5390,7 @@ void UI_Mainwindow::read_general_settings()
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "maxdftblocksize", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5492,13 +5399,10 @@ void UI_Mainwindow::read_general_settings()
     if(atoi(result) < 10)
     {
       xml_close(xml_hdl);
-      free(result);
       return;
     }
 
     maxdftblocksize = atoi(result);
-
-    free(result);
   }
 
   xml_go_up(xml_hdl);
@@ -5507,8 +5411,7 @@ void UI_Mainwindow::read_general_settings()
   {
     if(!(xml_goto_nth_element_inside(xml_hdl, "format", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5521,15 +5424,12 @@ void UI_Mainwindow::read_general_settings()
         import_annotations_var->format = 1;
       }
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "onsettimeformat", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5537,15 +5437,12 @@ void UI_Mainwindow::read_general_settings()
 
       import_annotations_var->onsettimeformat = atoi(result);
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "onsetcolumn", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5553,15 +5450,12 @@ void UI_Mainwindow::read_general_settings()
 
       import_annotations_var->onsetcolumn = atoi(result);
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "descriptioncolumn", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5569,15 +5463,12 @@ void UI_Mainwindow::read_general_settings()
 
       import_annotations_var->descriptioncolumn = atoi(result);
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "useduration", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5590,15 +5481,12 @@ void UI_Mainwindow::read_general_settings()
         import_annotations_var->useduration = 0;
       }
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "durationcolumn", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5611,15 +5499,12 @@ void UI_Mainwindow::read_general_settings()
         import_annotations_var->durationcolumn = 0;
       }
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "datastartline", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5627,15 +5512,12 @@ void UI_Mainwindow::read_general_settings()
 
       import_annotations_var->datastartline = atoi(result);
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "separator", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5645,15 +5527,12 @@ void UI_Mainwindow::read_general_settings()
 
       import_annotations_var->separator[3] = 0;
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "dceventbittime", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5661,15 +5540,12 @@ void UI_Mainwindow::read_general_settings()
 
       import_annotations_var->dceventbittime = atoi(result);
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "triggerlevel", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5677,15 +5553,12 @@ void UI_Mainwindow::read_general_settings()
 
       import_annotations_var->triggerlevel = atof(result);
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "manualdescription", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5698,15 +5571,12 @@ void UI_Mainwindow::read_general_settings()
         import_annotations_var->manualdescription = 0;
       }
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "description", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5716,15 +5586,12 @@ void UI_Mainwindow::read_general_settings()
 
       import_annotations_var->description[20] = 0;
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "ignoreconsecutive", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5737,8 +5604,6 @@ void UI_Mainwindow::read_general_settings()
         import_annotations_var->ignoreconsecutive = 0;
       }
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
@@ -5749,8 +5614,7 @@ void UI_Mainwindow::read_general_settings()
   {
     if(!(xml_goto_nth_element_inside(xml_hdl, "separator", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5758,15 +5622,12 @@ void UI_Mainwindow::read_general_settings()
 
       export_annotations_var->separator = atoi(result);
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "format", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -5774,23 +5635,18 @@ void UI_Mainwindow::read_general_settings()
 
       export_annotations_var->format = atoi(result);
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "duration", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
       }
 
       export_annotations_var->duration = atoi(result);
-
-      free(result);
 
       xml_go_up(xml_hdl);
     }
@@ -5800,8 +5656,7 @@ void UI_Mainwindow::read_general_settings()
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "live_stream_update_interval", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5813,15 +5668,12 @@ void UI_Mainwindow::read_general_settings()
       live_stream_update_interval = 500;
     }
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "powerlinefreq", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5833,15 +5685,12 @@ void UI_Mainwindow::read_general_settings()
       powerlinefreq = 50;
     }
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "mousewheelsens", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5853,15 +5702,12 @@ void UI_Mainwindow::read_general_settings()
       mousewheelsens = 10;
     }
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "average_period", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5869,15 +5715,12 @@ void UI_Mainwindow::read_general_settings()
 
     average_period = atof(result);
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "average_ratio", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5889,15 +5732,12 @@ void UI_Mainwindow::read_general_settings()
       average_ratio = 0;
     }
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "average_upsidedown", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5912,15 +5752,12 @@ void UI_Mainwindow::read_general_settings()
       average_upsidedown = 0;
     }
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "average_bw", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5935,15 +5772,12 @@ void UI_Mainwindow::read_general_settings()
       average_bw = 0;
     }
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "spectrum_bw", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5958,15 +5792,12 @@ void UI_Mainwindow::read_general_settings()
       spectrum_bw = 0;
     }
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "spectrum_sqrt", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -5981,15 +5812,12 @@ void UI_Mainwindow::read_general_settings()
       spectrum_sqrt = 0;
     }
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "spectrum_vlog", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -6004,15 +5832,12 @@ void UI_Mainwindow::read_general_settings()
       spectrum_vlog = 0;
     }
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "spectrumdock_sqrt", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -6027,15 +5852,12 @@ void UI_Mainwindow::read_general_settings()
       spectrumdock_sqrt = 0;
     }
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "spectrumdock_vlog", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -6050,15 +5872,12 @@ void UI_Mainwindow::read_general_settings()
       spectrumdock_vlog = 0;
     }
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "z_score_var.zscore_page_len", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -6071,15 +5890,12 @@ void UI_Mainwindow::read_general_settings()
       z_score_var.zscore_page_len = 30;
     }
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "z_score_var.z_threshold", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -6092,15 +5908,12 @@ void UI_Mainwindow::read_general_settings()
       z_score_var.z_threshold = 0.0;
     }
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "z_score_var.crossoverfreq", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -6113,15 +5926,12 @@ void UI_Mainwindow::read_general_settings()
       z_score_var.crossoverfreq = 7.5;
     }
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "z_score_var.z_hysteresis", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -6134,15 +5944,12 @@ void UI_Mainwindow::read_general_settings()
       z_score_var.z_hysteresis = 0.0;
     }
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "z_score_var.zscore_error_detection", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -6155,8 +5962,6 @@ void UI_Mainwindow::read_general_settings()
       z_score_var.zscore_error_detection = 50;
     }
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
@@ -6164,8 +5969,7 @@ void UI_Mainwindow::read_general_settings()
   {
     if(!(xml_goto_nth_element_inside(xml_hdl, "sf", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -6175,15 +5979,12 @@ void UI_Mainwindow::read_general_settings()
       if(raw2edf_var.sf < 1)  raw2edf_var.sf = 1;
       if(raw2edf_var.sf > 1000000)  raw2edf_var.sf = 1000000;
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "chns", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -6193,15 +5994,12 @@ void UI_Mainwindow::read_general_settings()
       if(raw2edf_var.chns < 1)  raw2edf_var.chns = 1;
       if(raw2edf_var.chns > 256)  raw2edf_var.chns = 256;
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "phys_max", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -6211,15 +6009,12 @@ void UI_Mainwindow::read_general_settings()
       if(raw2edf_var.phys_max < 1)  raw2edf_var.phys_max = 1;
       if(raw2edf_var.phys_max > 10000000)  raw2edf_var.phys_max = 10000000;
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "straightbinary", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -6229,15 +6024,12 @@ void UI_Mainwindow::read_general_settings()
       if(raw2edf_var.straightbinary < 0)  raw2edf_var.straightbinary = 0;
       if(raw2edf_var.straightbinary > 1)  raw2edf_var.straightbinary = 1;
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "endianness", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -6247,15 +6039,12 @@ void UI_Mainwindow::read_general_settings()
       if(raw2edf_var.endianness < 0)  raw2edf_var.endianness = 0;
       if(raw2edf_var.endianness > 1)  raw2edf_var.endianness = 1;
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "samplesize", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -6265,15 +6054,12 @@ void UI_Mainwindow::read_general_settings()
       if(raw2edf_var.samplesize < 1)  raw2edf_var.samplesize = 1;
       if(raw2edf_var.samplesize > 2)  raw2edf_var.samplesize = 2;
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "offset", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -6283,15 +6069,12 @@ void UI_Mainwindow::read_general_settings()
       if(raw2edf_var.offset < 0)  raw2edf_var.offset = 0;
       if(raw2edf_var.offset > 1000000)  raw2edf_var.offset = 1000000;
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "skipblocksize", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -6301,15 +6084,12 @@ void UI_Mainwindow::read_general_settings()
       if(raw2edf_var.skipblocksize < 0)  raw2edf_var.skipblocksize = 0;
       if(raw2edf_var.skipblocksize > 1000000)  raw2edf_var.skipblocksize = 1000000;
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "skipbytes", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -6319,15 +6099,12 @@ void UI_Mainwindow::read_general_settings()
       if(raw2edf_var.skipbytes < 1)  raw2edf_var.skipbytes = 1;
       if(raw2edf_var.skipbytes > 1000000)  raw2edf_var.skipbytes = 1000000;
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "phys_dim", 0)))
     {
-      result = xml_get_content_of_element(xml_hdl);
-      if(result==NULL)
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         xml_close(xml_hdl);
         return;
@@ -6339,8 +6116,6 @@ void UI_Mainwindow::read_general_settings()
       remove_leading_spaces(raw2edf_var.phys_dim);
       remove_trailing_spaces(raw2edf_var.phys_dim);
 
-      free(result);
-
       xml_go_up(xml_hdl);
     }
 
@@ -6349,8 +6124,7 @@ void UI_Mainwindow::read_general_settings()
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "check_for_updates", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -6359,15 +6133,12 @@ void UI_Mainwindow::read_general_settings()
     check_for_updates = atoi(result);
     if((check_for_updates < 0) || (check_for_updates > 1))  check_for_updates = 1;
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "viewtime_indicator_type", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -6376,15 +6147,12 @@ void UI_Mainwindow::read_general_settings()
     viewtime_indicator_type = atoi(result);
     if((viewtime_indicator_type < 0) || (viewtime_indicator_type > 2))  viewtime_indicator_type = 1;
 
-    free(result);
-
     xml_go_up(xml_hdl);
   }
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "mainwindow_title_type", 0)))
   {
-    result = xml_get_content_of_element(xml_hdl);
-    if(result==NULL)
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
@@ -6392,8 +6160,6 @@ void UI_Mainwindow::read_general_settings()
 
     mainwindow_title_type = atoi(result);
     if((mainwindow_title_type < 0) || (mainwindow_title_type > 2))  mainwindow_title_type = 1;
-
-    free(result);
 
     xml_go_up(xml_hdl);
   }
