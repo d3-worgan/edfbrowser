@@ -8,6 +8,9 @@
  - Make it possible to remove just one filter.
    (Before, you could only remove all filters.)
 
+ - Make it possible to close just one file.
+   (Before, you could only close all files.)
+
 
 
  version 1.55      February 7, 2015

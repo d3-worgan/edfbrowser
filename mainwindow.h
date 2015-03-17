@@ -325,6 +325,7 @@ private:
                *timemenu,
                *windowmenu,
                *recent_filesmenu,
+               *close_filemenu,
                *montagemenu,
                *patternmenu,
                *print_img_menu;
@@ -443,6 +444,7 @@ public slots:
 private slots:
   void open_new_file();
   void show_file_info();
+  void close_file_action_func(QAction *);
   void close_all_files();
   void exit_program();
   void signalproperties_dialog();

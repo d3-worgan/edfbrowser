@@ -434,6 +434,13 @@ void UI_SignalChooser::signalDelete()
 
     mainwindow->signalcomp[sigcomp_nr]->filter_cnt = 0;
 
+    if(mainwindow->signalcomp[sigcomp_nr]->spike_filter != NULL)
+    {
+      free_spike_filter(mainwindow->signalcomp[sigcomp_nr]->spike_filter);
+    }
+
+    mainwindow->signalcomp[sigcomp_nr]->spike_filter = NULL;
+
     for(j=0; j<mainwindow->signalcomp[sigcomp_nr]->ravg_filter_cnt; j++)
     {
       free_ravg_filter(mainwindow->signalcomp[sigcomp_nr]->ravg_filter[j]);

@@ -265,6 +265,10 @@ UI_Mainwindow::UI_Mainwindow()
   recent_filesmenu->setTitle("Recent files");
   connect(recent_filesmenu, SIGNAL(triggered(QAction *)), this, SLOT(recent_file_action_func(QAction *)));
 
+  close_filemenu = new QMenu(this);
+  close_filemenu->setTitle("Close");
+  connect(close_filemenu, SIGNAL(triggered(QAction *)), this, SLOT(close_file_action_func(QAction *)));
+
   print_img_menu = new QMenu(this);
   print_img_menu->setTitle("to Image");
   print_img_menu->addAction("640 x 480",   this, SLOT(print_to_img_640x480()));
@@ -306,6 +310,7 @@ UI_Mainwindow::UI_Mainwindow()
   filemenu->addMenu(recent_filesmenu);
   filemenu->addMenu(printmenu);
   filemenu->addAction("Info",         this, SLOT(show_file_info()));
+  filemenu->addMenu(close_filemenu);
   filemenu->addAction("Close all",    this, SLOT(close_all_files()), QKeySequence::Close);
   filemenu->addAction("Exit",         this, SLOT(exit_program()), QKeySequence::Quit);
   menubar->addMenu(filemenu);
@@ -2513,6 +2518,8 @@ void UI_Mainwindow::open_new_file()
   }
 
   cmdlineargument = 0;
+
+  close_filemenu->addAction(QString::fromLocal8Bit(path));
 }
 
 
@@ -2804,6 +2811,214 @@ void UI_Mainwindow::remove_all_signals()
 }
 
 
+void UI_Mainwindow::close_file_action_func(QAction *action)
+{
+  int i, j, k, p,
+      file_n;
+
+  char path[MAX_PATH_LENGTH];
+
+  if(files_open < 2)
+  {
+    close_all_files();
+
+    return;
+  }
+
+  strcpy(path, action->text().toLocal8Bit().data());
+
+  for(file_n=0; file_n<files_open; file_n++)
+  {
+    if(!strcmp(path, edfheaderlist[file_n]->filename))
+    {
+      break;
+    }
+  }
+
+  if(file_n == files_open)  return;
+
+  delete action;
+
+  stop_video_generic();
+
+  for(j=0; j<signalcomps; )
+  {
+    if(signalcomp[j]->filenum == file_n)
+    {
+      for(i=0; i<MAXSPECTRUMDOCKS; i++)
+      {
+        if(spectrumdock[i]->signalcomp == signalcomp[j])
+        {
+          spectrumdock[i]->clear();
+          spectrumdock[i]->dock->hide();
+        }
+      }
+
+      for(i=0; i<MAXSPECTRUMDIALOGS; i++)
+      {
+        p = signalcomp[j]->spectr_dialog[i];
+
+        if(p != 0)
+        {
+          delete spectrumdialog[p - 1];
+
+          spectrumdialog[p - 1] = NULL;
+        }
+      }
+
+      for(i=0; i<MAXAVERAGECURVEDIALOGS; i++)
+      {
+        p = signalcomp[j]->avg_dialog[i];
+
+        if(p != 0)
+        {
+          delete averagecurvedialog[p - 1];
+
+          averagecurvedialog[p - 1] = NULL;
+        }
+      }
+
+      for(i=0; i<MAXZSCOREDIALOGS; i++)
+      {
+        p = signalcomp[j]->zscoredialog[i];
+
+        if(p != 0)
+        {
+          delete zscoredialog[p - 1];
+
+          zscoredialog[p - 1] = NULL;
+        }
+      }
+
+      if(signalcomp[j]->hascursor2)
+      {
+        maincurve->crosshair_2.active = 0;
+        maincurve->crosshair_2.moving = 0;
+      }
+
+      if(signalcomp[j]->hascursor1)
+      {
+        maincurve->crosshair_1.active = 0;
+        maincurve->crosshair_2.active = 0;
+        maincurve->crosshair_1.moving = 0;
+        maincurve->crosshair_2.moving = 0;
+
+        for(i=0; i<signalcomps; i++)
+        {
+          signalcomp[i]->hascursor2 = 0;
+        }
+      }
+
+      if(signalcomp[j]->hasruler)
+      {
+        maincurve->ruler_active = 0;
+        maincurve->ruler_moving = 0;
+      }
+
+      for(k=0; k<signalcomp[j]->filter_cnt; k++)
+      {
+        free(signalcomp[j]->filter[k]);
+      }
+
+      signalcomp[j]->filter_cnt = 0;
+
+      if(signalcomp[j]->spike_filter)
+      {
+        free_spike_filter(signalcomp[j]->spike_filter);
+
+        signalcomp[j]->spike_filter = NULL;
+      }
+
+      for(k=0; k<signalcomp[j]->ravg_filter_cnt; k++)
+      {
+        free_ravg_filter(signalcomp[j]->ravg_filter[k]);
+      }
+
+      signalcomp[j]->ravg_filter_cnt = 0;
+
+      if(signalcomp[j]->ecg_filter != NULL)
+      {
+        free_ecg_filter(signalcomp[j]->ecg_filter);
+
+        signalcomp[j]->ecg_filter = NULL;
+
+        strcpy(signalcomp[j]->signallabel, signalcomp[j]->signallabel_bu);
+        signalcomp[j]->signallabellen = signalcomp[j]->signallabellen_bu;
+        strcpy(signalcomp[j]->physdimension, signalcomp[j]->physdimension_bu);
+      }
+
+      for(k=0; k<signalcomp[j]->fidfilter_cnt; k++)
+      {
+        free(signalcomp[j]->fidfilter[k]);
+        fid_run_free(signalcomp[j]->fid_run[k]);
+        fid_run_freebuf(signalcomp[j]->fidbuf[k]);
+        fid_run_freebuf(signalcomp[j]->fidbuf2[k]);
+      }
+
+      signalcomp[j]->fidfilter_cnt = 0;
+
+      free(signalcomp[j]);
+
+      for(i=j; i<signalcomps - 1; i++)
+      {
+        signalcomp[i] = signalcomp[i + 1];
+      }
+
+      signalcomps--;
+    }
+    else
+    {
+      j++;
+    }
+  }
+
+  fclose(edfheaderlist[file_n]->file_hdl);
+  free(edfheaderlist[file_n]->edfparam);
+  free(edfheaderlist[file_n]);
+  edfplus_annotation_delete_list(&annotationlist[file_n]);
+
+  if(annotations_dock[file_n] != NULL)
+  {
+    annotations_dock[file_n]->docklist->close();
+    delete annotations_dock[file_n];
+    annotations_dock[file_n] = NULL;
+  }
+
+  if((file_n == sel_viewtime) && (files_open > 1))
+  {
+    if(file_n > 0)
+    {
+      sel_viewtime = 0;
+    }
+    else
+    {
+      sel_viewtime = 1;
+    }
+
+    sel_viewtime_act[sel_viewtime]->setChecked(true);
+
+    setMainwindowTitle(edfheaderlist[sel_viewtime]);
+  }
+
+  delete sel_viewtime_act[file_n];
+
+  for(i=file_n; i<files_open - 1; i++)
+  {
+    edfheaderlist[i] = edfheaderlist[i + 1];
+
+    annotationlist[i] = annotationlist[i + 1];
+
+    annotations_dock[i] = annotations_dock[i + 1];
+
+    sel_viewtime_act[i] = sel_viewtime_act[i + 1];
+  }
+
+  files_open--;
+
+  setup_viewbuf();
+}
+
+
 void UI_Mainwindow::close_all_files()
 {
   int i, j, k,
@@ -2903,9 +3118,11 @@ void UI_Mainwindow::close_all_files()
 
   setWindowTitle(PROGRAM_NAME);
 
+  close_filemenu->clear();
+
   if(!exit_in_progress)
   {
-    maincurve->update();
+    setup_viewbuf();
   }
 }
 
