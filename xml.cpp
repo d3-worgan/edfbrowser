@@ -968,9 +968,7 @@ void xml_close(struct xml_handle *handle_p)  /* delete everything and close the 
 
   if(handle_p->file != NULL)  fclose(handle_p->file);
 
-  handle_p->file = NULL;
-
-  handle_p->level = 0;
+  free(handle_p);
 }
 
 

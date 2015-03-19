@@ -2816,7 +2816,7 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
   int i, j, k, p,
       file_n;
 
-  char path[MAX_PATH_LENGTH];
+  char f_path[MAX_PATH_LENGTH];
 
   if(files_open < 2)
   {
@@ -2825,11 +2825,11 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
     return;
   }
 
-  strcpy(path, action->text().toLocal8Bit().data());
+  strcpy(f_path, action->text().toLocal8Bit().data());
 
   for(file_n=0; file_n<files_open; file_n++)
   {
-    if(!strcmp(path, edfheaderlist[file_n]->filename))
+    if(!strcmp(f_path, edfheaderlist[file_n]->filename))
     {
       break;
     }
@@ -2969,6 +2969,14 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
     else
     {
       j++;
+    }
+  }
+
+  for(j=0; j<signalcomps; j++)
+  {
+    if(signalcomp[j]->filenum > file_n)
+    {
+      signalcomp[j]->filenum--;
     }
   }
 
