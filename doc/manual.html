@@ -60,6 +60,7 @@
   <li><a href="#Biosemi_to_BDFplus">Biosemi to BDF+ format converter</a></li>
   <li><a href="#Fino_to_EDF">Finometer to EDF format converter</a></li>
   <li><a href="#Wave_to_EDF">Wave to EDF format converter</a></li>
+  <li><a href="#FMaudio_to_EDF">FM Audio ECG to EDF format converter</a></li>
   <li><a href="#Nexfin_to_EDF">Nexfin to EDF format converter</a></li>
   <li><a href="#Emsa_to_EDF">Emsa to EDF+ format converter</a></li>
   <li><a href="#edfd_to_edfc">EDF+D to EDF+C converter</a></li>
@@ -1230,6 +1231,26 @@
   It accepts 1 to 256 channels and samplerates from 1 Hz to 500000 Hz.<br>
   8 and 16 bit wave files will be converted to EDF. 24 bit wave files will be<br>
   converted to BDF. Compressed files are not supported.
+</p>
+
+<p><br></p>
+
+<p><a href="#Table_of_Contents">Table of Contents</a></p>
+
+<p><br><br></p>
+
+<h3><a name="FMaudio_to_EDF">FM Audio ECG to EDF converter</a></h3>
+
+<p>
+  This tool converts an audiorecording containing an FM modulated ECG waveform to EDF.<br>
+  The carrier centerfrequency of the FM signal is 1900Hz. Frequency deviation is 100Hz<br>
+  per milli-Volt. This technic is used to upload ECG recording via POTS (Plain Old Telephone Service).<br>
+  The converter has been tested with audio recordings from Cardiette Microtel but should work<br>
+  also with devices from Aerotel HeartView.<br>
+<br>
+  The converter accepts recordings made in WAV format with 16-bit resolution.<br>
+  The recording must contain only one channel (mono) and the samplerate must be<br>
+  one of the following: 8000, 11025, 16000, 22050, 32000, 44100, 48000, 88200 or 96000 Hz.<br>
 </p>
 
 <p><br></p>

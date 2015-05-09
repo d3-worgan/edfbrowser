@@ -194,6 +194,11 @@ double run_ravg_filter(double new_input, struct ravg_filter_settings *settings)
 
 void free_ravg_filter(struct ravg_filter_settings *settings)
 {
+  if(settings == NULL)
+  {
+    return;
+  }
+
   free(settings->buf);
   free(settings->buf2);
   free(settings);

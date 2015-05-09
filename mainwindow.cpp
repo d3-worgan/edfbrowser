@@ -662,6 +662,7 @@ UI_Mainwindow::UI_Mainwindow()
   toolsmenu->addAction("Convert Unisens to EDF+", this, SLOT(unisens2edf_converter()));
   toolsmenu->addAction("Convert BI9800TL+3 to EDF", this, SLOT(BI98002edf_converter()));
   toolsmenu->addAction("Convert Wave to EDF", this, SLOT(convert_wave_to_edf()));
+  toolsmenu->addAction("Convert FM Audio ECG to EDF", this, SLOT(convert_fm_audio_to_edf()));
   toolsmenu->addAction("Convert Binary/raw data to EDF", this, SLOT(convert_binary_to_edf()));
   toolsmenu->addSeparator();
   toolsmenu->addAction("Options", this, SLOT(show_options_dialog()));
@@ -1542,7 +1543,13 @@ void UI_Mainwindow::convert_fino_to_edf()
 
 void UI_Mainwindow::convert_wave_to_edf()
 {
-  UI_WAV2EDFwindow fino2edf(recent_opendir, recent_savedir);
+  UI_WAV2EDFwindow wav2edf(recent_opendir, recent_savedir);
+}
+
+
+void UI_Mainwindow::convert_fm_audio_to_edf()
+{
+  UI_FMaudio2EDFwindow fma2edf(recent_opendir, recent_savedir);
 }
 
 

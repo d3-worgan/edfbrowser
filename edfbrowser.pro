@@ -94,6 +94,7 @@ HEADERS += adjustfiltersettings.h
 HEADERS += import_annotations.h
 HEADERS += ravg_filter.h
 HEADERS += wav2edf.h
+HEADERS += fma_ecg2edf.h
 HEADERS += averager_dialog.h
 HEADERS += averager_curve_wnd.h
 HEADERS += ecg_filter.h
@@ -179,6 +180,7 @@ SOURCES += adjustfiltersettings.cpp
 SOURCES += import_annotations.cpp
 SOURCES += ravg_filter.cpp
 SOURCES += wav2edf.cpp
+SOURCES += fma_ecg2edf.cpp
 SOURCES += averager_dialog.cpp
 SOURCES += averager_curve_wnd.cpp
 SOURCES += ecg_filter.cpp
@@ -209,6 +211,8 @@ RESOURCES = images.qrc
 win32 {
  RC_FILE = edfbrowser.rc
 }
+
+QMAKE_CXXFLAGS += -Wextra -Wshadow -Wformat-nonliteral -Wformat-security -Wtype-limits -Wfatal-errors
 
 unix {
 target.path = /usr/bin

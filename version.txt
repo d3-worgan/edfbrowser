@@ -2,6 +2,8 @@
  to be released
  --------------
 
+ - Added a tool that converts an audiorecording containing an FM modulated ECG waveform to EDF.
+
  - Added an anti-aliasing filter to the samplerate divider/decimator
    in the file reducer tool. The order of this filter can be choosen.
 
