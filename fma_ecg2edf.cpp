@@ -29,6 +29,21 @@
 ***************************************************************************
 */
 
+/*
+***************************************************************************
+*
+* This is an FM decoder using up-sampling and zero-crossing detection.
+* It expects the source signal to be sampled at the traditional samplerates
+* used for pc sound cards: 8000, 11025, 16000, 22050, 32000, 44100, 48000, 88200 or 96000 Hz
+* with 16-bit resolution.
+*
+* The carrier centerfrequency of the FM signal is 1900Hz.
+* Frequency deviation is 100Hz per milli-Volt.
+* This technic is used to upload an ECG recording via POTS (Plain Old Telephone Service).
+*
+***************************************************************************
+*/
+
 
 
 #include "fma_ecg2edf.h"
@@ -298,7 +313,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
                  usf = 10;
                  break;
     case 16000 : dsf = 384;
-                 usf = 24;
+                 usf = 12;
                  break;
     case 11025 : dsf = 441;
                  usf = 20;
@@ -322,9 +337,14 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
     return;
   }
 
-  uf = sf * usf;
+//  usf *= 2;  // Select 1000Hz instead of 500Hz for the new EDF file,
+               // not used because it doesn't improve signal quality
 
-  df = uf / dsf;
+                  // sf:   samplefrequency of the source file
+  uf = sf * usf;  // uf:   upsampling frequency (192KHz or 220.5KHz)
+                  // usf:  upsampling factor
+  df = uf / dsf;  // df:   downsampling frequency (500Hz, samplefrequency of the new EDF file)
+                  // dsf:  downsampling factor
 
   resolution = *((unsigned short *)(scratchpad + 22));
 
@@ -516,7 +536,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
 
   QProgressDialog progress("Converting a Wave file ...", "Abort", 0, (int)blocks, myobjectDialog);
   progress.setWindowModality(Qt::WindowModal);
-  progress.setMinimumDuration(100);
+  progress.setMinimumDuration(0);
 
   progress_steps = blocks / 100LL;
   if(progress_steps < 1LL)
