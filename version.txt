@@ -13,6 +13,10 @@
  - Make it possible to close just one file.
    (Before, you could only close all files.)
 
+ - Make the Nihon Kohden converter work with "EEG-1100A V02.00" files.
+
+ - Changed licence to GPLv3.
+
 
 
  version 1.55      February 7, 2015
