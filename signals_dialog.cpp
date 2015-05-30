@@ -261,7 +261,7 @@ void UI_Signalswindow::DisplayCompButtonClicked()
 
 void UI_Signalswindow::DisplayButtonClicked()
 {
-  int i, n, s;
+  int i, n, s, old_scomps;
 
   struct signalcompblock *newsignalcomp;
 
@@ -278,6 +278,8 @@ void UI_Signalswindow::DisplayButtonClicked()
     SignalsDialog->close();
     return;
   }
+
+  old_scomps = mainwindow->signalcomps;
 
   for(i=0; i<n; i++)
   {
@@ -324,7 +326,7 @@ void UI_Signalswindow::DisplayButtonClicked()
     mainwindow->signalcomps++;
   }
 
-  if((i) && (mainwindow->files_open == 1))
+  if((i) && (mainwindow->files_open == 1) && (old_scomps == 0))
   {
     if((mainwindow->signalcomp[0]->file_duration / TIME_DIMENSION) < 5)
     {
