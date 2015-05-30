@@ -324,6 +324,14 @@ void UI_Signalswindow::DisplayButtonClicked()
     mainwindow->signalcomps++;
   }
 
+  if((i) && (mainwindow->files_open == 1))
+  {
+    if((mainwindow->signalcomp[0]->file_duration / TIME_DIMENSION) < 5)
+    {
+      mainwindow->pagetime = mainwindow->signalcomp[0]->file_duration;
+    }
+  }
+
   SignalsDialog->close();
 
   mainwindow->setup_viewbuf();
