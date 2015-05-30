@@ -688,11 +688,23 @@ void UI_Signalswindow::show_signals(int row)
 
   strcpy(str, "Duration   ");
   file_duration = mainwindow->edfheaderlist[row]->long_data_record_duration * mainwindow->edfheaderlist[row]->datarecords;
-  snprintf(str + 11, 240,
-          "%2i:%02i:%02i",
-          (int)((file_duration / TIME_DIMENSION)/ 3600LL),
-          (int)(((file_duration / TIME_DIMENSION) % 3600LL) / 60LL),
-          (int)((file_duration / TIME_DIMENSION) % 60LL));
+  if((file_duration / TIME_DIMENSION) / 10)
+  {
+    snprintf(str + 11, 240,
+            "%2i:%02i:%02i",
+            (int)((file_duration / TIME_DIMENSION)/ 3600LL),
+            (int)(((file_duration / TIME_DIMENSION) % 3600LL) / 60LL),
+            (int)((file_duration / TIME_DIMENSION) % 60LL));
+  }
+  else
+  {
+    snprintf(str + 11, 240,
+            "%2i:%02i:%02i.%06i",
+            (int)((file_duration / TIME_DIMENSION)/ 3600LL),
+            (int)(((file_duration / TIME_DIMENSION) % 3600LL) / 60LL),
+            (int)((file_duration / TIME_DIMENSION) % 60LL),
+            (int)((file_duration % TIME_DIMENSION) / 10LL));
+  }
   label4->setText(str);
 
   skip = 0;

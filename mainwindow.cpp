@@ -326,6 +326,33 @@ UI_Mainwindow::UI_Mainwindow()
 
   displaymenu->addSeparator();
 
+  page_10u = new QAction("10 uSec/page", this);
+  displaymenu->addAction(page_10u);
+
+  page_20u = new QAction("20 uSec/page", this);
+  displaymenu->addAction(page_20u);
+
+  page_50u = new QAction("50 uSec/page", this);
+  displaymenu->addAction(page_50u);
+
+  page_100u = new QAction("100 uSec/page", this);
+  displaymenu->addAction(page_100u);
+
+  page_200u = new QAction("200 uSec/page", this);
+  displaymenu->addAction(page_200u);
+
+  page_500u = new QAction("500 uSec/page", this);
+  displaymenu->addAction(page_500u);
+
+  page_1m = new QAction("1 mSec/page", this);
+  displaymenu->addAction(page_1m);
+
+  page_2m = new QAction("2 mSec/page", this);
+  displaymenu->addAction(page_2m);
+
+  page_5m = new QAction("5 mSec/page", this);
+  displaymenu->addAction(page_5m);
+
   page_10m = new QAction("10 mSec/page", this);
   displaymenu->addAction(page_10m);
 
@@ -405,6 +432,15 @@ UI_Mainwindow::UI_Mainwindow()
   menubar->addMenu(displaymenu);
 
   DisplayGroup = new QActionGroup(this);
+  DisplayGroup->addAction(page_10u);
+  DisplayGroup->addAction(page_20u);
+  DisplayGroup->addAction(page_50u);
+  DisplayGroup->addAction(page_100u);
+  DisplayGroup->addAction(page_200u);
+  DisplayGroup->addAction(page_500u);
+  DisplayGroup->addAction(page_1m);
+  DisplayGroup->addAction(page_2m);
+  DisplayGroup->addAction(page_5m);
   DisplayGroup->addAction(page_10m);
   DisplayGroup->addAction(page_20m);
   DisplayGroup->addAction(page_50m);
@@ -3337,6 +3373,60 @@ void UI_Mainwindow::set_page_mult2()
 
 void UI_Mainwindow::set_display_time(QAction *action)
 {
+  if(action==page_10u)
+  {
+    pagetime = TIME_DIMENSION / 100000;
+
+    timescale_doubler = 10;
+  }
+  if(action==page_20u)
+  {
+    pagetime = TIME_DIMENSION / 50000;
+
+    timescale_doubler = 20;
+  }
+  if(action==page_50u)
+  {
+    pagetime = TIME_DIMENSION / 20000;
+
+    timescale_doubler = 50;
+  }
+  if(action==page_100u)
+  {
+    pagetime = TIME_DIMENSION / 10000;
+
+    timescale_doubler = 10;
+  }
+  if(action==page_200u)
+  {
+    pagetime = TIME_DIMENSION / 5000;
+
+    timescale_doubler = 20;
+  }
+  if(action==page_500u)
+  {
+    pagetime = TIME_DIMENSION / 2000;
+
+    timescale_doubler = 50;
+  }
+  if(action==page_1m)
+  {
+    pagetime = TIME_DIMENSION / 1000;
+
+    timescale_doubler = 10;
+  }
+  if(action==page_2m)
+  {
+    pagetime = TIME_DIMENSION / 500;
+
+    timescale_doubler = 20;
+  }
+  if(action==page_5m)
+  {
+    pagetime = TIME_DIMENSION / 200;
+
+    timescale_doubler = 50;
+  }
   if(action==page_10m)
   {
     pagetime = TIME_DIMENSION / 100;
