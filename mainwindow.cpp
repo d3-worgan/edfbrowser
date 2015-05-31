@@ -126,6 +126,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   timescale_doubler = 10;
 
+  default_amplitude = 100;
+
   recent_montagedir[0] = 0;
   recent_savedir[0] = 0;
   recent_opendir[0] = 0;
@@ -6482,6 +6484,20 @@ void UI_Mainwindow::read_general_settings()
     xml_go_up(xml_hdl);
   }
 
+  if(!(xml_goto_nth_element_inside(xml_hdl, "default_amplitude", 0)))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    default_amplitude = atof(result);
+    if((default_amplitude < 0.001) || (default_amplitude > 10000000))  default_amplitude = 100;
+
+    xml_go_up(xml_hdl);
+  }
+
   xml_close(xml_hdl);
 }
 
@@ -6849,6 +6865,8 @@ void UI_Mainwindow::write_settings()
     fprintf(cfgfile, "    <viewtime_indicator_type>%i</viewtime_indicator_type>\n", viewtime_indicator_type);
 
     fprintf(cfgfile, "    <mainwindow_title_type>%i</mainwindow_title_type>\n", mainwindow_title_type);
+
+    fprintf(cfgfile, "    <default_amplitude>%f</default_amplitude>\n", default_amplitude);
 
     fprintf(cfgfile, "  </UI>\n</config>\n");
 

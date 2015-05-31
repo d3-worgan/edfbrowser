@@ -430,7 +430,6 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   dspinbox3_2->setGeometry(QRect(140, 592, 140, 20));
   dspinbox3_2->setMinimum(0.0001);
   dspinbox3_2->setMaximum(100000.0);
-  dspinbox3_2->setValue(1.0);
   dspinbox3_2->setValue(mainwindow->spectrum_colorbar->max_colorbar_value);
 
   checkbox3_1 = new QCheckBox("Auto", tab3);
@@ -651,6 +650,19 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   combobox4_3->setCurrentIndex(mainwindow->mainwindow_title_type);
 
   QObject::connect(combobox4_3, SIGNAL(currentIndexChanged(int)), this, SLOT(combobox4_3IndexChanged(int)));
+
+  label4_11 = new QLabel(tab4);
+  label4_11->setGeometry(20, 495, 310, 25);
+  label4_11->setText("Default amplitude");
+
+  dspinbox4_4 = new QDoubleSpinBox(tab4);
+  dspinbox4_4->setGeometry(200, 495, 140, 20);
+  dspinbox4_4->setMinimum(0.001);
+  dspinbox4_4->setMaximum(10000000);
+  dspinbox4_4->setSuffix(" /cm");
+  dspinbox4_4->setValue(mainwindow->default_amplitude);
+
+  QObject::connect(dspinbox4_4, SIGNAL(valueChanged(double)), this, SLOT(dspinbox4_4ValueChanged(double)));
 
   tabholder->addTab(tab4, "Other");
 
@@ -1460,6 +1472,12 @@ void UI_OptionsDialog::AnnotMkrButtonClicked(SpecialButton *)
 
     mainwindow->maincurve->update();
   }
+}
+
+
+void UI_OptionsDialog::dspinbox4_4ValueChanged(double val)
+{
+  mainwindow->default_amplitude = val;
 }
 
 

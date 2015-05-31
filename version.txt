@@ -17,6 +17,9 @@
 
  - Changed licence to GPLv3.
 
+ - Added a new setting in the settings menu. Now you can set the default amplitude
+   that will be applied when you add new signals. Before the default was always 100.
+
 
 
  version 1.55      February 7, 2015

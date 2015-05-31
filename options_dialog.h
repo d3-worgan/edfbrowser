@@ -152,6 +152,7 @@ QLabel         *label1,
                *label4_8,
                *label4_9,
                *label4_10,
+               *label4_11,
                *label2_2,
                *label2_4,
                *label1_3,
@@ -167,7 +168,8 @@ QSpinBox       *spinbox2_1,
                *spinbox4_2,
                *spinbox4_3;
 
-QDoubleSpinBox *dspinbox3_2;
+QDoubleSpinBox *dspinbox3_2,
+               *dspinbox4_4;
 
 QComboBox      *combobox4_1,
                *combobox4_2,
@@ -240,6 +242,7 @@ void saveColorSchemaButtonClicked();
 void loadColorSchemaButtonClicked();
 void loadColorSchema_NK();
 void loadColorSchema_Dark();
+void dspinbox4_4ValueChanged(double);
 
 };
 

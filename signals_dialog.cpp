@@ -194,7 +194,7 @@ void UI_Signalswindow::DisplayCompButtonClicked()
   newsignalcomp->filenum = filelist->currentRow();
   newsignalcomp->edfhdr = mainwindow->edfheaderlist[newsignalcomp->filenum];
   newsignalcomp->file_duration = newsignalcomp->edfhdr->long_data_record_duration * newsignalcomp->edfhdr->datarecords;
-  newsignalcomp->voltpercm = 100.0;
+  newsignalcomp->voltpercm = mainwindow->default_amplitude;
   newsignalcomp->color = curve_color;
   newsignalcomp->hasruler = 0;
   newsignalcomp->polarity = 1;
@@ -231,7 +231,7 @@ void UI_Signalswindow::DisplayCompButtonClicked()
 
         if(newsignalcomp->edfhdr->edfparam[j].bitvalue < 0.0)
         {
-          newsignalcomp->voltpercm = -100.0;
+          newsignalcomp->voltpercm = mainwindow->default_amplitude * -1;
         }
         newsignalcomp->sensitivity[i] = newsignalcomp->edfhdr->edfparam[j].bitvalue / ((double)newsignalcomp->voltpercm * mainwindow->pixelsizefactor);
       }
@@ -296,7 +296,7 @@ void UI_Signalswindow::DisplayButtonClicked()
     newsignalcomp->filenum = filelist->currentRow();
     newsignalcomp->edfhdr = mainwindow->edfheaderlist[newsignalcomp->filenum];
     newsignalcomp->file_duration = newsignalcomp->edfhdr->long_data_record_duration * newsignalcomp->edfhdr->datarecords;
-    newsignalcomp->voltpercm = 100.0;
+    newsignalcomp->voltpercm = mainwindow->default_amplitude;
     newsignalcomp->color = curve_color;
     newsignalcomp->hasruler = 0;
     newsignalcomp->polarity = 1;
@@ -307,7 +307,7 @@ void UI_Signalswindow::DisplayButtonClicked()
     newsignalcomp->factor[0] = 1;
     if(newsignalcomp->edfhdr->edfparam[s].bitvalue < 0.0)
     {
-      newsignalcomp->voltpercm = -100.0;
+      newsignalcomp->voltpercm = mainwindow->default_amplitude * -1;
     }
     newsignalcomp->sensitivity[0] = newsignalcomp->edfhdr->edfparam[s].bitvalue / ((double)newsignalcomp->voltpercm * mainwindow->pixelsizefactor);
 

@@ -236,7 +236,8 @@ public:
 
   double pixelsizefactor,
          x_pixelsizefactor,
-         average_period;
+         average_period,
+         default_amplitude;
 
   struct{
           double crossoverfreq;
