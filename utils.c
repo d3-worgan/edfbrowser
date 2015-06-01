@@ -32,6 +32,9 @@
 #include "utils.h"
 
 
+#define FLT_ROUNDS 1
+
+
 
   /* removes extension including the dot */
 void remove_extension_from_filename(char *str)
@@ -1594,6 +1597,191 @@ void hextobin(char *dest, const char *str)
 
   dest[i * 8] = 0;
 }
+
+
+int convert_to_metric_suffix(char *buf, double value)
+{
+  double ltmp;
+
+  char suffix=' ';
+
+  if(value < 0)
+  {
+      ltmp = value * -1;
+  }
+  else
+  {
+      ltmp = value;
+  }
+
+  if(ltmp >= 1e12 && ltmp < 1e15)
+  {
+      ltmp = ltmp / 1e12;
+
+      suffix = 'T';
+  }
+  else if(ltmp >= 1e9 && ltmp < 1e12)
+    {
+        ltmp = ltmp / 1e9;
+
+        suffix = 'G';
+    }
+    else if(ltmp >= 1e6 && ltmp < 1e9)
+      {
+          ltmp = ltmp / 1e6;
+
+          suffix = 'M';
+      }
+      else if(ltmp >= 1e3 && ltmp < 1e6)
+        {
+          ltmp /= 1e3;
+
+          suffix = 'K';
+        }
+        else if(ltmp >= 1e-3 && ltmp < 1)
+          {
+            ltmp *= 1e3;
+
+            suffix = 'm';
+          }
+          else if( ltmp >= 1e-6 && ltmp < 1e-3)
+            {
+              ltmp *= 1e6;
+
+              suffix = 'u';
+            }
+            else if(ltmp >= 1e-9 && ltmp < 1e-6)
+              {
+                ltmp *= 1e9;
+
+                suffix = 'n';
+              }
+              else if(ltmp >= 1e-12 && ltmp < 1e-9)
+                {
+                  ltmp *= 1e12;
+
+                  suffix = 'p';
+                }
+
+  if(value >= 0)
+  {
+    return sprintf(buf, "%.3f%c", ltmp, suffix);
+  }
+
+  if(value < 0)
+  {
+    return sprintf(buf, "%.3f%c", ltmp * -1, suffix);
+  }
+
+  strcpy(buf, "0");
+
+  return 1;
+}
+
+
+double round_up_step125(double val)
+{
+  int i, exp=0;
+
+  double ltmp;
+
+   while(val < 1)
+  {
+    val *= 10;
+
+    exp--;
+  }
+
+  while(val >= 10)
+  {
+    val /= 10;
+
+    exp++;
+  }
+
+  val = nearbyint(val);
+
+  if(val >= 5)
+  {
+    ltmp = 10;
+  }
+  else if(val >= 2)
+    {
+      ltmp = 5;
+    }
+    else
+    {
+      ltmp = 2;
+    }
+
+  for(i=0; i<exp; i++)
+  {
+    ltmp *= 10;
+  }
+
+  for(i=0; i>exp; i--)
+  {
+    ltmp /= 10;
+  }
+
+  return ltmp;
+}
+
+
+double round_down_step125(double val)
+{
+  int i, exp=0;
+
+  double ltmp;
+
+  while(val < 1)
+  {
+    val *= 10;
+
+    exp--;
+  }
+
+  while(val >= 10)
+  {
+    val /= 10;
+
+    exp++;
+  }
+
+  val = nearbyint(val);
+
+  if(val <= 1)
+  {
+    ltmp = 0.5;
+  }
+  else if(val <= 2)
+    {
+      ltmp = 1;
+    }
+    else if(val <= 5)
+      {
+        ltmp = 2;
+      }
+      else
+      {
+        ltmp = 5;
+      }
+
+  for(i=0; i<exp; i++)
+  {
+    ltmp *= 10;
+  }
+
+  for(i=0; i>exp; i--)
+  {
+    ltmp /= 10;
+  }
+
+  return ltmp;
+}
+
+
+
 
 
 

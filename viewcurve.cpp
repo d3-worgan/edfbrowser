@@ -1326,7 +1326,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   char *viewbuf,
        string[256],
-       str2[32];
+       str2[32],
+       str3[128];
 
   long long time_ppixel,
             ll_elapsed_time,
@@ -1970,11 +1971,20 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                         (int)(((crosshair_1.time / TIME_DIMENSION) % 3600LL) / 60LL),
                         (int)((crosshair_1.time / TIME_DIMENSION) % 60LL),
                         (int)((crosshair_1.time % TIME_DIMENSION) / 1000LL));
-        snprintf(string + strlen(string), 32, " (%i:%02i:%02i.%04i)",
-                (int)((crosshair_1.time_relative / TIME_DIMENSION)/ 3600LL),
-                (int)(((crosshair_1.time_relative / TIME_DIMENSION) % 3600LL) / 60LL),
-                (int)((crosshair_1.time_relative / TIME_DIMENSION) % 60LL),
-                (int)((crosshair_1.time_relative % TIME_DIMENSION) / 1000LL));
+        if(crosshair_1.time_relative >= TIME_DIMENSION)
+        {
+          snprintf(string + strlen(string), 32, " (%i:%02i:%02i.%04i)",
+                  (int)((crosshair_1.time_relative / TIME_DIMENSION)/ 3600LL),
+                  (int)(((crosshair_1.time_relative / TIME_DIMENSION) % 3600LL) / 60LL),
+                  (int)((crosshair_1.time_relative / TIME_DIMENSION) % 60LL),
+                  (int)((crosshair_1.time_relative % TIME_DIMENSION) / 1000LL));
+        }
+        else
+        {
+          convert_to_metric_suffix(str3, (double)crosshair_1.time_relative / TIME_DIMENSION);
+
+          snprintf(string + strlen(string), 32, " (%sS)", str3);
+        }
 
         painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - 25, string);
         if(signalcomp[i]->alias[0] != 0)
@@ -2044,11 +2054,20 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                         (int)(((crosshair_2.time / TIME_DIMENSION) % 3600LL) / 60LL),
                         (int)((crosshair_2.time / TIME_DIMENSION) % 60LL),
                         (int)((crosshair_2.time % TIME_DIMENSION) / 1000LL));
-        snprintf(string + strlen(string), 32, " (%i:%02i:%02i.%04i)",
-                (int)((crosshair_2.time_relative / TIME_DIMENSION)/ 3600LL),
-                (int)(((crosshair_2.time_relative / TIME_DIMENSION) % 3600LL) / 60LL),
-                (int)((crosshair_2.time_relative / TIME_DIMENSION) % 60LL),
-                (int)((crosshair_2.time_relative % TIME_DIMENSION) / 1000LL));
+        if(crosshair_2.time_relative >= TIME_DIMENSION)
+        {
+          snprintf(string + strlen(string), 32, " (%i:%02i:%02i.%04i)",
+                  (int)((crosshair_2.time_relative / TIME_DIMENSION)/ 3600LL),
+                  (int)(((crosshair_2.time_relative / TIME_DIMENSION) % 3600LL) / 60LL),
+                  (int)((crosshair_2.time_relative / TIME_DIMENSION) % 60LL),
+                  (int)((crosshair_2.time_relative % TIME_DIMENSION) / 1000LL));
+        }
+        else
+        {
+          convert_to_metric_suffix(str3, (double)crosshair_2.time_relative / TIME_DIMENSION);
+
+          snprintf(string + strlen(string), 32, " (%sS)", str3);
+        }
 
         painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - 55, string);
         snprintf(string, 128, "delta %+f %s",
@@ -2057,11 +2076,20 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - 40, string);
         l_time = crosshair_2.time - crosshair_1.time;
         if(l_time<0) l_time = -l_time;
-        snprintf(string, 128, "delta %i:%02i:%02i.%04i",
-                        (int)((l_time / TIME_DIMENSION)/ 3600LL),
-                        (int)(((l_time / TIME_DIMENSION) % 3600LL) / 60LL),
-                        (int)((l_time / TIME_DIMENSION) % 60LL),
-                        (int)((l_time % TIME_DIMENSION) / 1000LL));
+        if(l_time >= TIME_DIMENSION)
+        {
+          snprintf(string, 128, "delta %i:%02i:%02i.%04i",
+                          (int)((l_time / TIME_DIMENSION)/ 3600LL),
+                          (int)(((l_time / TIME_DIMENSION) % 3600LL) / 60LL),
+                          (int)((l_time / TIME_DIMENSION) % 60LL),
+                          (int)((l_time % TIME_DIMENSION) / 1000LL));
+        }
+        else
+        {
+          convert_to_metric_suffix(str3, (double)l_time / TIME_DIMENSION);
+
+          snprintf(string, 32, "delta %sS", str3);
+        }
         painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - 25, string);
         if(signalcomp[i]->alias[0] != 0)
         {

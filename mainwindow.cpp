@@ -4657,22 +4657,25 @@ void UI_Mainwindow::setup_viewbuf()
               ((int)(pagetime / TIME_DIMENSION)) % 60,
               (int)((pagetime % TIME_DIMENSION) / 1000LL));
     }
-    else
-    {
-      if(pagetime >= (60LL * TIME_DIMENSION))
+    else if(pagetime >= (60LL * TIME_DIMENSION))
       {
         snprintf(pagetime_string, 32, "%i:%02i.%04i",
                 ((int)(pagetime / TIME_DIMENSION)) / 60,
                 ((int)(pagetime / TIME_DIMENSION)) % 60,
                 (int)((pagetime % TIME_DIMENSION) / 1000LL));
       }
-      else
+      else if(pagetime >= TIME_DIMENSION)
       {
         snprintf(pagetime_string, 32, "%i.%04i sec",
                 (int)(pagetime / TIME_DIMENSION),
                 (int)((pagetime % TIME_DIMENSION) / 1000LL));
       }
-    }
+      else
+      {
+        convert_to_metric_suffix(pagetime_string, (double)pagetime / TIME_DIMENSION);
+
+        strcat(pagetime_string, "S");
+      }
 
     remove_trailing_zeros(viewtime_string);
     remove_trailing_zeros(pagetime_string);

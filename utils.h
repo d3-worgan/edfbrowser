@@ -44,6 +44,7 @@ extern "C" {
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <math.h>
 
 
 void remove_trailing_spaces(char *);
@@ -84,6 +85,10 @@ void bintohex(char *);    /* inline copy */
 void asciitohex(char *, const char *);  /* destination must have double the size of source! */
 void asciitobin(char *, const char *);  /* destination must have eight times the size of source! */
 void hextobin(char *, const char *);    /* destination must have four times the size of source! */
+
+int convert_to_metric_suffix(char *, double);
+double round_up_step125(double);                  /* Rounds the value up to 1-2-5 steps */
+double round_down_step125(double);                /* Rounds the value down to 1-2-5 steps */
 
 #ifdef __cplusplus
 } /* extern "C" */
