@@ -180,7 +180,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
     return;
   }
 
-  if(xml_get_attribute_of_element(xml_hdl, "timestampStart", str, 255))
+  if(xml_get_attribute_of_element(xml_hdl, "timestampStart", str, 255) < 0)
   {
     textEdit1->append("Error, can not find attribute \"timestampStart\".\n");
     return;
@@ -229,7 +229,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
   str_timestampStart[19] = 0;
 
-  if(xml_get_attribute_of_element(xml_hdl, "measurementId", str, 255))
+  if(xml_get_attribute_of_element(xml_hdl, "measurementId", str, 255) < 0)
   {
     textEdit1->append("Error, can not find attribute \"measurementId\".\n");
     return;
@@ -329,7 +329,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         return;
       }
 
-      if(xml_get_attribute_of_element(xml_hdl, "separator", str, 255))
+      if(xml_get_attribute_of_element(xml_hdl, "separator", str, 255) < 0)
       {
         textEdit1->append("Error, can not find attribute \"separator\".\n");
         xml_close(xml_hdl);
@@ -347,7 +347,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
       csv_sep[file_cnt] = str[0];
 
-      if(xml_get_attribute_of_element(xml_hdl, "decimalSeparator", str, 255))
+      if(xml_get_attribute_of_element(xml_hdl, "decimalSeparator", str, 255) < 0)
       {
         csv_dec_sep[file_cnt] = '.';  // if attribute decimalSeparator is not present, fall back to a dot
       }
@@ -385,7 +385,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         return;
       }
 
-      if(xml_get_attribute_of_element(xml_hdl, "endianess", str, 255))
+      if(xml_get_attribute_of_element(xml_hdl, "endianess", str, 255) < 0)
       {
         textEdit1->append("Error, can not find attribute \"endianess\".\n");
         xml_close(xml_hdl);
@@ -432,7 +432,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         break;
       }
 
-      if(xml_get_attribute_of_element(xml_hdl, "name", str, 255))
+      if(xml_get_attribute_of_element(xml_hdl, "name", str, 255) < 0)
       {
         textEdit1->append("Error, can not find attribute \"name\" in element \"channel\".\n");
         xml_close(xml_hdl);
@@ -571,7 +571,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
       return;
     }
 
-    if(xml_get_attribute_of_element(xml_hdl, "separator", str, 255))
+    if(xml_get_attribute_of_element(xml_hdl, "separator", str, 255) < 0)
     {
       textEdit1->append("Error, can not find attribute \"separator\".\n");
       xml_close(xml_hdl);
@@ -589,7 +589,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
     csv_sep[file_cnt] = str[0];
 
-    if(xml_get_attribute_of_element(xml_hdl, "decimalSeparator", str, 255))
+    if(xml_get_attribute_of_element(xml_hdl, "decimalSeparator", str, 255) < 0)
     {
       csv_dec_sep[file_cnt] = '.';  // if attribute decimalSeparator is not present, fall back to a dot
     }
@@ -625,7 +625,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         break;
       }
 
-      if(xml_get_attribute_of_element(xml_hdl, "name", str, 255))
+      if(xml_get_attribute_of_element(xml_hdl, "name", str, 255) < 0)
       {
         textEdit1->append("Error, can not find attribute \"name\" in element \"channel\".\n");
         xml_close(xml_hdl);
@@ -881,7 +881,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
     if(!xml_goto_nth_element_inside(xml_hdl, "csvFileFormat", 0))
     {
-      if(xml_get_attribute_of_element(xml_hdl, "separator", str, 255))
+      if(xml_get_attribute_of_element(xml_hdl, "separator", str, 255) < 0)
       {
         textEdit1->append("Error, can not find attribute \"separator\".\n");
         xml_close(xml_hdl);
@@ -899,7 +899,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
       csv_sep[k] = str[0];
 
-      if(xml_get_attribute_of_element(xml_hdl, "decimalSeparator", str, 255))
+      if(xml_get_attribute_of_element(xml_hdl, "decimalSeparator", str, 255) < 0)
       {
         csv_dec_sep[k] = '.';  // if attribute decimalSeparator is not present, fall back to a dot
       }
@@ -1948,7 +1948,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
   double d_tmp;
 
 
-  if(xml_get_attribute_of_element(xml_hdl, "id", str, 255))
+  if(xml_get_attribute_of_element(xml_hdl, "id", str, 255) < 0)
   {
     textEdit1->append("Error, can not find attribute \"id\".\n");
     return(1);
@@ -1962,7 +1962,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
 
   strncpy(binfilename[file_nr], str, MAX_PATH_LENGTH - 1);
 
-  if(xml_get_attribute_of_element(xml_hdl, "adcResolution", str, 255))
+  if(xml_get_attribute_of_element(xml_hdl, "adcResolution", str, 255) < 0)
   {
     adcres[file_nr] = 0;
   }
@@ -1972,7 +1972,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
     }
     else adcres[file_nr] = atoi(str);
 
-  if(xml_get_attribute_of_element(xml_hdl, "unit", str, 255))
+  if(xml_get_attribute_of_element(xml_hdl, "unit", str, 255) < 0)
   {
     strcpy(physdim[file_nr], "X");
   }
@@ -2000,7 +2000,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
 
   remove_trailing_spaces(physdim[file_nr]);
 
-  if(xml_get_attribute_of_element(xml_hdl, "sampleRate", str, 255))
+  if(xml_get_attribute_of_element(xml_hdl, "sampleRate", str, 255) < 0)
   {
     textEdit1->append("Error, can not find attribute \"sampleRate\".\n");
     return(1);
@@ -2041,7 +2041,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
     }
   }
 
-  if(!xml_get_attribute_of_element(xml_hdl, "baseline", str, 255))
+  if(!xml_get_attribute_of_element(xml_hdl, "baseline", str, 255) < 0)
   {
     if(strlen(str) < 1)
     {
@@ -2056,7 +2056,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
     baseline[file_nr] = 0LL;
   }
 
-  if(!xml_get_attribute_of_element(xml_hdl, "adcZero", str, 255))
+  if(!xml_get_attribute_of_element(xml_hdl, "adcZero", str, 255) < 0)
   {
     if(strlen(str) < 1)
     {
@@ -2071,7 +2071,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
     adczero[file_nr] = 0LL;
   }
 
-  if(xml_get_attribute_of_element(xml_hdl, "lsbValue", str, 255))
+  if(xml_get_attribute_of_element(xml_hdl, "lsbValue", str, 255) < 0)
   {
     lsbval[file_nr] = 1.0;
   }
@@ -2091,7 +2091,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
 
   physmin[file_nr] = lsbval[file_nr];
 
-  if(xml_get_attribute_of_element(xml_hdl, "dataType", str, 255))
+  if(xml_get_attribute_of_element(xml_hdl, "dataType", str, 255) < 0)
   {
     textEdit1->append("Error, can not find attribute \"dataType\".\n");
     return(1);
@@ -2358,7 +2358,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_EVT_attributes(struct xml_ha
 {
   char str[256];
 
-  if(xml_get_attribute_of_element(xml_hdl, "id", str, 255))
+  if(xml_get_attribute_of_element(xml_hdl, "id", str, 255) < 0)
   {
     textEdit1->append("Error, can not find attribute \"id\".\n");
     return(1);
@@ -2372,7 +2372,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_EVT_attributes(struct xml_ha
 
   strncpy(evtfilename[file_nr], str, MAX_PATH_LENGTH - 1);
 
-  if(xml_get_attribute_of_element(xml_hdl, "sampleRate", str, 255))
+  if(xml_get_attribute_of_element(xml_hdl, "sampleRate", str, 255) < 0)
   {
     textEdit1->append("Error, can not find attribute \"sampleRate\".\n");
     return(1);

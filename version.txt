@@ -2,6 +2,8 @@
  to be released
  --------------
 
+ - Fixed a bug that caused the Unisens converter to fail.
+
  - Added a tool that converts an audiorecording containing an FM modulated ECG waveform to EDF.
 
  - Added an anti-aliasing filter to the samplerate divider/decimator
@@ -19,6 +21,8 @@
 
  - Added a new setting in the settings menu. Now you can set the default amplitude
    that will be applied when you add new signals. Before the default was always 100.
+
+ - Qt has been updated to 4.8.7.
 
 
 
