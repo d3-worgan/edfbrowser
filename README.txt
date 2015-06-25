@@ -1,9 +1,9 @@
 
 Requirements
 ============
-Qt  http://qt-project.org/
+Qt  http://www.qt.io/
 
-Minimum version 4.7.1 or later, preferable 4.8.6
+Minimum version 4.7.1 or later, preferable 4.8.7
 
 Do not use Qt 5.x.x to compile EDFbrowser, Qt5 is not yet ready for production use. It contains still bugs that affects EDFbrowser.
 

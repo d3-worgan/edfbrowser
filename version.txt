@@ -1,5 +1,5 @@
 
- to be released
+ version 1.56      June 25, 2015
  --------------
 
  - Fixed a bug that caused the Unisens converter to fail.
