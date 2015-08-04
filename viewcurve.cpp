@@ -1325,7 +1325,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       marker_x;
 
   char *viewbuf,
-       string[256],
+       string[600],
        str2[32],
        str3[128];
 
@@ -1826,21 +1826,32 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
           l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
 
-          if(l_tmp < 0LL)
+          if(mainwindow->annotations_onset_relative)
           {
-            snprintf(string, 32, "-%i:%02i:%02i.%04i",
-                    (int)(((-(l_tmp)) / TIME_DIMENSION)/ 3600LL),
-                    (int)((((-(l_tmp)) / TIME_DIMENSION) % 3600LL) / 60LL),
-                    (int)(((-(l_tmp)) / TIME_DIMENSION) % 60LL),
-                    (int)((((-(l_tmp)) % TIME_DIMENSION) / 1000LL)));
+            if(l_tmp < 0LL)
+            {
+              snprintf(string, (MAX_ANNOTATION_LEN + 32) / 2, "-%i:%02i:%02i.%04i",
+                      (int)(((-(l_tmp)) / TIME_DIMENSION)/ 3600LL),
+                      (int)((((-(l_tmp)) / TIME_DIMENSION) % 3600LL) / 60LL),
+                      (int)(((-(l_tmp)) / TIME_DIMENSION) % 60LL),
+                      (int)((((-(l_tmp)) % TIME_DIMENSION) / 1000LL)));
+            }
+            else
+            {
+              snprintf(string, (MAX_ANNOTATION_LEN + 32) / 2, "%i:%02i:%02i.%04i",
+                      (int)((l_tmp / TIME_DIMENSION)/ 3600LL),
+                      (int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
+                      (int)((l_tmp / TIME_DIMENSION) % 60LL),
+                      (int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
+            }
           }
           else
           {
-            snprintf(string, 32, "%i:%02i:%02i.%04i",
-                    (int)((l_tmp / TIME_DIMENSION)/ 3600LL),
-                    (int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
-                    (int)((l_tmp / TIME_DIMENSION) % 60LL),
-                    (int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
+            snprintf(string, MAX_ANNOTATION_LEN + 32, "%i:%02i:%02i.%04i",
+                    (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_DIMENSION)/ 3600) % 24),
+                    (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_DIMENSION) % 3600) / 60),
+                    (int)(((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_DIMENSION) % 60),
+                    (int)(((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) % TIME_DIMENSION) / 1000LL));
           }
 
           remove_trailing_zeros(string);

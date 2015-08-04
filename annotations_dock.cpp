@@ -49,6 +49,8 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
 
   relative = 1;
 
+  mainwindow->annotations_onset_relative = 1;
+
   selected = -1;
 
   invert_filter = 0;
@@ -653,14 +655,20 @@ void UI_Annotationswindow::checkbox1_clicked(int state)
   if(state==Qt::Checked)
   {
     relative = 1;
+
+    mainwindow->annotations_onset_relative = 1;
   }
 
   if(state==Qt::Unchecked)
   {
     relative = 0;
+
+    mainwindow->annotations_onset_relative = 0;
   }
 
   updateList();
+
+  mainwindow->maincurve->update();
 }
 
 

@@ -102,6 +102,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   clip_to_pane = 0;
 
+  annotations_onset_relative = 1;
+
   auto_reload_mtg = 1;
 
   read_biosemi_status_signal = 1;

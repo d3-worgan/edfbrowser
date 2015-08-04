@@ -1,4 +1,11 @@
 
+ version 1.57
+ --------------
+
+ - Update annotation markers when switching between real and relative time.
+
+
+
  version 1.56      June 25, 2015
  --------------
 
