@@ -113,6 +113,7 @@ HEADERS += date_time_stamp_parser.h
 HEADERS += spike_filter.h
 HEADERS += spike_filter_dialog.h
 HEADERS += mit2edf.h
+HEADERS += biox2edf.h
 
 HEADERS += third_party/fidlib/fidlib.h
 HEADERS += third_party/fidlib/fidmkf.h
@@ -199,6 +200,7 @@ SOURCES += date_time_stamp_parser.c
 SOURCES += spike_filter.cpp
 SOURCES += spike_filter_dialog.cpp
 SOURCES += mit2edf.cpp
+SOURCES += biox2edf.cpp
 
 SOURCES += third_party/fidlib/fidlib.c
 

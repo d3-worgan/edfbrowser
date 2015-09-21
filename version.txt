@@ -4,6 +4,8 @@
 
  - Update annotation markers when switching between real and relative time.
 
+ - Added an EDF converter for the Biox CB-1305-C 3-channel ambulatory ECG recorder/holter.
+
 
 
  version 1.56      June 25, 2015

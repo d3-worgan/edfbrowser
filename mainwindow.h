@@ -157,6 +157,7 @@
 #include "spike_filter.h"
 #include "spike_filter_dialog.h"
 #include "mit2edf.h"
+#include "biox2edf.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -546,6 +547,7 @@ private slots:
   void convert_manscan_to_edf();
   void convert_scpecg_to_edf();
   void convert_mit_to_edf();
+  void convert_biox_to_edf();
   void video_process_error(QProcess::ProcessError);
 //  void search_pattern();
 
