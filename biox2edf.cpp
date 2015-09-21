@@ -106,7 +106,8 @@ void UI_BIOX2EDFwindow::SelectFileButton()
       hdl,
       chns=3,
       sf,
-      wr_buf[MAX_POSSIBLE_SF * EDF_CHNS];
+      wr_buf[MAX_POSSIBLE_SF * EDF_CHNS],
+      blocks;
 
   char str[512],
        rd_buf[READ_BLOCK_SZ],
@@ -117,6 +118,8 @@ void UI_BIOX2EDFwindow::SelectFileButton()
   unsigned char tmp_bits;
 
   FILE *inputfile=NULL;
+
+  long long file_sz;
 
 
   pushButton1->setEnabled(false);
@@ -145,7 +148,9 @@ void UI_BIOX2EDFwindow::SelectFileButton()
 
   fseeko(inputfile, 0x00, SEEK_END);
 
-  if(ftello(inputfile) < 2048)
+  file_sz = ftello(inputfile);
+
+  if(file_sz < 2048)
   {
     textEdit1->append("File is smaller than 2048 bytes\n");
     fclose(inputfile);
@@ -322,10 +327,34 @@ void UI_BIOX2EDFwindow::SelectFileButton()
 
   fseeko(inputfile, 0x0200, SEEK_SET);
 
+  file_sz -= 0x0200;
+
+  file_sz /= READ_BLOCK_SZ;
+
+  QProgressDialog progress("Converting ECG data ...", "Abort", 0, file_sz);
+  progress.setWindowModality(Qt::WindowModal);
+  progress.setMinimumDuration(200);
+
   j = 0;
 
-  while(1)
+  for(blocks=0; ; blocks++)
   {
+    if(!(blocks % 10))
+    {
+      progress.setValue(blocks);
+
+      qApp->processEvents();
+
+      if(progress.wasCanceled() == true)
+      {
+        textEdit1->append("Conversion aborted by user.\n");
+        edfclose_file(hdl);
+        fclose(inputfile);
+        pushButton1->setEnabled(true);
+        return;
+      }
+    }
+
     if(fread(rd_buf, READ_BLOCK_SZ, 1, inputfile) != 1)
     {
       break;
@@ -372,6 +401,7 @@ void UI_BIOX2EDFwindow::SelectFileButton()
 
         if(edf_blockwrite_digital_samples(hdl, wr_buf))
         {
+          progress.reset();
           textEdit1->append("Error: a write error occurred during conversion\n");
           edfclose_file(hdl);
           fclose(inputfile);
@@ -381,6 +411,8 @@ void UI_BIOX2EDFwindow::SelectFileButton()
       }
     }
   }
+
+  progress.reset();
 
   fclose(inputfile);
 
