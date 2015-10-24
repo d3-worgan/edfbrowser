@@ -59,7 +59,6 @@ SignalCurve::SignalCurve(QWidget *w_parent) : QWidget(w_parent)
   drawVruler = 1;
   h_ruler_startvalue = 0.0;
   h_ruler_endvalue = 100.0;
-  h_ruler_precision = 2;
   drawcurve_before_raster = 0;
   h_label[0] = 0;
   v_label[0] = 0;
@@ -904,28 +903,6 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
   {
     painter->drawLine(bordersize, curve_h - bordersize + (5 * p_factor), curve_w - bordersize, curve_h - bordersize + (5 * p_factor));
 
-    h_ruler_precision = 0;
-
-    if((h_ruler_endvalue < 10.0) && (h_ruler_endvalue > -10.0) && (h_ruler_startvalue < 10.0) && (h_ruler_startvalue > -10.0))
-    {
-      h_ruler_precision = 1;
-
-      if((h_ruler_endvalue < 1.0) && (h_ruler_endvalue > -1.0) && (h_ruler_startvalue < 1.0) && (h_ruler_startvalue > -1.0))
-      {
-        h_ruler_precision = 2;
-
-        if((h_ruler_endvalue < 0.1) && (h_ruler_endvalue > -0.1) && (h_ruler_startvalue < 0.1) && (h_ruler_startvalue > -0.1))
-        {
-          h_ruler_precision = 3;
-
-          if((h_ruler_endvalue < 0.01) && (h_ruler_endvalue > -0.01) && (h_ruler_startvalue < 0.01) && (h_ruler_startvalue > -0.01))
-          {
-            h_ruler_precision = 4;
-          }
-        }
-      }
-    }
-
     for(i = (p_ruler_startvalue / p_divisor) * p_divisor; i <= p_ruler_endvalue; i += p_divisor)
     {
       if(i < p_ruler_startvalue)
@@ -933,11 +910,13 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
         continue;
       }
 
-      q_str.setNum((double)i / (double)p_multiplier, 'f', h_ruler_precision);
+      convert_to_metric_suffix(str, (double)i / (double)p_multiplier, 4);
+
+      remove_trailing_zeros(str);
 
       p_tmp = (double)(i - p_ruler_startvalue) * p_pixels_per_unit;
 
-      painter->drawText(bordersize + p_tmp - (30 * p_factor),  curve_h - bordersize + (18 * p_factor), 60 * p_factor, 16 * p_factor, Qt::AlignCenter | Qt::TextSingleLine, q_str);
+      painter->drawText(bordersize + p_tmp - (30 * p_factor),  curve_h - bordersize + (18 * p_factor), 60 * p_factor, 16 * p_factor, Qt::AlignCenter | Qt::TextSingleLine, str);
 
       painter->drawLine(bordersize + p_tmp, curve_h - bordersize + (5 * p_factor), bordersize + p_tmp, curve_h - bordersize + ((5 + 10) * p_factor));
     }
@@ -1327,7 +1306,8 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
 
     snprintf(str, 128, "%f", crosshair_1_value);
     painter->drawText((crosshair_1_x_position + 8) * p_factor, (crosshair_1_y_position - 10) * p_factor, str);
-    snprintf(str, 128, "%f %s", crosshair_1_value_2, h_label);
+    convert_to_metric_suffix(str, crosshair_1_value_2, 3);
+    strcat(str, h_label);
     painter->drawText((crosshair_1_x_position + 8) * p_factor, (crosshair_1_y_position + 10) * p_factor, str);
   }
 
@@ -1462,28 +1442,6 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
     painter->drawLine(bordersize, curve_h - bordersize + 5, curve_w - bordersize, curve_h - bordersize + 5);
 
-    h_ruler_precision = 0;
-
-    if((h_ruler_endvalue < 10.0) && (h_ruler_endvalue > -10.0) && (h_ruler_startvalue < 10.0) && (h_ruler_startvalue > -10.0))
-    {
-      h_ruler_precision = 1;
-
-      if((h_ruler_endvalue < 1.0) && (h_ruler_endvalue > -1.0) && (h_ruler_startvalue < 1.0) && (h_ruler_startvalue > -1.0))
-      {
-        h_ruler_precision = 2;
-
-        if((h_ruler_endvalue < 0.1) && (h_ruler_endvalue > -0.1) && (h_ruler_startvalue < 0.1) && (h_ruler_startvalue > -0.1))
-        {
-          h_ruler_precision = 3;
-
-          if((h_ruler_endvalue < 0.01) && (h_ruler_endvalue > -0.01) && (h_ruler_startvalue < 0.01) && (h_ruler_startvalue > -0.01))
-          {
-            h_ruler_precision = 4;
-          }
-        }
-      }
-    }
-
     for(i = (p_ruler_startvalue / p_divisor) * p_divisor; i <= p_ruler_endvalue; i += p_divisor)
     {
       if(i < p_ruler_startvalue)
@@ -1491,11 +1449,13 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
         continue;
       }
 
-      q_str.setNum((double)i / (double)p_multiplier, 'f', h_ruler_precision);
+      convert_to_metric_suffix(str, (double)i / (double)p_multiplier, 4);
+
+      remove_trailing_zeros(str);
 
       p_tmp = (double)(i - p_ruler_startvalue) * p_pixels_per_unit;
 
-      painter->drawText(bordersize + p_tmp - 30,  curve_h - bordersize + 18, 60, 16, Qt::AlignCenter | Qt::TextSingleLine, q_str);
+      painter->drawText(bordersize + p_tmp - 30,  curve_h - bordersize + 18, 60, 16, Qt::AlignCenter | Qt::TextSingleLine, str);
 
       painter->drawLine(bordersize + p_tmp, curve_h - bordersize + 5, bordersize + p_tmp, curve_h - bordersize + 5 + 10);
     }
@@ -2190,7 +2150,8 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
     snprintf(str, 128, "%f", crosshair_1_value);
     painter->drawText(crosshair_1_x_position + 8, crosshair_1_y_position - 10, str);
     painter->fillRect(crosshair_1_x_position + 6, crosshair_1_y_position - 3, 60, 16, BackgroundColor);
-    snprintf(str, 128, "%f %s", crosshair_1_value_2, h_label);
+    convert_to_metric_suffix(str, crosshair_1_value_2, 3);
+    strcat(str, h_label);
     painter->drawText(crosshair_1_x_position + 8, crosshair_1_y_position + 10, str);
   }
 

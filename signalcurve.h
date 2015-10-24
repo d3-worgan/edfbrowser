@@ -53,6 +53,8 @@
 
 #include <string.h>
 
+#include "utils.h"
+
 
 #define MAXSPECTRUMMARKERS 16
 #define SC_MAX_PATH_LEN 1024
@@ -198,7 +200,6 @@ private:
 
   int bufsize,
       bordersize,
-      h_ruler_precision,
       drawHruler,
       drawVruler,
       drawcurve_before_raster,
