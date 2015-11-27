@@ -31,21 +31,6 @@
 
 
 
-#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
-
-#define fopeno fopen
-
-#else
-
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
-
-#endif
-
-
-
-
 struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, int live_stream)
 {
   int i, j, p, r=0, n,

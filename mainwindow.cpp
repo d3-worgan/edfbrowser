@@ -30,20 +30,6 @@
 #include "mainwindow.h"
 
 
-#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
-
-#define fopeno fopen
-
-#else
-
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
-
-#endif
-
-
-
 // #define DEBUG_VIDEOPLAYER
 
 #ifdef DEBUG_VIDEOPLAYER
@@ -56,7 +42,7 @@ UI_Mainwindow::UI_Mainwindow()
   int i, j, k;
 
 
-  setMinimumSize(QSize(640, 480));
+  setMinimumSize(640, 480);
   setWindowTitle(PROGRAM_NAME);
   setWindowIcon(QIcon(":/images/edf.png"));
 

@@ -26,9 +26,20 @@
 */
 
 
-#ifndef VIEWER_GLOBAL_H
-#define VIEWER_GLOBAL_H
+#ifndef EDFBROWSER_GLOBAL_H
+#define EDFBROWSER_GLOBAL_H
 
+#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
+
+#define fopeno fopen
+
+#else
+
+#define fseeko fseeko64
+#define ftello ftello64
+#define fopeno fopen64
+
+#endif
 
 #define PROGRAM_NAME "EDFbrowser"
 #define PROGRAM_VERSION "1.56"

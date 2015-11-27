@@ -31,19 +31,6 @@
 #include "mit2edf.h"
 
 
-#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
-
-#define fopeno fopen
-
-#else
-
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
-
-#endif
-
-
 #define NOTQRS  0 /* not-QRS (not a getann/putann code) */
 #define NORMAL  1 /* normal beat */
 #define LBBB  2 /* left bundle branch block beat */
@@ -130,11 +117,11 @@ UI_MIT2EDFwindow::UI_MIT2EDFwindow(char *recent_dir, char *save_dir)
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   pushButton1 = new QPushButton(myobjectDialog);
-  pushButton1->setGeometry(20, 430, 100, 26);
+  pushButton1->setGeometry(20, 430, 100, 25);
   pushButton1->setText("Select File");
 
   pushButton2 = new QPushButton(myobjectDialog);
-  pushButton2->setGeometry(480, 430, 100, 26);
+  pushButton2->setGeometry(480, 430, 100, 25);
   pushButton2->setText("Close");
 
   textEdit1 = new QTextEdit(myobjectDialog);

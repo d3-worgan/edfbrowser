@@ -31,21 +31,6 @@
 
 
 
-#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
-
-#define fopeno fopen
-
-#else
-
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
-
-#endif
-
-
-
-
 UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
 {
   mainwindow = (UI_Mainwindow *)w_parent;
@@ -131,7 +116,7 @@ UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
   SignalsTablewidget->setHorizontalHeaderLabels(horizontallabels);
 
   pushButton1 = new QPushButton(myobjectDialog);
-  pushButton1->setGeometry(QRect(20, 528, 100, 25));
+  pushButton1->setGeometry(20, 528, 100, 25);
   pushButton1->setText("Select File");
 
   pushButton2 = new QPushButton(myobjectDialog);
@@ -488,7 +473,7 @@ void UI_ReduceSignalsWindow::SelectFileButton()
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
-    SignalsTablewidget->setRowHeight(i, 20);
+    SignalsTablewidget->setRowHeight(i, 25);
 
     SignalsTablewidget->setCellWidget(i, 0, new QCheckBox(edfhdr->edfparam[i].label));
     ((QCheckBox *)(SignalsTablewidget->cellWidget(i, 0)))->setTristate(false);
