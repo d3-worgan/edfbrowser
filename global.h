@@ -29,6 +29,8 @@
 #ifndef EDFBROWSER_GLOBAL_H
 #define EDFBROWSER_GLOBAL_H
 
+#include <stdio.h>
+
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
 #define fopeno fopen
@@ -74,8 +76,6 @@
 #define VIDEO_STATUS_PLAYING     16
 #define VIDEO_STATUS_PAUSED      17
 #define VIDEO_STATUS_ENDED       18
-
-#include <stdio.h>
 
 #include "filter.h"
 #include "third_party/fidlib/fidlib.h"
