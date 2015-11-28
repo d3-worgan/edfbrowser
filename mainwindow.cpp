@@ -6950,15 +6950,14 @@ void UI_Mainwindow::show_help()
 #endif
 
 #ifdef Q_OS_WIN32
-  char path[MAX_PATH_LENGTH];
+  char p_path[MAX_PATH_LENGTH];
 
-  strcpy(path, "file:///");
-  strcat(path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
-  strcat(path, "\\EDFbrowser\\manual.html");
+  strcpy(p_path, "file:///");
+  strcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
+  strcat(p_path, "\\EDFbrowser\\manual.html");
   QDesktopServices::openUrl(QUrl(path));
 #endif
 }
-
 
 
 void UI_Mainwindow::show_kb_shortcuts()
