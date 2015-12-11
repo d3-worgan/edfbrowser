@@ -59,11 +59,11 @@ UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
   label3->setEnabled(false);
 
   label4 = new QLabel(myobjectDialog);
-  label4->setGeometry(605, 332, 100, 25);
+  label4->setGeometry(605, 382, 100, 25);
   label4->setEnabled(false);
 
   label5 = new QLabel(myobjectDialog);
-  label5->setGeometry(605, 397, 100, 25);
+  label5->setGeometry(605, 447, 100, 25);
   label5->setEnabled(false);
 
   label6 = new QLabel(myobjectDialog);
