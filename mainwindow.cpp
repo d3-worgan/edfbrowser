@@ -102,6 +102,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   live_stream_active = 0;
 
+  playback_realtime_active = 0;
+
   signal_averaging_active = 0;
 
   live_stream_update_interval = 500;
@@ -243,6 +245,12 @@ UI_Mainwindow::UI_Mainwindow()
   video_poll_timer->setSingleShot(true);
   QObject::connect(video_poll_timer, SIGNAL(timeout()), this, SLOT(video_poll_timer_func()));
 
+  playback_realtime_time = new QTime();
+
+  playback_realtime_timer = new QTimer;
+  playback_realtime_timer->setInterval(20);
+  QObject::connect(playback_realtime_timer, SIGNAL(timeout()), this, SLOT(playback_realtime_timer_func()));
+
   setCentralWidget(maincurve);
 
   menubar = menuBar();
@@ -281,6 +289,7 @@ UI_Mainwindow::UI_Mainwindow()
 
   video_act = new QAction("Start video", this);
   connect(video_act, SIGNAL(triggered()), this, SLOT(start_stop_video()));
+  video_act->setShortcut(QKeySequence("Ctrl+Shift+V"));
 
   filemenu = new QMenu(this);
   filemenu->setTitle("&File");
@@ -292,6 +301,8 @@ UI_Mainwindow::UI_Mainwindow()
   filemenu->addAction(video_act);
   filemenu->addSeparator();
 #endif
+  filemenu->addAction("Playback file", this, SLOT(playback_realtime()), QKeySequence("Ctrl+Space"));
+  filemenu->addSeparator();
   filemenu->addAction(save_act);
   filemenu->addMenu(recent_filesmenu);
   filemenu->addMenu(printmenu);
@@ -703,6 +714,10 @@ UI_Mainwindow::UI_Mainwindow()
   connect(shift_page_left_Act, SIGNAL(triggered()), this, SLOT(shift_page_left()));
   menubar->addAction(shift_page_left_Act);
 
+  playback_realtime_Act = new QAction("[play]", this);
+  connect(playback_realtime_Act, SIGNAL(triggered()), this, SLOT(playback_realtime()));
+  menubar->addAction(playback_realtime_Act);
+
   shift_page_right_Act = new QAction(">", this);
   shift_page_right_Act->setShortcut(QKeySequence::MoveToNextChar);
   connect(shift_page_right_Act, SIGNAL(triggered()), this, SLOT(shift_page_right()));
@@ -803,9 +818,11 @@ UI_Mainwindow::UI_Mainwindow()
 
   video_pause_act = new QAction("Play", this);
   connect(video_pause_act, SIGNAL(triggered()), this, SLOT(video_player_toggle_pause()));
+  video_pause_act->setToolTip("Play video");
 
   video_stop_act = new QAction("Stop", this);
   connect(video_stop_act, SIGNAL(triggered()), this, SLOT(start_stop_video()));
+  video_stop_act->setToolTip("Stop video");
 
   slidertoolbar = new QToolBar();
   slidertoolbar->setFloatable(false);
@@ -989,6 +1006,8 @@ UI_Mainwindow::~UI_Mainwindow()
   }
   delete live_stream_timer;
   delete video_poll_timer;
+  delete playback_realtime_time;
+  delete playback_realtime_timer;
   if(update_checker != NULL)  delete update_checker;
 }
 
@@ -2035,6 +2054,63 @@ void UI_Mainwindow::shift_page_right()
 }
 
 
+void UI_Mainwindow::playback_realtime()
+{
+  if(!signalcomps)
+  {
+    return;
+  }
+
+  if(video_player->status == VIDEO_STATUS_PLAYING)
+  {
+    return;
+  }
+
+  if(playback_realtime_active)
+  {
+    stop_playback_realtime();
+  }
+  else
+  {
+    playback_realtime_time->start();
+
+    playback_realtime_timer->start();
+
+    playback_realtime_Act->setText("[stop]");
+
+    playback_realtime_active = 1;
+  }
+}
+
+
+void UI_Mainwindow::stop_playback_realtime()
+{
+  playback_realtime_timer->stop();
+
+  playback_realtime_Act->setText("[play]");
+
+  playback_realtime_active = 0;
+}
+
+
+void UI_Mainwindow::playback_realtime_timer_func()
+{
+  if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
+  {
+    for(int i=0; i<files_open; i++)
+    {
+      edfheaderlist[i]->viewtime += (playback_realtime_time->restart() * 10000);
+    }
+  }
+
+  if(viewtime_sync==VIEWTIME_UNSYNCED)
+  {
+    edfheaderlist[sel_viewtime]->viewtime += (playback_realtime_time->restart() * 10000);
+  }
+
+  setup_viewbuf();
+}
+
 
 void UI_Mainwindow::next_page()
 {
@@ -2147,6 +2223,8 @@ void UI_Mainwindow::show_annotations()
 void UI_Mainwindow::annotation_editor()
 {
   stop_video_generic();
+
+  stop_playback_realtime();
 
   if(files_open==1)
   {
@@ -2782,6 +2860,8 @@ void UI_Mainwindow::remove_all_signals()
 
   stop_video_generic();
 
+  stop_playback_realtime();
+
   for(i=0; i<MAXSPECTRUMDOCKS; i++)
   {
     spectrumdock[i]->clear();
@@ -2876,6 +2956,8 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
   delete action;
 
   stop_video_generic();
+
+  stop_playback_realtime();
 
   for(j=0; j<signalcomps; )
   {
@@ -7353,6 +7435,11 @@ void UI_Mainwindow::start_stop_video()
     return;
   }
 
+  if(playback_realtime_active)
+  {
+    return;
+  }
+
   if(live_stream_active)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open a video during a live stream.");
@@ -7545,6 +7632,8 @@ void UI_Mainwindow::video_poll_timer_func()
 
             video_pause_act->setText("Pause");
 
+            video_pause_act->setToolTip("Pause video");
+
             video_player->cntdwn_timer = 5000;
           }
     }
@@ -7648,7 +7737,10 @@ void UI_Mainwindow::video_player_toggle_pause()
     return;
   }
 
-  if((video_player->status != VIDEO_STATUS_PLAYING) && (video_player->status != VIDEO_STATUS_PAUSED))  return;
+  if((video_player->status != VIDEO_STATUS_PLAYING) && (video_player->status != VIDEO_STATUS_PAUSED))
+  {
+    return;
+  }
 
   mpr_write("pause\n");
 
@@ -7658,6 +7750,8 @@ void UI_Mainwindow::video_player_toggle_pause()
 
     video_pause_act->setText("Play");
 
+    video_pause_act->setToolTip("Play video");
+
     video_player->cntdwn_timer = 5000;
   }
   else
@@ -7665,6 +7759,8 @@ void UI_Mainwindow::video_player_toggle_pause()
     video_player->status = VIDEO_STATUS_PLAYING;
 
     video_pause_act->setText("Pause");
+
+    video_pause_act->setToolTip("Pause video");
   }
 }
 

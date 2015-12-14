@@ -13,6 +13,9 @@
 
  - Don't use the native menubar.
 
+ - Realtime playback function added.
+
+
 
 
  version 1.56      June 25, 2015
