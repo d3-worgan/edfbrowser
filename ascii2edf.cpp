@@ -42,8 +42,8 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(char *recent_dir, char *save_dir)
 
   ascii2edfDialog = new QDialog;
 
-  ascii2edfDialog->setMinimumSize(600, 520);
-  ascii2edfDialog->setMaximumSize(600, 520);
+  ascii2edfDialog->setMinimumSize(720, 520);
+  ascii2edfDialog->setMaximumSize(720, 520);
   ascii2edfDialog->setWindowTitle("ASCII to EDF/BDF converter");
   ascii2edfDialog->setModal(true);
   ascii2edfDialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -85,7 +85,7 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(char *recent_dir, char *save_dir)
   SignalsLabel->setText("Signals");
 
   groupbox1 = new QGroupBox(ascii2edfDialog);
-  groupbox1->setGeometry(330, 20, 160, 90);
+  groupbox1->setGeometry(530, 20, 160, 90);
   groupbox1->setTitle("Output format");
 
   edfButton = new QRadioButton("EDF (16-bit)");
@@ -123,11 +123,11 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(char *recent_dir, char *save_dir)
   SamplefreqSpinbox->setValue(1.0);
 
   PatientnameLineEdit = new QLineEdit(ascii2edfDialog);
-  PatientnameLineEdit->setGeometry(160, 160, 420, 25);
+  PatientnameLineEdit->setGeometry(160, 160, 540, 25);
   PatientnameLineEdit->setMaxLength(80);
 
   RecordingLineEdit = new QLineEdit(ascii2edfDialog);
-  RecordingLineEdit->setGeometry(160, 195, 420, 25);
+  RecordingLineEdit->setGeometry(160, 195, 540, 25);
   RecordingLineEdit->setMaxLength(80);
 
   StartDatetimeedit = new QDateTimeEdit(ascii2edfDialog);
@@ -141,7 +141,7 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(char *recent_dir, char *save_dir)
   autoPhysicalMaximumCheckbox->setCheckState(Qt::Checked);
 
   SignalsTablewidget = new QTableWidget(ascii2edfDialog);
-  SignalsTablewidget->setGeometry(160, 300, 420, 140);
+  SignalsTablewidget->setGeometry(160, 300, 540, 140);
   SignalsTablewidget->setSelectionMode(QAbstractItemView::NoSelection);
   SignalsTablewidget->setColumnCount(5);
   SignalsTablewidget->setColumnWidth(0, 20);
@@ -182,12 +182,14 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(char *recent_dir, char *save_dir)
   CloseButton->setText("Cancel");
 
   SaveButton = new QPushButton(ascii2edfDialog);
-  SaveButton->setGeometry(400, 480, 75, 25);
+  SaveButton->setGeometry(485, 480, 75, 25);
   SaveButton->setText("Save");
+  SaveButton->setToolTip("Save settings as a template");
 
   LoadButton = new QPushButton(ascii2edfDialog);
-  LoadButton->setGeometry(510, 480, 75, 25);
+  LoadButton->setGeometry(625, 480, 75, 25);
   LoadButton->setText("Load");
+  LoadButton->setToolTip("Load settings from a template");
 
   columns = 1;
 
