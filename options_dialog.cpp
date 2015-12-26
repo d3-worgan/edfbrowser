@@ -664,6 +664,24 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   QObject::connect(dspinbox4_4, SIGNAL(valueChanged(double)), this, SLOT(dspinbox4_4ValueChanged(double)));
 
+  label4_12 = new QLabel(tab4);
+  label4_12->setGeometry(20, 535, 310, 25);
+  label4_12->setText("Use linear interpolation");
+
+  checkbox4_6 = new QCheckBox(tab4);
+  checkbox4_6->setGeometry(325, 538, 20, 20);
+  checkbox4_6->setTristate(false);
+  if(mainwindow->linear_interpol)
+  {
+    checkbox4_6->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox4_6->setCheckState(Qt::Unchecked);
+  }
+
+  QObject::connect(checkbox4_6, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_6Clicked(int)));
+
   tabholder->addTab(tab4, "Other");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1176,6 +1194,22 @@ void UI_OptionsDialog::checkbox4_5Clicked(int state)
   {
     mainwindow->check_for_updates = 0;
   }
+}
+
+
+void UI_OptionsDialog::checkbox4_6Clicked(int state)
+{
+  if(state==Qt::Checked)
+  {
+    mainwindow->linear_interpol = 1;
+  }
+
+  if(state==Qt::Unchecked)
+  {
+    mainwindow->linear_interpol = 0;
+  }
+
+  mainwindow->setup_viewbuf();
 }
 
 

@@ -118,6 +118,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   default_amplitude = 100;
 
+  linear_interpol = 0;
+
   recent_montagedir[0] = 0;
   recent_savedir[0] = 0;
   recent_opendir[0] = 0;
@@ -6582,6 +6584,23 @@ void UI_Mainwindow::read_general_settings()
     xml_go_up(xml_hdl);
   }
 
+  if(!(xml_goto_nth_element_inside(xml_hdl, "linear_interpolation", 0)))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    linear_interpol = atoi(result);
+    if(linear_interpol != 1)
+    {
+      linear_interpol = 0;
+    }
+
+    xml_go_up(xml_hdl);
+  }
+
   xml_close(xml_hdl);
 }
 
@@ -6951,6 +6970,8 @@ void UI_Mainwindow::write_settings()
     fprintf(cfgfile, "    <mainwindow_title_type>%i</mainwindow_title_type>\n", mainwindow_title_type);
 
     fprintf(cfgfile, "    <default_amplitude>%f</default_amplitude>\n", default_amplitude);
+
+    fprintf(cfgfile, "    <linear_interpolation>%i</linear_interpolation>\n", linear_interpol);
 
     fprintf(cfgfile, "  </UI>\n</config>\n");
 

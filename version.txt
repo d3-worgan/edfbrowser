@@ -15,6 +15,11 @@
 
  - Realtime playback function added.
 
+ - Added the possibility to choose between "stairsteps" or linear interpolation
+   between two consecutive samples for drawing the traces when number of samples on
+   the screen is less than number of horizontal screen pixels.
+   You can select it in the settings menu, tab "Other" (Tools -> Options).
+
 
 
 

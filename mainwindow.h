@@ -221,7 +221,8 @@ public:
       amplitude_doubler,
       timescale_doubler,
       viewtime_indicator_type,
-      mainwindow_title_type;
+      mainwindow_title_type,
+      linear_interpol;
 
   long long pagetime,
             maxfilesize_to_readin_annotations;

@@ -88,7 +88,7 @@ public:
                  int, char *, int, int, int *, int,
                  struct graphicBufStruct *, double,
                  double, struct crossHairStruct *,
-                 struct crossHairStruct *, int);
+                 struct crossHairStruct *, int, int);
 
 
 private:
@@ -98,7 +98,8 @@ private:
       *screensamples,
       *screensamples_b,
       printing,
-      cpu_cnt;
+      cpu_cnt,
+      linear_interpol;
 
   char *viewbuf;
 
@@ -157,7 +158,8 @@ public:
       pressed_on_label,
       label_press_y_position,
       cpu_cnt,
-      floating_ruler_value;
+      floating_ruler_value,
+      linear_interpol;
 
   double original_screen_offset;
 

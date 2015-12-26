@@ -102,6 +102,7 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
   graphicBufWidth = 0;
   blackwhite_printing = 1;
   floating_ruler_value = 0;
+  linear_interpol = 0;
 }
 
 
@@ -2242,6 +2243,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
   signalcomps = mainwindow->signalcomps;
   signalcomp = mainwindow->signalcomp;
   viewbuf = mainwindow->viewbuf;
+  linear_interpol = mainwindow->linear_interpol;
 
   painter_pixelsizefactor = 1.0 / mainwindow->pixelsizefactor;
 
@@ -2332,7 +2334,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
       thr[i]->init_vars(mainwindow, &signalcomp[0], i,
                         signalcomps, viewbuf, w, h, &screensamples[0], printing,
                         graphicBuf, printsize_x_factor,
-                        printsize_y_factor, &crosshair_1, &crosshair_2, cpu_cnt);
+                        printsize_y_factor, &crosshair_1, &crosshair_2, cpu_cnt, linear_interpol);
 
       thr[i]->start();
     }
@@ -2609,19 +2611,32 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
           if(signalcomp[i]->samples_on_screen < (w / 2))
           {
-            graphicBuf[screensamples[i]].graphicLine[i].x1 = x1 - signalcomp[i]->pixels_shift;
-            graphicBuf[screensamples[i]].graphicLine[i].y1 = y2;
-            graphicBuf[screensamples[i]].graphicLine[i].x2 = x2 - signalcomp[i]->pixels_shift;
-            graphicBuf[screensamples[i]].graphicLine[i].y2 = y2;
-
-            if(screensamples[i])
+            if(linear_interpol)
             {
-              screensamples[i]++;
+              x1 = (int)(((double)s - 1.0) / signalcomp[i]->sample_pixel_ratio);
+              x2 = (int)((double)s / signalcomp[i]->sample_pixel_ratio);
 
               graphicBuf[screensamples[i]].graphicLine[i].x1 = x1 - signalcomp[i]->pixels_shift;
               graphicBuf[screensamples[i]].graphicLine[i].y1 = y1;
-              graphicBuf[screensamples[i]].graphicLine[i].x2 = x1 - signalcomp[i]->pixels_shift;
+              graphicBuf[screensamples[i]].graphicLine[i].x2 = x2 - signalcomp[i]->pixels_shift;
               graphicBuf[screensamples[i]].graphicLine[i].y2 = y2;
+            }
+            else
+            {
+              graphicBuf[screensamples[i]].graphicLine[i].x1 = x1 - signalcomp[i]->pixels_shift;
+              graphicBuf[screensamples[i]].graphicLine[i].y1 = y2;
+              graphicBuf[screensamples[i]].graphicLine[i].x2 = x2 - signalcomp[i]->pixels_shift;
+              graphicBuf[screensamples[i]].graphicLine[i].y2 = y2;
+
+              if(screensamples[i])
+              {
+                screensamples[i]++;
+
+                graphicBuf[screensamples[i]].graphicLine[i].x1 = x1 - signalcomp[i]->pixels_shift;
+                graphicBuf[screensamples[i]].graphicLine[i].y1 = y1;
+                graphicBuf[screensamples[i]].graphicLine[i].x2 = x1 - signalcomp[i]->pixels_shift;
+                graphicBuf[screensamples[i]].graphicLine[i].y2 = y2;
+              }
             }
 
             screensamples[i]++;
@@ -2736,7 +2751,7 @@ void drawCurve_stage_1_thread::init_vars(UI_Mainwindow *mainwindow_a, struct sig
                                          int signalcomps_a, char *viewbuf_a, int w_a, int h_a, int *screensamples_a, int printing_a,
                                          struct graphicBufStruct *graphicBuf_a, double printsize_x_factor_a,
                                          double printsize_y_factor_a, struct crossHairStruct *crosshair_1_a,
-                                         struct crossHairStruct *crosshair_2_a, int cpu_cnt_a)
+                                         struct crossHairStruct *crosshair_2_a, int cpu_cnt_a, int linear_interpol_a)
 {
   mainwindow = mainwindow_a;
   signalcomp_b = signalcomp_a;
@@ -2753,6 +2768,7 @@ void drawCurve_stage_1_thread::init_vars(UI_Mainwindow *mainwindow_a, struct sig
   crosshair_1 = crosshair_1_a;
   crosshair_2 = crosshair_2_a;
   cpu_cnt = cpu_cnt_a;
+  linear_interpol = linear_interpol_a;
 
 // printf("init_vars(): i is %i   signalcomp_b is %08X      screensamples_b is %08X\n------------------------\n",
 //        i, (int)signalcomp_b[i], (int)screensamples_b);
@@ -3064,19 +3080,32 @@ void drawCurve_stage_1_thread::run()
 
         if(signalcomp->samples_on_screen < (w / 2))
         {
-          graphicBuf[*screensamples].graphicLine[i].x1 = x1 - signalcomp->pixels_shift;
-          graphicBuf[*screensamples].graphicLine[i].y1 = y2;
-          graphicBuf[*screensamples].graphicLine[i].x2 = x2 - signalcomp->pixels_shift;
-          graphicBuf[*screensamples].graphicLine[i].y2 = y2;
-
-          if(*screensamples)
+          if(linear_interpol)
           {
-            (*screensamples)++;
+            x1 = (int)(((double)s - 1.0) / signalcomp->sample_pixel_ratio);
+            x2 = (int)((double)s / signalcomp->sample_pixel_ratio);
 
             graphicBuf[*screensamples].graphicLine[i].x1 = x1 - signalcomp->pixels_shift;
             graphicBuf[*screensamples].graphicLine[i].y1 = y1;
-            graphicBuf[*screensamples].graphicLine[i].x2 = x1 - signalcomp->pixels_shift;
+            graphicBuf[*screensamples].graphicLine[i].x2 = x2 - signalcomp->pixels_shift;
             graphicBuf[*screensamples].graphicLine[i].y2 = y2;
+          }
+          else
+          {
+            graphicBuf[*screensamples].graphicLine[i].x1 = x1 - signalcomp->pixels_shift;
+            graphicBuf[*screensamples].graphicLine[i].y1 = y2;
+            graphicBuf[*screensamples].graphicLine[i].x2 = x2 - signalcomp->pixels_shift;
+            graphicBuf[*screensamples].graphicLine[i].y2 = y2;
+
+            if(*screensamples)
+            {
+              (*screensamples)++;
+
+              graphicBuf[*screensamples].graphicLine[i].x1 = x1 - signalcomp->pixels_shift;
+              graphicBuf[*screensamples].graphicLine[i].y1 = y1;
+              graphicBuf[*screensamples].graphicLine[i].x2 = x1 - signalcomp->pixels_shift;
+              graphicBuf[*screensamples].graphicLine[i].y2 = y2;
+            }
           }
 
           (*screensamples)++;
