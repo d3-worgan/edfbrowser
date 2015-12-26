@@ -483,8 +483,12 @@ void UI_Signalswindow::AddButtonClicked()
     {
       snprintf(str, 200, "%-2i + ", row + 1);
       strcat(str, mainwindow->edfheaderlist[row]->edfparam[s].label);
-      strcat(str, " x1");
-      snprintf(str + strlen(str), 50, " %5.fHz", mainwindow->edfheaderlist[row]->edfparam[s].smp_per_record / mainwindow->edfheaderlist[row]->data_record_duration);
+      strcat(str, " x1 ");
+      convert_to_metric_suffix(str + strlen(str),
+                               mainwindow->edfheaderlist[row]->edfparam[s].smp_per_record / mainwindow->edfheaderlist[row]->data_record_duration,
+                               3);
+      remove_trailing_zeros(str);
+      strcat(str, "Hz");
       item = new QListWidgetItem;
       item->setData(Qt::UserRole, QVariant(s));
       item->setText(str);
@@ -610,8 +614,12 @@ void UI_Signalswindow::SubtractButtonClicked()
     {
       snprintf(str, 200, "%-2i - ", row + 1);
       strcat(str, mainwindow->edfheaderlist[row]->edfparam[s].label);
-      strcat(str, " x1");
-      snprintf(str + strlen(str), 50, " %5.fHz", mainwindow->edfheaderlist[row]->edfparam[s].smp_per_record / mainwindow->edfheaderlist[row]->data_record_duration);
+      strcat(str, " x1 ");
+      convert_to_metric_suffix(str + strlen(str),
+                               mainwindow->edfheaderlist[row]->edfparam[s].smp_per_record / mainwindow->edfheaderlist[row]->data_record_duration,
+                               3);
+      remove_trailing_zeros(str);
+      strcat(str, "Hz");
       item = new QListWidgetItem;
       item->setData(Qt::UserRole, QVariant(s));
       item->setText(str);
@@ -742,9 +750,12 @@ void UI_Signalswindow::show_signals(int row)
 
     snprintf(str, 256, "%-3i ", i + 1);
     strcat(str, mainwindow->edfheaderlist[row]->edfparam[i].label);
-    sprintf(str + strlen(str), "   %f", mainwindow->edfheaderlist[row]->edfparam[i].smp_per_record / mainwindow->edfheaderlist[row]->data_record_duration);
+    strcat(str, "   ");
+    convert_to_metric_suffix(str + strlen(str),
+                             mainwindow->edfheaderlist[row]->edfparam[i].smp_per_record / mainwindow->edfheaderlist[row]->data_record_duration,
+                             6);
     remove_trailing_zeros(str);
-    strcat(str, " Hz");
+    strcat(str, "Hz");
     item = new QListWidgetItem;
     item->setText(str);
     item->setData(Qt::UserRole, QVariant(i));

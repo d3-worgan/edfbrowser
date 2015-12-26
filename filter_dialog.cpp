@@ -134,7 +134,7 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
   freqbox->setDecimals(6);
   freqbox->setSuffix(" Hz");
   freqbox->setMinimum(0.0001);
-  freqbox->setMaximum(100000.0);
+  freqbox->setMaximum(100000000.0);
   freqbox->setValue(1.0);
 
   freq2box = new QDoubleSpinBox(filterdialog);
@@ -142,7 +142,7 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
   freq2box->setDecimals(6);
   freq2box->setSuffix(" Hz");
   freq2box->setMinimum(0.0001);
-  freq2box->setMaximum(100000.0);
+  freq2box->setMaximum(100000000.0);
   freq2box->setValue(2.0);
   freq2box->setVisible(false);
 

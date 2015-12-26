@@ -493,9 +493,13 @@ void UI_ReduceSignalsWindow::SelectFileButton()
       {
         if(!(edfhdr->edfparam[i].smp_per_record % j))
         {
-          snprintf(str, 256, "%i  (%f", j, ((double)(edfhdr->edfparam[i].smp_per_record / j)) / edfhdr->data_record_duration);
+//          snprintf(str, 256, "%i  (%f", j, ((double)(edfhdr->edfparam[i].smp_per_record / j)) / edfhdr->data_record_duration);
+          snprintf(str, 256, "%i  (", j);
+          convert_to_metric_suffix(str + strlen(str),
+                                   ((double)(edfhdr->edfparam[i].smp_per_record / j)) / edfhdr->data_record_duration,
+                                   3);
           remove_trailing_zeros(str);
-          strcat(str, " Hz)");
+          strcat(str, "Hz)");
           ((QComboBox *)(SignalsTablewidget->cellWidget(i, 1)))->addItem(str, QVariant(j));
         }
       }
@@ -584,7 +588,7 @@ void UI_ReduceSignalsWindow::StartConversion()
   QProgressDialog progress("Processing file...", "Abort", 0, 1);
   progress.setWindowModality(Qt::WindowModal);
   progress.setMinimumDuration(200);
-
+  progress.setValue(1);
 
   pushButton3->setEnabled(false);
   pushButton4->setEnabled(false);

@@ -434,8 +434,10 @@ void UI_EDFhdrwindow::show_params(int row)
   {
     signallist->setRowHeight(i, 25);
     signallist->setCellWidget(i, 0, new QLabel(mainwindow->edfheaderlist[row]->edfparam[i].label));
-    snprintf(str, 512, "%f", (double)mainwindow->edfheaderlist[row]->edfparam[i].smp_per_record / mainwindow->edfheaderlist[row]->data_record_duration);
-    strcat(str, " Hz");
+    convert_to_metric_suffix(str,
+                             (double)mainwindow->edfheaderlist[row]->edfparam[i].smp_per_record / mainwindow->edfheaderlist[row]->data_record_duration,
+                             3);
+    strcat(str, "Hz");
     remove_trailing_zeros(str);
     signallist->setCellWidget(i, 1, new QLabel(str));
     snprintf(str, 512, "%+f", mainwindow->edfheaderlist[row]->edfparam[i].phys_max);
