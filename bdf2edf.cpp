@@ -783,7 +783,8 @@ END_1:
 
 void UI_BDF2EDFwindow::showpopupmessage(const char *str1, const char *str2)
 {
-  UI_Messagewindow popupmessage(str1, str2);
+  QMessageBox messagewindow(QMessageBox::NoIcon, str1, str2);
+  messagewindow.exec();
 }
 
 

@@ -52,7 +52,6 @@
 #include <string.h>
 
 #include "global.h"
-#include "popup_messagewindow.h"
 #include "utils.h"
 #include "edflib.h"
 #include "ravg_filter.h"

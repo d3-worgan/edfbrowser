@@ -212,7 +212,7 @@ void UI_BI98002EDFwindow::SelectFileButton()
          (startdate_month < 1)   || (startdate_month > 12)  ||
          (startdate_day < 1)     || (startdate_day > 31))
       {
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Wrong recorddate.");
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Wrong record date.");
         messagewindow.exec();
         fclose(dcmfile);
         fclose(evtfile);
@@ -285,7 +285,6 @@ void UI_BI98002EDFwindow::SelectFileButton()
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Malloc error.");
     messagewindow.exec();
-    UI_Messagewindow popuperror("Error", "Malloc error.");
     fclose(dcmfile);
     fclose(evtfile);
     return;
@@ -489,10 +488,6 @@ void UI_BI98002EDFwindow::SelectFileButton()
 }
 
 
-void UI_BI98002EDFwindow::showpopupmessage(const char *str1, const char *str2)
-{
-  UI_Messagewindow popupmessage(str1, str2);
-}
 
 
 

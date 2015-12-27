@@ -62,7 +62,6 @@
 #include "mainwindow.h"
 #include "colordialog.h"
 #include "filter.h"
-#include "popup_messagewindow.h"
 #include "spectrumanalyzer.h"
 #include "utils.h"
 #include "adjustfiltersettings.h"

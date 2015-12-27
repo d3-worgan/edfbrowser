@@ -54,7 +54,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "popup_messagewindow.h"
 #include "xml.h"
 #include "utils.h"
 #include "edflib.h"

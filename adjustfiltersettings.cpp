@@ -576,7 +576,9 @@ void AdjustFilterSettings::update_filter()
                       / signalcomp->edfhdr->data_record_duration)
                       / 2.0))
       {
-        UI_Messagewindow errormessage("Error", "The frequency must be less than: samplerate / 2");
+        QMessageBox messagewindow(QMessageBox::Critical, "Error",
+                                  "The frequency must be less than: samplerate / 2");
+        messagewindow.exec();
         return;
       }
     }
@@ -586,7 +588,9 @@ void AdjustFilterSettings::update_filter()
                       / signalcomp->edfhdr->data_record_duration)
                       / 2.0))
       {
-        UI_Messagewindow errormessage("Error", "The frequency must be less than: samplerate / 2");
+        QMessageBox messagewindow(QMessageBox::Critical, "Error",
+                                  "The frequency must be less than: samplerate / 2");
+        messagewindow.exec();
         return;
       }
     }
@@ -685,7 +689,8 @@ void AdjustFilterSettings::update_filter()
 
     if(err != NULL)
     {
-      UI_Messagewindow errormessage("Error", err);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", err);
+      messagewindow.exec();
       free(err);
       return;
     }
@@ -711,7 +716,9 @@ void AdjustFilterSettings::update_filter()
     signalcomp->ravg_filter[filter_nr] = create_ravg_filter(type, size);
     if(signalcomp->ravg_filter[filter_nr] == NULL)
     {
-      UI_Messagewindow errormessage("Error", "An error occurred while creating a moving average filter.");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error",
+                                "An internal error occurred while creating a moving average filter.");
+      messagewindow.exec();
       return;
     }
 

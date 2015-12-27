@@ -95,7 +95,6 @@
 
 #include "global.h"
 #include "viewcurve.h"
-#include "popup_messagewindow.h"
 #include "check_edf_file.h"
 #include "show_edf_hdr.h"
 #include "signals_dialog.h"

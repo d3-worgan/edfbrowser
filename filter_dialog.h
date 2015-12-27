@@ -55,7 +55,6 @@
 #include "global.h"
 #include "mainwindow.h"
 #include "filter.h"
-#include "popup_messagewindow.h"
 #include "filtercurve.h"
 #include "utils.h"
 #include "ravg_filter.h"

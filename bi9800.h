@@ -49,7 +49,6 @@
 #include <ctype.h>
 
 #include "global.h"
-#include "popup_messagewindow.h"
 #include "edflib.h"
 #include "utils.h"
 
@@ -72,10 +71,6 @@ QDialog      *myobjectDialog;
 
 char  *recent_opendir,
       *recent_savedir;
-
-
-
-void showpopupmessage(const char *, const char *);
 
 private slots:
 

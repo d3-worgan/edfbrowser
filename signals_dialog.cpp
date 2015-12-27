@@ -784,22 +784,25 @@ void UI_Signalswindow::SelectAllButtonClicked()
 
 void UI_Signalswindow::HelpButtonClicked()
 {
-  UI_Messagewindow popup_help("Help",
-
+  QMessageBox messagewindow(QMessageBox::NoIcon, "Help",
   "On top you will see a list of opened files.\n"
-  "Select (highlight) the file from which you want to add signals. At the left part of the dialog you see a list of\n"
-  "all the signals which are in the selected file. Select one or more signals and click on the \"Add signals\"\n"
-  "button. Now you will see the selected signals on the screen.\n"
+  "Select (highlight) the file from which you want to add signals.\n"
+  "At the left part of the dialog you see a list of all the signals which are in the selected file.\n"
+  "Select one or more signals and click on the \"Add signals\" button.\n"
+  "Now you will see the selected signals on the screen.\n"
 
   "\nWhen you want to make a combination (derivation) of two or more signals, do as follows.\n"
-  "Select the file from which you want to add signals. For example, we choose an EEG file which contains\n"
-  "the signals \"P3\" and \"C3\" and we want to subtract \"C3\" from \"P3\".\n"
+  "Select the file from which you want to add signals.\n"
+  "For example, we choose an EEG file which contains the signals \"P3\" and \"C3\"\n"
+  "and we want to subtract \"C3\" from \"P3\".\n"
   "- Select (highlight) the signal \"P3\".\n"
   "- Click on the \"Add\" button.\n"
   "- Select (highlight) the signal \"C3\".\n"
   "- Click on the \"Subtract\" button.\n"
   "- Click on the \"Make derivation\" button.\n"
   "- The result of \"P3\" minus \"C3\" will appear on the screen.");
+
+  messagewindow.exec();
 }
 
 

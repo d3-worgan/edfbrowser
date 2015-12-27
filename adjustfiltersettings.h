@@ -42,11 +42,11 @@
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QPushButton>
+#include <QMessageBox>
 
 #include "global.h"
 #include "mainwindow.h"
 #include "viewcurve.h"
-#include "popup_messagewindow.h"
 #include "ravg_filter.h"
 #include "utils.h"
 

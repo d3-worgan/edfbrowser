@@ -55,7 +55,6 @@
 #include "global.h"
 #include "mainwindow.h"
 #include "check_edf_file.h"
-#include "popup_messagewindow.h"
 #include "utils.h"
 #include "utc_date_time.h"
 #include "active_file_chooser.h"

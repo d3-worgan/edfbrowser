@@ -57,7 +57,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "popup_messagewindow.h"
+#include "global.h"
 #include "xml.h"
 #include "utils.h"
 

@@ -52,10 +52,8 @@
 #include <string.h>
 
 #include "global.h"
-#include "popup_messagewindow.h"
 #include "mainwindow.h"
 #include "colordialog.h"
-#include "popup_messagewindow.h"
 #include "utc_date_time.h"
 #include "special_button.h"
 #include "utils.h"

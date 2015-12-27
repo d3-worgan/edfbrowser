@@ -41,7 +41,6 @@ UI_Mainwindow::UI_Mainwindow()
 {
   int i, j, k;
 
-
   setMinimumSize(640, 480);
   setWindowTitle(PROGRAM_NAME);
   setWindowIcon(QIcon(":/images/edf.png"));
@@ -7065,40 +7064,48 @@ void UI_Mainwindow::show_help()
 
 void UI_Mainwindow::show_kb_shortcuts()
 {
-  UI_Messagewindow popuperror("Keyboard shortcuts",
-   "PgDn\tnext page\n"
-   "PgUp\tformer page\n"
-   "Right Arrow\tshift right one tenth of pagetime\n"
-   "Left Arrow\tshift left one tenth of pagetime\n"
-   "Plus\tincrease sensitivity\n"
-   "Minus\tdecrease sensitivity\n"
-   "Up Arrow\tshift up\n"
-   "Down Arrow\tshift down\n"
-   "Ctrl-Home\tgo to start of file\n"
-   "Ctrl-End\tgo to end of file\n"
-   "Ctrl++\tzoom in\n"
-   "Ctrl+-\tzoom out\n"
-   "F1 - F8\tload predefined montage\n"
-   "Esc\tremove crosshairs or floating ruler\n"
+  QMessageBox messagewindow(QMessageBox::NoIcon,
+   "Keyboard shortcuts",
+   "PgDn\t\tnext page\n"
+   "PgUp\t\tformer page\n"
+   "Right Arrow\t\tshift right one tenth of pagetime\n"
+   "Left Arrow\t\tshift left one tenth of pagetime\n"
+   "Plus\t\tincrease sensitivity\n"
+   "Minus\t\tdecrease sensitivity\n"
+   "Up Arrow\t\tshift up\n"
+   "Down Arrow\t\tshift down\n"
+   "Ctrl-Home\t\tgo to start of file\n"
+   "Ctrl-End\t\tgo to end of file\n"
+   "Ctrl++\t\tzoom in\n"
+   "Ctrl+-\t\tzoom out\n"
+   "F1 - F8\t\tload predefined montage\n"
+   "Esc\t\tremove crosshairs or floating ruler\n"
 
    "\nafter zooming in by dragging a rectangle:\n"
-   "Backspace\tzoom back\n"
-   "Insert\tzoom in\n"
+   "Backspace\t\tzoom back\n"
+   "Insert\t\tzoom in\n"
 #ifdef Q_OS_WIN32
-   "\nCtrl+O\tOpen a file\n"
-   "Ctrl+Shift+O\tOpen a stream\n"
+   "\nCtrl+O\t\tOpen a file\n"
+   "Ctrl+Shift+O\t\tOpen a stream\n"
    "Ctrl+F4\tClose all files\n"
    "Alt+F4\tExit program\n"
 #else
-   "\nCtrl+O\tOpen a file\n"
-   "Ctrl+Shift+O\tOpen a stream\n"
-   "Ctrl+W\tClose all files\n"
-   "Ctrl+Q\tExit program\n"
+   "\nCtrl+O\t\tOpen a file\n"
+   "Ctrl+Shift+O\t\tOpen a stream\n"
+   "Ctrl+W\t\tClose all files\n"
+   "Ctrl+Q\t\tExit program\n"
 #endif
-   "\nMousewheel\tshift left or right\n"
-   "Ctrl+Mousewheel\tzoom in or out");
-}
+   "\nMousewheel\t\tshift left or right\n"
+   "Ctrl+Mousewheel\tzoom in or out\n"
 
+   "\nCtrl+Space\t\tToggle Playback\n"
+#ifdef Q_OS_LINUX
+   "Ctrl+Shift+V\t\tPlayback with video"
+#endif
+  );
+
+  messagewindow.exec();
+}
 
 
 #ifdef Q_OS_WIN32

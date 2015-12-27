@@ -59,7 +59,6 @@
 #include "global.h"
 #include "mainwindow.h"
 #include "check_edf_file.h"
-#include "popup_messagewindow.h"
 #include "filter.h"
 #include "utils.h"
 

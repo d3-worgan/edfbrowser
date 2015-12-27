@@ -53,7 +53,6 @@ MOC_DIR = ./moc
 HEADERS += global.h
 HEADERS += mainwindow.h
 HEADERS += viewcurve.h
-HEADERS += popup_messagewindow.h
 HEADERS += check_edf_file.h
 HEADERS += show_edf_hdr.h
 HEADERS += signals_dialog.h
@@ -136,11 +135,9 @@ HEADERS += third_party/kiss_fft/kiss_fft.h
 HEADERS += third_party/kiss_fft/_kiss_fft_guts.h
 HEADERS += third_party/kiss_fft/kiss_fftr.h
 
-
 SOURCES += main.cpp
 SOURCES += mainwindow.cpp
 SOURCES += viewcurve.cpp
-SOURCES += popup_messagewindow.cpp
 SOURCES += check_edf_file.cpp
 SOURCES += show_edf_hdr.cpp
 SOURCES += signals_dialog.cpp

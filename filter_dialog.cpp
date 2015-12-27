@@ -778,8 +778,9 @@ void UI_FilterDialog::ApplyButtonClicked()
 
     if((mainwindow->signalcomp[s]->filter_cnt + mainwindow->signalcomp[s]->fidfilter_cnt) > MAXFILTERS - 1)
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "The maximum amount of filters per signal has been reached.\n"
-                                                                         "Remove some filters first.");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error",
+                                "The maximum amount of filters per signal has been reached.\n"
+                                "Remove some filters first.");
       messagewindow.exec();
       return;
     }
@@ -798,7 +799,9 @@ void UI_FilterDialog::ApplyButtonClicked()
                         / mainwindow->signalcomp[s]->edfhdr->data_record_duration)
                         / 2.0))
         {
-          UI_Messagewindow errormessage("Error", "The frequency of the filter(s) must be less than: samplerate / 2");
+          QMessageBox messagewindow(QMessageBox::Critical, "Error",
+                                    "The frequency of the filter(s) must be less than: samplerate / 2");
+          messagewindow.exec();
           return;
         }
       }
@@ -808,7 +811,8 @@ void UI_FilterDialog::ApplyButtonClicked()
                         / mainwindow->signalcomp[s]->edfhdr->data_record_duration)
                         / 2.0))
         {
-          QMessageBox messagewindow(QMessageBox::Critical, "Error", "The frequency of the filter(s) must be less than: samplerate / 2");
+          QMessageBox messagewindow(QMessageBox::Critical, "Error",
+                                    "The frequency of the filter(s) must be less than: samplerate / 2");
           messagewindow.exec();
           return;
         }

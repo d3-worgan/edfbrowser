@@ -49,8 +49,6 @@
 
 #include "global.h"
 #include "mainwindow.h"
-#include "popup_messagewindow.h"
-
 
 
 class UI_Mainwindow;

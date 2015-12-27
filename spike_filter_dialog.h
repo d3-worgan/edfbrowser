@@ -54,7 +54,6 @@
 #include "global.h"
 #include "mainwindow.h"
 #include "spike_filter.h"
-#include "popup_messagewindow.h"
 #include "utils.h"
 
 
