@@ -1763,6 +1763,7 @@ int UI_UNISENS2EDFwindow::get_events_from_csv_files(int max_files, int edf_hdl, 
     csvfile = fopeno(csvfilepath, "rb");
     if(csvfile == NULL)
     {
+      progress.reset();
       sprintf(scratchpad, "Error, can not open csv file:\n%s\n", evtfilename[k]);
       textEdit1->append(QString::fromLocal8Bit(scratchpad));
       return(1);

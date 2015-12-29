@@ -436,6 +436,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
 
     if(fread(readbuf, hdr->recordsize, 1, inputfile) != 1)
     {
+      progress.reset();
       free(readbuf);
       free(annot_buf);
       return(2);

@@ -402,6 +402,7 @@ void UI_BDF2EDFwindow::StartConversion()
   QProgressDialog progress("Converting...", "Abort", 0, datarecords, myobjectDialog);
   progress.setWindowModality(Qt::WindowModal);
   progress.setMinimumDuration(200);
+  progress.reset();
 
   if(!new_edfsignals)
   {

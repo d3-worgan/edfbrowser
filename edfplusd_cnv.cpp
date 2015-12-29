@@ -492,6 +492,7 @@ void UI_EDFDwindow::SelectFileButton()
       outputfile = fopeno(output_path, "w+b");
       if(outputfile==NULL)
       {
+        progress.reset();
         textEdit1->append("Error, can not open outputfile for writing.\n");
         free_annotations(annotationlist[0]);
         free(edfhdr->edfparam);
@@ -505,6 +506,7 @@ void UI_EDFDwindow::SelectFileButton()
 
       if(fwrite(fileheader, edfhdr->hdrsize, 1, outputfile) != 1)
       {
+        progress.reset();
         textEdit1->append("Write error.\n");
         free_annotations(annotationlist[0]);
         free(edfhdr->edfparam);

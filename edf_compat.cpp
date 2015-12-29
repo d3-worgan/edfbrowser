@@ -233,6 +233,7 @@ void UI_EDFCompatwindow::CheckButtonClicked()
 
     if(fread(cnv_buf, recordsize, 1, inputfile)!=1)
     {
+      progress.reset();
       snprintf(txt_string, 2048, "An error occurred while reading inputfile at datarecord %i.", i + 1);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
       messagewindow.exec();
@@ -269,6 +270,7 @@ void UI_EDFCompatwindow::CheckButtonClicked()
 
         if(temp > edfparam[j].dig_max)
         {
+          progress.reset();
           snprintf(txt_string, 2048, "Error.\n\nIn datarecord %i -> signal %i -> sample %i is more than digital maximum.\n"
                  "Digital maximum for this signal as written in header is %i but sample is %i.\n"
                  "Offset from start of file: 0x%X\n",
@@ -278,7 +280,6 @@ void UI_EDFCompatwindow::CheckButtonClicked()
                  edfparam[j].dig_max,
                  temp,
                  (i * recordsize) + edfparam[j].buf_offset + (k * samplesize) + (edfsignals * 256) + 256);
-          progress.reset();
           QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
           messagewindow.exec();
           free(scratchpad);
@@ -289,6 +290,7 @@ void UI_EDFCompatwindow::CheckButtonClicked()
 
         if(temp < edfparam[j].dig_min)
         {
+          progress.reset();
           snprintf(txt_string, 2048, "Error.\n\nIn datarecord %i -> signal %i -> sample %i is less than digital minimum.\n"
                  "Digital minimum for this signal as written in header is %i but sample is %i.\n"
                  "Offset from start of file: 0x%X\n",
@@ -298,7 +300,6 @@ void UI_EDFCompatwindow::CheckButtonClicked()
                  edfparam[j].dig_min,
                  temp,
                  (i * recordsize) + edfparam[j].buf_offset + (k * samplesize) + (edfsignals * 256) + 256);
-          progress.reset();
           QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
           messagewindow.exec();
           free(cnv_buf);
@@ -486,6 +487,8 @@ void UI_EDFCompatwindow::CheckButtonClicked()
 
       if(error)
       {
+        progress.reset();
+
         if(error==1)
         {
           snprintf(txt_string, 1700, "Error.\n\nInvalid annotation in datarecord %i.\n",
@@ -567,7 +570,6 @@ void UI_EDFCompatwindow::CheckButtonClicked()
         snprintf(txt_string + len, 348, "Offset from start of file: 0x%X\n\n"
                 "Stopped at the first error, additional errors may be present.",
                p);
-        progress.reset();
         QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
         messagewindow.exec();
         free(cnv_buf);

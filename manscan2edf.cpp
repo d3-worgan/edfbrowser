@@ -649,6 +649,8 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       }
     }
 
+    progress.reset();
+
 ////////////////// end of conversion ///////////////////////////////////////////
 
     if(edfwrite_annotation_latin1(hdl, 0LL, -1LL, "Recording starts"))

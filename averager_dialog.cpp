@@ -271,6 +271,7 @@ void UI_AveragerWindow::startButtonClicked()
   QProgressDialog progress("Averaging ...", "Abort", 0, avg_cnt, averager_dialog);
   progress.setWindowModality(Qt::WindowModal);
   progress.setMinimumDuration(200);
+  progress.reset();
 
   progress_steps = avg_cnt / 100;
   if(progress_steps < 1)

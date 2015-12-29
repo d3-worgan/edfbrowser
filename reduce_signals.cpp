@@ -588,7 +588,7 @@ void UI_ReduceSignalsWindow::StartConversion()
   QProgressDialog progress("Processing file...", "Abort", 0, 1);
   progress.setWindowModality(Qt::WindowModal);
   progress.setMinimumDuration(200);
-  progress.setValue(1);
+  progress.reset();
 
   pushButton3->setEnabled(false);
   pushButton4->setEnabled(false);
