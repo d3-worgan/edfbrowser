@@ -710,6 +710,9 @@ void SignalCurve::print_to_pdf()
   backup_colors_for_printing();
 
   QPainter paint(&curve_printer);
+#if QT_VERSION >= 0x050000
+  paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#endif
 
   drawWidget_to_printer(&paint, curve_printer.pageRect().width(), curve_printer.pageRect().height());
 
@@ -745,6 +748,9 @@ void SignalCurve::print_to_image()
   QPixmap pixmap(width(), height());
 
   QPainter paint(&pixmap);
+#if QT_VERSION >= 0x050000
+  paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#endif
 
   drawWidget(&paint, width(), height());
 
@@ -775,6 +781,9 @@ void SignalCurve::print_to_printer()
   backup_colors_for_printing();
 
   QPainter paint(&curve_printer);
+#if QT_VERSION >= 0x050000
+  paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#endif
 
   drawWidget_to_printer(&paint, curve_printer.pageRect().width(), curve_printer.pageRect().height());
 
@@ -1326,6 +1335,9 @@ void SignalCurve::paintEvent(QPaintEvent *)
   if(updates_enabled == true)
   {
     QPainter paint(this);
+#if QT_VERSION >= 0x050000
+    paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#endif
 
     drawWidget(&paint, width(), height());
 

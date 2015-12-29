@@ -67,6 +67,10 @@ void FilterCurve::paintEvent(QPaintEvent *)
   h = height();
 
   QPainter painter(this);
+#if QT_VERSION >= 0x050000
+  painter.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#endif
+
   painter.fillRect(0, 0, w, h, BackgroundColor);
 
   if(w < 5)  return;

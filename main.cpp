@@ -20,6 +20,9 @@ int main(int argc, char *argv[])
 
   QTimer t1;
   t1.setSingleShot(true);
+#if QT_VERSION >= 0x050000
+  t1.setTimerType(Qt::PreciseTimer);
+#endif
   QObject::connect(&t1, SIGNAL(timeout()), &splash, SLOT(close()));
 
   splash.show();

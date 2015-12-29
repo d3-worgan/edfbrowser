@@ -252,6 +252,12 @@ UI_Mainwindow::UI_Mainwindow()
   playback_realtime_timer->setInterval(20);
   QObject::connect(playback_realtime_timer, SIGNAL(timeout()), this, SLOT(playback_realtime_timer_func()));
 
+#if QT_VERSION >= 0x050000
+  live_stream_timer->setTimerType(Qt::PreciseTimer);
+  video_poll_timer->setTimerType(Qt::PreciseTimer);
+  playback_realtime_timer->setTimerType(Qt::PreciseTimer);
+#endif
+
   setCentralWidget(maincurve);
 
   menubar = menuBar();

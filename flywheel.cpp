@@ -59,6 +59,10 @@ UI_Flywheel::UI_Flywheel(QWidget *w_parent) : QWidget(w_parent)
   t1 = new QTimer(this);
   t2 = new QTimer(this);
   t2->setSingleShot(true);
+#if QT_VERSION >= 0x050000
+  t1->setTimerType(Qt::PreciseTimer);
+  t2->setTimerType(Qt::PreciseTimer);
+#endif
 
   connect(t1, SIGNAL(timeout()), this, SLOT(wheel_rotate()));
   connect(t2, SIGNAL(timeout()), this, SLOT(t2_time_out()));
@@ -189,6 +193,9 @@ void UI_Flywheel::paintEvent(QPaintEvent *)
 
 
   QPainter painter(this);
+#if QT_VERSION >= 0x050000
+  painter.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#endif
 
   w = width();
   h = height();

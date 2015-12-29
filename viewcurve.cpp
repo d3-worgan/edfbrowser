@@ -867,6 +867,9 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
 void ViewCurve::paintEvent(QPaintEvent *)
 {
     QPainter paint(this);
+#if QT_VERSION >= 0x050000
+    paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#endif
 
     drawCurve_stage_2(&paint);
 }
@@ -907,6 +910,9 @@ void ViewCurve::print_to_printer()
     height_factor = ((double)print.pageRect().height()) / 9000.0;
 
     QPainter paint(&print);
+#if QT_VERSION >= 0x050000
+    paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#endif
 
     paint.translate(0, (int)(260.0 * height_factor));
 
@@ -1144,6 +1150,9 @@ void ViewCurve::print_to_pdf()
   height_factor = ((double)print.pageRect().height()) / 9000.0;
 
   QPainter paint(&print);
+#if QT_VERSION >= 0x050000
+  paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#endif
 
   paint.translate(0, (int)(260.0 * height_factor));
 
@@ -1248,6 +1257,9 @@ void ViewCurve::print_to_image(int w_img, int h_img)
   QPixmap pixmap(w_img, h_img);
 
   QPainter paint(&pixmap);
+#if QT_VERSION >= 0x050000
+  paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#endif
 
   paint.fillRect(0, 0, w_img, h_img, backgroundcolor);
 

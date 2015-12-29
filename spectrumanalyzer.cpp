@@ -317,6 +317,9 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   t1 = new QTimer(this);
   t1->setSingleShot(true);
+#if QT_VERSION >= 0x050000
+  t1->setTimerType(Qt::PreciseTimer);
+#endif
   t1->start(10);
 
   QObject::connect(t1,                SIGNAL(timeout()),              this, SLOT(update_curve()));

@@ -256,6 +256,9 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 
   t1 = new QTimer(this);
   t1->setSingleShot(true);
+#if QT_VERSION >= 0x050000
+  t1->setTimerType(Qt::PreciseTimer);
+#endif
 
   QObject::connect(t1,              SIGNAL(timeout()),              this, SLOT(update_curve()));
   QObject::connect(amplitudeSlider, SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
