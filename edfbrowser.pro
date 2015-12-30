@@ -136,7 +136,11 @@ HEADERS += third_party/kiss_fft/_kiss_fft_guts.h
 HEADERS += third_party/kiss_fft/kiss_fftr.h
 
 SOURCES += main.cpp
+SOURCES += mainwindow_constr.cpp
 SOURCES += mainwindow.cpp
+SOURCES += viewbuf.cpp
+SOURCES += videoplayer.cpp
+SOURCES += read_write_settings.cpp
 SOURCES += viewcurve.cpp
 SOURCES += check_edf_file.cpp
 SOURCES += show_edf_hdr.cpp
