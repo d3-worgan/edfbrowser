@@ -1605,14 +1605,14 @@ double round_up_step125(double val)
 
   double ltmp;
 
-   while(val < 1)
+   while(val < 0.999)
   {
     val *= 10;
 
     exp--;
   }
 
-  while(val >= 10)
+  while(val > 9.999)
   {
     val /= 10;
 
@@ -1621,11 +1621,11 @@ double round_up_step125(double val)
 
   val = nearbyint(val);
 
-  if(val >= 5)
+  if(val > 4.999)
   {
     ltmp = 10;
   }
-  else if(val >= 2)
+  else if(val > 1.999)
     {
       ltmp = 5;
     }
@@ -1644,6 +1644,11 @@ double round_up_step125(double val)
     ltmp /= 10;
   }
 
+  if((ltmp < 1e-13) && (ltmp > -1e-13))
+  {
+    return 0;
+  }
+
   return ltmp;
 }
 
@@ -1654,14 +1659,14 @@ double round_down_step125(double val)
 
   double ltmp;
 
-  while(val < 1)
+  while(val < 0.999)
   {
     val *= 10;
 
     exp--;
   }
 
-  while(val >= 10)
+  while(val > 9.999)
   {
     val /= 10;
 
@@ -1670,15 +1675,15 @@ double round_down_step125(double val)
 
   val = nearbyint(val);
 
-  if(val <= 1)
+  if(val < 1.001)
   {
     ltmp = 0.5;
   }
-  else if(val <= 2)
+  else if(val < 2.001)
     {
       ltmp = 1;
     }
-    else if(val <= 5)
+    else if(val < 5.001)
       {
         ltmp = 2;
       }
@@ -1695,6 +1700,11 @@ double round_down_step125(double val)
   for(i=0; i>exp; i--)
   {
     ltmp /= 10;
+  }
+
+  if((ltmp < 1e-13) && (ltmp > -1e-13))
+  {
+    return 0;
   }
 
   return ltmp;
@@ -1807,6 +1817,60 @@ int convert_to_metric_suffix(char *buf, double value, int decimals)
 
   return 1;
 }
+
+
+int strtoipaddr(unsigned int *dest, const char *src)
+{
+  int i, err=1;
+
+  unsigned int val;
+
+  char *ptr,
+       str[64];
+
+  if(strlen(src) < 7)
+  {
+    return -1;
+  }
+
+  strncpy(str, src, 64);
+
+  str[63] = 0;
+
+  ptr = strtok(str, ".");
+
+  if(ptr != NULL)
+  {
+    val = atoi(ptr) << 24;
+
+    for(i=0; i<3; i++)
+    {
+      ptr = strtok(NULL, ".");
+
+      if(ptr == NULL)
+      {
+        break;
+      }
+
+      val += atoi(ptr) << (16 - (i * 8));
+    }
+
+    err = 0;
+  }
+
+  if(err)
+  {
+    return -1;
+  }
+
+  *dest = val;
+
+  return 0;
+}
+
+
+
+
 
 
 
