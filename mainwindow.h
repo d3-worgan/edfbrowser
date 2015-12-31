@@ -334,7 +334,8 @@ private:
   char path[MAX_PATH_LENGTH],
        videopath[MAX_PATH_LENGTH],
        montagepath[MAX_PATH_LENGTH],
-       recent_file_path[MAX_RECENTFILES][MAX_PATH_LENGTH];
+       recent_file_path[MAX_RECENTFILES][MAX_PATH_LENGTH],
+       option_str[MAX_PATH_LENGTH];
 
   QAction  *former_page_Act,
            *shift_page_left_Act,
@@ -434,6 +435,7 @@ private:
   QProcess *video_process;
 
   int cmdlineargument,
+      cmdlineoption,
       oldwindowheight;
 
   Check_for_updates *update_checker;

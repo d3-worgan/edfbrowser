@@ -20,6 +20,8 @@
    the screen is less than number of horizontal screen pixels.
    You can select it in the settings menu, tab "Other" (Tools -> Options).
 
+ - Added the possibility to open a streaming file from the commandline.
+
 
 
 

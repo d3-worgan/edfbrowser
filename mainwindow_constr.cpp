@@ -888,6 +888,7 @@ UI_Mainwindow::UI_Mainwindow()
   recent_savedir[0] = 0;
   recent_opendir[0] = 0;
   montagepath[0] = 0;
+  option_str[0] = 0;
 
   for(i=0; i<MAX_RECENTFILES; i++)
   {
@@ -930,20 +931,54 @@ UI_Mainwindow::UI_Mainwindow()
   setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
   setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
 
+  char tmp_str[MAX_PATH_LENGTH];
+
+  cmdlineargument = 0;
+
+  cmdlineoption = 0;
+
   if(QCoreApplication::arguments().size()>1)
   {
-    strcpy(path, QCoreApplication::arguments().at(1).toLocal8Bit().data());
-    cmdlineargument = 1;
+    strcpy(tmp_str, QCoreApplication::arguments().at(1).toLocal8Bit().data());
+
+    if((strlen(tmp_str) > 2) && (!strncmp(tmp_str, "--", 2)))
+    {
+      strcpy(option_str, tmp_str);
+
+      cmdlineoption++;
+    }
+    else
+    {
+      strcpy(path, tmp_str);
+
+      cmdlineargument++;
+    }
 
     if(QCoreApplication::arguments().size()>2)
     {
-      strcpy(montagepath, QCoreApplication::arguments().at(2).toLocal8Bit().data());
-      cmdlineargument = 2;
+      strcpy(tmp_str, QCoreApplication::arguments().at(2).toLocal8Bit().data());
+
+      if(!cmdlineargument)
+      {
+        strcpy(path, tmp_str);
+      }
+      else
+      {
+        strcpy(montagepath, tmp_str);
+      }
+
+      cmdlineargument++;
+
+      if(cmdlineargument == 1)
+      {
+        if(QCoreApplication::arguments().size()>3)
+        {
+          strcpy(montagepath, QCoreApplication::arguments().at(3).toLocal8Bit().data());
+
+          cmdlineargument++;
+        }
+      }
     }
-  }
-  else
-  {
-    cmdlineargument = 0;
   }
 
   showMaximized();
@@ -952,7 +987,17 @@ UI_Mainwindow::UI_Mainwindow()
 
   if(cmdlineargument)
   {
-    open_new_file();
+    if(cmdlineoption)
+    {
+      if(!strcmp(option_str, "--stream"))
+      {
+        open_stream();
+      }
+    }
+    else
+    {
+      open_new_file();
+    }
   }
 
   if(QT_VERSION < MINIMUM_QT_VERSION)

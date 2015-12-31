@@ -194,6 +194,7 @@ void UI_Mainwindow::open_stream()
     shift_page_down_Act->setEnabled(false);
     printmenu->setEnabled(false);
     recent_filesmenu->setEnabled(false);
+    playback_realtime_Act->setEnabled(false);
 
     live_stream_timer->start(live_stream_update_interval);
   }
@@ -225,16 +226,6 @@ void UI_Mainwindow::live_stream_timer_func()
   datarecords_old = edfheaderlist[0]->datarecords;
 
   datarecords_new = check_edf_file_datarecords(edfheaderlist[0]);
-
-  if(datarecords_new == 0LL)
-  {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Stream has no datarecords.");
-    messagewindow.exec();
-
-    close_all_files();
-
-    return;
-  }
 
   if((datarecords_new > datarecords_old) && (datarecords_new > 0))
   {
@@ -1082,6 +1073,11 @@ void UI_Mainwindow::playback_realtime()
     return;
   }
 
+  if(live_stream_active)
+  {
+    return;
+  }
+
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
     return;
@@ -1308,7 +1304,7 @@ void UI_Mainwindow::open_new_file()
 
   struct edfhdrblock *edfhdr=NULL;
 
-  if(annot_editor_active&&files_open)
+  if(annot_editor_active && files_open)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "You can not open multiple files when editing annotations.\n"
                                                               "Close the annotation edit window first.");
@@ -1328,7 +1324,7 @@ void UI_Mainwindow::open_new_file()
     return;
   }
 
-  if(files_open>=MAXFILES)
+  if(files_open >= MAXFILES)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "There are too many files opened.");
     messagewindow.exec();
@@ -1363,7 +1359,7 @@ void UI_Mainwindow::open_new_file()
 
       position = i;
 
-      if(cmdlineargument!=2)
+      if(cmdlineargument != 2)
       {
         strcpy(montagepath, &recent_file_mtg_path[i][0]);
       }
@@ -1396,7 +1392,7 @@ void UI_Mainwindow::open_new_file()
 
   for(i=0; i<MAX_RECENTFILES; i++)
   {
-    if(recent_file_path[i][0]==0)
+    if(recent_file_path[i][0] == 0)
     {
       break;
     }
@@ -2171,6 +2167,7 @@ void UI_Mainwindow::close_all_files()
   shift_page_down_Act->setEnabled(true);
   printmenu->setEnabled(true);
   recent_filesmenu->setEnabled(true);
+  playback_realtime_Act->setEnabled(true);
 
   if(annotations_edited)
   {
