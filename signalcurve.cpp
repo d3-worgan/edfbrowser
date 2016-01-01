@@ -801,9 +801,6 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
       p_w,
       p_divisor,
       p_range,
-      p_multiplier,
-      p_ruler_startvalue,
-      p_ruler_endvalue,
       p_tmp,
       p_h,
       p2_divisor,
@@ -812,6 +809,10 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
       p2_ruler_startvalue,
       p2_ruler_endvalue,
       p2_tmp;
+
+  long long p_multiplier,
+            p_ruler_startvalue,
+            p_ruler_endvalue;
 
   char str[128];
 
@@ -871,7 +872,7 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
   {
     p_multiplier *= 10;
 
-    if(p_multiplier > 10000000)
+    if(p_multiplier > 100000000000000LL)
     {
       break;
     }
@@ -1353,9 +1354,6 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
       p_w,
       p_divisor,
       p_range,
-      p_multiplier,
-      p_ruler_startvalue,
-      p_ruler_endvalue,
       p_tmp,
       p_h,
       p2_divisor,
@@ -1364,6 +1362,10 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
       p2_ruler_startvalue,
       p2_ruler_endvalue,
       p2_tmp;
+
+  long long p_multiplier,
+            p_ruler_startvalue,
+            p_ruler_endvalue;
 
   double v_sens=0.0,
          offset=0.0,
@@ -1398,7 +1400,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
   {
     p_multiplier *= 10;
 
-    if(p_multiplier > 10000000)
+    if(p_multiplier > 100000000000000LL)
     {
       break;
     }
@@ -1435,9 +1437,9 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
     p_divisor *= 2;
   }
 
-//   printf("p_multiplier is %i\n"
-//         "p_ruler_startvalue is %i\n"
-//         "p_ruler_endvalue is %i\n"
+//   printf("p_multiplier is %lli\n"
+//         "p_ruler_startvalue is %lli\n"
+//         "p_ruler_endvalue is %lli\n"
 //         "p_range is %i\n"
 //         "p_divisor is %i\n"
 //         "p_pixels_per_unit is %f\n\n",

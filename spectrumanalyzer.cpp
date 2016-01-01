@@ -268,7 +268,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   spanSlider = new QSlider;
   spanSlider->setOrientation(Qt::Horizontal);
-  spanSlider->setMinimum(10);
+  spanSlider->setMinimum(1);
   spanSlider->setMaximum(1000);
   spanSlider->setValue(1000);
   spanSlider->setMinimumSize(500, 15);
@@ -422,9 +422,9 @@ void UI_FreqSpectrumWindow::print_to_txt()
 
 void UI_FreqSpectrumWindow::sliderMoved(int)
 {
-  int startstep,
-      stopstep,
-      spanstep;
+  long long startstep,
+            stopstep,
+            spanstep;
 
   double max_freq,
          start_freq;
@@ -509,9 +509,9 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
     mainwindow->spectrum_bw = 0;
   }
 
-  spanstep = spanSlider->value() * steps / 1000;
+  spanstep = (long long)spanSlider->value() * (long long)steps / 1000LL;
 
-  startstep = centerSlider->value() * (steps - spanstep) / 1000;
+  startstep = (long long)centerSlider->value() * (steps - spanstep) / 1000LL;
 
   stopstep = startstep + spanstep;
 
@@ -541,6 +541,21 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
   max_freq = ((double)samplefreq / 2.0) * stopstep / steps;
 
   start_freq = ((double)samplefreq / 2.0) * startstep / steps;
+
+//   printf("steps: %i\n"
+//          "startstep: %lli\n"
+//          "stopstep: %lli\n"
+//          "spanstep: %lli\n"
+//          "samplefreq: %f\n"
+//          "max_freq: %f\n"
+//          "start_freq: %f\n",
+//          steps,
+//          startstep,
+//          stopstep,
+//          spanstep,
+//          samplefreq,
+//          max_freq,
+//          start_freq);
 
   curve1->setH_RulerValues(start_freq, max_freq);
 
