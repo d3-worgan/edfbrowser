@@ -511,7 +511,7 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
 
   spanstep = (long long)spanSlider->value() * (long long)steps / 1000LL;
 
-  startstep = (long long)centerSlider->value() * (steps - spanstep) / 1000LL;
+  startstep = (long long)centerSlider->value() * ((long long)steps - spanstep) / 1000LL;
 
   stopstep = startstep + spanstep;
 
@@ -561,11 +561,13 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
 
   strcpy(str, "Center ");
   convert_to_metric_suffix(str + strlen(str), start_freq + ((max_freq - start_freq) / 2.0), 3);
+  remove_trailing_zeros(str);
   strcat(str, "Hz");
   centerLabel->setText(str);
 
   strcpy(str, "Span ");
   convert_to_metric_suffix(str + strlen(str), max_freq - start_freq, 3);
+  remove_trailing_zeros(str);
   strcat(str, "Hz");
   spanLabel->setText(str);
 }
@@ -1032,9 +1034,10 @@ void UI_FreqSpectrumWindow::update_curve()
     buf1 = NULL;
   }
 
-  sprintf(str, "FFT resolution: %f Hz   %i blocks of %i samples", freqstep, dftblocks, dftblocksize);
-
+  strcpy(str, "FFT resolution: ");
+  convert_to_metric_suffix(str + strlen(str), freqstep, 3);
   remove_trailing_zeros(str);
+  sprintf(str + strlen(str), "Hz   %i blocks of %i samples", dftblocks, dftblocksize);
 
   curve1->setUpperLabel1(str);
 

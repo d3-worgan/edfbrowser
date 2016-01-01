@@ -204,7 +204,7 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 
   spanSlider = new QSlider;
   spanSlider->setOrientation(Qt::Horizontal);
-  spanSlider->setMinimum(10);
+  spanSlider->setMinimum(1);
   spanSlider->setMaximum(1000);
   spanSlider->setValue(1000);
   spanSlider->setMinimumSize(500, 15);
@@ -533,18 +533,19 @@ void UI_SpectrumDockWindow::vlogButtonClicked(bool value)
 
 void UI_SpectrumDockWindow::sliderMoved(int)
 {
-  int startstep,
-      stopstep,
-      precision,
-      spanstep;
+  long long startstep,
+            stopstep,
+            spanstep;
 
   double max_freq,
          start_freq;
 
+  char str[1024];
 
-  spanstep = spanSlider->value() * steps / 1000;
 
-  startstep = centerSlider->value() * (steps - spanstep) / 1000;
+  spanstep = (long long)spanSlider->value() * (long long)steps / 1000LL;
+
+  startstep = (long long)centerSlider->value() * ((long long)steps - spanstep) / 1000LL;
 
   stopstep = startstep + spanstep;
 
@@ -585,31 +586,21 @@ void UI_SpectrumDockWindow::sliderMoved(int)
 
   max_freq = ((double)samplefreq / 2.0) * stopstep / steps;
 
-  precision = 0;
-  if(max_freq < 10.0)
-  {
-    precision = 1;
-  }
-  if(max_freq < 1.0)
-  {
-    precision = 2;
-  }
-  if(max_freq < 0.1)
-  {
-    precision = 3;
-  }
-  if(max_freq < 0.01)
-  {
-    precision = 4;
-  }
-
   start_freq = ((double)samplefreq / 2.0) * startstep / steps;
 
   curve1->setH_RulerValues(start_freq, max_freq);
 
-  centerLabel->setText(QString::number(start_freq + ((max_freq - start_freq) / 2.0), 'f', precision).append(" Hz").prepend("Center "));
+  strcpy(str, "Center ");
+  convert_to_metric_suffix(str + strlen(str), start_freq + ((max_freq - start_freq) / 2.0), 3);
+  remove_trailing_zeros(str);
+  strcat(str, "Hz");
+  centerLabel->setText(str);
 
-  spanLabel->setText(QString::number(max_freq - start_freq, 'f', precision).append(" Hz").prepend("Span "));
+  strcpy(str, "Span ");
+  convert_to_metric_suffix(str + strlen(str), max_freq - start_freq, 3);
+  remove_trailing_zeros(str);
+  strcat(str, "Hz");
+  spanLabel->setText(str);
 }
 
 
@@ -1213,10 +1204,12 @@ void UI_SpectrumDockWindow::update_curve()
     buf1 = NULL;
   }
 
-  sprintf(str, "FFT resolution: %f Hz   %i blocks of %i samples", freqstep, dftblocks, dftblocksize);
+//  sprintf(str, "FFT resolution: %f Hz   %i blocks of %i samples", freqstep, dftblocks, dftblocksize);
 
+  strcpy(str, "FFT resolution: ");
+  convert_to_metric_suffix(str + strlen(str), freqstep, 3);
   remove_trailing_zeros(str);
-
+  sprintf(str + strlen(str), "Hz   %i blocks of %i samples", dftblocks, dftblocksize);
   curve1->setUpperLabel1(str);
 
   curve1->setUpperLabel2(signallabel);
