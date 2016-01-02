@@ -333,6 +333,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   QObject::connect(SpectrumDialog,    SIGNAL(destroyed(QObject *)),   this, SLOT(SpectrumDialogDestroyed(QObject *)));
   QObject::connect(curve1,            SIGNAL(extra_button_clicked()), this, SLOT(print_to_txt()));
   QObject::connect(flywheel1,         SIGNAL(dialMoved(int)),         this, SLOT(update_flywheel(int)));
+  QObject::connect(this,              SIGNAL(finished()),             this, SLOT(thr_finished_func()));
 
   SpectrumDialog->show();
 }
@@ -573,17 +574,13 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
 }
 
 
-void UI_FreqSpectrumWindow::update_curve()
+void UI_FreqSpectrumWindow::run()
 {
   int i, j, k,
-      dftblocksize,
-      dftblocks,
       samplesleft,
       fft_outputbufsize;
 
   long long s, s2;
-
-  char str[512];
 
   double dig_value=0.0,
          f_tmp=0.0;
@@ -596,47 +593,6 @@ void UI_FreqSpectrumWindow::update_curve()
           unsigned char four[4];
         } var;
 
-  if(signalcomp == NULL)
-  {
-    return;
-  }
-
-  if(busy)
-  {
-    return;
-  }
-
-  viewbuf = mainwindow->viewbuf;
-
-  if(viewbuf == NULL)
-  {
-    return;
-  }
-
-  busy = 1;
-
-  curve1->setUpdatesEnabled(false);
-
-  samples = signalcomp->samples_on_screen;
-
-  if(signalcomp->samples_on_screen > signalcomp->sample_stop)
-  {
-    samples = signalcomp->sample_stop;
-  }
-
-  samples -= signalcomp->sample_start;
-
-  if((samples < 10) || (viewbuf == NULL))
-  {
-    curve1->setUpdatesEnabled(true);
-
-    busy = 0;
-
-    curve1->clear();
-
-    return;
-  }
-
   if(buf1 != NULL)
   {
     free(buf1);
@@ -644,9 +600,7 @@ void UI_FreqSpectrumWindow::update_curve()
   buf1 = (double *)malloc(sizeof(double) * signalcomp->samples_on_screen);
   if(buf1 == NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.\n"
-                                  "Decrease the timescale and try again.");
-    messagewindow.exec();
+    malloc_err = 1;
     return;
   }
 
@@ -802,8 +756,7 @@ void UI_FreqSpectrumWindow::update_curve()
   buf2 = (double *)calloc(1, sizeof(double) * fft_outputbufsize);
   if(buf2 == NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
-    messagewindow.exec();
+    malloc_err = 1;
     free(buf1);
     buf1 = NULL;
     return;
@@ -816,8 +769,7 @@ void UI_FreqSpectrumWindow::update_curve()
   buf3 = (double *)malloc(sizeof(double) * fft_outputbufsize);
   if(buf3 == NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
-    messagewindow.exec();
+    malloc_err = 1;
     free(buf1);
     free(buf2);
     buf1 = NULL;
@@ -832,8 +784,7 @@ void UI_FreqSpectrumWindow::update_curve()
   buf4 = (double *)malloc(sizeof(double) * fft_outputbufsize);
   if(buf4 == NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
-    messagewindow.exec();
+    malloc_err = 1;
     free(buf1);
     free(buf2);
     free(buf3);
@@ -850,8 +801,7 @@ void UI_FreqSpectrumWindow::update_curve()
   buf5 = (double *)malloc(sizeof(double) * fft_outputbufsize);
   if(buf5 == NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
-    messagewindow.exec();
+    malloc_err = 1;
     free(buf1);
     free(buf2);
     free(buf3);
@@ -888,8 +838,7 @@ void UI_FreqSpectrumWindow::update_curve()
   kiss_fftbuf = (kiss_fft_cpx *)malloc((fft_outputbufsize + 1) * sizeof(kiss_fft_cpx));
   if(kiss_fftbuf == NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
-    messagewindow.exec();
+    malloc_err = 1;
     free(buf1);
     free(buf2);
     free(buf3);
@@ -1033,6 +982,77 @@ void UI_FreqSpectrumWindow::update_curve()
 
     buf1 = NULL;
   }
+}
+
+void UI_FreqSpectrumWindow::update_curve()
+{
+  if(signalcomp == NULL)
+  {
+    return;
+  }
+
+  if(busy)
+  {
+    return;
+  }
+
+  viewbuf = mainwindow->viewbuf;
+
+  if(viewbuf == NULL)
+  {
+    return;
+  }
+
+  samples = signalcomp->samples_on_screen;
+
+  if(signalcomp->samples_on_screen > signalcomp->sample_stop)
+  {
+    samples = signalcomp->sample_stop;
+  }
+
+  samples -= signalcomp->sample_start;
+
+  if((samples < 10) || (viewbuf == NULL))
+  {
+    curve1->clear();
+
+    return;
+  }
+
+  busy = 1;
+
+  malloc_err = 0;
+
+  curve1->setUpdatesEnabled(false);
+
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+  start();
+}
+
+
+void UI_FreqSpectrumWindow::thr_finished_func()
+{
+  char str[1024];
+
+  if(spectrumdialog_is_destroyed)
+  {
+    return;
+  }
+
+  if(malloc_err)
+  {
+    QApplication::restoreOverrideCursor();
+
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
+    messagewindow.exec();
+
+    curve1->clear();
+
+    busy = 0;
+
+    return;
+  }
 
   strcpy(str, "FFT resolution: ");
   convert_to_metric_suffix(str + strlen(str), freqstep, 3);
@@ -1048,12 +1068,23 @@ void UI_FreqSpectrumWindow::update_curve()
   curve1->setUpdatesEnabled(true);
 
   busy = 0;
+
+  QApplication::restoreOverrideCursor();
 }
 
 
 void UI_FreqSpectrumWindow::SpectrumDialogDestroyed(QObject *)
 {
   spectrumdialog_is_destroyed = 1;
+
+  QObject::disconnect(this, SIGNAL(finished()), this, SLOT(thr_finished_func()));
+
+  if(isRunning())
+  {
+    wait(ULONG_MAX);
+
+    QApplication::restoreOverrideCursor();
+  }
 
   spectrumdialog[spectrumdialognumber] = NULL;
 
@@ -1107,7 +1138,6 @@ UI_FreqSpectrumWindow::~UI_FreqSpectrumWindow()
     }
   }
 }
-
 
 
 

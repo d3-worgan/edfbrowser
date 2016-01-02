@@ -31,7 +31,6 @@
 #define SPECTRUMANALYZER_H
 
 
-
 #include <QtGlobal>
 #include <QApplication>
 #include <QDialog>
@@ -45,6 +44,7 @@
 #include <QString>
 #include <QStringList>
 #include <QMessageBox>
+#include <QThread>
 
 #include <stdio.h>
 #include <string.h>
@@ -70,7 +70,7 @@ class UI_Mainwindow;
 
 
 
-class UI_FreqSpectrumWindow : public QObject
+class UI_FreqSpectrumWindow : public QThread
 {
   Q_OBJECT
 
@@ -117,12 +117,15 @@ private:
 
   int samples,
       steps,
+      dftblocksize,
+      dftblocks,
       spectrumdialog_is_destroyed,
       class_is_deleted,
       spectrumdialognumber,
       flywheel_value;
 
-  volatile int busy;
+  volatile int busy,
+               malloc_err;
 
   double samplefreq,
          freqstep,
@@ -144,6 +147,7 @@ private:
 
   UI_FreqSpectrumWindow **spectrumdialog;
 
+  void run();
 
 private slots:
 
@@ -152,6 +156,7 @@ void sliderMoved(int);
 void SpectrumDialogDestroyed(QObject *);
 void print_to_txt();
 void update_flywheel(int);
+void thr_finished_func();
 
 };
 
