@@ -3229,7 +3229,7 @@ void UI_Mainwindow::show_help()
   strcpy(p_path, "file:///");
   strcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
   strcat(p_path, "\\EDFbrowser\\manual.html");
-  QDesktopServices::openUrl(QUrl(path));
+  QDesktopServices::openUrl(QUrl(p_path));
 #endif
 }
 

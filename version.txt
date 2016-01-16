@@ -1,5 +1,5 @@
 
- version 1.57      release date to be defined
+ version 1.57      January 16, 2016
  --------------
 
  - Update annotation markers when switching between real and relative time.
@@ -9,7 +9,7 @@
  - Spectrumanalyzer: make numbers like frequency more "human readable"
    by using suffix like K(ilo), M(ega), etc.
 
- - Increase the maximum DFT blocksize to 16777216 samples.
+ - Increase the maximum DFT blocksize to 16777216 (2^24) samples.
 
  - Don't use the native menubar.
 
@@ -21,7 +21,6 @@
    You can select it in the settings menu, tab "Other" (Tools -> Options).
 
  - Added the possibility to open a streaming file from the commandline.
-
 
 
 
