@@ -1352,20 +1352,21 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
   int i, j,
       precision,
       p_w,
-      p_divisor,
-      p_range,
-      p_tmp,
-      p_h,
-      p2_divisor,
-      p2_range,
-      p2_multiplier,
-      p2_ruler_startvalue,
-      p2_ruler_endvalue,
-      p2_tmp;
+      p_h;
 
-  long long p_multiplier,
+  long long lk,
+            p_multiplier,
             p_ruler_startvalue,
-            p_ruler_endvalue;
+            p_ruler_endvalue,
+            p_divisor,
+            p_range,
+            p_tmp,
+            p2_divisor,
+            p2_range,
+            p2_multiplier,
+            p2_ruler_startvalue,
+            p2_ruler_endvalue,
+            p2_tmp;
 
   double v_sens=0.0,
          offset=0.0,
@@ -1440,9 +1441,9 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 //   printf("p_multiplier is %lli\n"
 //         "p_ruler_startvalue is %lli\n"
 //         "p_ruler_endvalue is %lli\n"
-//         "p_range is %i\n"
-//         "p_divisor is %i\n"
-//         "p_pixels_per_unit is %f\n\n",
+//         "p_range is %lli\n"
+//         "p_divisor is %lli\n"
+//         "p_pixels_per_unit is %.12f\n\n",
 //         p_multiplier,
 //         p_ruler_startvalue,
 //         p_ruler_endvalue,
@@ -1456,18 +1457,18 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
     painter->drawLine(bordersize, curve_h - bordersize + 5, curve_w - bordersize, curve_h - bordersize + 5);
 
-    for(i = (p_ruler_startvalue / p_divisor) * p_divisor; i <= p_ruler_endvalue; i += p_divisor)
+    for(lk = (p_ruler_startvalue / p_divisor) * p_divisor; lk <= p_ruler_endvalue; lk += p_divisor)
     {
-      if(i < p_ruler_startvalue)
+      if(lk < p_ruler_startvalue)
       {
         continue;
       }
 
-      convert_to_metric_suffix(str, (double)i / (double)p_multiplier, 4);
+      convert_to_metric_suffix(str, (double)lk / (double)p_multiplier, 4);
 
       remove_trailing_zeros(str);
 
-      p_tmp = (double)(i - p_ruler_startvalue) * p_pixels_per_unit;
+      p_tmp = (double)(lk - p_ruler_startvalue) * p_pixels_per_unit;
 
       painter->drawText(bordersize + p_tmp - 30,  curve_h - bordersize + 18, 60, 16, Qt::AlignCenter | Qt::TextSingleLine, str);
 
@@ -1526,12 +1527,12 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
     p2_divisor *= 2;
   }
 
-//   printf("p2_multiplier is %i\n"
-//         "p2_ruler_startvalue is %i\n"
-//         "p2_ruler_endvalue is %i\n"
-//         "p2_range is %i\n"
-//         "p2_divisor is %i\n"
-//         "p2_pixels_per_unit is %f\n"
+//   printf("p2_multiplier is %lli\n"
+//         "p2_ruler_startvalue is %lli\n"
+//         "p2_ruler_endvalue is %lli\n"
+//         "p2_range is %lli\n"
+//         "p2_divisor is %lli\n"
+//         "p2_pixels_per_unit is %.12f\n"
 //         "max_value is %f\n"
 //         "min_value is %f\n\n",
 //         p2_multiplier,
@@ -1571,16 +1572,16 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
       }
     }
 
-    for(i = (p2_ruler_startvalue / p2_divisor) * p2_divisor; i <= p2_ruler_endvalue; i += p2_divisor)
+    for(lk = (p2_ruler_startvalue / p2_divisor) * p2_divisor; lk <= p2_ruler_endvalue; lk += p2_divisor)
     {
-      if(i < p2_ruler_startvalue)
+      if(lk < p2_ruler_startvalue)
       {
         continue;
       }
 
-      q_str.setNum((double)i / (double)p2_multiplier, 'f', precision);
+      q_str.setNum((double)lk / (double)p2_multiplier, 'f', precision);
 
-      p2_tmp = (double)(i - p2_ruler_startvalue) * p2_pixels_per_unit;
+      p2_tmp = (double)(lk - p2_ruler_startvalue) * p2_pixels_per_unit;
 
       if(curveUpSideDown == false)
       {
@@ -1908,26 +1909,26 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
   painter->drawRect (0, 0, curve_w - 1, curve_h - 1);
 
-  for(i = (p_ruler_startvalue / p_divisor) * p_divisor; i <= p_ruler_endvalue; i += p_divisor)
+  for(lk = (p_ruler_startvalue / p_divisor) * p_divisor; lk <= p_ruler_endvalue; lk += p_divisor)
   {
-    if(i < p_ruler_startvalue)
+    if(lk < p_ruler_startvalue)
     {
       continue;
     }
 
-    p_tmp = (double)(i - p_ruler_startvalue) * p_pixels_per_unit;
+    p_tmp = (double)(lk - p_ruler_startvalue) * p_pixels_per_unit;
 
     painter->drawLine(p_tmp, 0, p_tmp, curve_h);
   }
 
-  for(i = (p2_ruler_startvalue / p2_divisor) * p2_divisor; i <= p2_ruler_endvalue; i += p2_divisor)
+  for(lk = (p2_ruler_startvalue / p2_divisor) * p2_divisor; lk <= p2_ruler_endvalue; lk += p2_divisor)
   {
-    if(i < p2_ruler_startvalue)
+    if(lk < p2_ruler_startvalue)
     {
       continue;
     }
 
-    p2_tmp = (double)(i - p2_ruler_startvalue) * p2_pixels_per_unit;
+    p2_tmp = (double)(lk - p2_ruler_startvalue) * p2_pixels_per_unit;
 
     if(curveUpSideDown == false)
     {
