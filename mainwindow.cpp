@@ -709,6 +709,8 @@ void UI_Mainwindow::edit_predefined_montages()
 
 void UI_Mainwindow::jump_to_dialog()
 {
+  if(!files_open)  return;
+
   UI_JumpMenuDialog jumpmenu(this);
 }
 
@@ -716,6 +718,8 @@ void UI_Mainwindow::jump_to_dialog()
 void UI_Mainwindow::jump_to_start()
 {
   int i;
+
+  if(!files_open)  return;
 
   if(viewtime_sync==VIEWTIME_SYNCED_OFFSET)
   {
@@ -763,6 +767,8 @@ void UI_Mainwindow::jump_to_start()
 void UI_Mainwindow::jump_to_time_millisec(long long milliseconds)
 {
   int i;
+
+  if(!files_open)  return;
 
   if(viewtime_sync==VIEWTIME_SYNCED_OFFSET)
   {
@@ -814,6 +820,8 @@ void UI_Mainwindow::jump_to_end()
   long long new_viewtime;
 
 
+  if(!files_open)  return;
+
   new_viewtime = edfheaderlist[sel_viewtime]->datarecords * edfheaderlist[sel_viewtime]->long_data_record_duration - pagetime;
 
   if(viewtime_sync==VIEWTIME_SYNCED_OFFSET)
@@ -861,12 +869,16 @@ void UI_Mainwindow::jump_to_end()
 
 void UI_Mainwindow::add_new_filter()
 {
+  if(!files_open)  return;
+
   UI_FilterDialog filterdialog(this);
 }
 
 
 void UI_Mainwindow::add_spike_filter()
 {
+  if(!files_open)  return;
+
   UI_SpikeFilterDialog spikefilterdialog(this);
 }
 
@@ -884,6 +896,8 @@ void UI_Mainwindow::add_spike_filter()
 void UI_Mainwindow::zoomback()
 {
   int i, j;
+
+  if(!files_open)  return;
 
   if(!zoomhistory->history_size_tail)
   {
@@ -936,6 +950,8 @@ void UI_Mainwindow::forward()
 {
   int i, j;
 
+  if(!files_open)  return;
+
   if(!zoomhistory->history_size_front)
   {
     return;
@@ -971,6 +987,8 @@ void UI_Mainwindow::former_page()
 {
   int i;
 
+  if(!files_open)  return;
+
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
     video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime - pagetime) / TIME_DIMENSION));
@@ -1004,6 +1022,8 @@ void UI_Mainwindow::shift_page_left()
 {
   int i;
 
+  if(!files_open)  return;
+
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
     video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime - (pagetime / 10)) / TIME_DIMENSION));
@@ -1036,6 +1056,8 @@ void UI_Mainwindow::shift_page_left()
 void UI_Mainwindow::shift_page_right()
 {
   int i;
+
+  if(!files_open)  return;
 
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
@@ -1133,6 +1155,8 @@ void UI_Mainwindow::next_page()
 {
   int i;
 
+  if(!files_open)  return;
+
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
     video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + pagetime) / TIME_DIMENSION));
@@ -1166,6 +1190,8 @@ void UI_Mainwindow::shift_page_up()
 {
   int i;
 
+  if(!files_open)  return;
+
   for(i=0; i<signalcomps; i++)
   {
     signalcomp[i]->screen_offset += (height() / 20.0);
@@ -1179,6 +1205,8 @@ void UI_Mainwindow::shift_page_up()
 void UI_Mainwindow::shift_page_down()
 {
   int i;
+
+  if(!files_open)  return;
 
   for(i=0; i<signalcomps; i++)
   {
@@ -1195,6 +1223,8 @@ void UI_Mainwindow::show_annotations()
   int i;
 
   EDF_annotations annotations;
+
+  if(!files_open)  return;
 
   for(i=0; i<files_open; i++)
   {
@@ -1238,6 +1268,8 @@ void UI_Mainwindow::annotation_editor()
   stop_video_generic();
 
   stop_playback_realtime();
+
+  if(!files_open)  return;
 
   if(files_open==1)
   {
@@ -1288,6 +1320,8 @@ void UI_Mainwindow::annotation_editor()
 
 void UI_Mainwindow::show_spectrum_dock()
 {
+  if(!files_open)  return;
+
   UI_SignalChooser signalchooserdialog(this, 1);
 }
 
@@ -1734,18 +1768,24 @@ void UI_Mainwindow::setMainwindowTitle(struct edfhdrblock *edfhdr)
 
 void UI_Mainwindow::signalproperties_dialog()
 {
+  if(!files_open)  return;
+
   UI_SignalChooser signalchooserdialog(this, 0);
 }
 
 
 void UI_Mainwindow::filterproperties_dialog()
 {
+  if(!files_open)  return;
+
   UI_SignalChooser signalchooserdialog(this, 2);
 }
 
 
 void UI_Mainwindow::add_signals_dialog()
 {
+  if(!files_open)  return;
+
   UI_Signalswindow signalwindow(this);
 }
 
@@ -1760,6 +1800,8 @@ void UI_Mainwindow::show_splashscreen()
 
 void UI_Mainwindow::show_file_info()
 {
+  if(!files_open)  return;
+
   UI_EDFhdrwindow showhdr(this);
 }
 
@@ -1768,6 +1810,8 @@ void UI_Mainwindow::remove_all_filters()
 {
   int i, j,
       update_scr=0;
+
+  if(!files_open)  return;
 
   for(i=0; i<signalcomps; i++)
   {
@@ -1835,6 +1879,8 @@ void UI_Mainwindow::remove_all_spike_filters()
 {
   int i,
       update_scr=0;
+
+  if(!files_open)  return;
 
   for(i=0; i<signalcomps; i++)
   {
