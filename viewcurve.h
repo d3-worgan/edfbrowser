@@ -161,7 +161,7 @@ public:
       floating_ruler_value,
       linear_interpol;
 
-  long long pan_mov_start_viewtime;
+  long long pan_mov_start_viewtime[MAXFILES];
 
   double original_screen_offset;
 

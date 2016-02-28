@@ -52,7 +52,10 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
 
   use_move_events = 0;
   panning_moving = 0;
-  pan_mov_start_viewtime = 0LL;
+  for(i=0; i<MAXFILES; i++)
+  {
+    pan_mov_start_viewtime[i] = 0LL;
+  }
   sidemenu_active = 0;
   draw_zoom_rectangle = 0;
   printing = 0;
@@ -552,7 +555,10 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 
   if(press_event->button()==Qt::MidButton)
   {
-    pan_mov_start_viewtime = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime;
+    for(i=0; i<mainwindow->files_open; i++)
+    {
+      pan_mov_start_viewtime[i] = mainwindow->edfheaderlist[i]->viewtime;
+    }
 
     for(i=0; i<signalcomps; i++)
     {
@@ -884,7 +890,20 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
 
       d_temp = (double)delta_x / (double)w;
 
-      mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime = pan_mov_start_viewtime - (mainwindow->pagetime * d_temp);
+      if((mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET) ||
+         (mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT) ||
+         (mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
+      {
+        for(i=0; i<mainwindow->files_open; i++)
+        {
+          mainwindow->edfheaderlist[i]->viewtime = pan_mov_start_viewtime[i] - (mainwindow->pagetime * d_temp);
+        }
+      }
+
+      if(mainwindow->viewtime_sync==VIEWTIME_UNSYNCED)
+      {
+        mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime = pan_mov_start_viewtime[mainwindow->sel_viewtime] - (mainwindow->pagetime * d_temp);
+      }
     }
 
     if(draw_zoom_rectangle||annot_marker_moving)
