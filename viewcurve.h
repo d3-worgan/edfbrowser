@@ -131,6 +131,7 @@ public:
   UI_Mainwindow *mainwindow;
 
   int use_move_events,
+      panning_moving,
       mouse_x,
       mouse_y,
       mouse_old_x,
@@ -159,6 +160,8 @@ public:
       cpu_cnt,
       floating_ruler_value,
       linear_interpol;
+
+  long long pan_mov_start_viewtime;
 
   double original_screen_offset;
 

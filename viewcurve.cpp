@@ -51,6 +51,8 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
   annot_marker_moving = 0;
 
   use_move_events = 0;
+  panning_moving = 0;
+  pan_mov_start_viewtime = 0LL;
   sidemenu_active = 0;
   draw_zoom_rectangle = 0;
   printing = 0;
@@ -547,6 +549,22 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
       update();
     }
   }
+
+  if(press_event->button()==Qt::MidButton)
+  {
+    pan_mov_start_viewtime = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime;
+
+    for(i=0; i<signalcomps; i++)
+    {
+      signalcomp[i]->hasoffsettracking = 0;
+    }
+    crosshair_1.moving = 0;
+    crosshair_2.moving = 0;
+    use_move_events = 1;
+    setMouseTracking(true);
+
+    panning_moving = 1;
+  }
 }
 
 
@@ -715,13 +733,21 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
     }
   }
 
+  if(release_event->button()==Qt::MidButton)
+  {
+    use_move_events = 0;
+    setMouseTracking(false);
+
+    panning_moving = 0;
+  }
+
   pressed_on_label = 0;
 }
 
 
 void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
 {
-  int i, j, signalcomps, delta_y;
+  int i, j, signalcomps, delta_x, delta_y;
 
   double d_temp;
 
@@ -852,14 +878,27 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
       }
     }
 
+    if(panning_moving)
+    {
+      delta_x = mouse_x - mouse_press_coordinate_x;
+
+      d_temp = (double)delta_x / (double)w;
+
+      mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime = pan_mov_start_viewtime - (mainwindow->pagetime * d_temp);
+    }
+
     if(draw_zoom_rectangle||annot_marker_moving)
     {
       update();
     }
-    else
-    {
-      drawCurve_stage_1();
-    }
+    else if(panning_moving)
+      {
+        mainwindow->setup_viewbuf();
+      }
+      else
+      {
+        drawCurve_stage_1();
+      }
   }
 }
 

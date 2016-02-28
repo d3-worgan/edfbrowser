@@ -3315,6 +3315,7 @@ void UI_Mainwindow::show_kb_shortcuts()
 #endif
    "\nMousewheel\t\tshift left or right\n"
    "Ctrl+Mousewheel\tzoom in or out\n"
+   "Keep middle mousebutton pressed to drag horizontally\n"
 
    "\nCtrl+Space\t\tToggle Playback\n"
 #ifdef Q_OS_LINUX
