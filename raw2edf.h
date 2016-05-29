@@ -49,6 +49,8 @@
 #include <QPixmap>
 #include <QToolTip>
 #include <QComboBox>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -122,7 +124,8 @@ QDateTimeEdit *StartDatetimeedit;
 QPushButton   *GoButton,
               *CloseButton,
               *SaveButton,
-              *LoadButton;
+              *LoadButton,
+              *helpButton;
 
 char *recent_opendir,
      *recent_savedir;
@@ -141,6 +144,7 @@ void savebuttonpressed();
 void loadbuttonpressed();
 void PhysicalDimensionLineEdited(QString);
 void sampleTypeChanged(int);
+void helpbuttonpressed();
 
 };
 

@@ -53,6 +53,8 @@
 #include <QPixmap>
 #include <QProgressDialog>
 #include <QCursor>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -157,7 +159,8 @@ QCheckBox      *IgnoreConsecutiveCheckBox,
                *DurationCheckBox;
 
 QPushButton    *CloseButton,
-               *ImportButton;
+               *ImportButton,
+               *helpButton;
 
 int tab_index_array[4];
 
@@ -174,6 +177,7 @@ void descriptionRadioButtonClicked(bool);
 void DCEventSignalChanged(int);
 void DurationCheckBoxChanged(int);
 void TabChanged(int);
+void helpbuttonpressed();
 
 };
 

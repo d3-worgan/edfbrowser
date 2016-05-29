@@ -195,6 +195,10 @@ UI_RAW2EDFapp::UI_RAW2EDFapp(struct raw2edf_var_struct *raw2edf_var_p, char *rec
   CloseButton->setGeometry(160, 440, 75, 25);
   CloseButton->setText("Close");
 
+  helpButton = new QPushButton(raw2edfDialog);
+  helpButton->setGeometry(280, 440, 75, 25);
+  helpButton->setText("Help");
+
   SaveButton = new QPushButton(raw2edfDialog);
   SaveButton->setGeometry(400, 440, 75, 25);
   SaveButton->setText("Save");
@@ -214,6 +218,7 @@ UI_RAW2EDFapp::UI_RAW2EDFapp(struct raw2edf_var_struct *raw2edf_var_p, char *rec
   QObject::connect(PhysicalDimensionLineEdit,   SIGNAL(textEdited(QString)),      this,            SLOT(PhysicalDimensionLineEdited(QString)));
   QObject::connect(SampleSizeSpinbox,           SIGNAL(valueChanged(int)),        this,            SLOT(sampleTypeChanged(int)));
   QObject::connect(EncodingCombobox,            SIGNAL(currentIndexChanged(int)), this,            SLOT(sampleTypeChanged(int)));
+  QObject::connect(helpButton,                  SIGNAL(clicked()),                this,            SLOT(helpbuttonpressed()));
 
   sampleTypeChanged(0);
 
@@ -957,6 +962,21 @@ void UI_RAW2EDFapp::PhysicalDimensionLineEdited(QString qstr)
 }
 
 
+void UI_RAW2EDFapp::helpbuttonpressed()
+{
+#ifdef Q_OS_LINUX
+  QDesktopServices::openUrl(QUrl("file:///usr/share/doc/edfbrowser/manual.html#Binary_to_EDF"));
+#endif
+
+#ifdef Q_OS_WIN32
+  char p_path[MAX_PATH_LENGTH];
+
+  strcpy(p_path, "file:///");
+  strcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
+  strcat(p_path, "\\EDFbrowser\\manual.html#Binary_to_EDF");
+  QDesktopServices::openUrl(QUrl(p_path));
+#endif
+}
 
 
 

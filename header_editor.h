@@ -51,6 +51,8 @@
 #include <QMessageBox>
 #include <QDateTimeEdit>
 #include <QFile>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -118,7 +120,8 @@ QDateEdit    *dateEdit1;
 
 QPushButton  *pushButton1,
              *pushButton2,
-             *pushButton3;
+             *pushButton3,
+             *helpButton;
 
 QDateTimeEdit *startTimeDate;
 
@@ -144,6 +147,7 @@ void read_header();
 void closeEvent(QCloseEvent *);
 void calculate_chars_left_name(const QString &);
 void calculate_chars_left_recording(const QString &);
+void helpbuttonpressed();
 
 };
 

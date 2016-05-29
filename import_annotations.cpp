@@ -262,10 +262,16 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   CloseButton->setMinimumSize(80, 25);
   CloseButton->setText("Cancel");
 
+  helpButton = new QPushButton(ImportAnnotsDialog);
+  helpButton->setMinimumSize(80, 25);
+  helpButton->setText("Help");
+
   horLayout = new QHBoxLayout;
   horLayout->addSpacing(30);
   horLayout->addWidget(ImportButton, 1);
-  horLayout->addSpacing(300);
+  horLayout->addSpacing(120);
+  horLayout->addWidget(helpButton, 1);
+  horLayout->addSpacing(120);
   horLayout->addWidget(CloseButton, 1);
   horLayout->addSpacing(30);
 
@@ -339,6 +345,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   QObject::connect(UseManualDescriptionRadioButton, SIGNAL(toggled(bool)),            this,               SLOT(descriptionRadioButtonClicked(bool)));
   QObject::connect(DurationCheckBox,                SIGNAL(stateChanged(int)),        this,               SLOT(DurationCheckBoxChanged(int)));
   QObject::connect(tabholder,                       SIGNAL(currentChanged(int)),      this,               SLOT(TabChanged(int)));
+  QObject::connect(helpButton,                      SIGNAL(clicked()),                this,               SLOT(helpbuttonpressed()));
 
   ImportAnnotsDialog->exec();
 }
@@ -2023,6 +2030,22 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
   return(0);
 }
 
+
+void UI_ImportAnnotationswindow::helpbuttonpressed()
+{
+#ifdef Q_OS_LINUX
+  QDesktopServices::openUrl(QUrl("file:///usr/share/doc/edfbrowser/manual.html#Import_annotations"));
+#endif
+
+#ifdef Q_OS_WIN32
+  char p_path[MAX_PATH_LENGTH];
+
+  strcpy(p_path, "file:///");
+  strcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
+  strcat(p_path, "\\EDFbrowser\\manual.html#Import_annotations");
+  QDesktopServices::openUrl(QUrl(p_path));
+#endif
+}
 
 
 

@@ -52,6 +52,8 @@
 #include <QGroupBox>
 #include <QMessageBox>
 #include <QPixmap>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -114,7 +116,8 @@ QTableWidget  *SignalsTablewidget;
 QPushButton   *GoButton,
               *CloseButton,
               *SaveButton,
-              *LoadButton;
+              *LoadButton,
+              *helpButton;
 
 char separator,
      *recent_opendir,
@@ -142,6 +145,7 @@ void numofcolumnschanged(int);
 void gobuttonpressed();
 void savebuttonpressed();
 void loadbuttonpressed();
+void helpbuttonpressed();
 void autoPhysicalMaximumCheckboxChanged(int);
 };
 

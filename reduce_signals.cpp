@@ -143,6 +143,10 @@ UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
   pushButton6->setText("Set samplerate divider:");
   pushButton6->setEnabled(false);
 
+  helpButton = new QPushButton(myobjectDialog);
+  helpButton->setGeometry(400, 528, 100, 25);
+  helpButton->setText("Help");
+
   QObject::connect(pushButton1,    SIGNAL(clicked()),         this,           SLOT(SelectFileButton()));
   QObject::connect(pushButton2,    SIGNAL(clicked()),         myobjectDialog, SLOT(close()));
   QObject::connect(pushButton3,    SIGNAL(clicked()),         this,           SLOT(StartConversion()));
@@ -153,6 +157,7 @@ UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
   QObject::connect(spinBox2,       SIGNAL(valueChanged(int)), this,           SLOT(spinBox2changed(int)));
   QObject::connect(radioButton1,   SIGNAL(toggled(bool)),     this,           SLOT(radioButton1Toggled(bool)));
   QObject::connect(radioButton2,   SIGNAL(toggled(bool)),     this,           SLOT(radioButton2Toggled(bool)));
+  QObject::connect(helpButton,     SIGNAL(clicked()),         this,           SLOT(helpbuttonpressed()));
 
   edfhdr = NULL;
   inputfile = NULL;
@@ -1322,6 +1327,21 @@ void UI_ReduceSignalsWindow::showpopupmessage(const char *str1, const char *str2
 }
 
 
+void UI_ReduceSignalsWindow::helpbuttonpressed()
+{
+#ifdef Q_OS_LINUX
+  QDesktopServices::openUrl(QUrl("file:///usr/share/doc/edfbrowser/manual.html#Header_editor"));
+#endif
+
+#ifdef Q_OS_WIN32
+  char p_path[MAX_PATH_LENGTH];
+
+  strcpy(p_path, "file:///");
+  strcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
+  strcat(p_path, "\\EDFbrowser\\manual.html#Header_editor");
+  QDesktopServices::openUrl(QUrl(p_path));
+#endif
+}
 
 
 

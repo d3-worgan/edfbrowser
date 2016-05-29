@@ -191,6 +191,10 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(char *recent_dir, char *save_dir)
   LoadButton->setText("Load");
   LoadButton->setToolTip("Load settings from a template");
 
+  helpButton = new QPushButton(ascii2edfDialog);
+  helpButton->setGeometry(20, 380, 75, 25);
+  helpButton->setText("Help");
+
   columns = 1;
 
   edfsignals = 1;
@@ -200,6 +204,7 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(char *recent_dir, char *save_dir)
   QObject::connect(CloseButton,                 SIGNAL(clicked()),         ascii2edfDialog, SLOT(close()));
   QObject::connect(SaveButton,                  SIGNAL(clicked()),         this,            SLOT(savebuttonpressed()));
   QObject::connect(LoadButton,                  SIGNAL(clicked()),         this,            SLOT(loadbuttonpressed()));
+  QObject::connect(helpButton,                  SIGNAL(clicked()),         this,            SLOT(helpbuttonpressed()));
   QObject::connect(autoPhysicalMaximumCheckbox, SIGNAL(stateChanged(int)), this,            SLOT(autoPhysicalMaximumCheckboxChanged(int)));
 
   ascii2edfDialog->exec();
@@ -243,7 +248,7 @@ void UI_ASCII2EDFapp::numofcolumnschanged(int cnt)
 
     for(i=columns; i<cnt; i++)
     {
-      SignalsTablewidget->setRowHeight(i, 20);
+      SignalsTablewidget->setRowHeight(i, 25);
 
       SignalsTablewidget->setCellWidget(i, 0, new QCheckBox);
       ((QCheckBox *)SignalsTablewidget->cellWidget(i, 0))->setCheckState(Qt::Checked);
@@ -1852,6 +1857,22 @@ int UI_ASCII2EDFapp::check_input(void)
   return(0);
 }
 
+
+void UI_ASCII2EDFapp::helpbuttonpressed()
+{
+#ifdef Q_OS_LINUX
+  QDesktopServices::openUrl(QUrl("file:///usr/share/doc/edfbrowser/manual.html#ASCII_to_EDF_converter"));
+#endif
+
+#ifdef Q_OS_WIN32
+  char p_path[MAX_PATH_LENGTH];
+
+  strcpy(p_path, "file:///");
+  strcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
+  strcat(p_path, "\\EDFbrowser\\manual.html#ASCII_to_EDF_converter");
+  QDesktopServices::openUrl(QUrl(p_path));
+#endif
+}
 
 
 

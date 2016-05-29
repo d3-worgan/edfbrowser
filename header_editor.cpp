@@ -224,9 +224,14 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
   pushButton3->setGeometry(10, 475, 100, 25);
   pushButton3->setText("Select file");
 
+  helpButton = new QPushButton(this);
+  helpButton->setGeometry(380, 475, 100, 25);
+  helpButton->setText("Help");
+
   connect(pushButton1, SIGNAL(clicked()), this, SLOT(close()));
   connect(pushButton2, SIGNAL(clicked()), this, SLOT(save_hdr()));
   connect(pushButton3, SIGNAL(clicked()), this, SLOT(open_file()));
+  connect(helpButton,  SIGNAL(clicked()), this, SLOT(helpbuttonpressed()));
 
   tabholder->addTab(tab1, "Header");
   tabholder->addTab(tab2, "Signals");
@@ -1564,6 +1569,24 @@ void UI_headerEditorWindow::calculate_chars_left_recording(const QString &)
 
   charsleft2Label->setText(str);
 }
+
+
+void UI_headerEditorWindow::helpbuttonpressed()
+{
+#ifdef Q_OS_LINUX
+  QDesktopServices::openUrl(QUrl("file:///usr/share/doc/edfbrowser/manual.html#Header_editor"));
+#endif
+
+#ifdef Q_OS_WIN32
+  char p_path[MAX_PATH_LENGTH];
+
+  strcpy(p_path, "file:///");
+  strcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
+  strcat(p_path, "\\EDFbrowser\\manual.html#Header_editor");
+  QDesktopServices::openUrl(QUrl(p_path));
+#endif
+}
+
 
 
 

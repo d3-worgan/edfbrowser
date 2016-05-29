@@ -47,6 +47,8 @@
 #include <QComboBox>
 #include <QVariant>
 #include <QProgressDialog>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -93,7 +95,8 @@ QPushButton  *pushButton1,
              *pushButton3,
              *pushButton4,
              *pushButton5,
-             *pushButton6;
+             *pushButton6,
+             *helpButton;
 
 QSpinBox     *spinBox1,
              *spinBox2,
@@ -136,6 +139,7 @@ void spinBox1changed(int);
 void spinBox2changed(int);
 void radioButton1Toggled(bool);
 void radioButton2Toggled(bool);
+void helpbuttonpressed();
 
 };
 
