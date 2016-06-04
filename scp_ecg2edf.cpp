@@ -1811,7 +1811,7 @@ void UI_SCPECG2EDFwindow::reconstitute_data_second_diff(int *buf, int sz)
 
 int UI_SCPECG2EDFwindow::reconstitute_decimated_samples(int *buf_in, int *buf_out, int chn)
 {
-  int i, j=0, r;
+  int i, j=0, r, step;
 
   for(i=0; i<lp[chn].samples;)
   {
@@ -1821,9 +1821,18 @@ int UI_SCPECG2EDFwindow::reconstitute_decimated_samples(int *buf_in, int *buf_ou
     }
     else
     {
+      if((j + 1) < lp[chn].huffman_decoder_produced_samples)
+      {
+        step = ((buf_in[j+1] - buf_in[j]) * scp_ecg.avm_ratio) / scp_ecg.sf_ratio;
+      }
+      else
+      {
+        step = 0;
+      }
+
       for(r=0; r<scp_ecg.sf_ratio; r++)
       {
-        buf_out[i++] = buf_in[j] * scp_ecg.avm_ratio;
+        buf_out[i++] = (buf_in[j] * scp_ecg.avm_ratio) + (step * r);
       }
 
       j++;
