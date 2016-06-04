@@ -56,6 +56,8 @@
 #include "edflib.h"
 #include "utc_date_time.h"
 
+#define SCP_ECG_MAX_CHNS 256
+
 
 
 class UI_SCPECG2EDFwindow : public QObject
@@ -80,6 +82,21 @@ char  *recent_opendir,
 
 unsigned short crc_ccitt_table[256];
 
+struct scp_ecg_prop_struct{
+        int avm;
+        int avm_prot;
+        double avm_ratio;
+        int sf;
+        int sf_prot;
+        int sf_ratio;
+        int chns;
+        int encoding;
+        int encoding_prot;
+        int bimodal;
+        int ref_beat_subtract;
+        int huffman_enc;
+        } scp_ecg;
+
 struct section_prop_struct{
         int present;
         long long file_offset;
@@ -95,9 +112,11 @@ struct lead_prop_struct{
         int start;
         int end;
         int samples;
+        int bimod_samples;
         int bytes;
         unsigned char label;
-        } lp[256];
+        int huffman_decoder_produced_samples;
+        } lp[SCP_ECG_MAX_CHNS];
 
 struct huffmantable_struct{
         int h_tables_cnt;
@@ -130,6 +149,21 @@ struct patient_data_struct{
         unsigned char lang_code;
         } pat_dat;
 
+struct qrs_loc_data_struct{
+        int ref_beat_length;
+        int fiducial_tp;
+        int n_qrs;
+        int qrs_subtr_type[1024];
+        int qrs_subtr_start[1024];
+        int qrs_subtr_fiducial[1024];
+        int qrs_subtr_end[1024];
+        int qrs_prot_start[1024];
+        int qrs_prot_end[1024];
+        int ref_beat_bytes[SCP_ECG_MAX_CHNS];
+        int huffman_decoder_produced_samples[SCP_ECG_MAX_CHNS];
+        int *ref_beat[SCP_ECG_MAX_CHNS];
+        } qrs_data;
+
 int read_data_section_zero(FILE *, char *, long long);
 
 int read_section_header(int, FILE *, long long, char *);
@@ -145,6 +179,16 @@ inline unsigned char reverse_bitorder(unsigned char);
 void lead_label_lookup(unsigned char, char *);
 
 int get_patient_data(FILE *);
+
+int is_in_protected_area(int);
+
+int default_huffman_decoding(char *, int *, int, int);
+
+void reconstitute_data_first_diff(int *, int);
+
+void reconstitute_data_second_diff(int *, int);
+
+int reconstitute_decimated_samples(int *, int *, int);
 
 private slots:
 
