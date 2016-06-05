@@ -1112,9 +1112,11 @@
 <h3><a name="SCP_ECG_to_EDFplus">SCP ECG to EDF+ format converter</a></h3>
 
 <p>
-  This tool converts the waveform data of an SCP ECG file to EDF+.<br>
+  This tool converts an SCP-ECG (EN 1064:2005+A1:2007) file to EDF+.<br>
   Before conversion it performs a CRC-check on the file.<br>
   Bimodal compression is supported.<br>
+  Reference beat subtraction is supported.<br>
+  Pacemake spike measurements, if present, are imported as well.<br>
   Encoding using the default Huffman table is supported.<br>
   Customized Huffman tables are not supported.<br>
   Character-encoding other than ASCII/Latin-1 is not supported.

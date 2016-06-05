@@ -922,7 +922,41 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
   if(sp[7].present)
   {
-    // future development
+    fseeko(inputfile, sp[7].file_offset + 16LL, SEEK_SET);
+
+    if(fread(block, 2, 1, inputfile) != 1)
+    {
+      textEdit1->append("A read-error occurred\n");
+      goto EXIT_3;
+    }
+
+    glob_msr_data.n_ref_beat_type = *((unsigned char *)block);
+
+    glob_msr_data.n_qrs = glob_msr_data.n_ref_beat_type;
+
+    glob_msr_data.n_pace_spike = *((unsigned char *)(block + 1));
+
+    if(glob_msr_data.n_pace_spike)
+    {
+      fseeko(inputfile, sp[7].file_offset + 16LL + 6LL + (glob_msr_data.n_qrs * 16LL), SEEK_SET);
+
+      if(fread(block, glob_msr_data.n_pace_spike * 4, 1, inputfile) != 1)
+      {
+        textEdit1->append("A read-error occurred\n");
+        goto EXIT_3;
+      }
+
+      for(i=0; i<glob_msr_data.n_pace_spike; i++)
+      {
+        glob_msr_data.pace_spike_offset[i] = ((unsigned short *)block)[i];
+      }
+    }
+
+#ifdef SPCECG_DEBUG
+    printf("number of reference beat types or QRS complexes is %i\n"
+           "number of pace spikes is: %i\n",
+           glob_msr_data.n_qrs, glob_msr_data.n_pace_spike);
+#endif
   }
 
 //////////////////// create EDF file ////////////////////////////////
@@ -988,15 +1022,6 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       goto EXIT_5;
     }
   }
-
-//   if(scp_ecg.bimodal)
-//   {
-//     if(edf_set_number_of_annotation_signals(hdl, 6))
-//     {
-//       textEdit1->append("Error: edf_set_number_of_annotation_signals()\n");
-//       goto EXIT_5;
-//     }
-//   }
 
   strcpy(scratchpad, pat_dat.first_name);
   strcat(scratchpad, " ");
@@ -1071,18 +1096,10 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     }
   }
 
-//   for(i=0; i<qrs_data.n_qrs; i++)
-//   {
-//     edfwrite_annotation_latin1(hdl, (qrs_data.qrs_prot_start[i] * 10000) / scp_ecg.sf, -1LL, "QB");
-//
-//     edfwrite_annotation_latin1(hdl, (qrs_data.qrs_subtr_fiducial[i] * 10000) / scp_ecg.sf, -1LL, "FC");
-//
-//     edfwrite_annotation_latin1(hdl, (qrs_data.qrs_prot_end[i] * 10000) / scp_ecg.sf, -1LL, "QE");
-//
-//     edfwrite_annotation_latin1(hdl, (qrs_data.qrs_subtr_start[i] * 10000) / scp_ecg.sf, -1LL, "SB");
-//
-//     edfwrite_annotation_latin1(hdl, (qrs_data.qrs_subtr_end[i] * 10000) / scp_ecg.sf, -1LL, "SE");
-//   }
+  for(i=0; i<glob_msr_data.n_pace_spike; i++)
+  {
+    edfwrite_annotation_latin1(hdl, glob_msr_data.pace_spike_offset[i] * 10, -1LL, "Pace");
+  }
 
   textEdit1->append("Done.\n");
 

@@ -164,6 +164,15 @@ struct qrs_loc_data_struct{
         int *ref_beat[SCP_ECG_MAX_CHNS];
         } qrs_data;
 
+struct global_measure_data_struct{
+        int n_ref_beat_type;
+        int n_qrs;
+        int n_pace_spike;
+        int pace_spike_offset[1024];
+        int pace_spike_amp[1024];
+        } glob_msr_data;
+
+
 int read_data_section_zero(FILE *, char *, long long);
 
 int read_section_header(int, FILE *, long long, char *);
