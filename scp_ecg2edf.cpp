@@ -621,22 +621,22 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
     for(i=0; i<qrs_data.n_qrs; i++)
     {
+#ifdef SPCECG_DEBUG
       if(!i)
       {
         if((qrs_data.qrs_prot_start[i] - 1) % scp_ecg.sf_ratio)
         {
-          textEdit1->append("Error, number of samples in the non-protected area is not a multple of SF ratio.\n");
-          goto EXIT_3;
+          printf("Warning, number of samples in the non-protected area is not a multple of SF ratio. (5-10)\n");
         }
       }
       else
       {
         if(((qrs_data.qrs_prot_start[i] - 1) - qrs_data.qrs_prot_end[i-1]) % scp_ecg.sf_ratio)
         {
-          textEdit1->append("Error, number of samples in the non-protected area is not a multple of SF ratio.\n");
-          goto EXIT_3;
+          printf("Warning, number of samples in the non-protected area is not a multple of SF ratio. (5-12)\n");
         }
       }
+#endif
 
       for(j=0; j<scp_ecg.chns; j++)
       {
@@ -880,7 +880,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       }
     }
 
-    int k, p, repl_len;
+    int k, p, add_len;
 
     if(scp_ecg.ref_beat_subtract)
     {
@@ -888,7 +888,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       {
         if(qrs_data.qrs_subtr_type[j] == 0)
         {
-          repl_len = qrs_data.qrs_subtr_end[j] - qrs_data.qrs_subtr_start[j] + 1;
+          add_len = qrs_data.qrs_subtr_end[j] - qrs_data.qrs_subtr_start[j] + 1;
 
           p = qrs_data.fiducial_tp - 1;
 
@@ -902,13 +902,13 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
           for(i=0; i<scp_ecg.chns; i++)
           {
-            if(repl_len > qrs_data.huffman_decoder_produced_samples[i])
+            if(add_len > qrs_data.huffman_decoder_produced_samples[i])
             {
               textEdit1->append("Error: subtraction length > reference beat length.\n ");
               goto EXIT_4;
             }
 
-            for(k=0; k<repl_len; k++)
+            for(k=0; k<add_len; k++)
             {
               buf2[i][k + qrs_data.qrs_subtr_start[j] - 1] += qrs_data.ref_beat[i][k + p];
             }
@@ -1071,6 +1071,15 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
   edf_set_recording_additional(hdl, scratchpad);
 
+  if(glob_msr_data.n_pace_spike > 0)
+  {
+    edf_set_number_of_annotation_signals(hdl, 2);
+  }
+
+#ifdef SPCECG_DEBUG
+  edf_set_number_of_annotation_signals(hdl, 6);
+#endif
+
   blocks = lp[0].samples / scp_ecg.sf;
 
   for(i=0; i<blocks; i++)
@@ -1100,6 +1109,21 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   {
     edfwrite_annotation_latin1(hdl, glob_msr_data.pace_spike_offset[i] * 10, -1LL, "Pace");
   }
+
+#ifdef SPCECG_DEBUG
+  for(i=0; i<qrs_data.n_qrs; i++)
+  {
+    edfwrite_annotation_latin1(hdl, (qrs_data.qrs_prot_start[i] * 10000) / scp_ecg.sf, -1LL, "QB");
+
+    edfwrite_annotation_latin1(hdl, (qrs_data.qrs_subtr_fiducial[i] * 10000) / scp_ecg.sf, -1LL, "FC");
+
+    edfwrite_annotation_latin1(hdl, (qrs_data.qrs_prot_end[i] * 10000) / scp_ecg.sf, -1LL, "QE");
+
+    edfwrite_annotation_latin1(hdl, (qrs_data.qrs_subtr_start[i] * 10000) / scp_ecg.sf, -1LL, "SB");
+
+    edfwrite_annotation_latin1(hdl, (qrs_data.qrs_subtr_end[i] * 10000) / scp_ecg.sf, -1LL, "SE");
+  }
+#endif
 
   textEdit1->append("Done.\n");
 
@@ -1850,6 +1874,11 @@ int UI_SCPECG2EDFwindow::reconstitute_decimated_samples(int *buf_in, int *buf_ou
       for(r=0; r<scp_ecg.sf_ratio; r++)
       {
         buf_out[i++] = (buf_in[j] * scp_ecg.avm_ratio) + (step * r);
+
+        if(is_in_protected_area(i + 1))
+        {
+          break;
+        }
       }
 
       j++;
