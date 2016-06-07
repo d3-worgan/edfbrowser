@@ -199,6 +199,8 @@ void reconstitute_data_second_diff(int *, int);
 
 int reconstitute_decimated_samples(int *, int *, int);
 
+// void test_huffman_decoder(void);
+
 private slots:
 
 void SelectFileButton();

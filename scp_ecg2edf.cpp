@@ -378,7 +378,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
 /**************** SECTION 6 rhythm data *****************************/
 
-  fseeko(inputfile, sp[6].file_offset + 22LL, SEEK_SET);
+  fseeko(inputfile, sp[6].file_offset + 16LL + 6LL, SEEK_SET);
 
   n = 0;
 
@@ -414,9 +414,9 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     goto EXIT_3;
   }
 
-//////////////////////////////// Huffman tables ////////////////////
+/******************************** Section 2 Huffman tables *************************/
 
-  if(sp[2].present == 1)  // huffmantable
+  if(sp[2].present == 1)
   {
     scp_ecg.huffman_enc = 1;
 
@@ -493,15 +493,15 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
       ch_ptr += 2;
 
-      qrs_data.qrs_subtr_start[i] = *((int *)ch_ptr);
+      qrs_data.qrs_subtr_start[i] = *((unsigned int *)ch_ptr);
 
       ch_ptr += 4;
 
-      qrs_data.qrs_subtr_fiducial[i] = *((int *)ch_ptr);
+      qrs_data.qrs_subtr_fiducial[i] = *((unsigned int *)ch_ptr);
 
       ch_ptr += 4;
 
-      qrs_data.qrs_subtr_end[i] = *((int *)ch_ptr);
+      qrs_data.qrs_subtr_end[i] = *((unsigned int *)ch_ptr);
 
       ch_ptr += 4;
 
@@ -795,7 +795,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     goto EXIT_4;
   }
 
-  fseeko(inputfile, sp[6].file_offset + 22LL + (scp_ecg.chns * 2LL), SEEK_SET);  // rhythm data
+  fseeko(inputfile, sp[6].file_offset + 16LL + 6LL + (scp_ecg.chns * 2LL), SEEK_SET);  // rhythm data
 
   if(fread(block, n, 1, inputfile) != 1)
   {
@@ -1177,6 +1177,8 @@ EXIT_1:
   }
 
   pushButton1->setEnabled(true);
+
+//  test_huffman_decoder();
 }
 
 
@@ -1646,11 +1648,9 @@ int UI_SCPECG2EDFwindow::is_in_protected_area(int smpl)
 
 int UI_SCPECG2EDFwindow::default_huffman_decoding(char *buf_in, int *buf_out, int sz_in, int sz_out)
 {
-  int i, j;
+  int i, j, bits=0, last_byte=0;
 
   char ch_tmp;
-
-  long long bits=0LL;
 
   union{
          unsigned long long ll_int;
@@ -1659,7 +1659,7 @@ int UI_SCPECG2EDFwindow::default_huffman_decoding(char *buf_in, int *buf_out, in
          unsigned char four[8];
        } var;
 
-  for(i=0; ; i++)
+  for(i=0; ;)
   {
     if(!scp_ecg.bimodal)
     {
@@ -1669,12 +1669,17 @@ int UI_SCPECG2EDFwindow::default_huffman_decoding(char *buf_in, int *buf_out, in
       }
     }
 
-    if((bits / 8LL) >= sz_in)
+    if((bits / 8) >= sz_in)
     {
       break;
     }
 
-    memcpy(&var, buf_in + ((int)(bits / 8LL)), 5);
+    if(((sz_in * 8) - bits) < 8)
+    {
+      last_byte = 1;
+    }
+
+    memcpy(&var, buf_in + (bits / 8), 5);
 
     for(j=0; j<5; j++)
     {
@@ -1685,100 +1690,104 @@ int UI_SCPECG2EDFwindow::default_huffman_decoding(char *buf_in, int *buf_out, in
 
     if((var.four[0] & 1) == 0)  // b00000001
     {
-      buf_out[i] = 0;
+      buf_out[i++] = 0;
       bits++;
     } else
     if((var.four[0] & 7) == 1)  // b00000111
     {
-      buf_out[i] = 1;
-      bits += 3LL;
+      buf_out[i++] = 1;
+      bits += 3;
     } else
     if((var.four[0] & 7) == 5)  // b00000111
     {
-      buf_out[i] = -1;
-      bits += 3LL;
+      buf_out[i++] = -1;
+      bits += 3;
     } else
     if((var.four[0] & 15) == 3)  // b00001111
     {
-      buf_out[i] = 2;
-      bits += 4LL;
+      buf_out[i++] = 2;
+      bits += 4;
     } else
     if((var.four[0] & 15) == 11)  // b00001111
     {
-      buf_out[i] = -2;
-      bits += 4LL;
+      buf_out[i++] = -2;
+      bits += 4;
     } else
     if((var.four[0] & 31) == 7)  // b00011111
     {
-      buf_out[i] = 3;
-      bits += 5LL;
+      buf_out[i++] = 3;
+      bits += 5;
     } else
     if((var.four[0] & 31) == 23)  // b00011111
     {
-      buf_out[i] = -3;
-      bits += 5LL;
+      buf_out[i++] = -3;
+      bits += 5;
     } else
     if((var.four[0] & 63) == 15)  // b00111111
     {
-      buf_out[i] = 4;
-      bits += 6LL;
+      buf_out[i++] = 4;
+      bits += 6;
     } else
     if((var.four[0] & 63) == 47)  // b00111111
     {
-      buf_out[i] = -4;
-      bits += 6LL;
+      buf_out[i++] = -4;
+      bits += 6;
     } else
     if((var.four[0] & 127) == 31)  // b01111111
     {
-      buf_out[i] = 5;
-      bits += 7LL;
+      buf_out[i++] = 5;
+      bits += 7;
     } else
     if((var.four[0] & 127) == 95)  // b01111111
     {
-      buf_out[i] = -5;
-      bits += 7LL;
+      buf_out[i++] = -5;
+      bits += 7;
     } else
     if(var.four[0] == 63)  // b11111111
     {
-      buf_out[i] = 6;
-      bits += 8LL;
+      buf_out[i++] = 6;
+      bits += 8;
+    } else
+    if(last_byte)
+    {
+      break;
     } else
     if(var.four[0] == 191)  // b11111111
     {
-      buf_out[i] = -6;
-      bits += 8LL;
+      buf_out[i++] = -6;
+      bits += 8;
     } else
     if(var.four[0] == 127)  // b11111111
     {
       if((var.four[1] & 1) == 0)  // b00000001
       {
-        buf_out[i] = 7;
-        bits += 9LL;
+        buf_out[i++] = 7;
+        bits += 9;
       }
       else
       {
-        buf_out[i] = -7;
-        bits += 9LL;
+        buf_out[i++] = -7;
+        bits += 9;
       }
     } else
     if(var.four[0] == 255)  // b11111111
     {
       if((var.four[1] & 3) == 0)  // b00000011
       {
-        buf_out[i] = 8;
-        bits += 10LL;
+        buf_out[i++] = 8;
+        bits += 10;
       } else
       if((var.four[1] & 3) == 2)  // b00000011
       {
-        buf_out[i] = -8;
-        bits += 10LL;
+        buf_out[i++] = -8;
+        bits += 10;
       } else
       if((var.four[1] & 3) == 1)  // b00000011
       {
         var.ll_int >>= 2;
         var.four[1] = reverse_bitorder(var.four[1]);
-        buf_out[i] = *((signed char *)&(var.four[1]));  // 8-bit original
-        bits += 18LL;
+        buf_out[i++] = *((signed char *)&(var.four[1]));  // 8-bit original
+        bits += 18;
       } else
       if((var.four[1] & 3) == 3)  // b00000011
       {
@@ -1786,15 +1795,21 @@ int UI_SCPECG2EDFwindow::default_huffman_decoding(char *buf_in, int *buf_out, in
         ch_tmp = reverse_bitorder(var.four[0]);
         var.four[0] = reverse_bitorder(var.four[1]);
         var.four[1] = ch_tmp;
-        buf_out[i] = *((signed short *)&(var.two[0]));  // 16-bit original
-        bits += 26LL;
+        buf_out[i++] = *((signed short *)&(var.two[0]));  // 16-bit original
+        bits += 26;
       }
     }
+
+//     if(sz_in == 18)
+//     {
+//       printf("huffman decoding: i: %i   bits: %i   bits / 8: %i   buf_out: %i\n",
+//             i, bits, bits / 8, buf_out[i-1]);
+//     }
   }
 
 #ifdef SPCECG_DEBUG
   printf("huffman decoding: bytes processed is %i  size in: %i   size out: %i  samples produced is %i\n",
-         (int)(bits / 8LL), sz_in, sz_out, i);
+         bits / 8, sz_in, sz_out, i);
 #endif
 
   return i;
@@ -1897,6 +1912,50 @@ int UI_SCPECG2EDFwindow::reconstitute_decimated_samples(int *buf_in, int *buf_ou
   return 0;
 }
 
+/*  0          8         16       24        32       40       48       56       64       72       80       88       96      104      112      120      128      136      144
+ *  0          1         2        3         4        5        6        7        8        9        10       11       12      13       14       15       16       17       18
+ *  |          |         |        |         |        |        |        |        |        |        |        |        |       |        |        |        |        |        |
+ *  0 100 101 1100 1101 11100 11101 111100 111101 1111100 1111101 11111100 11111101 111111100 111111101 1111111100 1111111101 1111111110 00001111 1111111111 00000001 00000010 000
+ *  1  2   3   4    5     6     7      8     9       10      11      12       13        14        15       16          17         18        18        19        19       19
+ */
+
+// void UI_SCPECG2EDFwindow::test_huffman_decoder(void)
+// {
+//   int i, buf_out[256];
+//
+//   unsigned char bs[20];
+//
+//   bs[0]  = 0b01001011;
+//   bs[1]  = 0b10011011;
+//   bs[2]  = 0b11001110;
+//   bs[3]  = 0b11111001;
+//   bs[4]  = 0b11101111;
+//   bs[5]  = 0b11001111;
+//   bs[6]  = 0b10111111;
+//   bs[7]  = 0b10011111;
+//   bs[8]  = 0b10111111;
+//   bs[9]  = 0b11001111;
+//   bs[10] = 0b11101111;
+//   bs[11] = 0b11111001;
+//   bs[12] = 0b11111110;
+//   bs[13] = 0b11111111;
+//   bs[14] = 0b11000001;
+//   bs[15] = 0b11111111;
+//   bs[16] = 0b11111000;
+//   bs[17] = 0b00001000;
+//   bs[18] = 0b00010000;
+//   bs[19] = 0b00000000;
+//
+//
+//   default_huffman_decoding((char *)bs, buf_out, 18, 200);
+//
+//   printf("Huffman decoding test:\n");
+//
+//   for(i=0; i<19; i++)
+//   {
+//     printf("%i\n", buf_out[i]);
+//   }
+// }
 
 
 
