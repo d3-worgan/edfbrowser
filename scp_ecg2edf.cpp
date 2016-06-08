@@ -915,6 +915,11 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
           }
         }
       }
+
+      for(i=0; i<scp_ecg.chns; i++)
+      {
+        smooth_subtract_area_borders(buf2[i], i);
+      }
     }
   }
 
@@ -1071,9 +1076,12 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
   edf_set_recording_additional(hdl, scratchpad);
 
-  if(glob_msr_data.n_pace_spike > 0)
+  if(sp[7].present)
   {
-    edf_set_number_of_annotation_signals(hdl, 2);
+    if(glob_msr_data.n_pace_spike > 0)
+    {
+      edf_set_number_of_annotation_signals(hdl, 2);
+    }
   }
 
 #ifdef SPCECG_DEBUG
@@ -1105,23 +1113,32 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     }
   }
 
-  for(i=0; i<glob_msr_data.n_pace_spike; i++)
+  if(sp[7].present)
   {
-    edfwrite_annotation_latin1(hdl, glob_msr_data.pace_spike_offset[i] * 10, -1LL, "Pace");
+    for(i=0; i<glob_msr_data.n_pace_spike; i++)
+    {
+      edfwrite_annotation_latin1(hdl, glob_msr_data.pace_spike_offset[i] * 10, -1LL, "Pace");
+    }
   }
 
 #ifdef SPCECG_DEBUG
-  for(i=0; i<qrs_data.n_qrs; i++)
+  if(scp_ecg.ref_beat_subtract)
   {
-    edfwrite_annotation_latin1(hdl, (qrs_data.qrs_prot_start[i] * 10000) / scp_ecg.sf, -1LL, "QB");
+    for(i=0; i<qrs_data.n_qrs; i++)
+    {
+      if(qrs_data.qrs_subtr_type[i] == 0)
+      {
+        edfwrite_annotation_latin1(hdl, ((qrs_data.qrs_prot_start[i] - 1) * 10000) / scp_ecg.sf, -1LL, "QB");
 
-    edfwrite_annotation_latin1(hdl, (qrs_data.qrs_subtr_fiducial[i] * 10000) / scp_ecg.sf, -1LL, "FC");
+        edfwrite_annotation_latin1(hdl, ((qrs_data.qrs_subtr_fiducial[i] - 1) * 10000) / scp_ecg.sf, -1LL, "FC");
 
-    edfwrite_annotation_latin1(hdl, (qrs_data.qrs_prot_end[i] * 10000) / scp_ecg.sf, -1LL, "QE");
+        edfwrite_annotation_latin1(hdl, (qrs_data.qrs_prot_end[i] * 10000) / scp_ecg.sf, -1LL, "QE");
 
-    edfwrite_annotation_latin1(hdl, (qrs_data.qrs_subtr_start[i] * 10000) / scp_ecg.sf, -1LL, "SB");
+        edfwrite_annotation_latin1(hdl, ((qrs_data.qrs_subtr_start[i] - 1) * 10000) / scp_ecg.sf, -1LL, "SB");
 
-    edfwrite_annotation_latin1(hdl, (qrs_data.qrs_subtr_end[i] * 10000) / scp_ecg.sf, -1LL, "SE");
+        edfwrite_annotation_latin1(hdl, (qrs_data.qrs_subtr_end[i] * 10000) / scp_ecg.sf, -1LL, "SE");
+      }
+    }
   }
 #endif
 
@@ -1177,8 +1194,6 @@ EXIT_1:
   }
 
   pushButton1->setEnabled(true);
-
-//  test_huffman_decoder();
 }
 
 
@@ -1646,6 +1661,29 @@ int UI_SCPECG2EDFwindow::is_in_protected_area(int smpl)
 }
 
 
+int UI_SCPECG2EDFwindow::is_nearby_subtracted_area(int smpl)
+{
+  int i;
+
+  for(i=0; i<qrs_data.n_qrs; i++)
+  {
+    if(qrs_data.qrs_subtr_type[i] == 0)
+    {
+      if(smpl < (qrs_data.qrs_subtr_start[i] - 1))
+      {
+        return 0;
+      }
+      else if(smpl <= (qrs_data.qrs_subtr_end[i] + 1))
+        {
+          return 1;
+        }
+    }
+  }
+
+  return 0;
+}
+
+
 int UI_SCPECG2EDFwindow::default_huffman_decoding(char *buf_in, int *buf_out, int sz_in, int sz_out)
 {
   int i, j, bits=0, last_byte=0;
@@ -1799,12 +1837,6 @@ int UI_SCPECG2EDFwindow::default_huffman_decoding(char *buf_in, int *buf_out, in
         bits += 26;
       }
     }
-
-//     if(sz_in == 18)
-//     {
-//       printf("huffman decoding: i: %i   bits: %i   bits / 8: %i   buf_out: %i\n",
-//             i, bits, bits / 8, buf_out[i-1]);
-//     }
   }
 
 #ifdef SPCECG_DEBUG
@@ -1865,13 +1897,43 @@ void UI_SCPECG2EDFwindow::reconstitute_data_second_diff(int *buf, int sz)
 }
 
 
+void UI_SCPECG2EDFwindow::smooth_subtract_area_borders(int *buf, int chn)
+{
+  int i, val;
+
+  for(i=0; i<qrs_data.n_qrs; i++)
+  {
+    if(qrs_data.qrs_subtr_type[i] == 0)
+    {
+      if(qrs_data.qrs_subtr_start[i] > 1)
+      {
+        val = (buf[qrs_data.qrs_subtr_start[i] - 2] + buf[qrs_data.qrs_subtr_start[i] - 1]) / 2;
+
+        buf[qrs_data.qrs_subtr_start[i] - 2] = val;
+
+        buf[qrs_data.qrs_subtr_start[i] - 1] = val;
+      }
+
+      if(qrs_data.qrs_subtr_end[i] < lp[chn].samples)
+      {
+        val = (buf[qrs_data.qrs_subtr_end[i] - 1] + buf[qrs_data.qrs_subtr_end[i]]) / 2;
+
+        buf[qrs_data.qrs_subtr_end[i] - 1] = val;
+
+        buf[qrs_data.qrs_subtr_end[i]] = val;
+      }
+    }
+  }
+}
+
+
 int UI_SCPECG2EDFwindow::reconstitute_decimated_samples(int *buf_in, int *buf_out, int chn)
 {
   int i, j=0, r, step;
 
   for(i=0; i<lp[chn].samples;)
   {
-    if(is_in_protected_area(i + 1))
+    if((is_in_protected_area(i + 1)) || (is_in_protected_area(i + scp_ecg.sf_ratio)))
     {
       buf_out[i++] = buf_in[j++] * scp_ecg.avm_ratio;
     }
@@ -1888,7 +1950,14 @@ int UI_SCPECG2EDFwindow::reconstitute_decimated_samples(int *buf_in, int *buf_ou
 
       for(r=0; r<scp_ecg.sf_ratio; r++)
       {
-        buf_out[i++] = (buf_in[j] * scp_ecg.avm_ratio) + (step * r);
+        if(is_nearby_subtracted_area(i + 1))
+        {
+          buf_out[i++] = (buf_in[j] * scp_ecg.avm_ratio);
+        }
+        else
+        {
+          buf_out[i++] = (buf_in[j] * scp_ecg.avm_ratio) + (step * r);
+        }
 
         if(is_in_protected_area(i + 1))
         {
@@ -1912,50 +1981,12 @@ int UI_SCPECG2EDFwindow::reconstitute_decimated_samples(int *buf_in, int *buf_ou
   return 0;
 }
 
-/*  0          8         16       24        32       40       48       56       64       72       80       88       96      104      112      120      128      136      144
- *  0          1         2        3         4        5        6        7        8        9        10       11       12      13       14       15       16       17       18
- *  |          |         |        |         |        |        |        |        |        |        |        |        |       |        |        |        |        |        |
- *  0 100 101 1100 1101 11100 11101 111100 111101 1111100 1111101 11111100 11111101 111111100 111111101 1111111100 1111111101 1111111110 00001111 1111111111 00000001 00000010 000
- *  1  2   3   4    5     6     7      8     9       10      11      12       13        14        15       16          17         18        18        19        19       19
- */
 
-// void UI_SCPECG2EDFwindow::test_huffman_decoder(void)
-// {
-//   int i, buf_out[256];
-//
-//   unsigned char bs[20];
-//
-//   bs[0]  = 0b01001011;
-//   bs[1]  = 0b10011011;
-//   bs[2]  = 0b11001110;
-//   bs[3]  = 0b11111001;
-//   bs[4]  = 0b11101111;
-//   bs[5]  = 0b11001111;
-//   bs[6]  = 0b10111111;
-//   bs[7]  = 0b10011111;
-//   bs[8]  = 0b10111111;
-//   bs[9]  = 0b11001111;
-//   bs[10] = 0b11101111;
-//   bs[11] = 0b11111001;
-//   bs[12] = 0b11111110;
-//   bs[13] = 0b11111111;
-//   bs[14] = 0b11000001;
-//   bs[15] = 0b11111111;
-//   bs[16] = 0b11111000;
-//   bs[17] = 0b00001000;
-//   bs[18] = 0b00010000;
-//   bs[19] = 0b00000000;
-//
-//
-//   default_huffman_decoding((char *)bs, buf_out, 18, 200);
-//
-//   printf("Huffman decoding test:\n");
-//
-//   for(i=0; i<19; i++)
-//   {
-//     printf("%i\n", buf_out[i]);
-//   }
-// }
+
+
+
+
+
 
 
 

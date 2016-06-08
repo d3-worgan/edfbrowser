@@ -191,6 +191,8 @@ int get_patient_data(FILE *);
 
 int is_in_protected_area(int);
 
+int is_nearby_subtracted_area(int);
+
 int default_huffman_decoding(char *, int *, int, int);
 
 void reconstitute_data_first_diff(int *, int);
@@ -199,7 +201,7 @@ void reconstitute_data_second_diff(int *, int);
 
 int reconstitute_decimated_samples(int *, int *, int);
 
-// void test_huffman_decoder(void);
+void smooth_subtract_area_borders(int *, int);
 
 private slots:
 
