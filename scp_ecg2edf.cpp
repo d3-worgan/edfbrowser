@@ -291,7 +291,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   }
 
 #ifdef SPCECG_DEBUG
-  printf("chns is %u   avm is %u   sf is %u   encoding is %u   compression is %u  ref_beat_subtract is %u\n",
+  printf("chns is %u   avm is %u   sf is %u   encoding is %u   bimodal-compression is %u  ref_beat_subtract is %u\n",
         scp_ecg.chns, scp_ecg.avm, scp_ecg.sf, scp_ecg.encoding, scp_ecg.bimodal, scp_ecg.ref_beat_subtract);
 #endif
 
@@ -450,7 +450,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
 /********************************* SECTION 4 protected areas ****************************/
 
-  if(scp_ecg.bimodal)
+  if(scp_ecg.bimodal || scp_ecg.ref_beat_subtract)
   {
     memset(&qrs_data, 0, sizeof(struct qrs_loc_data_struct));
 
@@ -569,7 +569,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
 /********************************* SECTION 5 referenced beat data ****************************/
 
-  if(scp_ecg.bimodal)
+  if(scp_ecg.ref_beat_subtract)
   {
     fseeko(inputfile, sp[5].file_offset + 16LL, SEEK_SET);
 
@@ -607,57 +607,60 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       goto EXIT_3;
     }
 
-    if(scp_ecg.sf >= scp_ecg.sf_prot)
+    if(scp_ecg.bimodal)
     {
-      textEdit1->append("Error, SF >= SF in protected area.\n");
-      goto EXIT_3;
-    }
+      if(scp_ecg.sf >= scp_ecg.sf_prot)
+      {
+        textEdit1->append("Error, SF >= SF in protected area.\n");
+        goto EXIT_3;
+      }
 
-    if(scp_ecg.sf_prot % scp_ecg.sf)
-    {
-      textEdit1->append("Error, ratio SF:SF in protected area is not an integer.\n");
-      goto EXIT_3;
-    }
+      if(scp_ecg.sf_prot % scp_ecg.sf)
+      {
+        textEdit1->append("Error, ratio SF:SF in protected area is not an integer.\n");
+        goto EXIT_3;
+      }
 
-    for(i=0; i<qrs_data.n_qrs; i++)
-    {
+      for(i=0; i<qrs_data.n_qrs; i++)
+      {
 #ifdef SPCECG_DEBUG
-      if(!i)
-      {
-        if((qrs_data.qrs_prot_start[i] - 1) % scp_ecg.sf_ratio)
-        {
-          printf("Warning, number of samples in the non-protected area is not a multple of SF ratio. (5-10)\n");
-        }
-      }
-      else
-      {
-        if(((qrs_data.qrs_prot_start[i] - 1) - qrs_data.qrs_prot_end[i-1]) % scp_ecg.sf_ratio)
-        {
-          printf("Warning, number of samples in the non-protected area is not a multple of SF ratio. (5-12)\n");
-        }
-      }
-#endif
-
-      for(j=0; j<scp_ecg.chns; j++)
-      {
         if(!i)
         {
-          lp[j].bimod_samples = (qrs_data.qrs_prot_start[i] - 1) / scp_ecg.sf_ratio;
+          if((qrs_data.qrs_prot_start[i] - 1) % scp_ecg.sf_ratio)
+          {
+            printf("Warning, number of samples in the non-protected area is not a multple of SF ratio. (5-10)\n");
+          }
         }
         else
         {
-          lp[j].bimod_samples += ((qrs_data.qrs_prot_start[i] - 1) - qrs_data.qrs_prot_end[i-1]) / scp_ecg.sf_ratio;
+          if(((qrs_data.qrs_prot_start[i] - 1) - qrs_data.qrs_prot_end[i-1]) % scp_ecg.sf_ratio)
+          {
+            printf("Warning, number of samples in the non-protected area is not a multple of SF ratio. (5-12)\n");
+          }
         }
-
-        lp[j].bimod_samples += ((qrs_data.qrs_prot_end[i] - qrs_data.qrs_prot_start[i]) + 1);
-      }
-    }
-#ifdef SPCECG_DEBUG
-    for(j=0; j<scp_ecg.chns; j++)
-    {
-      printf("bimodal samples is %i\n", lp[j].bimod_samples);
-    }
 #endif
+
+        for(j=0; j<scp_ecg.chns; j++)
+        {
+          if(!i)
+          {
+            lp[j].bimod_samples = (qrs_data.qrs_prot_start[i] - 1) / scp_ecg.sf_ratio;
+          }
+          else
+          {
+            lp[j].bimod_samples += ((qrs_data.qrs_prot_start[i] - 1) - qrs_data.qrs_prot_end[i-1]) / scp_ecg.sf_ratio;
+          }
+
+          lp[j].bimod_samples += ((qrs_data.qrs_prot_end[i] - qrs_data.qrs_prot_start[i]) + 1);
+        }
+      }
+#ifdef SPCECG_DEBUG
+      for(j=0; j<scp_ecg.chns; j++)
+      {
+        printf("bimodal samples is %i\n", lp[j].bimod_samples);
+      }
+#endif
+    }
 
     for(j=0; j<scp_ecg.chns; j++)
     {
@@ -859,8 +862,9 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     }
   }
 
-  if(scp_ecg.bimodal)
+  if(scp_ecg.bimodal || scp_ecg.ref_beat_subtract)
   {
+
     for(i=0; i<scp_ecg.chns; i++)
     {
       buf2[i] = (int *)malloc(((lp[0].samples / scp_ecg.sf) + 2) * scp_ecg.sf * sizeof(int));
@@ -871,12 +875,25 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       }
     }
 
-    for(i=0; i<scp_ecg.chns; i++)
+    if(scp_ecg.bimodal)
     {
-      if(reconstitute_decimated_samples(buf[i], buf2[i], i))
+      for(i=0; i<scp_ecg.chns; i++)
       {
-        textEdit1->append("Error during bimodal decompression.\n ");
-        goto EXIT_4;
+        if(reconstitute_decimated_samples(buf[i], buf2[i], i))
+        {
+          textEdit1->append("Error during bimodal decompression.\n ");
+          goto EXIT_4;
+        }
+      }
+    }
+    else
+    {
+      for(i=0; i<scp_ecg.chns; i++)
+      {
+        for(j=0; j<lp[i].samples; j++)
+        {
+          buf2[i][j] = buf[i][j];
+        }
       }
     }
 
@@ -1094,7 +1111,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   {
     for(j=0; j<scp_ecg.chns; j++)
     {
-      if(scp_ecg.bimodal)
+      if(scp_ecg.bimodal || scp_ecg.ref_beat_subtract)
       {
         if(edfwrite_digital_samples(hdl, buf2[j] + (scp_ecg.sf * i)))
         {
