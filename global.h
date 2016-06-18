@@ -63,6 +63,7 @@
 #define MAXPREDEFINEDMONTAGES 12
 #define MAXAVERAGECURVEDIALOGS 32
 #define MAXZSCOREDIALOGS 32
+#define MAXZOOMHISTORY 16
 
 #define ANNOT_ID_NK_TRIGGER   0
 #define ANNOT_ID_BS_TRIGGER   1
@@ -232,11 +233,11 @@ struct zoomhistoryblock{
         int pntr;
         int history_size_tail;
         int history_size_front;
-        long long viewtime[64][MAXFILES];
-        long long pagetime[64];
-        double voltpercm[64][MAXSIGNALS];
-        double sensitivity[64][MAXSIGNALS][MAXSIGNALS];
-        double screen_offset[64][MAXSIGNALS];
+        long long viewtime[MAXZOOMHISTORY][MAXFILES];
+        long long pagetime[MAXZOOMHISTORY];
+        double voltpercm[MAXZOOMHISTORY][MAXSIGNALS];
+        double sensitivity[MAXZOOMHISTORY][MAXSIGNALS][MAXSIGNALS];
+        double screen_offset[MAXZOOMHISTORY][MAXSIGNALS];
        };
 
 struct annotationblock{

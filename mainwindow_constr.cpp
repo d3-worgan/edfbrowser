@@ -864,7 +864,7 @@ UI_Mainwindow::UI_Mainwindow()
 
   zoomhistory->history_size_tail = 0;
   zoomhistory->history_size_front = 0;
-  for(i=0; i<64; i++)
+  for(i=0; i<MAXZOOMHISTORY; i++)
   {
     zoomhistory->pntr = 0;
     zoomhistory->pagetime[i] = 10 * TIME_DIMENSION;

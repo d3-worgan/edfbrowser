@@ -923,7 +923,8 @@ void UI_Mainwindow::zoomback()
   }
 
   zoomhistory->pntr--;
-  if(zoomhistory->pntr<0)  zoomhistory->pntr = 63;
+  zoomhistory->pntr += MAXZOOMHISTORY;
+  zoomhistory->pntr %= MAXZOOMHISTORY;
 
   for(i=0; i<files_open; i++)
   {
@@ -960,7 +961,7 @@ void UI_Mainwindow::forward()
   zoomhistory->history_size_tail++;
 
   zoomhistory->pntr++;
-  if(zoomhistory->pntr>63)  zoomhistory->pntr = 0;
+  zoomhistory->pntr %= MAXZOOMHISTORY;
 
   for(i=0; i<files_open; i++)
   {
@@ -2265,7 +2266,7 @@ void UI_Mainwindow::close_all_files()
 
   amplitude_doubler = 10;
 
-  for(i=0; i<64; i++)
+  for(i=0; i<MAXZOOMHISTORY; i++)
   {
     zoomhistory->pntr = 0;
     zoomhistory->pagetime[i] = 10 * TIME_DIMENSION;

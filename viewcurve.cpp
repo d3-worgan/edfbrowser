@@ -656,7 +656,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
           }
         }
         mainwindow->zoomhistory->pntr++;
-        mainwindow->zoomhistory->pntr %= 64;
+        mainwindow->zoomhistory->pntr %= MAXZOOMHISTORY;
 
         for(i=0; i<mainwindow->files_open; i++)
         {
