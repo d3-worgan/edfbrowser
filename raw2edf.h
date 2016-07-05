@@ -61,21 +61,23 @@
 #include "edflib.h"
 #include "global.h"
 
+struct raw2edf_var_struct{
+        int sf;
+        int chns;
+        int phys_max;
+        int straightbinary;
+        int endianness;
+        int samplesize;
+        int offset;
+        int skipblocksize;
+        int skipbytes;
+        char phys_dim[16];
+      };
 
-  struct raw2edf_var_struct{
-          int sf;
-          int chns;
-          int phys_max;
-          int straightbinary;
-          int endianness;
-          int samplesize;
-          int offset;
-          int skipblocksize;
-          int skipbytes;
-          char phys_dim[16];
-        };
+#include "mainwindow.h"
 
 
+class UI_Mainwindow;
 
 
 class UI_RAW2EDFapp : public QObject
@@ -83,7 +85,9 @@ class UI_RAW2EDFapp : public QObject
   Q_OBJECT
 
 public:
-  UI_RAW2EDFapp(struct raw2edf_var_struct *, char *recent_dir=NULL, char *save_dir=NULL);
+  UI_RAW2EDFapp(QWidget *w_parent, struct raw2edf_var_struct *, char *recent_dir=NULL, char *save_dir=NULL);
+
+  UI_Mainwindow *mainwindow;
 
 private:
 

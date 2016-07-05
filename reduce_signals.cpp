@@ -1337,7 +1337,7 @@ void UI_ReduceSignalsWindow::helpbuttonpressed()
   char p_path[MAX_PATH_LENGTH];
 
   strcpy(p_path, "file:///");
-  strcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
+  strcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
   strcat(p_path, "\\EDFbrowser\\manual.html#Header_editor");
   QDesktopServices::openUrl(QUrl(p_path));
 #endif

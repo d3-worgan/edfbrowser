@@ -294,6 +294,10 @@ public:
 
   struct signalcompblock * create_signalcomp_copy(struct signalcompblock *);
 
+#ifdef Q_OS_WIN32
+  QString specialFolder(int);
+#endif
+
   ViewCurve    *maincurve;
 
   QFont        *myfont,
@@ -444,9 +448,6 @@ private:
   void read_recent_file_settings();
   void read_general_settings();
   void write_settings();
-#ifdef Q_OS_WIN32
-  QString specialFolder(int);
-#endif
   long long check_edf_file_datarecords(struct edfhdrblock *);
   inline void mpr_write(const char *);
   inline int mpr_read(char *, int);

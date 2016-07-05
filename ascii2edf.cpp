@@ -31,10 +31,12 @@
 
 
 
-UI_ASCII2EDFapp::UI_ASCII2EDFapp(char *recent_dir, char *save_dir)
+UI_ASCII2EDFapp::UI_ASCII2EDFapp(QWidget *w_parent, char *recent_dir, char *save_dir)
 {
   recent_opendir = recent_dir;
   recent_savedir = save_dir;
+
+  mainwindow = (UI_Mainwindow *)w_parent;
 
   autoPhysicalMaximum = 1;
 
@@ -1868,7 +1870,7 @@ void UI_ASCII2EDFapp::helpbuttonpressed()
   char p_path[MAX_PATH_LENGTH];
 
   strcpy(p_path, "file:///");
-  strcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
+  strcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
   strcat(p_path, "\\EDFbrowser\\manual.html#ASCII_to_EDF_converter");
   QDesktopServices::openUrl(QUrl(p_path));
 #endif

@@ -190,8 +190,8 @@ void UI_Mainwindow::open_stream()
     shift_page_left_Act->setEnabled(false);
     shift_page_right_Act->setEnabled(false);
     next_page_Act->setEnabled(false);
-    shift_page_up_Act->setEnabled(false);
-    shift_page_down_Act->setEnabled(false);
+//     shift_page_up_Act->setEnabled(false);
+//     shift_page_down_Act->setEnabled(false);
     printmenu->setEnabled(false);
     recent_filesmenu->setEnabled(false);
     playback_realtime_Act->setEnabled(false);
@@ -588,13 +588,13 @@ void UI_Mainwindow::nk2edf_converter()
 
 void UI_Mainwindow::convert_ascii_to_edf()
 {
-  UI_ASCII2EDFapp ascii2edf(recent_opendir, recent_savedir);
+  UI_ASCII2EDFapp ascii2edf(this, recent_opendir, recent_savedir);
 }
 
 
 void UI_Mainwindow::convert_binary_to_edf()
 {
-  UI_RAW2EDFapp bin2edf(&raw2edf_var, recent_opendir, recent_savedir);
+  UI_RAW2EDFapp bin2edf(this, &raw2edf_var, recent_opendir, recent_savedir);
 }
 
 

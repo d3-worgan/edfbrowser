@@ -31,10 +31,12 @@
 
 
 
-UI_RAW2EDFapp::UI_RAW2EDFapp(struct raw2edf_var_struct *raw2edf_var_p, char *recent_dir, char *save_dir)
+UI_RAW2EDFapp::UI_RAW2EDFapp(QWidget *w_parent, struct raw2edf_var_struct *raw2edf_var_p, char *recent_dir, char *save_dir)
 {
   recent_opendir = recent_dir;
   recent_savedir = save_dir;
+
+  mainwindow = (UI_Mainwindow *)w_parent;
 
   raw2edf_var = raw2edf_var_p;
 
@@ -972,7 +974,7 @@ void UI_RAW2EDFapp::helpbuttonpressed()
   char p_path[MAX_PATH_LENGTH];
 
   strcpy(p_path, "file:///");
-  strcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
+  strcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
   strcat(p_path, "\\EDFbrowser\\manual.html#Binary_to_EDF");
   QDesktopServices::openUrl(QUrl(p_path));
 #endif

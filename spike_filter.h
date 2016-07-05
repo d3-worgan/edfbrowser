@@ -53,8 +53,8 @@ struct spike_filter_settings{
     int cutoff_sav;
     int spikewidth;
     int spikewidth_sav;
-    double array[1024];
-    double array_sav[1024];
+    double array[4096];
+    double array_sav[4096];
     int idx;
     int idx_sav;
     int n_max;

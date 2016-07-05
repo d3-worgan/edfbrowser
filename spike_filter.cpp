@@ -48,15 +48,15 @@ struct spike_filter_settings * create_spike_filter(int sf, double sv, int ho, in
 
   st->sf = sf;    // samplefrequency
 
-  st->n_max = sf / 2000;  // Velocity is measured between sample n and sample n - n_max (tdiff is 0.5 mSec.)
+  st->n_max = sf / 4000;  // Velocity is measured between sample n and sample n - n_max (tdiff is 0.25 mSec.)
 
-  st->bufsz = (sf * 6) / 1000;  // buffer length is 6 milli-Seconds
+  st->bufsz = (sf * 12) / 1000;  // buffer length is 12 milli-Seconds
 
   st->flank_det_set = (sf * 3) / 1000;  // accept only spikes with a maximum width of 3 milli-Seconds
 
   st->holdoff_set = (sf * ho) / 1000;  // 100 milliSec. holdoff time (do not try to detect another spike during this time)
 
-  st->velocity = (sv / (sf / 2000)) * st->n_max;
+  st->velocity = (sv / (sf / 4000)) * st->n_max;
 
   st->pd_sig = pace_detected;
 
@@ -143,6 +143,8 @@ double run_spike_filter(double val, struct spike_filter_settings *st)
       pol=1,
       tmp;
 
+  if(st == NULL) return 0.0;
+
   if(st->run_in < st->bufsz)
   {
     st->run_in++;
@@ -227,11 +229,11 @@ double run_spike_filter(double val, struct spike_filter_settings *st)
       {
         if(pol != st->polarity)  // we found the second flank of the spike
         {
-          st->spikewidth = st->flank_det_set - st->flank_det + st->n_max;
+          st->spikewidth = st->flank_det_set - st->flank_det + (st->n_max * 2);
 
           st->spike_pos = (st->idx + st->bufsz - st->spikewidth) % st->bufsz;
 
-          st->spikewidth += (st->n_max * 2);
+          st->spikewidth += (st->n_max * 4);
 
           st->holdoff = st->holdoff_set;  // set the holdoff timer
 

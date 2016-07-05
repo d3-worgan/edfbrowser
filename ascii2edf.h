@@ -62,11 +62,14 @@
 #include "global.h"
 #include "xml.h"
 #include "utils.h"
+#include "mainwindow.h"
 
 
 #define ASCII_MAX_EDF_SIGNALS 512
 #define ASCII_MAX_LINE_LEN 2048
 
+
+class UI_Mainwindow;
 
 
 
@@ -75,7 +78,9 @@ class UI_ASCII2EDFapp : public QObject
   Q_OBJECT
 
 public:
-  UI_ASCII2EDFapp(char *recent_dir=NULL, char *save_dir=NULL);
+  UI_ASCII2EDFapp(QWidget *w_parent, char *recent_dir=NULL, char *save_dir=NULL);
+
+  UI_Mainwindow *mainwindow;
 
 private:
 

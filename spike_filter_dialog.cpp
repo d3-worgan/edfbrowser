@@ -57,7 +57,7 @@ UI_SpikeFilterDialog::UI_SpikeFilterDialog(QWidget *w_parent)
   velocitySpinBox = new QDoubleSpinBox(spikefilterdialog);
   velocitySpinBox->setGeometry(90, 45, 230, 25);
   velocitySpinBox->setDecimals(6);
-  velocitySpinBox->setSuffix(" units/(0.5 mSec)");
+  velocitySpinBox->setSuffix(" units/(0.25 mSec)");
   velocitySpinBox->setMinimum(0.000001);
   velocitySpinBox->setMaximum(1E10);
   velocitySpinBox->setValue(1000.0);
