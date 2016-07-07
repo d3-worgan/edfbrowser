@@ -2327,6 +2327,44 @@ void UI_Mainwindow::page_3cmsec()
 }
 
 
+void UI_Mainwindow::page_25mmsec()
+{
+  double mm;
+
+  if(auto_dpi)
+  {
+    mm = maincurve->widthMM();
+
+    pagetime = mm * 400000.0;
+  }
+  else
+  {
+    pagetime = (long long)((((double)maincurve->width()) / (1.0 / x_pixelsizefactor) / 2.5) * TIME_DIMENSION);
+  }
+
+  setup_viewbuf();
+}
+
+
+void UI_Mainwindow::page_50mmsec()
+{
+  double mm;
+
+  if(auto_dpi)
+  {
+    mm = maincurve->widthMM();
+
+    pagetime = mm * 200000.0;
+  }
+  else
+  {
+    pagetime = (long long)((((double)maincurve->width()) / (1.0 / x_pixelsizefactor) / 5.0) * TIME_DIMENSION);
+  }
+
+  setup_viewbuf();
+}
+
+
 void UI_Mainwindow::set_page_div2()
 {
   int i;

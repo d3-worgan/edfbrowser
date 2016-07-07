@@ -540,6 +540,8 @@ private slots:
   void edit_predefined_montages();
   void show_spectrum_dock();
   void page_3cmsec();
+  void page_25mmsec();
+  void page_50mmsec();
   void reduce_signals();
   void edit_header();
   void biosemi2bdfplus_converter();

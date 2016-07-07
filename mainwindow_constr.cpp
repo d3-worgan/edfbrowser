@@ -324,7 +324,9 @@ UI_Mainwindow::UI_Mainwindow()
   displaymenu = new QMenu(this);
   displaymenu->setTitle("&Timescale");
 
-  displaymenu->addAction("3 cm/sec", this, SLOT(page_3cmsec()));
+  displaymenu->addAction("3 cm/sec",  this, SLOT(page_3cmsec()));
+  displaymenu->addAction("25 mm/sec", this, SLOT(page_25mmsec()));
+  displaymenu->addAction("50 mm/sec", this, SLOT(page_50mmsec()));
 
   displaymenu->addSeparator();
 
