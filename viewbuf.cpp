@@ -192,7 +192,7 @@ void UI_Mainwindow::setup_viewbuf()
 
         if(!skip)
         {
-          signalcomp[i]->viewbufoffset = signalcomp[i-1]->viewbufoffset + signalcomp[i-1]->viewbufsize;
+          signalcomp[i]->viewbufoffset = totalsize;
           totalsize += signalcomp[i]->viewbufsize;
         }
       }
@@ -522,7 +522,7 @@ void UI_Mainwindow::setup_viewbuf()
 
       if(!skip)
       {
-        signalcomp[i]->viewbufoffset = signalcomp[i-1]->viewbufoffset + signalcomp[i-1]->viewbufsize;
+        signalcomp[i]->viewbufoffset = totalsize;
         totalsize += signalcomp[i]->viewbufsize;
       }
     }
@@ -842,6 +842,17 @@ void UI_Mainwindow::setup_viewbuf()
       }
     }
   }
+
+//   printf("\n");
+//
+//   for(int n=0; n<signalcomps; n++)
+//   {
+//     printf("signalcomp: %i  filenum: %i  signal: %i  viewbufoffset: %i  buf_offset: %i\n",
+//            n,
+//            signalcomp[n]->filenum, signalcomp[n]->edfsignal[0],
+//            signalcomp[n]->viewbufoffset,
+//            signalcomp[n]->edfhdr->edfparam[signalcomp[n]->edfsignal[0]].buf_offset);
+//   }
 }
 
 
