@@ -1,4 +1,24 @@
 
+ version 1.58      to be defined
+ --------------
+
+ - Solved a bug that could display a wrong trace when opening three or more files and
+   when re-arranging the order of the traces.
+
+ - Reduce memory usage.
+
+ - SCP-ECG (EN 1064:2005+A1:2007) to EDF+ converter: added support for bimodal compression
+   and reference beat subtraction.
+
+ - Make it possible to use the mouse to drag horizontally by keeping the
+   middle mousebutton pressed.
+
+ - Fixed a bug in the spectrumanalyzer for files with very high samplerate (>=5GHz).
+
+ - Fixed a bug that could cause a crash when changing file position when no file was opened.
+
+
+
  version 1.57      January 16, 2016
  --------------
 
