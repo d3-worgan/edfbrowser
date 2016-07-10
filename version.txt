@@ -1,5 +1,6 @@
 
- version 1.58      to be defined
+
+ version 1.58      July 10, 2016
  --------------
 
  - Solved a bug that could display a wrong trace when opening three or more files and

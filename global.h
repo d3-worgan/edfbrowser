@@ -44,7 +44,7 @@
 #endif
 
 #define PROGRAM_NAME "EDFbrowser"
-#define PROGRAM_VERSION "1.57"
+#define PROGRAM_VERSION "1.58"
 #define MINIMUM_QT_VERSION 0x040701
 #define MAXFILES 32
 #define MAXSIGNALS 512
@@ -262,7 +262,6 @@ struct active_markersblock{
         int count;
         int selected;
        };
-
 
 struct graphicLineStruct{
         int x1;
