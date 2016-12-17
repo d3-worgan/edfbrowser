@@ -1673,7 +1673,7 @@ void UI_Mainwindow::read_general_settings()
 
 void UI_Mainwindow::write_settings()
 {
-  int i, len;
+  int i;
 
   char cfg_path[MAX_PATH_LENGTH],
        str[1024];
@@ -1812,20 +1812,10 @@ void UI_Mainwindow::write_settings()
                     maxfilesize_to_readin_annotations);
 #endif
 
-    len = strlen(path);
-    for(i=len-1; i>=0; i--)
-    {
-      if((path[i] == '/')||(path[i] == '\\'))
-      {
-        break;
-      }
-    }
-    path[i+1] = 0;
-
     fprintf(cfgfile, "    </colors>\n    <pixelsizefactor>%.10f</pixelsizefactor>\n    <auto_dpi>%i</auto_dpi>\n    <x_pixelsizefactor>%.10f</x_pixelsizefactor>\n    <recent_dir>",
                      pixelsizefactor, auto_dpi, x_pixelsizefactor);
 
-    xml_fwrite_encode_entity(cfgfile, path);
+    xml_fwrite_encode_entity(cfgfile, recent_opendir);
 
     fprintf(cfgfile, "</recent_dir>\n");
 
