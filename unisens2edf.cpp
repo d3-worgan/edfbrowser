@@ -2030,7 +2030,11 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
     }
   }
 
-  if(!xml_get_attribute_of_element(xml_hdl, "baseline", str, 255) < 0)
+  if(xml_get_attribute_of_element(xml_hdl, "baseline", str, 255) < 0)
+  {
+    baseline[file_nr] = 0LL;
+  }
+  else
   {
     if(strlen(str) < 1)
     {
@@ -2040,12 +2044,12 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
 
     baseline[file_nr] = strtoll(str, NULL, 0);
   }
-  else
-  {
-    baseline[file_nr] = 0LL;
-  }
 
-  if(!xml_get_attribute_of_element(xml_hdl, "adcZero", str, 255) < 0)
+  if(xml_get_attribute_of_element(xml_hdl, "adcZero", str, 255) < 0)
+  {
+    adczero[file_nr] = 0LL;
+  }
+  else
   {
     if(strlen(str) < 1)
     {
@@ -2054,10 +2058,6 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
     }
 
     adczero[file_nr] = strtoll(str, NULL, 0);
-  }
-  else
-  {
-    adczero[file_nr] = 0LL;
   }
 
   if(xml_get_attribute_of_element(xml_hdl, "lsbValue", str, 255) < 0)

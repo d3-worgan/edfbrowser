@@ -873,11 +873,6 @@ int xml_goto_next_element_at_same_level(struct xml_handle *handle_p)
   {
     offset = xml_next_tag(offset, handle_p);
     if(offset < 0)  return offset;
-
-    if(handle_p->tag_search_result==NULL)
-    {
-      return XML_ERROR_GEN;
-    }
   }
 
   if(handle_p->tag_search_result[0]=='/')

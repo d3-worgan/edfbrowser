@@ -596,7 +596,7 @@ void SignalCurve::print_to_ascii()
   get_directory_from_path(recent_savedir, path, SC_MAX_PATH_LEN);
 
   outputfile = fopen(path, "wb");
-  if(path == NULL)
+  if(outputfile == NULL)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open outputfile for writing.");
     messagewindow.exec();

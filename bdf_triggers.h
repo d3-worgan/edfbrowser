@@ -56,11 +56,6 @@ public:
 
   int get_triggers(struct edfhdrblock *, struct annotationblock **);
 
-
-private:
-
-  struct edfhdrblock *edfhdr;
-
 };
 
 
