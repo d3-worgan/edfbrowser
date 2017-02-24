@@ -150,6 +150,10 @@ void UI_SaveMontagewindow::SaveButtonClicked()
       {
         fprintf(mtgfile, "    <spike_filter_cnt>%i</spike_filter_cnt>\n", 1);
       }
+      else
+      {
+        fprintf(mtgfile, "    <spike_filter_cnt>%i</spike_filter_cnt>\n", 0);
+      }
 
       fprintf(mtgfile, "    <filter_cnt>%i</filter_cnt>\n", mainwindow->signalcomp[i]->filter_cnt);
 
