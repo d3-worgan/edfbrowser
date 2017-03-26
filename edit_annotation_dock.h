@@ -79,6 +79,8 @@ public:
 
   void annotEditSetOnset(long long);
 
+  long long annotEditGetOnset(void);
+
   void annotEditSetDuration(long long);
 
   void set_selected_annotation(int, int);

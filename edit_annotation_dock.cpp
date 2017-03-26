@@ -139,11 +139,7 @@ void UI_AnnotationEditwindow::modifyButtonClicked()
 {
   annotation = edfplus_annotation_item(&mainwindow->annotationlist[file_num], annot_num);
 
-  annotation->onset =  onset_daySpinbox->value() * 86400 * TIME_DIMENSION;
-  annotation->onset += onset_timeEdit->time().hour() * 3600 * TIME_DIMENSION;
-  annotation->onset += onset_timeEdit->time().minute() * 60 * TIME_DIMENSION;
-  annotation->onset += onset_timeEdit->time().second() * TIME_DIMENSION;
-  annotation->onset += onset_timeEdit->time().msec() * (TIME_DIMENSION / 1000);
+  annotation->onset = annotEditGetOnset();
 
   if(posNegTimebox->currentIndex() == 1)
   {
@@ -210,11 +206,7 @@ void UI_AnnotationEditwindow::createButtonClicked()
 {
   annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
 
-  annotation->onset =  onset_daySpinbox->value() * 86400 * TIME_DIMENSION;
-  annotation->onset += onset_timeEdit->time().hour() * 3600 * TIME_DIMENSION;
-  annotation->onset += onset_timeEdit->time().minute() * 60 * TIME_DIMENSION;
-  annotation->onset += onset_timeEdit->time().second() * TIME_DIMENSION;
-  annotation->onset += onset_timeEdit->time().msec() * (TIME_DIMENSION / 1000);
+  annotation->onset = annotEditGetOnset();
 
   if(posNegTimebox->currentIndex() == 1)
   {
@@ -283,14 +275,30 @@ void UI_AnnotationEditwindow::annotEditSetOnset(long long onset)
 
 
 
+long long UI_AnnotationEditwindow::annotEditGetOnset(void)
+{
+  long long tmp;
+
+  tmp = onset_daySpinbox->value() * 86400;
+  tmp += onset_timeEdit->time().hour() * 3600;
+  tmp += onset_timeEdit->time().minute() * 60;
+  tmp += onset_timeEdit->time().second();
+  tmp *= TIME_DIMENSION;
+  tmp += (onset_timeEdit->time().msec() * (TIME_DIMENSION / 1000));
+
+  if(posNegTimebox->currentIndex() == 1)
+  {
+    tmp *= -1LL;
+  }
+
+  return tmp;
+}
+
+
+
 void UI_AnnotationEditwindow::annotEditSetDuration(long long duration)
 {
-  double tmp;
-
-  tmp = duration;
-  tmp /= TIME_DIMENSION;
-
-  duration_spinbox->setValue(tmp);
+  duration_spinbox->setValue(((double)duration) / TIME_DIMENSION);
 }
 
 
