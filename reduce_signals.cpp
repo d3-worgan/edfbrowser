@@ -71,7 +71,7 @@ UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
   label6->setText("Anti-aliasing filter order");
 
   radioButton1 = new QRadioButton("whole duration", myobjectDialog);
-  radioButton1->setGeometry(485, 299, 100, 25);
+  radioButton1->setGeometry(485, 299, 120, 25);
   radioButton1->setChecked(true);
   radioButton1->setEnabled(false);
 
