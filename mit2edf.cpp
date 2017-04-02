@@ -390,7 +390,9 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
     mit_hdr.format[j] = atoi(charpntr + p);
 
-    if((mit_hdr.format[j] != 212) && (mit_hdr.format[j] != 16))
+    if((mit_hdr.format[j] != 212) &&
+      (mit_hdr.format[j] != 16) &&
+      (mit_hdr.format[j] != 61))
     {
       snprintf(txt_string, 2048, "Error, unsupported format: %i  (error 16)\n", mit_hdr.format[j]);
       textEdit1->append(txt_string);
@@ -427,7 +429,10 @@ void UI_MIT2EDFwindow::SelectFileButton()
       continue;
     }
 
-    mit_hdr.adc_gain[j] = atoi(charpntr + p);
+    if(atoi(charpntr + p) != 0)
+    {
+      mit_hdr.adc_gain[j] = atoi(charpntr + p);
+    }
 
     p = ++i;
 
@@ -720,7 +725,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
 /////////////////// Start conversion //////////////////////////////////////////
 
-  int k, blocks, tmp1, tmp2;
+  int k, blocks, tmp1, tmp2, l_end=0;
 
   fseeko(data_inputfile, 0LL, SEEK_SET);
 
@@ -807,8 +812,10 @@ void UI_MIT2EDFwindow::SelectFileButton()
     }
   }
 
-  if(mit_hdr.format[0] == 16)
+  if((mit_hdr.format[0] == 16) || (mit_hdr.format[0] == 61))
   {
+    if(mit_hdr.format[0] == 16)  l_end = 1;
+
     blocks /= 2;
 
     progress.setMaximum(blocks);
@@ -842,14 +849,23 @@ void UI_MIT2EDFwindow::SelectFileButton()
             goto OUT;
           }
 
-          tmp1 += (fgetc(data_inputfile) << 8);
-
-          if(tmp1 & 0x8000)
+          if(l_end)
           {
-            tmp1 |= 0xffff0000;
+            tmp1 += (fgetc(data_inputfile) << 8);
+
+            if(tmp1 & 0x8000)
+            {
+              tmp1 |= 0xffff0000;
+            }
+          }
+          else
+          {
+            tmp1 <<= 8;
+
+            tmp1 += fgetc(data_inputfile);
           }
 
-         buf[j * mit_hdr.sf_block + i] = tmp1;
+          buf[j * mit_hdr.sf_block + i] = tmp1;
         }
       }
 
@@ -902,6 +918,35 @@ OUT:
 
     annot_inputfile = fopeno(annot_filename, "rb");
   }
+
+  if(annot_inputfile==NULL)
+  {
+    remove_extension_from_filename(annot_filename);
+
+    strcat(annot_filename, ".trigger");
+
+    annot_inputfile = fopeno(annot_filename, "rb");
+  }
+
+  if(annot_inputfile==NULL)
+  {
+    remove_extension_from_filename(annot_filename);
+
+    strcat(annot_filename, ".qrs");
+
+    annot_inputfile = fopeno(annot_filename, "rb");
+  }
+
+  if(annot_inputfile==NULL)
+  {
+    remove_extension_from_filename(annot_filename);
+
+    strcat(annot_filename, ".atr");
+
+    annot_inputfile = fopeno(annot_filename, "rb");
+  }
+
+  get_filename_from_path(filename_x, annot_filename, MAX_PATH_LENGTH);
 
   if(annot_inputfile==NULL)
   {
