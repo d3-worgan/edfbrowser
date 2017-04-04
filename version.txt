@@ -1,4 +1,16 @@
 
+ version 1.59      to be released
+ --------------
+
+ - Fixed a bug in the Timesync -> Jump to dialog.
+
+ - Bugfix in MIT (PhysioBank) converter: use default gain of 200 when adc gain is set to 0.
+
+ - Don't update the onset time in the annotation editor when changing file position.
+
+ - Solved a bug that that could cause the creation of an incompatible montage file.
+
+
 
  version 1.58      July 10, 2016
  --------------
