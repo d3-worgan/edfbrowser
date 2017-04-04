@@ -103,9 +103,6 @@ UI_JumpMenuDialog::UI_JumpMenuDialog(QWidget *w_parent)
 
     timeEdit2->setTime(time2);
 
-    recording_duration = mainwindow->edfheaderlist[0]->datarecords * mainwindow->edfheaderlist[0]->long_data_record_duration;
-    recording_duration /= (TIME_DIMENSION / 1000LL);
-
     jumpButton->setEnabled(true);
   }
 
@@ -144,6 +141,15 @@ void UI_JumpMenuDialog::offsetday_changed(int days)
 
   daybox2->setValue((int)(milliseconds / 86400000LL));
 
+  if(daybox2->value() < 1)
+  {
+    timeEdit2->setMinimumTime(QTime((int)((starttime / 3600000LL) % 24LL), (int)((starttime % 3600000LL) / 60000LL), (int)((starttime % 60000LL) / 1000LL), (int)(starttime % 1000LL)));
+  }
+  else
+  {
+    timeEdit2->setMinimumTime(QTime(0, 0, 0, 0));
+  }
+
   QObject::connect(daybox2,     SIGNAL(valueChanged(int)),          this,        SLOT(absoluteday_changed(int)));
   QObject::connect(timeEdit2,   SIGNAL(timeChanged(const QTime &)), this,        SLOT(absolutetime_changed(const QTime &)));
 }
@@ -157,6 +163,16 @@ void UI_JumpMenuDialog::absoluteday_changed(int days)
 
   QObject::disconnect(daybox1,     SIGNAL(valueChanged(int)),          this,        SLOT(offsetday_changed(int)));
   QObject::disconnect(timeEdit1,   SIGNAL(timeChanged(const QTime &)), this,        SLOT(offsettime_changed(const QTime &)));
+  QObject::disconnect(timeEdit2,   SIGNAL(timeChanged(const QTime &)), this,        SLOT(absolutetime_changed(const QTime &)));
+
+  if(days < 1)
+  {
+    timeEdit2->setMinimumTime(QTime((int)((starttime / 3600000LL) % 24LL), (int)((starttime % 3600000LL) / 60000LL), (int)((starttime % 60000LL) / 1000LL), (int)(starttime % 1000LL)));
+  }
+  else
+  {
+    timeEdit2->setMinimumTime(QTime(0, 0, 0, 0));
+  }
 
   milliseconds = (long long)(timeEdit2->time().hour()) * 3600000LL;
   milliseconds += (long long)(timeEdit2->time().minute()) * 60000LL;
@@ -177,6 +193,7 @@ void UI_JumpMenuDialog::absoluteday_changed(int days)
 
   QObject::connect(daybox1,     SIGNAL(valueChanged(int)),          this,        SLOT(offsetday_changed(int)));
   QObject::connect(timeEdit1,   SIGNAL(timeChanged(const QTime &)), this,        SLOT(offsettime_changed(const QTime &)));
+  QObject::connect(timeEdit2,   SIGNAL(timeChanged(const QTime &)), this,        SLOT(absolutetime_changed(const QTime &)));
 }
 
 
@@ -203,6 +220,15 @@ void UI_JumpMenuDialog::offsettime_changed(const QTime &time_1)
   timeEdit2->setTime(time2);
 
   daybox2->setValue((int)(milliseconds / 86400000LL));
+
+  if(daybox2->value() < 1)
+  {
+    timeEdit2->setMinimumTime(QTime((int)((starttime / 3600000LL) % 24LL), (int)((starttime % 3600000LL) / 60000LL), (int)((starttime % 60000LL) / 1000LL), (int)(starttime % 1000LL)));
+  }
+  else
+  {
+    timeEdit2->setMinimumTime(QTime(0, 0, 0, 0));
+  }
 
   QObject::connect(daybox2,     SIGNAL(valueChanged(int)),          this,        SLOT(absoluteday_changed(int)));
   QObject::connect(timeEdit2,   SIGNAL(timeChanged(const QTime &)), this,        SLOT(absolutetime_changed(const QTime &)));

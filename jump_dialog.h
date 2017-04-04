@@ -85,8 +85,7 @@ QTime        time1,
 QSpinBox     *daybox1,
              *daybox2;
 
-long long    recording_duration,
-             starttime;
+long long    starttime;
 
 
 private slots:
