@@ -3517,6 +3517,7 @@ void ViewCurve::ECGdetectButton()
   strcpy(newsignalcomp->physdimension_bu, newsignalcomp->physdimension);
   strcpy(newsignalcomp->physdimension, "bpm");
   newsignalcomp->alias[0] = 0;
+  newsignalcomp->polarity = 1;
 
   if(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue < 0.0)
   {
