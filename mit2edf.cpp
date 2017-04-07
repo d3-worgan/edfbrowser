@@ -79,26 +79,42 @@
 #define ACMAX 49  /* value of largest valid annot code (must be < 50) */
 
 
-char annotdescrlist[42][48]={"not-QRS","normal beat",
-                            "left bundle branch block beat", "right bundle branch block beat",
-                            "aberrated atrial premature beat", "premature ventricular contraction",
-                            "fusion of ventricular and normal beat", "nodal (junctional) premature beat",
-                            "atrial premature contraction", "premature or ectopic supraventricular beat",
-                            "ventricular escape beat", "nodal (junctional) escape beat",
-                            "paced beat", "unclassifiable beat",
-                            "signal quality change", "isolated QRS-like artifact",
-                            "ST change", "T-wave change",
-                            "systole", "diastole",
-                            "comment annotation", "measurement annotation",
-                            "P-wave peak", "left or right bundle branch block",
-                            "non-conducted pacer spike", "T-wave peak",
-                            "rhythm change", "U-wave peak",
-                            "learning", "ventricular flutter wave",
-                            "start of ventricular flutter/fibrillation", "end of ventricular flutter/fibrillation",
-                            "atrial escape beat", "supraventricular escape beat",
-                            "link to external data (aux contains URL)", "non-conducted P-wave (blocked APB)",
-                            "fusion of paced and normal beat", "waveform onset",
-                            "waveform end", "R-on-T premature ventricular contraction"};
+char annotdescrlist[42][48]=
+  {"not-QRS","normal beat",
+  "left bundle branch block beat", "right bundle branch block beat",
+  "aberrated atrial premature beat", "premature ventricular contraction",
+  "fusion of ventricular and normal beat", "nodal (junctional) premature beat",
+  "atrial premature contraction", "premature or ectopic supraventricular beat",
+  "ventricular escape beat", "nodal (junctional) escape beat",
+  "paced beat", "unclassifiable beat",
+  "signal quality change", "isolated QRS-like artifact",
+  "ST change", "T-wave change",
+  "systole", "diastole",
+  "comment annotation", "measurement annotation",
+  "P-wave peak", "left or right bundle branch block",
+  "non-conducted pacer spike", "T-wave peak",
+  "rhythm change", "U-wave peak",
+  "learning", "ventricular flutter wave",
+  "start of ventricular flutter/fibrillation", "end of ventricular flutter/fibrillation",
+  "atrial escape beat", "supraventricular escape beat",
+  "link to external data (aux contains URL)", "non-conducted P-wave (blocked APB)",
+  "fusion of paced and normal beat", "waveform onset",
+  "waveform end", "R-on-T premature ventricular contraction"};
+
+
+#define ANNOT_EXT_CNT   7
+
+
+char annotextlist[ANNOT_EXT_CNT][16]=
+  {
+    ".ari",
+    ".ecg",
+    ".trigger",
+    ".qrs",
+    ".atr",
+    ".apn",
+    ".st"
+  };
 
 
 UI_MIT2EDFwindow::UI_MIT2EDFwindow(char *recent_dir, char *save_dir)
@@ -576,6 +592,13 @@ void UI_MIT2EDFwindow::SelectFileButton()
     return;
   }
 
+  get_filename_from_path(filename_x, data_filename, MAX_PATH_LENGTH);
+
+  snprintf(txt_string, 2048, "Read file: %s (format: %i)", filename_x, mit_hdr.format[0]);
+  textEdit1->append(QString::fromLocal8Bit(txt_string));
+
+  remove_extension_from_filename(filename_x);
+
   fseeko(data_inputfile, 0LL, SEEK_END);
   filesize = ftello(data_inputfile);
   if(filesize < (mit_hdr.chns * mit_hdr.sf * 45 / 10))
@@ -586,34 +609,14 @@ void UI_MIT2EDFwindow::SelectFileButton()
     return;
   }
 
-  mit_hdr.sf_div = 1;
-
-  mit_hdr.sf_block = mit_hdr.sf;
-
-  if(!(mit_hdr.sf % 10))
+  for(mit_hdr.sf_div=12; mit_hdr.sf_div>0; mit_hdr.sf_div--)
   {
-    mit_hdr.sf_div = 10;
-
-    mit_hdr.sf_block /= mit_hdr.sf_div;
+    if(!(mit_hdr.sf % mit_hdr.sf_div))  break;
   }
-  else if(!(mit_hdr.sf % 8))
-    {
-      mit_hdr.sf_div = 8;
 
-      mit_hdr.sf_block /= mit_hdr.sf_div;
-    }
-    else if(!(mit_hdr.sf % 4))
-      {
-        mit_hdr.sf_div = 4;
+  if(mit_hdr.sf_div < 1)  mit_hdr.sf_div = 1;
 
-        mit_hdr.sf_block /= mit_hdr.sf_div;
-      }
-      else if(!(mit_hdr.sf % 2))
-        {
-          mit_hdr.sf_div = 2;
-
-          mit_hdr.sf_block /= mit_hdr.sf_div;
-        }
+  mit_hdr.sf_block = mit_hdr.sf / mit_hdr.sf_div;
 
   hdl = edfopen_file_writeonly(edf_filename, EDFLIB_FILETYPE_EDFPLUS, mit_hdr.chns);
 
@@ -894,157 +897,134 @@ OUT:
 
   free(buf);
 
-  int annot_code, tc=0, skip;
+  int annot_code, tc, skip, total_annots=0;
 
   long long bytes_read;
 
   get_filename_from_path(filename_x, annot_filename, MAX_PATH_LENGTH);
 
-  annot_inputfile = fopeno(annot_filename, "rb");
-  if(annot_inputfile==NULL)
+  for(k=0; k<ANNOT_EXT_CNT; k++)
   {
+    tc = 0;
+
     remove_extension_from_filename(annot_filename);
 
-    strcat(annot_filename, ".ari");
+    strcat(annot_filename, annotextlist[k]);
 
     annot_inputfile = fopeno(annot_filename, "rb");
-  }
-
-  if(annot_inputfile==NULL)
-  {
-    remove_extension_from_filename(annot_filename);
-
-    strcat(annot_filename, ".ecg");
-
-    annot_inputfile = fopeno(annot_filename, "rb");
-  }
-
-  if(annot_inputfile==NULL)
-  {
-    remove_extension_from_filename(annot_filename);
-
-    strcat(annot_filename, ".trigger");
-
-    annot_inputfile = fopeno(annot_filename, "rb");
-  }
-
-  if(annot_inputfile==NULL)
-  {
-    remove_extension_from_filename(annot_filename);
-
-    strcat(annot_filename, ".qrs");
-
-    annot_inputfile = fopeno(annot_filename, "rb");
-  }
-
-  if(annot_inputfile==NULL)
-  {
-    remove_extension_from_filename(annot_filename);
-
-    strcat(annot_filename, ".atr");
-
-    annot_inputfile = fopeno(annot_filename, "rb");
-  }
-
-  get_filename_from_path(filename_x, annot_filename, MAX_PATH_LENGTH);
-
-  if(annot_inputfile==NULL)
-  {
-    snprintf(txt_string, 2048, "Can not open file %s for reading.\n"
-                               "Annotations can not be included.", filename_x);
-    textEdit1->append(QString::fromLocal8Bit(txt_string));
-  }
-  else
-  {
-    snprintf(txt_string, 2048, "Read file: %s", filename_x);
-    textEdit1->append(QString::fromLocal8Bit(txt_string));
-
-    fseeko(annot_inputfile, 0LL, SEEK_END);
-    filesize = ftello(annot_inputfile);
-
-    progress.setLabelText("Converting annotations ...");
-    progress.setMinimum(0);
-    progress.setMaximum(filesize);
-
-    fseeko(annot_inputfile, 0LL, SEEK_SET);
-
-    for(bytes_read=0LL; bytes_read < filesize; bytes_read += 2LL)
+    if(annot_inputfile==NULL)
     {
-      if(!(bytes_read % 100))
-      {
-        progress.setValue(bytes_read);
-
-        qApp->processEvents();
-
-        if(progress.wasCanceled() == true)
-        {
-          textEdit1->append("Conversion aborted by user.\n");
-
-          break;
-        }
-      }
-
-      skip = 0;
-
-      if(fread(a_buf, 2, 1, annot_inputfile) != 1)
-      {
-        break;
-      }
-
-#pragma GCC diagnostic ignored "-Wstrict-aliasing"
-
-      if(*((unsigned short *)a_buf) == 0)  // end of file
-      {
-        break;
-      }
-
-      annot_code = a_buf[1] >> 2;
-
-      if(annot_code == 59)
-      {
-        if(fread(a_buf, 4, 1, annot_inputfile) != 1)
-        {
-          break;
-        }
-
-        tc += (*((unsigned short *)a_buf) << 16);
-
-        tc += *((unsigned short *)(a_buf + 2));
-      }
-      else if(annot_code == 63)
-        {
-          skip = *((unsigned short *)a_buf) & 0x3ff;
-
-          if(skip % 2) skip++;
-        }
-        else if((annot_code >= 0) && (annot_code <= ACMAX))
-          {
-            tc += *((unsigned short *)a_buf) & 0x3ff;
-
-#pragma GCC diagnostic warning "-Wstrict-aliasing"
-
-            if(annot_code < 42)
-            {
-              edfwrite_annotation_latin1(hdl, ((long long)tc * mit_hdr.smp_period) / 100000LL, -1, annotdescrlist[annot_code]);
-            }
-            else
-            {
-              edfwrite_annotation_latin1(hdl, ((long long)tc * mit_hdr.smp_period) / 100000LL, -1, "user-defined");
-            }
-          }
-
-      if(skip)
-      {
-        if(fseek(annot_inputfile, skip, SEEK_CUR) < 0)
-        {
-          break;
-        }
-
-        bytes_read += skip;
-      }
+      continue;
     }
 
-    fclose(annot_inputfile);
+    get_filename_from_path(filename_x, annot_filename, MAX_PATH_LENGTH);
+
+    if(annot_inputfile==NULL)
+    {
+      snprintf(txt_string, 2048, "Can not open file %s for reading.\n"
+                                 "Annotations can not be included.", filename_x);
+      textEdit1->append(QString::fromLocal8Bit(txt_string));
+    }
+    else
+    {
+      snprintf(txt_string, 2048, "Read file: %s", filename_x);
+      textEdit1->append(QString::fromLocal8Bit(txt_string));
+
+      fseeko(annot_inputfile, 0LL, SEEK_END);
+      filesize = ftello(annot_inputfile);
+
+      progress.setLabelText("Converting annotations ...");
+      progress.setMinimum(0);
+      progress.setMaximum(filesize);
+
+      fseeko(annot_inputfile, 0LL, SEEK_SET);
+
+      for(bytes_read=0LL; bytes_read < filesize; bytes_read += 2LL)
+      {
+        if(!(bytes_read % 100))
+        {
+          progress.setValue(bytes_read);
+
+          qApp->processEvents();
+
+          if(progress.wasCanceled() == true)
+          {
+            textEdit1->append("Conversion aborted by user.\n");
+
+            break;
+          }
+        }
+
+        skip = 0;
+
+        if(fread(a_buf, 2, 1, annot_inputfile) != 1)
+        {
+          break;
+        }
+
+  #pragma GCC diagnostic ignored "-Wstrict-aliasing"
+
+        if(*((unsigned short *)a_buf) == 0)  // end of file
+        {
+          break;
+        }
+
+        annot_code = a_buf[1] >> 2;
+
+        if(annot_code == 59)
+        {
+          if(fread(a_buf, 4, 1, annot_inputfile) != 1)
+          {
+            break;
+          }
+
+          tc += (*((unsigned short *)a_buf) << 16);
+
+          tc += *((unsigned short *)(a_buf + 2));
+        }
+        else if(annot_code == 63)
+          {
+            skip = *((unsigned short *)a_buf) & 0x3ff;
+
+            if(skip % 2) skip++;
+          }
+          else if((annot_code >= 0) && (annot_code <= ACMAX))
+            {
+              tc += *((unsigned short *)a_buf) & 0x3ff;
+
+  #pragma GCC diagnostic warning "-Wstrict-aliasing"
+
+              if(annot_code < 42)
+              {
+                edfwrite_annotation_latin1(hdl, ((long long)tc * mit_hdr.smp_period) / 100000LL, -1, annotdescrlist[annot_code]);
+              }
+              else
+              {
+                edfwrite_annotation_latin1(hdl, ((long long)tc * mit_hdr.smp_period) / 100000LL, -1, "user-defined");
+              }
+
+              total_annots++;
+            }
+
+        if(skip)
+        {
+          if(fseek(annot_inputfile, skip, SEEK_CUR) < 0)
+          {
+            break;
+          }
+
+          bytes_read += skip;
+        }
+      }
+
+      fclose(annot_inputfile);
+    }
+  }
+
+  if(total_annots)
+  {
+    snprintf(txt_string, 2048, "Read %i annotations.", total_annots);
+    textEdit1->append(txt_string);
   }
 
   progress.reset();
