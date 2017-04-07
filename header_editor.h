@@ -145,8 +145,9 @@ void open_file();
 void save_hdr();
 void read_header();
 void closeEvent(QCloseEvent *);
-void calculate_chars_left_name(const QString &);
-void calculate_chars_left_recording(const QString &);
+void calculate_chars_left_name(int);
+int calculate_chars_left_name(const QString &);
+int calculate_chars_left_recording(const QString &);
 void helpbuttonpressed();
 
 };

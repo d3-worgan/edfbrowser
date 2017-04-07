@@ -12,6 +12,8 @@
 
  - Don't invert the heartrate trace when the parent trace is inverted.
 
+ - Fixed a bug in the EDF header editor.
+
 
 
  version 1.58      July 10, 2016

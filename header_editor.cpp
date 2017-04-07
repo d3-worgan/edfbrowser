@@ -45,11 +45,11 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
 
   file = NULL;
 
-  setMinimumSize(690, 525);
-  setMaximumSize(690, 525);
+  setMinimumSize(690, 560);
+  setMaximumSize(690, 560);
 
   tabholder = new QTabWidget(this);
-  tabholder->setGeometry(0, 0, 690, 455);
+  tabholder->setGeometry(0, 0, 690, 490);
 
   tab1 = new QWidget;
   tab2 = new QWidget;
@@ -152,51 +152,51 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
   lineEdit5->setVisible(false);
 
   label6 = new QLabel(tab1);
-  label6->setGeometry(10, 255, 80, 25);
+  label6->setGeometry(10, 290, 80, 25);
   label6->setText("Admin. code");
   label6->setVisible(false);
 
   lineEdit6 = new QLineEdit(tab1);
-  lineEdit6->setGeometry(100, 255, 580, 25);
+  lineEdit6->setGeometry(100, 290, 580, 25);
   lineEdit6->setMaxLength(80);
   lineEdit6->setVisible(false);
 
   label7 = new QLabel(tab1);
-  label7->setGeometry(10, 290, 80, 25);
+  label7->setGeometry(10, 325, 80, 25);
   label7->setText("Technician");
   label7->setVisible(false);
 
   lineEdit7 = new QLineEdit(tab1);
-  lineEdit7->setGeometry(100, 290, 580, 25);
+  lineEdit7->setGeometry(100, 325, 580, 25);
   lineEdit7->setMaxLength(80);
   lineEdit7->setVisible(false);
 
   label8 = new QLabel(tab1);
-  label8->setGeometry(10, 325, 80, 25);
+  label8->setGeometry(10, 360, 80, 25);
   label8->setText("Device");
   label8->setVisible(false);
 
   lineEdit8 = new QLineEdit(tab1);
-  lineEdit8->setGeometry(100, 325, 580, 25);
+  lineEdit8->setGeometry(100, 360, 580, 25);
   lineEdit8->setMaxLength(80);
   lineEdit8->setVisible(false);
 
   label9 = new QLabel(tab1);
-  label9->setGeometry(10, 360, 80, 25);
+  label9->setGeometry(10, 395, 80, 25);
   label9->setText("Additional info");
   label9->setVisible(false);
 
   lineEdit9 = new QLineEdit(tab1);
-  lineEdit9->setGeometry(100, 360, 580, 25);
+  lineEdit9->setGeometry(100, 395, 580, 25);
   lineEdit9->setMaxLength(80);
   lineEdit9->setVisible(false);
 
   charsleft2Label = new QLabel(tab1);
-  charsleft2Label->setGeometry(500, 395, 120, 25);
+  charsleft2Label->setGeometry(500, 430, 120, 25);
   charsleft2Label->setVisible(false);
 
   signallist = new QTableWidget(tab2);
-  signallist->setGeometry(10, 10, 670, 375);
+  signallist->setGeometry(10, 10, 670, 430);
   signallist->setSelectionMode(QAbstractItemView::NoSelection);
   signallist->setEditTriggers(QAbstractItemView::NoEditTriggers);
   signallist->setColumnCount(4);
@@ -213,19 +213,19 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
   signallist->setHorizontalHeaderLabels(horizontallabels);
 
   pushButton1 = new QPushButton(this);
-  pushButton1->setGeometry(580, 475, 100, 25);
+  pushButton1->setGeometry(580, 510, 100, 25);
   pushButton1->setText("Close");
 
   pushButton2 = new QPushButton(this);
-  pushButton2->setGeometry(200, 475, 100, 25);
+  pushButton2->setGeometry(200, 510, 100, 25);
   pushButton2->setText("Save");
 
   pushButton3 = new QPushButton(this);
-  pushButton3->setGeometry(10, 475, 100, 25);
+  pushButton3->setGeometry(10, 510, 100, 25);
   pushButton3->setText("Select file");
 
   helpButton = new QPushButton(this);
-  helpButton->setGeometry(380, 475, 100, 25);
+  helpButton->setGeometry(380, 510, 100, 25);
   helpButton->setText("Help");
 
   connect(pushButton1, SIGNAL(clicked()), this, SLOT(close()));
@@ -281,6 +281,7 @@ void UI_headerEditorWindow::open_file()
   disconnect(lineEdit3,   SIGNAL(textEdited(const QString &)), this, SLOT(calculate_chars_left_name(const QString &)));
   disconnect(lineEdit4,   SIGNAL(textEdited(const QString &)), this, SLOT(calculate_chars_left_name(const QString &)));
   disconnect(lineEdit5,   SIGNAL(textEdited(const QString &)), this, SLOT(calculate_chars_left_name(const QString &)));
+  disconnect(checkBox1,   SIGNAL(stateChanged(int)),           this, SLOT(calculate_chars_left_name(int)));
   disconnect(lineEdit6,   SIGNAL(textEdited(const QString &)), this, SLOT(calculate_chars_left_recording(const QString &)));
   disconnect(lineEdit7,   SIGNAL(textEdited(const QString &)), this, SLOT(calculate_chars_left_recording(const QString &)));
   disconnect(lineEdit8,   SIGNAL(textEdited(const QString &)), this, SLOT(calculate_chars_left_recording(const QString &)));
@@ -750,6 +751,7 @@ void UI_headerEditorWindow::read_header()
     connect(lineEdit3,   SIGNAL(textEdited(const QString &)), this, SLOT(calculate_chars_left_name(const QString &)));
     connect(lineEdit4,   SIGNAL(textEdited(const QString &)), this, SLOT(calculate_chars_left_name(const QString &)));
     connect(lineEdit5,   SIGNAL(textEdited(const QString &)), this, SLOT(calculate_chars_left_name(const QString &)));
+    connect(checkBox1,   SIGNAL(stateChanged(int)),           this, SLOT(calculate_chars_left_name(int)));
     connect(lineEdit6,   SIGNAL(textEdited(const QString &)), this, SLOT(calculate_chars_left_recording(const QString &)));
     connect(lineEdit7,   SIGNAL(textEdited(const QString &)), this, SLOT(calculate_chars_left_recording(const QString &)));
     connect(lineEdit8,   SIGNAL(textEdited(const QString &)), this, SLOT(calculate_chars_left_recording(const QString &)));
@@ -922,6 +924,13 @@ void UI_headerEditorWindow::save_hdr()
 
   if(edfplus || bdfplus)
   {
+    if((calculate_chars_left_name("") < 0) || (calculate_chars_left_recording("") < 0))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Too many characters.");
+      messagewindow.exec();
+      return;
+    }
+
     str[0] = 0;
 
     len = strlen(lineEdit3->text().toLatin1().data());  // patient code
@@ -1449,7 +1458,13 @@ void UI_headerEditorWindow::save_hdr()
 }
 
 
-void UI_headerEditorWindow::calculate_chars_left_name(const QString &)
+void UI_headerEditorWindow::calculate_chars_left_name(int)
+{
+  calculate_chars_left_name("");
+}
+
+
+int UI_headerEditorWindow::calculate_chars_left_name(const QString &)
 {
   int n = 61;
 
@@ -1459,6 +1474,10 @@ void UI_headerEditorWindow::calculate_chars_left_name(const QString &)
 
   char str[128];
 
+  if(checkBox1->checkState() == Qt::Checked)  // birthdate
+  {
+    n += 10;
+  }
 
   cursorposition[0] = lineEdit3->cursorPosition();
   cursorposition[1] = lineEdit4->cursorPosition();
@@ -1502,12 +1521,14 @@ void UI_headerEditorWindow::calculate_chars_left_name(const QString &)
   sprintf(str, "Characters left:  %i", n);
 
   charsleft1Label->setText(str);
+
+  return n;
 }
 
 
-void UI_headerEditorWindow::calculate_chars_left_recording(const QString &)
+int UI_headerEditorWindow::calculate_chars_left_recording(const QString &)
 {
-  int n = 42;
+  int n = 52;
 
   int len;
 
@@ -1540,9 +1561,9 @@ void UI_headerEditorWindow::calculate_chars_left_recording(const QString &)
   }
 
   len = strlen(lineEdit9->text().toLatin1().data());
-  if(len>1)
+  if(len>0)
   {
-    n -= (len - 1);
+    n -= len;
   }
 
   if(n<1)
@@ -1568,6 +1589,8 @@ void UI_headerEditorWindow::calculate_chars_left_recording(const QString &)
   sprintf(str, "Characters left:  %i", n);
 
   charsleft2Label->setText(str);
+
+  return n;
 }
 
 
