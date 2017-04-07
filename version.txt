@@ -10,6 +10,8 @@
 
  - Solved a bug that that could cause the creation of an incompatible montage file.
 
+ - Don't invert the heartrate trace when the parent trace is inverted.
+
 
 
  version 1.58      July 10, 2016
