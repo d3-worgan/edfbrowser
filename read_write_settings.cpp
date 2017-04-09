@@ -1789,30 +1789,32 @@ void UI_Mainwindow::write_settings()
     fprintf(cfgfile, "      <show_baselines>%i</show_baselines>\n",
                     show_baselines);
 
-    fprintf(cfgfile, "      <clip_to_pane>%i</clip_to_pane>\n",
+    fprintf(cfgfile, "    </colors>\n");
+
+    fprintf(cfgfile, "    <clip_to_pane>%i</clip_to_pane>\n",
                     clip_to_pane);
 
-    fprintf(cfgfile, "      <auto_reload_mtg>%i</auto_reload_mtg>\n",
+    fprintf(cfgfile, "    <auto_reload_mtg>%i</auto_reload_mtg>\n",
                     auto_reload_mtg);
 
-    fprintf(cfgfile, "      <read_biosemi_status_signal>%i</read_biosemi_status_signal>\n",
+    fprintf(cfgfile, "    <read_biosemi_status_signal>%i</read_biosemi_status_signal>\n",
                     read_biosemi_status_signal);
 
-    fprintf(cfgfile, "      <read_nk_trigger_signal>%i</read_nk_trigger_signal>\n",
+    fprintf(cfgfile, "    <read_nk_trigger_signal>%i</read_nk_trigger_signal>\n",
                     read_nk_trigger_signal);
 
-    fprintf(cfgfile, "      <use_threads>%i</use_threads>\n",
+    fprintf(cfgfile, "    <use_threads>%i</use_threads>\n",
                     use_threads);
 
 #ifdef Q_OS_WIN32
-    __mingw_fprintf(cfgfile, "      <maxfilesize_to_readin_annotations>%lli</maxfilesize_to_readin_annotations>\n",
+    __mingw_fprintf(cfgfile, "    <maxfilesize_to_readin_annotations>%lli</maxfilesize_to_readin_annotations>\n",
                     maxfilesize_to_readin_annotations);
 #else
-    fprintf(cfgfile, "      <maxfilesize_to_readin_annotations>%lli</maxfilesize_to_readin_annotations>\n",
+    fprintf(cfgfile, "    <maxfilesize_to_readin_annotations>%lli</maxfilesize_to_readin_annotations>\n",
                     maxfilesize_to_readin_annotations);
 #endif
 
-    fprintf(cfgfile, "    </colors>\n    <pixelsizefactor>%.10f</pixelsizefactor>\n    <auto_dpi>%i</auto_dpi>\n    <x_pixelsizefactor>%.10f</x_pixelsizefactor>\n    <recent_dir>",
+    fprintf(cfgfile, "    <pixelsizefactor>%.10f</pixelsizefactor>\n    <auto_dpi>%i</auto_dpi>\n    <x_pixelsizefactor>%.10f</x_pixelsizefactor>\n    <recent_dir>",
                      pixelsizefactor, auto_dpi, x_pixelsizefactor);
 
     xml_fwrite_encode_entity(cfgfile, recent_opendir);
