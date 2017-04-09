@@ -689,7 +689,7 @@ void UI_Annotationswindow::updateList(void)
 
   int i,
       len,
-      sequence_nr=0,
+      sequence_nr,
       jump=0,
       modified=0;
 
@@ -716,13 +716,11 @@ void UI_Annotationswindow::updateList(void)
 
   annotation = mainwindow->edfheaderlist[file_num]->annotationlist;
 
-  while(annotation != NULL)
+  for(sequence_nr=0; annotation != NULL; sequence_nr++)
   {
     if(annotation->hided_in_list)
     {
       annotation = annotation->next_annotation;
-
-      sequence_nr++;
 
       continue;
     }
@@ -843,8 +841,6 @@ void UI_Annotationswindow::updateList(void)
     }
 
     annotation = annotation->next_annotation;
-
-    sequence_nr++;
   }
 
   if(mainwindow->annot_editor_active)
