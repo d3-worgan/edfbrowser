@@ -84,6 +84,7 @@
 #include "spike_filter.h"
 #include "ecg_filter.h"
 #include "z_ratio_filter.h"
+#include "edf_annot_list_ii.h"
 
 
 
@@ -163,6 +164,7 @@ struct edfhdrblock{
         int       recording_len_sec;
         struct edfparamblock *edfparam;
         struct annotationblock *annotationlist;
+        struct annotation_list_ii annot_list;
       };
 
 struct signalcompblock{

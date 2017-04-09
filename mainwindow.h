@@ -134,6 +134,7 @@
 #include "spectrum_dock.h"
 #include "signalcurve.h"
 #include "edf_annot_list.h"
+#include "edf_annot_list_ii.h"
 #include "reduce_signals.h"
 #include "header_editor.h"
 #include "biosemi2bdfplus.h"

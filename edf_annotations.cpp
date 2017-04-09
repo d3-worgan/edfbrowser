@@ -28,6 +28,7 @@
 
 
 #include "edf_annotations.h"
+#include "edf_annot_list_ii.h"
 
 
 
@@ -80,7 +81,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
   struct annotationblock *new_annotation=NULL,
                          *temp_annotation;
 
-
+  struct annotationblock_ii annotblock_ii;
 
   inputfile = edf_hdr->file_hdl;
   edfsignals = edf_hdr->edfsignals;
@@ -467,6 +468,21 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
                   new_annotation->former_annotation = NULL;
                   edf_hdr->annotationlist = new_annotation;
                 }
+
+//                 memset(&annotblock_ii, 0, sizeof(annotationblock_ii));
+//                 annotblock_ii.file_num = edf_hdr->file_num;
+//                 annotblock_ii.onset = get_long_time(time_in_txt);
+//                 for(j=0; j<n; j++)
+//                 {
+//                   if(j==MAX_ANNOTATION_LEN)  break;
+//                   annotblock_ii.annotation[j] = scratchpad[j];
+//                 }
+//                 annotblock_ii.annotation[j] = 0;
+//
+//                 if(edfplus_annotation_ii_add_item(&edf_hdr->annot_list, annotblock_ii))
+//                 {
+//                   printf("error: edfplus_annotation_ii_add_item()\n");
+//                 }
               }
             }
 
