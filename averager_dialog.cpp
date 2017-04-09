@@ -139,7 +139,7 @@ UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, int annot_nr)
 
   list->setCurrentRow(0, QItemSelectionModel::Select);
 
-  annot = mainwindow->annotationlist[0];
+  annot = mainwindow->edfheaderlist[0]->annotationlist;
 
   n = annot_nr;
 
@@ -246,13 +246,13 @@ void UI_AveragerWindow::startButtonClicked()
 
   mainwindow->signal_averaging_active = 1;
 
-  n = edfplus_annotation_count(&mainwindow->annotationlist[0]);
+  n = edfplus_annotation_count(&mainwindow->edfheaderlist[0]->annotationlist);
 
   avg_cnt = 0;
 
   for(i=0; i<n; i++)
   {
-    annot = edfplus_annotation_item(&mainwindow->annotationlist[0], i);
+    annot = edfplus_annotation_item(&mainwindow->edfheaderlist[0]->annotationlist, i);
 
     if(((annot->onset - mainwindow->edfheaderlist[0]->starttime_offset) >= l_time1)
       && ((annot->onset - mainwindow->edfheaderlist[0]->starttime_offset) <= l_time2))
@@ -335,13 +335,13 @@ void UI_AveragerWindow::startButtonClicked()
       return;
     }
 
-    n = edfplus_annotation_count(&mainwindow->annotationlist[0]);
+    n = edfplus_annotation_count(&mainwindow->edfheaderlist[0]->annotationlist);
 
     avg_cnt = 0;
 
     for(i=0; i<n; i++)
     {
-      annot = edfplus_annotation_item(&mainwindow->annotationlist[0], i);
+      annot = edfplus_annotation_item(&mainwindow->edfheaderlist[0]->annotationlist, i);
 
       if(((annot->onset - mainwindow->edfheaderlist[0]->starttime_offset) >= l_time1)
         && ((annot->onset - mainwindow->edfheaderlist[0]->starttime_offset) <= l_time2))

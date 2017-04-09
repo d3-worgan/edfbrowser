@@ -1391,7 +1391,7 @@ void UI_OptionsDialog::TxtColorButtonClicked(SpecialButton *)
 
     for(i=0; i<mainwindow->files_open; i++)
     {
-      if(mainwindow->annotationlist[i])
+      if(mainwindow->edfheaderlist[i]->annotationlist)
       {
         mainwindow->annotations_dock[i]->list->setPalette(palette);
       }

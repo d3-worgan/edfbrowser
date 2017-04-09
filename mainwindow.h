@@ -258,8 +258,6 @@ public:
 
   struct zoomhistoryblock *zoomhistory;
 
-  struct annotationblock *annotationlist[MAXFILES];
-
   struct annotationblock *annotationlist_backup;
 
   struct spectrum_markersblock *spectrum_colorbar;

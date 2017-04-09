@@ -856,7 +856,6 @@ UI_Mainwindow::UI_Mainwindow()
 
   for(i=0; i<MAXFILES; i++)
   {
-    annotationlist[i] = NULL;
     annotations_dock[i] = NULL;
   }
 
@@ -913,7 +912,7 @@ UI_Mainwindow::UI_Mainwindow()
     }
   }
 
-  annotationEditDock = new UI_AnnotationEditwindow(files_open, this);
+  annotationEditDock = new UI_AnnotationEditwindow(this);
 
   addDockWidget(Qt::BottomDockWidgetArea, annotationEditDock->dockedit, Qt::Horizontal);
 

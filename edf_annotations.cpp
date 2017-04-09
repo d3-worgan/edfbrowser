@@ -31,7 +31,7 @@
 
 
 
-int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, struct annotationblock **annotslist, int read_nk_trigger_signal)
+int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_trigger_signal)
 {
   int i, j, k, p, r=0, n,
       edfsignals,
@@ -436,7 +436,7 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
                 }
 
                 new_annotation->next_annotation = NULL;
-                new_annotation->file_num = file_num;
+                new_annotation->file_num = edf_hdr->file_num;
 
                 new_annotation->annotation[0] = 0;
 
@@ -454,9 +454,9 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
 
                 new_annotation->onset = get_long_time(time_in_txt);
 
-                if(*annotslist!=NULL)
+                if(edf_hdr->annotationlist!=NULL)
                 {
-                  temp_annotation = *annotslist;
+                  temp_annotation = edf_hdr->annotationlist;
                   while(temp_annotation->next_annotation)  temp_annotation = temp_annotation->next_annotation;
 
                   new_annotation->former_annotation = temp_annotation;
@@ -465,7 +465,7 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
                 else
                 {
                   new_annotation->former_annotation = NULL;
-                  *annotslist = new_annotation;
+                  edf_hdr->annotationlist = new_annotation;
                 }
               }
             }
@@ -573,7 +573,6 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
 
               new_annotation->file_num = edf_hdr->file_num;
               new_annotation->next_annotation = NULL;
-              new_annotation->file_num = file_num;
               strcpy(new_annotation->annotation, nk_triggerlabel[j]);
 
               new_annotation->onset = ((long long)i * data_record_duration) + ((long long)k * nk_trigger_sample_duration);
@@ -582,9 +581,9 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
 
               new_annotation->ident = (1 << ANNOT_ID_NK_TRIGGER);
 
-              if(*annotslist!=NULL)
+              if(edf_hdr->annotationlist!=NULL)
               {
-                temp_annotation = *annotslist;
+                temp_annotation = edf_hdr->annotationlist;
                 while(temp_annotation->next_annotation)  temp_annotation = temp_annotation->next_annotation;
 
                 new_annotation->former_annotation = temp_annotation;
@@ -593,7 +592,7 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
               else
               {
                 new_annotation->former_annotation = NULL;
-                *annotslist = new_annotation;
+                edf_hdr->annotationlist = new_annotation;
               }
             }
           }
@@ -606,7 +605,7 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
     }
   }
 
-  edfplus_annotation_sort(&annotslist[file_num]);
+  edfplus_annotation_sort(&edf_hdr->annotationlist);
 
   progress.reset();
 

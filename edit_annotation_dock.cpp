@@ -31,13 +31,13 @@
 
 
 
-UI_AnnotationEditwindow::UI_AnnotationEditwindow(int file_number, QWidget *w_parent)
+UI_AnnotationEditwindow::UI_AnnotationEditwindow(QWidget *w_parent)
 {
   mainwindow = (UI_Mainwindow *)w_parent;
 
-  file_num = file_number;
+  file_num = 0;
 
-  annotation = mainwindow->annotationlist[file_num];
+  annotation = NULL;
 
   dockedit = new QDockWidget("Annotation editor", w_parent);
   dockedit->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
@@ -114,13 +114,15 @@ void UI_AnnotationEditwindow::open_close_dock(bool visible)
 {
   if(visible==true)
   {
+    annotation = mainwindow->edfheaderlist[file_num]->annotationlist;
+
     mainwindow->annot_editor_active = 1;
 
     mainwindow->show_annot_markers = 1;
 
     if(mainwindow->annotationlist_backup==NULL)
     {
-      mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->annotationlist[0]);
+      mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->edfheaderlist[0]->annotationlist);
     }
   }
   else
@@ -137,7 +139,7 @@ void UI_AnnotationEditwindow::open_close_dock(bool visible)
 
 void UI_AnnotationEditwindow::modifyButtonClicked()
 {
-  annotation = edfplus_annotation_item(&mainwindow->annotationlist[file_num], annot_num);
+  annotation = edfplus_annotation_item(&mainwindow->edfheaderlist[file_num]->annotationlist, annot_num);
 
   annotation->onset = annotEditGetOnset();
 
@@ -176,9 +178,9 @@ void UI_AnnotationEditwindow::modifyButtonClicked()
 
 void UI_AnnotationEditwindow::deleteButtonClicked()
 {
-  edfplus_annotation_delete(&mainwindow->annotationlist[file_num], annot_num);
+  edfplus_annotation_delete(&mainwindow->edfheaderlist[file_num]->annotationlist, annot_num);
 
-  annotation = edfplus_annotation_item(&mainwindow->annotationlist[file_num], annot_num);
+  annotation = edfplus_annotation_item(&mainwindow->edfheaderlist[file_num]->annotationlist, annot_num);
 
   if(annotation!=NULL)
   {
@@ -232,7 +234,7 @@ void UI_AnnotationEditwindow::createButtonClicked()
 
   annotation->modified = 1;
 
-  edfplus_annotation_add_item(&mainwindow->annotationlist[file_num], annotation);
+  edfplus_annotation_add_item(&mainwindow->edfheaderlist[file_num]->annotationlist, annotation);
 
   mainwindow->annotations_edited = 1;
 
@@ -314,7 +316,7 @@ void UI_AnnotationEditwindow::set_selected_annotation(int file_nr, int annot_nr)
 
   annot_num = annot_nr;
 
-  annotation = edfplus_annotation_item(&mainwindow->annotationlist[file_num], annot_num);
+  annotation = edfplus_annotation_item(&mainwindow->edfheaderlist[file_num]->annotationlist, annot_num);
 
   annot_descript_lineEdit->setText(QString::fromUtf8(annotation->annotation));
 

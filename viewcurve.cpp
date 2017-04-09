@@ -1881,7 +1881,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     for(i=0; i<mainwindow->files_open; i++)
     {
-      annot = mainwindow->annotationlist[i];
+      annot = mainwindow->edfheaderlist[i]->annotationlist;
 
       j = 0;
 

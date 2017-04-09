@@ -277,7 +277,7 @@ void UI_ECGExport::Export_RR_intervals()
       annotation->onset = l_time;
       strncpy(annotation->annotation, "R-onset", MAX_ANNOTATION_LEN);
       annotation->annotation[MAX_ANNOTATION_LEN] = 0;
-      edfplus_annotation_add_item(&mainwindow->annotationlist[filenum], annotation);
+      edfplus_annotation_add_item(&mainwindow->edfheaderlist[filenum]->annotationlist, annotation);
     }
 
     if(mainwindow->annotations_dock[signalcomp->filenum] == NULL)
@@ -286,13 +286,13 @@ void UI_ECGExport::Export_RR_intervals()
 
       mainwindow->addDockWidget(Qt::RightDockWidgetArea, mainwindow->annotations_dock[filenum]->docklist, Qt::Vertical);
 
-      if(!mainwindow->annotationlist[filenum])
+      if(!mainwindow->edfheaderlist[filenum]->annotationlist)
       {
         mainwindow->annotations_dock[filenum]->docklist->hide();
       }
     }
 
-    if(mainwindow->annotationlist[filenum])
+    if(mainwindow->edfheaderlist[filenum]->annotationlist)
     {
       mainwindow->annotations_dock[filenum]->docklist->show();
 

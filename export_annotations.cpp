@@ -367,7 +367,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
     return;
   }
 
-  annot_list = edfplus_annotation_copy_list(&mainwindow->annotationlist[n]);
+  annot_list = edfplus_annotation_copy_list(&mainwindow->edfheaderlist[n]->annotationlist);
 
   if(mergeRadioButton->isChecked() == true)
   {
@@ -375,11 +375,11 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
     {
       if(i != mainwindow->sel_viewtime)
       {
-        annot_cnt = edfplus_annotation_count(&mainwindow->annotationlist[i]);
+        annot_cnt = edfplus_annotation_count(&mainwindow->edfheaderlist[i]->annotationlist);
 
         for(j=0; j < annot_cnt; j++)
         {
-          edfplus_annotation_add_copy(&annot_list, edfplus_annotation_item(&mainwindow->annotationlist[i], j));
+          edfplus_annotation_add_copy(&annot_list, edfplus_annotation_item(&mainwindow->edfheaderlist[i]->annotationlist, j));
 
           annot = edfplus_annotation_item(&annot_list, edfplus_annotation_count(&annot_list) - 1);
 

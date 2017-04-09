@@ -31,7 +31,7 @@
 
 
 
-int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrblock *hdr, struct annotationblock *annotlist)
+int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrblock *hdr)
 {
   int i, j, k, n, p=0,
       new_edfsignals=0,
@@ -84,7 +84,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
     return(1);
   }
 
-  annot = annotlist;
+  annot = hdr->annotationlist;
 
   annot_len = get_max_annotation_strlen(&annot);
 
@@ -414,7 +414,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
 
   fseeko(inputfile, (long long)(hdr->hdrsize), SEEK_SET);
 
-  annot = annotlist;
+  annot = hdr->annotationlist;
 
   time = hdr->starttime_offset;
 

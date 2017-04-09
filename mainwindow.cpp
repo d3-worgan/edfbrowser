@@ -334,7 +334,7 @@ void UI_Mainwindow::save_file()
     return;
   }
 
-  if(save_annotations(this, outputfile, hdr, annotationlist[0]))
+  if(save_annotations(this, outputfile, hdr))
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred during saving.");
     messagewindow.exec();
@@ -344,9 +344,9 @@ void UI_Mainwindow::save_file()
 
   fclose(outputfile);
 
-  annot = annotationlist[0];
+  annot = hdr->annotationlist;
 
-  annotationlist[0] = annotationlist_backup;
+  hdr->annotationlist = annotationlist_backup;
 
   annotationlist_backup = NULL;
 
@@ -1235,11 +1235,11 @@ void UI_Mainwindow::show_annotations()
       {
         edfheaderlist[i]->annots_not_read = 0;
 
-        annotations.get_annotations(i, edfheaderlist[i], &annotationlist[i], read_nk_trigger_signal);
+        annotations.get_annotations(edfheaderlist[i], read_nk_trigger_signal);
 
         if(edfheaderlist[i]->annots_not_read)
         {
-          edfplus_annotation_delete_list(&annotationlist[i]);
+          edfplus_annotation_delete_list(&edfheaderlist[i]->annotationlist);
         }
         else
         {
@@ -1253,7 +1253,7 @@ void UI_Mainwindow::show_annotations()
       }
     }
 
-    if(annotationlist[i] != NULL)
+    if(edfheaderlist[i]->annotationlist != NULL)
     {
       if(annotations_dock[i] != NULL)
       {
@@ -1276,7 +1276,7 @@ void UI_Mainwindow::annotation_editor()
   {
     if(edfheaderlist[0]->annots_not_read)
     {
-      edfplus_annotation_delete_list(&annotationlist[0]);
+      edfplus_annotation_delete_list(&edfheaderlist[0]->annotationlist);
 
       if(annotations_dock[0] != NULL)
       {
@@ -1289,7 +1289,7 @@ void UI_Mainwindow::annotation_editor()
 
       EDF_annotations annotations;
 
-      annotations.get_annotations(0, edfheaderlist[0], &annotationlist[0], read_nk_trigger_signal);
+      annotations.get_annotations(edfheaderlist[0], read_nk_trigger_signal);
 
       if(edfheaderlist[0]->annots_not_read)
       {
@@ -1544,7 +1544,7 @@ void UI_Mainwindow::open_new_file()
 
     edfheaderlist[files_open] = edfhdr;
 
-    annotationlist[files_open] = NULL;
+    edfheaderlist[files_open]->annotationlist = NULL;
 
     annotations_dock[files_open] = NULL;
 
@@ -1554,11 +1554,11 @@ void UI_Mainwindow::open_new_file()
       {
         EDF_annotations annotations;
 
-        annotations.get_annotations(files_open, edfhdr, &annotationlist[files_open], read_nk_trigger_signal);
+        annotations.get_annotations(edfhdr, read_nk_trigger_signal);
 
         if(edfhdr->annots_not_read)
         {
-          edfplus_annotation_delete_list(&annotationlist[files_open]);
+          edfplus_annotation_delete_list(&edfheaderlist[files_open]->annotationlist);
         }
         else
         {
@@ -1566,7 +1566,7 @@ void UI_Mainwindow::open_new_file()
 
           addDockWidget(Qt::RightDockWidgetArea, annotations_dock[files_open]->docklist, Qt::Vertical);
 
-          if(!annotationlist[files_open])
+          if(!edfheaderlist[files_open]->annotationlist)
           {
             annotations_dock[files_open]->docklist->hide();
           }
@@ -1584,13 +1584,13 @@ void UI_Mainwindow::open_new_file()
       {
         BDF_triggers bdf_triggers_obj;
 
-        bdf_triggers_obj.get_triggers(edfhdr, &annotationlist[files_open]);
+        bdf_triggers_obj.get_triggers(edfhdr);
 
         annotations_dock[files_open] = new UI_Annotationswindow(files_open, this);
 
         addDockWidget(Qt::RightDockWidgetArea, annotations_dock[files_open]->docklist, Qt::Vertical);
 
-        if(!annotationlist[files_open])
+        if(!edfhdr->annotationlist)
         {
           annotations_dock[files_open]->docklist->hide();
         }
@@ -2149,7 +2149,7 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
   fclose(edfheaderlist[file_n]->file_hdl);
   free(edfheaderlist[file_n]->edfparam);
   free(edfheaderlist[file_n]);
-  edfplus_annotation_delete_list(&annotationlist[file_n]);
+  edfplus_annotation_delete_list(&edfheaderlist[file_n]->annotationlist);
 
   if(annotations_dock[file_n] != NULL)
   {
@@ -2179,8 +2179,6 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
   for(i=file_n; i<files_open - 1; i++)
   {
     edfheaderlist[i] = edfheaderlist[i + 1];
-
-    annotationlist[i] = annotationlist[i + 1];
 
     annotations_dock[i] = annotations_dock[i + 1];
 
@@ -2244,7 +2242,7 @@ void UI_Mainwindow::close_all_files()
     }
     free(edfheaderlist[files_open]->edfparam);
     free(edfheaderlist[files_open]);
-    edfplus_annotation_delete_list(&annotationlist[files_open]);
+    edfplus_annotation_delete_list(&edfheaderlist[files_open]->annotationlist);
 
     if(annotations_dock[files_open] != NULL)
     {
@@ -3446,7 +3444,7 @@ void UI_Mainwindow::edfplus_annotation_remove_duplicates()
 
   for(k=0; k<files_open; k++)
   {
-    list = &annotationlist[k];
+    list = &edfheaderlist[k]->annotationlist;
 
     if(*list==NULL)
     {

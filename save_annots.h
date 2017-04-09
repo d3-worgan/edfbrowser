@@ -51,7 +51,7 @@
 
 
 
-int save_annotations(UI_Mainwindow *, FILE *, struct edfhdrblock *, struct annotationblock *);
+int save_annotations(UI_Mainwindow *, FILE *, struct edfhdrblock *);
 
 
 

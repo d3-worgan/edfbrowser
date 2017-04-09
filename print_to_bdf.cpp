@@ -102,7 +102,7 @@ struct date_time_struct date_time;
   signalcomp = mainwindow->signalcomp;
   viewbuf = mainwindow->viewbuf;
 
-  annotations_pntr = mainwindow->annotationlist[0];
+  annotations_pntr = mainwindow->edfheaderlist[0]->annotationlist;
 
   if((!mainwindow->files_open)||(!signalcomps))
   {
@@ -1158,7 +1158,7 @@ struct date_time_struct date_time;
 
             break;
           }
-          annotations_pntr = mainwindow->annotationlist[annotationlist_nr];
+          annotations_pntr = mainwindow->edfheaderlist[annotationlist_nr]->annotationlist;
 
           if(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)
           {

@@ -71,7 +71,7 @@ class UI_AnnotationEditwindow : public QObject
   Q_OBJECT
 
 public:
-  UI_AnnotationEditwindow(int, QWidget *parent);
+  UI_AnnotationEditwindow(QWidget *parent);
 
   UI_Mainwindow *mainwindow;
 

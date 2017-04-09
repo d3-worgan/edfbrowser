@@ -482,13 +482,13 @@ void UI_ImportAnnotationswindow::ImportButtonClicked()
 
     mainwindow->addDockWidget(Qt::RightDockWidgetArea, mainwindow->annotations_dock[0]->docklist, Qt::Vertical);
 
-    if(!mainwindow->annotationlist[0])
+    if(!mainwindow->edfheaderlist[0]->annotationlist)
     {
       mainwindow->annotations_dock[0]->docklist->hide();
     }
   }
 
-  if(mainwindow->annotationlist[0])
+  if(mainwindow->edfheaderlist[0]->annotationlist)
   {
     mainwindow->annotations_dock[0]->docklist->show();
 
@@ -563,7 +563,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
   if(mainwindow->annotationlist_backup==NULL)
   {
-    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->annotationlist[0]);
+    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->edfheaderlist[0]->annotationlist);
   }
 
   xml_hdl = xml_get_handle(path);
@@ -736,7 +736,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
       }
       annotation->annotation[MAX_ANNOTATION_LEN] = 0;
       strcpy(annotation->duration, duration);
-      edfplus_annotation_add_item(&mainwindow->annotationlist[0], annotation);
+      edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annotationlist, annotation);
 
       strcpy(last_description, result);
     }
@@ -936,7 +936,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   if(mainwindow->annotationlist_backup==NULL)
   {
-    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->annotationlist[0]);
+    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->edfheaderlist[0]->annotationlist);
   }
 
   inputfile = fopeno(path, "rb");
@@ -1495,7 +1495,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
                 }
               }
             }
-            edfplus_annotation_add_item(&mainwindow->annotationlist[0], annotation);
+            edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annotationlist, annotation);
 
             strcpy(last_description, description);
           }
@@ -1530,7 +1530,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
               }
             }
           }
-          edfplus_annotation_add_item(&mainwindow->annotationlist[0], annotation);
+          edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annotationlist, annotation);
         }
       }
 
@@ -1611,7 +1611,7 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
 
   if(mainwindow->annotationlist_backup==NULL)
   {
-    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->annotationlist[0]);
+    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->edfheaderlist[0]->annotationlist);
   }
 
   inputfile = fopeno(path, "rb");
@@ -1656,7 +1656,7 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
 
   EDF_annotations annotations;
 
-  annotations.get_annotations(0, edfhdr, &annotlist[0], mainwindow->read_nk_trigger_signal);
+  annotations.get_annotations(edfhdr, mainwindow->read_nk_trigger_signal);
   if(edfhdr->annots_not_read)
   {
     edfplus_annotation_delete_list(&annotlist[0]);
@@ -1687,10 +1687,10 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
   {
     annotation = edfplus_annotation_item(&annotlist[0], i);
     annotation->onset += starttime_diff;
-    edfplus_annotation_add_copy(&mainwindow->annotationlist[0], annotation);
+    edfplus_annotation_add_copy(&mainwindow->edfheaderlist[0]->annotationlist, annotation);
   }
 
-  edfplus_annotation_sort(&mainwindow->annotationlist[0]);
+  edfplus_annotation_sort(&mainwindow->edfheaderlist[0]->annotationlist);
 
   edfplus_annotation_delete_list(&annotlist[0]);
   free(edfhdr->edfparam);
@@ -1984,7 +1984,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
                   annotation->file_num = signalcomp->edfhdr->file_num;
                   strncpy(annotation->annotation, scratchpad, MAX_ANNOTATION_LEN);
                   annotation->annotation[MAX_ANNOTATION_LEN] = 0;
-                  edfplus_annotation_add_item(&mainwindow->annotationlist[0], annotation);
+                  edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annotationlist, annotation);
 
                   annotations_found++;
 

@@ -1074,7 +1074,7 @@ void UI_ZScoreWindow::get_annotationsButtonClicked()
         {
           strcpy(annotation->annotation, "Sleep");
         }
-        edfplus_annotation_add_item(&mainwindow->annotationlist[filenum], annotation);
+        edfplus_annotation_add_item(&mainwindow->edfheaderlist[filenum]->annotationlist, annotation);
       }
     }
   }
@@ -1085,13 +1085,13 @@ void UI_ZScoreWindow::get_annotationsButtonClicked()
 
     mainwindow->addDockWidget(Qt::RightDockWidgetArea, mainwindow->annotations_dock[filenum]->docklist, Qt::Vertical);
 
-    if(!mainwindow->annotationlist[filenum])
+    if(!mainwindow->edfheaderlist[filenum]->annotationlist)
     {
       mainwindow->annotations_dock[filenum]->docklist->hide();
     }
   }
 
-  if(mainwindow->annotationlist[filenum])
+  if(mainwindow->edfheaderlist[filenum]->annotationlist)
   {
     mainwindow->annotations_dock[filenum]->docklist->show();
 

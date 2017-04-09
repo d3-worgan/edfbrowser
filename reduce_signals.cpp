@@ -665,7 +665,7 @@ void UI_ReduceSignalsWindow::StartConversion()
       goto END_1;
     }
 
-    annot_list = mainwindow->annotationlist[file_num];
+    annot_list = mainwindow->edfheaderlist[file_num]->annotationlist;
 
     while(annot_list != NULL)
     {

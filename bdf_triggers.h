@@ -54,7 +54,7 @@ class BDF_triggers
 
 public:
 
-  int get_triggers(struct edfhdrblock *, struct annotationblock **);
+  int get_triggers(struct edfhdrblock *);
 
 };
 

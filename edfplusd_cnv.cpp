@@ -165,7 +165,7 @@ void UI_EDFDwindow::SelectFileButton()
 
   annotationlist[0] = NULL;
 
-  if(annotations_func.get_annotations(0, edfhdr, &annotationlist[0], 0))
+  if(annotations_func.get_annotations(edfhdr, 0))
   {
     free_annotations(annotationlist[0]);
     free(edfhdr->edfparam);

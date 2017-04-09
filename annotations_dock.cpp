@@ -145,7 +145,7 @@ void UI_Annotationswindow::hide_all_NK_triggers(bool)
 {
   struct annotationblock *annot;
 
-  annot = mainwindow->annotationlist[file_num];
+  annot = mainwindow->edfheaderlist[file_num]->annotationlist;
 
   hide_nk_triggers = 1;
 
@@ -171,7 +171,7 @@ void UI_Annotationswindow::hide_all_BS_triggers(bool)
 {
   struct annotationblock *annot;
 
-  annot = mainwindow->annotationlist[file_num];
+  annot = mainwindow->edfheaderlist[file_num]->annotationlist;
 
   hide_bs_triggers = 1;
 
@@ -197,7 +197,7 @@ void UI_Annotationswindow::unhide_all_NK_triggers(bool)
 {
   struct annotationblock *annot;
 
-  annot = mainwindow->annotationlist[file_num];
+  annot = mainwindow->edfheaderlist[file_num]->annotationlist;
 
   hide_nk_triggers = 0;
 
@@ -223,7 +223,7 @@ void UI_Annotationswindow::unhide_all_BS_triggers(bool)
 {
   struct annotationblock *annot;
 
-  annot = mainwindow->annotationlist[file_num];
+  annot = mainwindow->edfheaderlist[file_num]->annotationlist;
 
   hide_bs_triggers = 0;
 
@@ -254,7 +254,7 @@ void UI_Annotationswindow::filter_edited(const QString text)
   struct annotationblock *annot;
 
 
-  annot = mainwindow->annotationlist[file_num];
+  annot = mainwindow->edfheaderlist[file_num]->annotationlist;
 
   cnt = edfplus_annotation_count(&annot);
 
@@ -354,7 +354,7 @@ void UI_Annotationswindow::checkbox2_clicked(int state)
   struct annotationblock *annot;
 
 
-  annot = mainwindow->annotationlist[file_num];
+  annot = mainwindow->edfheaderlist[file_num]->annotationlist;
 
   cnt = edfplus_annotation_count(&annot);
 
@@ -397,7 +397,7 @@ void UI_Annotationswindow::show_between(bool)
     return;
   }
 
-  annot = mainwindow->annotationlist[file_num];
+  annot = mainwindow->edfheaderlist[file_num]->annotationlist;
 
   n = list->currentRow();
 
@@ -445,7 +445,7 @@ void UI_Annotationswindow::hide_annot(bool)
     return;
   }
 
-  annot = mainwindow->annotationlist[file_num];
+  annot = mainwindow->edfheaderlist[file_num]->annotationlist;
 
   n = list->currentRow();
 
@@ -474,7 +474,7 @@ void UI_Annotationswindow::unhide_annot(bool)
     return;
   }
 
-  annot = mainwindow->annotationlist[file_num];
+  annot = mainwindow->edfheaderlist[file_num]->annotationlist;
 
   n = list->currentRow();
 
@@ -506,7 +506,7 @@ void UI_Annotationswindow::hide_same_annots(bool)
     return;
   }
 
-  annot = mainwindow->annotationlist[file_num];
+  annot = mainwindow->edfheaderlist[file_num]->annotationlist;
 
   n = list->currentRow();
 
@@ -521,7 +521,7 @@ void UI_Annotationswindow::hide_same_annots(bool)
 
   remove_trailing_spaces(str1);
 
-  annot = mainwindow->annotationlist[file_num];
+  annot = mainwindow->edfheaderlist[file_num]->annotationlist;
 
   while(annot != NULL)
   {
@@ -560,7 +560,7 @@ void UI_Annotationswindow::unhide_same_annots(bool)
     return;
   }
 
-  annot = mainwindow->annotationlist[file_num];
+  annot = mainwindow->edfheaderlist[file_num]->annotationlist;
 
   n = list->currentRow();
 
@@ -575,7 +575,7 @@ void UI_Annotationswindow::unhide_same_annots(bool)
 
   remove_trailing_spaces(str1);
 
-  annot = mainwindow->annotationlist[file_num];
+  annot = mainwindow->edfheaderlist[file_num]->annotationlist;
 
   while(annot != NULL)
   {
@@ -603,7 +603,7 @@ void UI_Annotationswindow::unhide_all_annots(bool)
 {
   struct annotationblock *annot;
 
-  annot = mainwindow->annotationlist[file_num];
+  annot = mainwindow->edfheaderlist[file_num]->annotationlist;
 
   while(annot != NULL)
   {
@@ -712,9 +712,9 @@ void UI_Annotationswindow::updateList(void)
 
   list->clear();
 
-  edfplus_annotation_sort(&mainwindow->annotationlist[file_num]);
+  edfplus_annotation_sort(&mainwindow->edfheaderlist[file_num]->annotationlist);
 
-  annotation = mainwindow->annotationlist[file_num];
+  annotation = mainwindow->edfheaderlist[file_num]->annotationlist;
 
   while(annotation != NULL)
   {
@@ -883,7 +883,7 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
   long long temp;
 
 
-  annotation = mainwindow->annotationlist[file_num];
+  annotation = mainwindow->edfheaderlist[file_num]->annotationlist;
 
   n = item->data(Qt::UserRole).toInt();
 

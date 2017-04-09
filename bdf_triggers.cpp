@@ -31,7 +31,7 @@
 
 
 
-int BDF_triggers::get_triggers(struct edfhdrblock *hdr, struct annotationblock **list)
+int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
 {
   int i, j,
       sf,
@@ -59,7 +59,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr, struct annotationblock *
 
 
 
-  *list = NULL;
+  hdr->annotationlist = NULL;
 
   annotlist = NULL;
 
@@ -222,7 +222,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr, struct annotationblock *
             progress.reset();
             QMessageBox messagewindow(QMessageBox::Critical, "Error", "Malloc error (annotation).");
             messagewindow.exec();
-            *list = annotlist;
+            hdr->annotationlist = annotlist;
             free(buf);
             return(1);
           }
@@ -258,7 +258,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr, struct annotationblock *
               progress.reset();
               QMessageBox messagewindow(QMessageBox::Critical, "Error", "Malloc error (annotation).");
               messagewindow.exec();
-              *list = annotlist;
+              hdr->annotationlist = annotlist;
               free(buf);
               return(1);
             }
@@ -286,7 +286,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr, struct annotationblock *
 
   progress.reset();
 
-  *list = annotlist;
+  hdr->annotationlist = annotlist;
 
   free(buf);
 
