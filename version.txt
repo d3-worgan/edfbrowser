@@ -14,6 +14,8 @@
 
  - Fixed a bug in the EDF header editor.
 
+ - Fixed a bug that resetted some settings of the program to the standard settings.
+
 
 
  version 1.58      July 10, 2016
