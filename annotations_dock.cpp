@@ -732,7 +732,13 @@ void UI_Annotationswindow::updateList(void)
 
   annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
 
+  QMessageBox messagewindow(QMessageBox::NoIcon, "Busy", "Sorting annotations...");
+  messagewindow.setStandardButtons(QMessageBox::NoButton);
+  messagewindow.show();
+
   edfplus_annotation_sort(annot_list, &process_events);
+
+  messagewindow.setText("Populating list...");
 
   sz = edfplus_annotation_size(annot_list);
 
@@ -891,6 +897,8 @@ void UI_Annotationswindow::updateList(void)
       mainwindow->save_act->setEnabled(true);
     }
   }
+
+  messagewindow.hide();
 
   QApplication::restoreOverrideCursor();
 }
