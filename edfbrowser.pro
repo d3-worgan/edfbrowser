@@ -97,7 +97,6 @@ HEADERS += export_annotations.h
 HEADERS += edit_predefined_mtg.h
 HEADERS += spectrum_dock.h
 HEADERS += edf_annot_list.h
-HEADERS += edf_annot_list_ii.h
 HEADERS += reduce_signals.h
 HEADERS += active_file_chooser.h
 HEADERS += header_editor.h
@@ -127,6 +126,7 @@ HEADERS += spike_filter.h
 HEADERS += spike_filter_dialog.h
 HEADERS += mit2edf.h
 HEADERS += biox2edf.h
+HEADERS += edf_helper.h
 
 HEADERS += third_party/fidlib/fidlib.h
 HEADERS += third_party/fidlib/fidmkf.h
@@ -187,7 +187,6 @@ SOURCES += export_annotations.cpp
 SOURCES += edit_predefined_mtg.cpp
 SOURCES += spectrum_dock.cpp
 SOURCES += edf_annot_list.c
-SOURCES += edf_annot_list_ii.c
 SOURCES += reduce_signals.cpp
 SOURCES += active_file_chooser.cpp
 SOURCES += header_editor.cpp
@@ -217,6 +216,7 @@ SOURCES += spike_filter.cpp
 SOURCES += spike_filter_dialog.cpp
 SOURCES += mit2edf.cpp
 SOURCES += biox2edf.cpp
+SOURCES += edf_helper.c
 
 SOURCES += third_party/fidlib/fidlib.c
 

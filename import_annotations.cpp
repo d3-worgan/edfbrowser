@@ -482,13 +482,13 @@ void UI_ImportAnnotationswindow::ImportButtonClicked()
 
     mainwindow->addDockWidget(Qt::RightDockWidgetArea, mainwindow->annotations_dock[0]->docklist, Qt::Vertical);
 
-    if(!mainwindow->edfheaderlist[0]->annotationlist)
+    if(edfplus_annotation_size(&mainwindow->edfheaderlist[0]->annot_list) < 1)
     {
       mainwindow->annotations_dock[0]->docklist->hide();
     }
   }
 
-  if(mainwindow->edfheaderlist[0]->annotationlist)
+  if(edfplus_annotation_size(&mainwindow->edfheaderlist[0]->annot_list) > 0)
   {
     mainwindow->annotations_dock[0]->docklist->show();
 
@@ -532,7 +532,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
             l_temp,
             utc_time=0LL;
 
-  struct annotationblock *annotation;
+  struct annotationblock annotation;
 
   struct date_time_struct date_time;
 
@@ -560,11 +560,6 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
   }
 
   get_directory_from_path(mainwindow->recent_opendir, path, MAX_PATH_LENGTH);
-
-  if(mainwindow->annotationlist_backup==NULL)
-  {
-    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->edfheaderlist[0]->annotationlist);
-  }
 
   xml_hdl = xml_get_handle(path);
   if(xml_hdl==NULL)
@@ -594,7 +589,12 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
   for(j=0; j<10; j++)  qApp->processEvents();
 
-  for(i=0; i<10000; i++)
+  if(mainwindow->annotationlist_backup==NULL)
+  {
+    mainwindow->annotationlist_backup = edfplus_annotation_create_list_copy(&mainwindow->edfheaderlist[0]->annot_list);
+  }
+
+  for(i=0; i<100000; i++)
   {
     if(xml_goto_nth_element_inside(xml_hdl, "annotation", i))
     {
@@ -719,8 +719,16 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
     if((!ignore_consecutive) || (strcmp(result, last_description)))
     {
-      annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
-      if(annotation == NULL)
+      memset(&annotation, 0, sizeof(struct annotationblock));
+      annotation.onset = onset;
+      strncpy(annotation.annotation, result, MAX_ANNOTATION_LEN);
+      if(xml_hdl->encoding == 1)
+      {
+        latin1_to_utf8(annotation.annotation, MAX_ANNOTATION_LEN);
+      }
+      annotation.annotation[MAX_ANNOTATION_LEN] = 0;
+      strcpy(annotation.duration, duration);
+      if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
       {
         QApplication::restoreOverrideCursor();
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
@@ -728,15 +736,6 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
         xml_close(xml_hdl);
         return(1);
       }
-      annotation->onset = onset;
-      strncpy(annotation->annotation, result, MAX_ANNOTATION_LEN);
-      if(xml_hdl->encoding == 1)
-      {
-        latin1_to_utf8(annotation->annotation, MAX_ANNOTATION_LEN);
-      }
-      annotation->annotation[MAX_ANNOTATION_LEN] = 0;
-      strcpy(annotation->duration, duration);
-      edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annotationlist, annotation);
 
       strcpy(last_description, result);
     }
@@ -793,7 +792,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   FILE *inputfile=NULL;
 
-  struct annotationblock *annotation;
+  struct annotationblock annotation;
 
   struct date_time_struct date_time;
 
@@ -934,11 +933,6 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   get_directory_from_path(mainwindow->recent_opendir, path, MAX_PATH_LENGTH);
 
-  if(mainwindow->annotationlist_backup==NULL)
-  {
-    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->edfheaderlist[0]->annotationlist);
-  }
-
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
   {
@@ -952,6 +946,11 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
   QApplication::setOverrideCursor(Qt::WaitCursor);
 
   for(j=0; j<10; j++)  qApp->processEvents();
+
+  if(mainwindow->annotationlist_backup==NULL)
+  {
+    mainwindow->annotationlist_backup = edfplus_annotation_create_list_copy(&mainwindow->edfheaderlist[0]->annot_list);
+  }
 
   for(i=0; i<(startline-1);)
   {
@@ -1468,18 +1467,10 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
         {
           if((!ignore_consecutive) || strcmp(description, last_description))
           {
-            annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
-            if(annotation == NULL)
-            {
-              QApplication::restoreOverrideCursor();
-              QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
-              messagewindow.exec();
-              fclose(inputfile);
-              return(1);
-            }
-            annotation->onset = onset + (86400LL * TIME_DIMENSION * days);
-            strncpy(annotation->annotation, description, MAX_ANNOTATION_LEN);
-            annotation->annotation[MAX_ANNOTATION_LEN] = 0;
+            memset(&annotation, 0, sizeof(struct annotationblock));
+            annotation.onset = onset + (86400LL * TIME_DIMENSION * days);
+            strncpy(annotation.annotation, description, MAX_ANNOTATION_LEN);
+            annotation.annotation[MAX_ANNOTATION_LEN] = 0;
             if(use_duration)
             {
               if((!(is_number(duration))) && (duration[0] != '-'))
@@ -1487,15 +1478,22 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
                 remove_trailing_zeros(duration);
                 if(duration[0] == '+')
                 {
-                  strcpy(annotation->duration, duration + 1);
+                  strcpy(annotation.duration, duration + 1);
                 }
                 else
                 {
-                  strcpy(annotation->duration, duration);
+                  strcpy(annotation.duration, duration);
                 }
               }
             }
-            edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annotationlist, annotation);
+            if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
+            {
+              QApplication::restoreOverrideCursor();
+              QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
+              messagewindow.exec();
+              fclose(inputfile);
+              return(1);
+            }
 
             strcpy(last_description, description);
           }
@@ -1503,18 +1501,10 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
         if(onset_is_set && manualdescription)
         {
-          annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
-          if(annotation == NULL)
-          {
-            QApplication::restoreOverrideCursor();
-            QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
-            messagewindow.exec();
-            fclose(inputfile);
-            return(1);
-          }
-          annotation->onset = onset + (86400LL * TIME_DIMENSION * days);
-          strncpy(annotation->annotation, description, MAX_ANNOTATION_LEN);
-          annotation->annotation[MAX_ANNOTATION_LEN] = 0;
+          memset(&annotation, 0, sizeof(struct annotationblock));
+          annotation.onset = onset + (86400LL * TIME_DIMENSION * days);
+          strncpy(annotation.annotation, description, MAX_ANNOTATION_LEN);
+          annotation.annotation[MAX_ANNOTATION_LEN] = 0;
           if(use_duration)
           {
             if((!(is_number(duration))) && (duration[0] != '-'))
@@ -1522,15 +1512,22 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
               remove_trailing_zeros(duration);
               if(duration[0] == '+')
               {
-                strcpy(annotation->duration, duration + 1);
+                strcpy(annotation.duration, duration + 1);
               }
               else
               {
-                strcpy(annotation->duration, duration);
+                strcpy(annotation.duration, duration);
               }
             }
           }
-          edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annotationlist, annotation);
+          if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
+          {
+            QApplication::restoreOverrideCursor();
+            QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
+            messagewindow.exec();
+            fclose(inputfile);
+            return(1);
+          }
         }
       }
 
@@ -1595,8 +1592,6 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
 
   struct edfhdrblock *edfhdr=NULL;
 
-  struct annotationblock *annotlist[1];
-
   struct annotationblock *annotation;
 
 
@@ -1608,11 +1603,6 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
   }
 
   get_directory_from_path(mainwindow->recent_opendir, path, MAX_PATH_LENGTH);
-
-  if(mainwindow->annotationlist_backup==NULL)
-  {
-    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->edfheaderlist[0]->annotationlist);
-  }
 
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
@@ -1627,8 +1617,6 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
   EDFfileCheck EDFfilechecker;
 
   str[0] = 0;
-
-  annotlist[0] = NULL;
 
   edfhdr = EDFfilechecker.check_edf_file(inputfile, str, 0);
   if(edfhdr==NULL)
@@ -1659,18 +1647,19 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
   annotations.get_annotations(edfhdr, mainwindow->read_nk_trigger_signal);
   if(edfhdr->annots_not_read)
   {
-    edfplus_annotation_delete_list(&annotlist[0]);
+    edfplus_annotation_empty_list(&edfhdr->annot_list);
     free(edfhdr->edfparam);
     free(edfhdr);
     fclose(inputfile);
     return(1);
   }
 
-  annotlist_size = edfplus_annotation_count(&annotlist[0]);
-  if(annotlist_size == 0)
+  annotlist_size = edfplus_annotation_size(&edfhdr->annot_list);
+  if(annotlist_size < 1)
   {
     QMessageBox messagewindow(QMessageBox::Information, "Import annotations", "No annotations found.");
     messagewindow.exec();
+    edfplus_annotation_empty_list(&edfhdr->annot_list);
     free(edfhdr->edfparam);
     free(edfhdr);
     fclose(inputfile);
@@ -1683,19 +1672,30 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
 
-  for(i=0; i<annotlist_size; i++)
+  if(mainwindow->annotationlist_backup==NULL)
   {
-    annotation = edfplus_annotation_item(&annotlist[0], i);
-    annotation->onset += starttime_diff;
-    edfplus_annotation_add_copy(&mainwindow->edfheaderlist[0]->annotationlist, annotation);
+    mainwindow->annotationlist_backup = edfplus_annotation_create_list_copy(&mainwindow->edfheaderlist[0]->annot_list);
   }
 
-  edfplus_annotation_sort(&mainwindow->edfheaderlist[0]->annotationlist);
+  for(i=0; i<annotlist_size; i++)
+  {
+    annotation = edfplus_annotation_get_item(&edfhdr->annot_list, i);
+    annotation->onset += starttime_diff;
+    edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, *annotation);
+  }
 
-  edfplus_annotation_delete_list(&annotlist[0]);
+  edfplus_annotation_sort(&mainwindow->edfheaderlist[0]->annot_list, NULL);
+
+  edfplus_annotation_empty_list(&edfhdr->annot_list);
   free(edfhdr->edfparam);
   free(edfhdr);
   fclose(inputfile);
+
+  mainwindow->annotations_edited = 1;
+
+  mainwindow->annotations_dock[0]->updateList();
+
+  mainwindow->save_act->setEnabled(true);
 
   QApplication::restoreOverrideCursor();
 
@@ -1742,7 +1742,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
 
   FILE *inputfile=NULL;
 
-  struct annotationblock *annotation;
+  struct annotationblock annotation;
 
   struct signalcompblock *signalcomp;
 
@@ -1970,8 +1970,13 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
 
                 if((!ignore_consecutive) || (strcmp(scratchpad, last_description)))
                 {
-                  annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
-                  if(annotation == NULL)
+                  memset(&annotation, 0, sizeof(struct annotationblock));
+                  annotation.onset = ((trigger_datrec * signalcomp->edfhdr->long_data_record_duration) + (trigger_sample * time_per_sample));
+                  annotation.onset += signalcomp->edfhdr->starttime_offset;
+                  annotation.file_num = signalcomp->edfhdr->file_num;
+                  strncpy(annotation.annotation, scratchpad, MAX_ANNOTATION_LEN);
+                  annotation.annotation[MAX_ANNOTATION_LEN] = 0;
+                  if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
                   {
                     progress.reset();
                     QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
@@ -1979,12 +1984,6 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
                     free(buf);
                     return(1);
                   }
-                  annotation->onset = ((trigger_datrec * signalcomp->edfhdr->long_data_record_duration) + (trigger_sample * time_per_sample));
-                  annotation->onset += signalcomp->edfhdr->starttime_offset;
-                  annotation->file_num = signalcomp->edfhdr->file_num;
-                  strncpy(annotation->annotation, scratchpad, MAX_ANNOTATION_LEN);
-                  annotation->annotation[MAX_ANNOTATION_LEN] = 0;
-                  edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annotationlist, annotation);
 
                   annotations_found++;
 

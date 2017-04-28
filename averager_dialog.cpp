@@ -34,11 +34,11 @@
 
 UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, int annot_nr)
 {
-  int i, n;
+  int i;
 
   long long recording_duration;
 
-  struct annotationblock *annot;
+  struct annotationblock *annot_ptr;
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
@@ -139,18 +139,9 @@ UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, int annot_nr)
 
   list->setCurrentRow(0, QItemSelectionModel::Select);
 
-  annot = mainwindow->edfheaderlist[0]->annotationlist;
+  annot_ptr = edfplus_annotation_get_item(&mainwindow->edfheaderlist[0]->annot_list, annot_nr);
 
-  n = annot_nr;
-
-  while(n)
-  {
-    annot = annot->next_annotation;
-
-    n--;
-  }
-
-  strcpy(annot_str, annot->annotation);
+  strcpy(annot_str, annot_ptr->annotation);
   remove_trailing_spaces(annot_str);
 
   annotNameLabel->setText(annot_str);
@@ -184,7 +175,7 @@ void UI_AveragerWindow::startButtonClicked()
             l_time1,
             l_time2;
 
-  struct annotationblock *annot;
+  struct annotationblock *annot_ptr;
 
   QList<QListWidgetItem *> itemList;
 
@@ -246,18 +237,18 @@ void UI_AveragerWindow::startButtonClicked()
 
   mainwindow->signal_averaging_active = 1;
 
-  n = edfplus_annotation_count(&mainwindow->edfheaderlist[0]->annotationlist);
+  n = edfplus_annotation_size(&mainwindow->edfheaderlist[0]->annot_list);
 
   avg_cnt = 0;
 
   for(i=0; i<n; i++)
   {
-    annot = edfplus_annotation_item(&mainwindow->edfheaderlist[0]->annotationlist, i);
+    annot_ptr = edfplus_annotation_get_item(&mainwindow->edfheaderlist[0]->annot_list, i);
 
-    if(((annot->onset - mainwindow->edfheaderlist[0]->starttime_offset) >= l_time1)
-      && ((annot->onset - mainwindow->edfheaderlist[0]->starttime_offset) <= l_time2))
+    if(((annot_ptr->onset - mainwindow->edfheaderlist[0]->starttime_offset) >= l_time1)
+      && ((annot_ptr->onset - mainwindow->edfheaderlist[0]->starttime_offset) <= l_time2))
     {
-      strcpy(str, annot->annotation);
+      strcpy(str, annot_ptr->annotation);
 
       remove_trailing_spaces(str);
 
@@ -335,18 +326,18 @@ void UI_AveragerWindow::startButtonClicked()
       return;
     }
 
-    n = edfplus_annotation_count(&mainwindow->edfheaderlist[0]->annotationlist);
+    n = edfplus_annotation_size(&mainwindow->edfheaderlist[0]->annot_list);
 
     avg_cnt = 0;
 
     for(i=0; i<n; i++)
     {
-      annot = edfplus_annotation_item(&mainwindow->edfheaderlist[0]->annotationlist, i);
+      annot_ptr = edfplus_annotation_get_item(&mainwindow->edfheaderlist[0]->annot_list, i);
 
-      if(((annot->onset - mainwindow->edfheaderlist[0]->starttime_offset) >= l_time1)
-        && ((annot->onset - mainwindow->edfheaderlist[0]->starttime_offset) <= l_time2))
+      if(((annot_ptr->onset - mainwindow->edfheaderlist[0]->starttime_offset) >= l_time1)
+        && ((annot_ptr->onset - mainwindow->edfheaderlist[0]->starttime_offset) <= l_time2))
       {
-        strcpy(str, annot->annotation);
+        strcpy(str, annot_ptr->annotation);
 
         remove_trailing_spaces(str);
 
@@ -374,7 +365,7 @@ void UI_AveragerWindow::startButtonClicked()
             }
           }
 
-          mainwindow->edfheaderlist[0]->viewtime = annot->onset;
+          mainwindow->edfheaderlist[0]->viewtime = annot_ptr->onset;
 
           mainwindow->edfheaderlist[0]->viewtime -= mainwindow->edfheaderlist[0]->starttime_offset;
 

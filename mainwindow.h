@@ -134,7 +134,6 @@
 #include "spectrum_dock.h"
 #include "signalcurve.h"
 #include "edf_annot_list.h"
-#include "edf_annot_list_ii.h"
 #include "reduce_signals.h"
 #include "header_editor.h"
 #include "biosemi2bdfplus.h"
@@ -259,7 +258,7 @@ public:
 
   struct zoomhistoryblock *zoomhistory;
 
-  struct annotationblock *annotationlist_backup;
+  struct annotation_list *annotationlist_backup;
 
   struct spectrum_markersblock *spectrum_colorbar;
 
@@ -453,7 +452,7 @@ private:
 
 public slots:
   void remove_all_signals();
-  void edfplus_annotation_remove_duplicates();
+  void edfplus_remove_duplicate_annotations();
   void video_player_seek(int);
   void video_player_toggle_pause();
 

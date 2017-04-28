@@ -46,6 +46,7 @@
 #include "mainwindow.h"
 #include "utils.h"
 #include "edf_annot_list.h"
+#include "edf_helper.h"
 
 
 

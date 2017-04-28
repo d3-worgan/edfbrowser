@@ -1028,8 +1028,7 @@ void UI_ZScoreWindow::get_annotationsButtonClicked()
       marker_start,
       marker_end;
 
-  struct annotationblock *annotation;
-
+  struct annotationblock annotation;
 
   if((epoch_cntr < 2) || (zscore_pages < 1))
   {
@@ -1058,23 +1057,18 @@ void UI_ZScoreWindow::get_annotationsButtonClicked()
 
       if(i >= marker_start)
       {
-        annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
-        if(annotation == NULL)
-        {
-          QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
-          messagewindow.exec();
-          return;
-        }
-        annotation->onset = i * zscore_page_len * 2LL * TIME_DIMENSION;
+        memset(&annotation, 0, sizeof(struct annotationblock));
+
+        annotation.onset = i * zscore_page_len * 2LL * TIME_DIMENSION;
         if(awake)
         {
-          strcpy(annotation->annotation, "Wake");
+          strcpy(annotation.annotation, "Wake");
         }
         else
         {
-          strcpy(annotation->annotation, "Sleep");
+          strcpy(annotation.annotation, "Sleep");
         }
-        edfplus_annotation_add_item(&mainwindow->edfheaderlist[filenum]->annotationlist, annotation);
+        edfplus_annotation_add_item(&mainwindow->edfheaderlist[filenum]->annot_list, annotation);
       }
     }
   }
@@ -1085,13 +1079,13 @@ void UI_ZScoreWindow::get_annotationsButtonClicked()
 
     mainwindow->addDockWidget(Qt::RightDockWidgetArea, mainwindow->annotations_dock[filenum]->docklist, Qt::Vertical);
 
-    if(!mainwindow->edfheaderlist[filenum]->annotationlist)
+    if(edfplus_annotation_size(&mainwindow->edfheaderlist[filenum]->annot_list) < 1)
     {
       mainwindow->annotations_dock[filenum]->docklist->hide();
     }
   }
 
-  if(mainwindow->edfheaderlist[filenum]->annotationlist)
+  if(edfplus_annotation_size(&mainwindow->edfheaderlist[filenum]->annot_list) > 0)
   {
     mainwindow->annotations_dock[filenum]->docklist->show();
 

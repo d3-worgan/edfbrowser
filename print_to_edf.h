@@ -48,6 +48,8 @@
 #include "mainwindow.h"
 #include "filter.h"
 #include "utc_date_time.h"
+#include "edf_helper.h"
+#include "edf_annot_list.h"
 
 #include "third_party/fidlib/fidlib.h"
 

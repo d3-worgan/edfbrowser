@@ -53,15 +53,11 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
 
   FILE *inputfile;
 
-  struct annotationblock *annotation=NULL;
+  struct annotation_list *annot_list = &hdr->annot_list;
 
-  struct annotationblock *annotlist;
+  struct annotationblock annotation;
 
-
-
-  hdr->annotationlist = NULL;
-
-  annotlist = NULL;
+  memset(&annotation, 0, sizeof(struct annotationblock));
 
   inputfile = hdr->file_hdl;
   edfsignals = hdr->edfsignals;
@@ -216,22 +212,19 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
       {
         if(!status[16])  // rising edge detected
         {
-          annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
-          if(annotation == NULL)
+          annotation.file_num = hdr->file_num;
+          annotation.onset = (records_read * TIME_DIMENSION) + ((long long)(i / 3) * status_sample_duration);
+          annotation.onset += hdr->starttime_offset;
+          sprintf(annotation.annotation, "new epoch");
+          annotation.ident = (1 << ANNOT_ID_BS_TRIGGER);
+          if(edfplus_annotation_add_item(annot_list, annotation))
           {
             progress.reset();
             QMessageBox messagewindow(QMessageBox::Critical, "Error", "Malloc error (annotation).");
             messagewindow.exec();
-            hdr->annotationlist = annotlist;
             free(buf);
             return(1);
           }
-          annotation->file_num = hdr->file_num;
-          annotation->onset = (records_read * TIME_DIMENSION) + ((long long)(i / 3) * status_sample_duration);
-          annotation->onset += hdr->starttime_offset;
-          sprintf(annotation->annotation, "new epoch");
-          annotation->ident = (1 << ANNOT_ID_BS_TRIGGER);
-          edfplus_annotation_add_item(&annotlist, annotation);
 
           trigger_cnt++;
 
@@ -252,21 +245,18 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
         {
           if(!status[j])  // rising edge detected
           {
-            annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
-            if(annotation == NULL)
+            annotation.onset = (records_read * TIME_DIMENSION) + ((long long)(i / 3) * status_sample_duration);
+            annotation.onset += hdr->starttime_offset;
+            sprintf(annotation.annotation, "Trigger Input %i", j + 1);
+            annotation.ident = (1 << ANNOT_ID_BS_TRIGGER);
+            if(edfplus_annotation_add_item(annot_list, annotation))
             {
               progress.reset();
               QMessageBox messagewindow(QMessageBox::Critical, "Error", "Malloc error (annotation).");
               messagewindow.exec();
-              hdr->annotationlist = annotlist;
               free(buf);
               return(1);
             }
-            annotation->onset = (records_read * TIME_DIMENSION) + ((long long)(i / 3) * status_sample_duration);
-            annotation->onset += hdr->starttime_offset;
-            sprintf(annotation->annotation, "Trigger Input %i", j + 1);
-            annotation->ident = (1 << ANNOT_ID_BS_TRIGGER);
-            edfplus_annotation_add_item(&annotlist, annotation);
 
             trigger_cnt++;
 
@@ -285,8 +275,6 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
   }
 
   progress.reset();
-
-  hdr->annotationlist = annotlist;
 
   free(buf);
 

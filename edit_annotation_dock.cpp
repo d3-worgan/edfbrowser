@@ -37,8 +37,6 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(QWidget *w_parent)
 
   file_num = 0;
 
-  annotation = NULL;
-
   dockedit = new QDockWidget("Annotation editor", w_parent);
   dockedit->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
   dockedit->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
@@ -114,15 +112,13 @@ void UI_AnnotationEditwindow::open_close_dock(bool visible)
 {
   if(visible==true)
   {
-    annotation = mainwindow->edfheaderlist[file_num]->annotationlist;
-
     mainwindow->annot_editor_active = 1;
 
     mainwindow->show_annot_markers = 1;
 
     if(mainwindow->annotationlist_backup==NULL)
     {
-      mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->edfheaderlist[0]->annotationlist);
+      mainwindow->annotationlist_backup = edfplus_annotation_create_list_copy(&mainwindow->edfheaderlist[0]->annot_list);
     }
   }
   else
@@ -139,33 +135,35 @@ void UI_AnnotationEditwindow::open_close_dock(bool visible)
 
 void UI_AnnotationEditwindow::modifyButtonClicked()
 {
-  annotation = edfplus_annotation_item(&mainwindow->edfheaderlist[file_num]->annotationlist, annot_num);
+  struct annotation_list *annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
 
-  annotation->onset = annotEditGetOnset();
+  struct annotationblock *annot = edfplus_annotation_get_item(annot_list, annot_num);
+
+  annot->onset = annotEditGetOnset();
 
   if(posNegTimebox->currentIndex() == 1)
   {
-    annotation->onset = -(annotation->onset);
+    annot->onset = -(annot->onset);
   }
 
-  annotation->onset += mainwindow->edfheaderlist[file_num]->starttime_offset;
+  annot->onset += mainwindow->edfheaderlist[file_num]->starttime_offset;
 
   if(duration_spinbox->value()>0.0)
   {
-    snprintf(annotation->duration, 16, "%f", duration_spinbox->value());
+    snprintf(annot->duration, 16, "%f", duration_spinbox->value());
   }
   else
   {
-    annotation->duration[0] = 0;
+    annot->duration[0] = 0;
   }
 
-  strncpy(annotation->annotation, annot_descript_lineEdit->text().toUtf8().data(), MAX_ANNOTATION_LEN);
+  strncpy(annot->annotation, annot_descript_lineEdit->text().toUtf8().data(), MAX_ANNOTATION_LEN);
 
-  annotation->annotation[MAX_ANNOTATION_LEN] = 0;
+  annot->annotation[MAX_ANNOTATION_LEN] = 0;
 
-  annotation->modified = 1;
+  annot->modified = 1;
 
-  annotation->selected = 1;
+  annot->selected = 1;
 
   mainwindow->annotations_edited = 1;
 
@@ -178,15 +176,21 @@ void UI_AnnotationEditwindow::modifyButtonClicked()
 
 void UI_AnnotationEditwindow::deleteButtonClicked()
 {
-  edfplus_annotation_delete(&mainwindow->edfheaderlist[file_num]->annotationlist, annot_num);
+  int sz;
 
-  annotation = edfplus_annotation_item(&mainwindow->edfheaderlist[file_num]->annotationlist, annot_num);
+  struct annotation_list *annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
 
-  if(annotation!=NULL)
+  struct annotationblock *annot = edfplus_annotation_get_item(annot_list, annot_num);
+
+  edfplus_annotation_remove_item(annot_list, annot_num);
+
+  sz = edfplus_annotation_size(annot_list);
+
+  if(annot_num < sz)
   {
-    annotation->selected = 1;
+    annot->selected = 1;
 
-    annotation->jump = 1;
+    annot->jump = 1;
   }
 
   modifybutton->setEnabled(false);
@@ -206,35 +210,39 @@ void UI_AnnotationEditwindow::deleteButtonClicked()
 
 void UI_AnnotationEditwindow::createButtonClicked()
 {
-  annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
+  struct annotation_list *annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
 
-  annotation->onset = annotEditGetOnset();
+  struct annotationblock annotation;
+
+  memset(&annotation, 0, sizeof(struct annotationblock));
+
+  annotation.onset = annotEditGetOnset();
 
   if(posNegTimebox->currentIndex() == 1)
   {
-    annotation->onset = -(annotation->onset);
+    annotation.onset = -(annotation.onset);
   }
 
-  annotation->onset += mainwindow->edfheaderlist[file_num]->starttime_offset;
+  annotation.onset += mainwindow->edfheaderlist[file_num]->starttime_offset;
 
-  annotation->file_num = file_num;
+  annotation.file_num = file_num;
 
   if(duration_spinbox->value()>0.0)
   {
-    snprintf(annotation->duration, 16, "%f", duration_spinbox->value());
+    snprintf(annotation.duration, 16, "%f", duration_spinbox->value());
   }
   else
   {
-    annotation->duration[0] = 0;
+    annotation.duration[0] = 0;
   }
 
-  strncpy(annotation->annotation, annot_descript_lineEdit->text().toUtf8().data(), MAX_ANNOTATION_LEN);
+  strncpy(annotation.annotation, annot_descript_lineEdit->text().toUtf8().data(), MAX_ANNOTATION_LEN);
 
-  annotation->annotation[MAX_ANNOTATION_LEN] = 0;
+  annotation.annotation[MAX_ANNOTATION_LEN] = 0;
 
-  annotation->modified = 1;
+  annotation.modified = 1;
 
-  edfplus_annotation_add_item(&mainwindow->edfheaderlist[file_num]->annotationlist, annotation);
+  edfplus_annotation_add_item(annot_list, annotation);
 
   mainwindow->annotations_edited = 1;
 
@@ -316,11 +324,15 @@ void UI_AnnotationEditwindow::set_selected_annotation(int file_nr, int annot_nr)
 
   annot_num = annot_nr;
 
-  annotation = edfplus_annotation_item(&mainwindow->edfheaderlist[file_num]->annotationlist, annot_num);
+  struct annotation_list *annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
 
-  annot_descript_lineEdit->setText(QString::fromUtf8(annotation->annotation));
+  struct annotationblock *annot = edfplus_annotation_get_item(annot_list, annot_num);
 
-  l_tmp = annotation->onset - mainwindow->edfheaderlist[annotation->file_num]->starttime_offset;
+  annot = edfplus_annotation_get_item(annot_list, annot_num);
+
+  annot_descript_lineEdit->setText(QString::fromUtf8(annot->annotation));
+
+  l_tmp = annot->onset - mainwindow->edfheaderlist[annot->file_num]->starttime_offset;
 
   if(l_tmp < 0LL)
   {
@@ -346,9 +358,9 @@ void UI_AnnotationEditwindow::set_selected_annotation(int file_nr, int annot_nr)
   }
   onset_timeEdit->setTime(ta);
 
-  if(strlen(annotation->duration))
+  if(strlen(annot->duration))
   {
-    duration_spinbox->setValue(atof(annotation->duration));
+    duration_spinbox->setValue(atof(annot->duration));
   }
   else
   {
@@ -361,21 +373,27 @@ void UI_AnnotationEditwindow::set_selected_annotation(int file_nr, int annot_nr)
 }
 
 
-
-
 void UI_AnnotationEditwindow::set_selected_annotation(struct annotationblock *annot)
 {
+  int n;
+
   long long l_tmp;
 
   QTime ta;
 
-  annotation = annot;
+  struct annotation_list *annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
 
   file_num = annot->file_num;
 
-  annot_descript_lineEdit->setText(QString::fromUtf8(annotation->annotation));
+  n = edfplus_annotation_get_index(annot_list, annot);
 
-  l_tmp = annotation->onset - mainwindow->edfheaderlist[annotation->file_num]->starttime_offset;
+  if(n < 0)  return;
+
+  annot_num = n;
+
+  annot_descript_lineEdit->setText(QString::fromUtf8(annot->annotation));
+
+  l_tmp = annot->onset - mainwindow->edfheaderlist[annot->file_num]->starttime_offset;
 
   if(l_tmp < 0LL)
   {
@@ -401,9 +419,9 @@ void UI_AnnotationEditwindow::set_selected_annotation(struct annotationblock *an
   }
   onset_timeEdit->setTime(ta);
 
-  if(strlen(annotation->duration))
+  if(strlen(annot->duration))
   {
-    duration_spinbox->setValue(atof(annotation->duration));
+    duration_spinbox->setValue(atof(annot->duration));
   }
   else
   {
@@ -414,6 +432,14 @@ void UI_AnnotationEditwindow::set_selected_annotation(struct annotationblock *an
 
   deletebutton->setEnabled(false);
 }
+
+
+
+
+
+
+
+
 
 
 

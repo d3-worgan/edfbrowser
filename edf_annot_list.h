@@ -32,28 +32,49 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
-#include "global.h"
+#define MAX_ANNOTATION_LEN_II   512
 
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+struct annotationblock{
+        int file_num;
+        long long onset;
+        char duration[16];
+        char annotation[MAX_ANNOTATION_LEN_II + 1];
+        int modified;
+        int x_pos;
+        int selected;
+        int jump;
+        int hided;
+        int hided_in_list;
+        unsigned int ident;
+       };
 
-void edfplus_annotation_add_item(struct annotationblock **, struct annotationblock *);
-void edfplus_annotation_add_copy(struct annotationblock **, struct annotationblock *);
-int edfplus_annotation_count(struct annotationblock **);
-void edfplus_annotation_delete(struct annotationblock **, int);
-void edfplus_annotation_delete_list(struct annotationblock **);
-struct annotationblock * edfplus_annotation_item(struct annotationblock **, int);
-void edfplus_annotation_sort(struct annotationblock **);
-struct annotationblock * edfplus_annotation_copy_list(struct annotationblock **);
+struct annotation_list{
+        struct annotationblock *items;
+        int sz;
+        int used_sz;
+        int mem_sz;
+        int *idx;
+};
 
-int get_tal_timestamp_digit_cnt(struct edfhdrblock *);
-int get_tal_timestamp_decimal_cnt(struct edfhdrblock *);
-int get_max_annotation_strlen(struct annotationblock **);
 
+int edfplus_annotation_add_item(struct annotation_list *, struct annotationblock);
+int edfplus_annotation_size(struct annotation_list *);
+void edfplus_annotation_empty_list(struct annotation_list *);
+void edfplus_annotation_remove_item(struct annotation_list *, int);
+struct annotationblock * edfplus_annotation_get_item(struct annotation_list *, int);
+int edfplus_annotation_get_index(struct annotation_list *, struct annotationblock *);
+void edfplus_annotation_sort(struct annotation_list *, void (*)(void));
+struct annotation_list * edfplus_annotation_create_list_copy(struct annotation_list *);
+int edfplus_annotation_remove_duplicates(struct annotation_list *);
+int edfplus_annotation_get_max_annotation_strlen(struct annotation_list *);
+void edfplus_annotation_copy_list(struct annotation_list *, struct annotation_list *);
 
 #ifdef __cplusplus
 } /* extern "C" */

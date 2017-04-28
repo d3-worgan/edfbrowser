@@ -75,7 +75,7 @@ void UI_EDFDwindow::SelectFileButton()
   FILE *inputfile=NULL,
        *outputfile=NULL;
 
-  int i,
+  int i, j,
       file_number,
       offset,
       offset_2,
@@ -89,7 +89,8 @@ void UI_EDFDwindow::SelectFileButton()
       annot_signal_nr_2,
       annots_written,
       len,
-      progress_steps;
+      progress_steps,
+      annot_list_size;
 
   long long former_timestamp,
             next_timestamp,
@@ -104,8 +105,7 @@ void UI_EDFDwindow::SelectFileButton()
        *readbuf,
        *tal;
 
-  struct annotationblock *annotationlist[1],
-                         *annotblock;
+  struct annotationblock *annot_ptr;
 
   struct edfhdrblock *edfhdr=NULL;
 
@@ -163,11 +163,9 @@ void UI_EDFDwindow::SelectFileButton()
 
   EDF_annotations annotations_func;
 
-  annotationlist[0] = NULL;
-
   if(annotations_func.get_annotations(edfhdr, 0))
   {
-    free_annotations(annotationlist[0]);
+    edfplus_annotation_empty_list(&edfhdr->annot_list);
     free(edfhdr->edfparam);
     free(edfhdr);
     fclose(inputfile);
@@ -178,7 +176,7 @@ void UI_EDFDwindow::SelectFileButton()
 
   if(edfhdr->annots_not_read)
   {
-    free_annotations(annotationlist[0]);
+    edfplus_annotation_empty_list(&edfhdr->annot_list);
     free(edfhdr->edfparam);
     free(edfhdr);
     fclose(inputfile);
@@ -187,7 +185,7 @@ void UI_EDFDwindow::SelectFileButton()
     return;
   }
 
-  annotblock = annotationlist[0];
+  annot_list_size = edfplus_annotation_size(&edfhdr->annot_list);
 
 /***************** start conversion ******************************/
 
@@ -210,7 +208,7 @@ void UI_EDFDwindow::SelectFileButton()
   if(fileheader==NULL)
   {
     textEdit1->append("Malloc error, (fileheader).\n");
-    free_annotations(annotationlist[0]);
+    edfplus_annotation_empty_list(&edfhdr->annot_list);
     free(edfhdr->edfparam);
     free(edfhdr);
     fclose(inputfile);
@@ -222,7 +220,7 @@ void UI_EDFDwindow::SelectFileButton()
   if(readbuf==NULL)
   {
     textEdit1->append("Malloc error, (readbuf).\n");
-    free_annotations(annotationlist[0]);
+    edfplus_annotation_empty_list(&edfhdr->annot_list);
     free(edfhdr->edfparam);
     free(edfhdr);
     free(fileheader);
@@ -235,7 +233,7 @@ void UI_EDFDwindow::SelectFileButton()
   if(fread(fileheader, edfhdr->hdrsize, 1, inputfile) != 1)
   {
     textEdit1->append("Read error.\n");
-    free_annotations(annotationlist[0]);
+    edfplus_annotation_empty_list(&edfhdr->annot_list);
     free(edfhdr->edfparam);
     free(edfhdr);
     free(fileheader);
@@ -269,7 +267,7 @@ void UI_EDFDwindow::SelectFileButton()
   if(outputfile==NULL)
   {
     textEdit1->append("Error, can not open outputfile for writing.\n");
-    free_annotations(annotationlist[0]);
+    edfplus_annotation_empty_list(&edfhdr->annot_list);
     free(edfhdr->edfparam);
     free(edfhdr);
     free(fileheader);
@@ -282,7 +280,7 @@ void UI_EDFDwindow::SelectFileButton()
   if(fwrite(fileheader, edfhdr->hdrsize, 1, outputfile) != 1)
   {
     textEdit1->append("Write error.\n");
-    free_annotations(annotationlist[0]);
+    edfplus_annotation_empty_list(&edfhdr->annot_list);
     free(edfhdr->edfparam);
     free(edfhdr);
     free(fileheader);
@@ -339,7 +337,7 @@ void UI_EDFDwindow::SelectFileButton()
     {
       progress.reset();
       textEdit1->append("Read error.\n");
-      free_annotations(annotationlist[0]);
+      edfplus_annotation_empty_list(&edfhdr->annot_list);
       free(edfhdr->edfparam);
       free(edfhdr);
       free(fileheader);
@@ -384,80 +382,75 @@ void UI_EDFDwindow::SelectFileButton()
 
       write_values_to_hdr(outputfile, new_hdr_timestamp, datarecords_written, edfhdr);
 
-      annotblock = annotationlist[0];
-
       annots_written = 0;
 
-      if(annotblock!=NULL)
+      for(j=0; j<annot_list_size; j++)
       {
-        while(annotblock!=NULL)
+        annot_ptr = edfplus_annotation_get_item(&edfhdr->annot_list, j);
+
+        if(((annot_ptr->onset>=chunk_starttime)||(file_number==1))
+           &&(annot_ptr->onset<chunk_endtime)
+           &&(annots_written<datarecords_written))
         {
-          if(((annotblock->onset>=chunk_starttime)||(file_number==1))
-             &&(annotblock->onset<chunk_endtime)
-             &&(annots_written<datarecords_written))
+          fseeko(outputfile, (long long)(edfhdr->hdrsize + (annots_written * edfhdr->recordsize) + offset), SEEK_SET);
+
+          for(cnt=1; ; cnt++)
           {
-            fseeko(outputfile, (long long)(edfhdr->hdrsize + (annots_written * edfhdr->recordsize) + offset), SEEK_SET);
-
-            for(cnt=1; ; cnt++)
-            {
-              if(fgetc(outputfile)==0)  break;
-            }
-
-            fseeko(outputfile, 0LL, SEEK_CUR);
-
-            cnt += fprintf(outputfile, "+%i", (int)((annotblock->onset - new_hdr_timestamp) / TIME_DIMENSION));
-
-            if(annotblock->onset%TIME_DIMENSION)
-            {
-              cnt += fprintf(outputfile, ".%07i", (int)((annotblock->onset - new_hdr_timestamp) % TIME_DIMENSION));
-
-              fseeko(outputfile, -1LL, SEEK_CUR);
-
-              while(fgetc(outputfile)=='0')
-              {
-                fseeko(outputfile, -2LL, SEEK_CUR);
-
-                cnt--;
-              }
-            }
-
-            fseeko(outputfile, 0LL, SEEK_CUR);
-
-            if(annotblock->duration[0]!=0)
-            {
-              fputc(21, outputfile);
-
-              cnt++;
-
-              cnt += fprintf(outputfile, "%s", annotblock->duration);
-            }
-
-            fputc(20, outputfile);
-
-            cnt++;
-
-            for(i = 0; i < (annot_signal_size - cnt - 2); i++)
-            {
-             if(annotblock->annotation[i]==0)  break;
-
-             fputc(annotblock->annotation[i], outputfile);
-
-             cnt++;
-            }
-
-            fputc(20, outputfile);
-
-            cnt++;
-
-            for(i = cnt; i < annot_signal_size; i++)
-            {
-              fputc(0, outputfile);
-            }
-
-            annots_written++;
+            if(fgetc(outputfile)==0)  break;
           }
 
-          annotblock = annotblock->next_annotation;
+          fseeko(outputfile, 0LL, SEEK_CUR);
+
+          cnt += fprintf(outputfile, "+%i", (int)((annot_ptr->onset - new_hdr_timestamp) / TIME_DIMENSION));
+
+          if(annot_ptr->onset%TIME_DIMENSION)
+          {
+            cnt += fprintf(outputfile, ".%07i", (int)((annot_ptr->onset - new_hdr_timestamp) % TIME_DIMENSION));
+
+            fseeko(outputfile, -1LL, SEEK_CUR);
+
+            while(fgetc(outputfile)=='0')
+            {
+              fseeko(outputfile, -2LL, SEEK_CUR);
+
+              cnt--;
+            }
+          }
+
+          fseeko(outputfile, 0LL, SEEK_CUR);
+
+          if(annot_ptr->duration[0]!=0)
+          {
+            fputc(21, outputfile);
+
+            cnt++;
+
+            cnt += fprintf(outputfile, "%s", annot_ptr->duration);
+          }
+
+          fputc(20, outputfile);
+
+          cnt++;
+
+          for(i = 0; i < (annot_signal_size - cnt - 2); i++)
+          {
+           if(annot_ptr->annotation[i]==0)  break;
+
+           fputc(annot_ptr->annotation[i], outputfile);
+
+           cnt++;
+          }
+
+          fputc(20, outputfile);
+
+          cnt++;
+
+          for(i = cnt; i < annot_signal_size; i++)
+          {
+            fputc(0, outputfile);
+          }
+
+          annots_written++;
         }
       }
 
@@ -494,7 +487,7 @@ void UI_EDFDwindow::SelectFileButton()
       {
         progress.reset();
         textEdit1->append("Error, can not open outputfile for writing.\n");
-        free_annotations(annotationlist[0]);
+        edfplus_annotation_empty_list(&edfhdr->annot_list);
         free(edfhdr->edfparam);
         free(edfhdr);
         free(fileheader);
@@ -508,7 +501,7 @@ void UI_EDFDwindow::SelectFileButton()
       {
         progress.reset();
         textEdit1->append("Write error.\n");
-        free_annotations(annotationlist[0]);
+        edfplus_annotation_empty_list(&edfhdr->annot_list);
         free(edfhdr->edfparam);
         free(edfhdr);
         free(fileheader);
@@ -546,7 +539,7 @@ void UI_EDFDwindow::SelectFileButton()
     {
       progress.reset();
       textEdit1->append("Write error.\n");
-      free_annotations(annotationlist[0]);
+      edfplus_annotation_empty_list(&edfhdr->annot_list);
       free(edfhdr->edfparam);
       free(edfhdr);
       free(fileheader);
@@ -564,82 +557,77 @@ void UI_EDFDwindow::SelectFileButton()
 
   write_values_to_hdr(outputfile, new_hdr_timestamp, datarecords_written, edfhdr);
 
-  annotblock = annotationlist[0];
-
   annots_written = 0;
 
-  if(annotblock!=NULL)
+  for(j=0; j<annot_list_size; j++)
   {
-    while(annotblock!=NULL)
+    annot_ptr = edfplus_annotation_get_item(&edfhdr->annot_list, j);
+
+    if((annot_ptr->onset>=chunk_starttime)&&(annots_written<datarecords_written))
     {
-      if((annotblock->onset>=chunk_starttime)&&(annots_written<datarecords_written))
+      fseeko(outputfile, (long long)(edfhdr->hdrsize + (annots_written * edfhdr->recordsize) + offset), SEEK_SET);
+
+      for(cnt=1; ; cnt++)
       {
-        fseeko(outputfile, (long long)(edfhdr->hdrsize + (annots_written * edfhdr->recordsize) + offset), SEEK_SET);
-
-        for(cnt=1; ; cnt++)
-        {
-          if(fgetc(outputfile)==0)  break;
-        }
-
-        fseeko(outputfile, 0LL, SEEK_CUR);
-
-        cnt += fprintf(outputfile, "+%i", (int)((annotblock->onset - new_hdr_timestamp) / TIME_DIMENSION));
-
-        if(annotblock->onset%TIME_DIMENSION)
-        {
-          cnt += fprintf(outputfile, ".%07i", (int)((annotblock->onset - new_hdr_timestamp) % TIME_DIMENSION));
-
-          fseeko(outputfile, -1LL, SEEK_CUR);
-
-          while(fgetc(outputfile)=='0')
-          {
-            fseeko(outputfile, -2LL, SEEK_CUR);
-
-            cnt--;
-          }
-        }
-
-        fseeko(outputfile, 0LL, SEEK_CUR);
-
-        if(annotblock->duration[0]!=0)
-        {
-          fputc(21, outputfile);
-
-          cnt++;
-
-          cnt += fprintf(outputfile, "%s", annotblock->duration);
-        }
-
-        fputc(20, outputfile);
-
-        cnt++;
-
-        for(i = 0; i < (annot_signal_size - cnt - 2); i++)
-        {
-          if(annotblock->annotation[i]==0)  break;
-
-          fputc(annotblock->annotation[i], outputfile);
-
-          cnt++;
-        }
-
-        fputc(20, outputfile);
-
-        cnt++;
-
-        for(i = cnt; i < annot_signal_size; i++)
-        {
-          fputc(0, outputfile);
-        }
-
-        annots_written++;
+        if(fgetc(outputfile)==0)  break;
       }
 
-      annotblock = annotblock->next_annotation;
+      fseeko(outputfile, 0LL, SEEK_CUR);
+
+      cnt += fprintf(outputfile, "+%i", (int)((annot_ptr->onset - new_hdr_timestamp) / TIME_DIMENSION));
+
+      if(annot_ptr->onset%TIME_DIMENSION)
+      {
+        cnt += fprintf(outputfile, ".%07i", (int)((annot_ptr->onset - new_hdr_timestamp) % TIME_DIMENSION));
+
+        fseeko(outputfile, -1LL, SEEK_CUR);
+
+        while(fgetc(outputfile)=='0')
+        {
+          fseeko(outputfile, -2LL, SEEK_CUR);
+
+          cnt--;
+        }
+      }
+
+      fseeko(outputfile, 0LL, SEEK_CUR);
+
+      if(annot_ptr->duration[0]!=0)
+      {
+        fputc(21, outputfile);
+
+        cnt++;
+
+        cnt += fprintf(outputfile, "%s", annot_ptr->duration);
+      }
+
+      fputc(20, outputfile);
+
+      cnt++;
+
+      for(i = 0; i < (annot_signal_size - cnt - 2); i++)
+      {
+        if(annot_ptr->annotation[i]==0)  break;
+
+        fputc(annot_ptr->annotation[i], outputfile);
+
+        cnt++;
+      }
+
+      fputc(20, outputfile);
+
+      cnt++;
+
+      for(i = cnt; i < annot_signal_size; i++)
+      {
+        fputc(0, outputfile);
+      }
+
+      annots_written++;
     }
   }
 
-  free_annotations(annotationlist[0]);
+  edfplus_annotation_empty_list(&edfhdr->annot_list);
   free(edfhdr->edfparam);
   free(edfhdr);
   free(fileheader);
@@ -763,22 +751,6 @@ long long UI_EDFDwindow::get_datarecord_timestamp(char *str)
 
 
 
-void UI_EDFDwindow::free_annotations(struct annotationblock *annot)
-{
-  if(annot==NULL)
-  {
-    return;
-  }
-
-  while(annot->next_annotation)
-  {
-    annot = annot->next_annotation;
-
-    free(annot->former_annotation);
-  }
-
-  free(annot);
-}
 
 
 

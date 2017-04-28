@@ -1414,7 +1414,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   struct signalcompblock **signalcomp;
 
-  struct annotationblock *annot;
+  struct annotation_list *annot_list;
 
   QFont paintersfont;
 
@@ -1866,6 +1866,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     }
   }
 
+  struct annotationblock *annot;
+
   if(mainwindow->show_annot_markers)
   {
     annot_marker_pen->setColor(annot_marker_color);
@@ -1881,12 +1883,12 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     for(i=0; i<mainwindow->files_open; i++)
     {
-      annot = mainwindow->edfheaderlist[i]->annotationlist;
+      annot_list = &mainwindow->edfheaderlist[i]->annot_list;
 
-      j = 0;
-
-      while(annot!=NULL)
+      for(j=0; j<annot_list->sz; j++)
       {
+        annot = edfplus_annotation_get_item(annot_list, j);
+
         l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
 
         if((l_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) && (!annot->hided) && (!annot->hided_in_list))
@@ -1968,10 +1970,6 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             }
           }
         }
-
-        annot = annot->next_annotation;
-
-        j++;
       }
     }
   }

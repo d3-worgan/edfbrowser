@@ -62,6 +62,7 @@
 #include "active_file_chooser.h"
 #include "edf_annot_list.h"
 #include "ravg_filter.h"
+#include "edf_helper.h"
 
 
 #define REDUCER_MAX_AA_FILTERS   4

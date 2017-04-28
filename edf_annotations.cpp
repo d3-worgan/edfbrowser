@@ -28,8 +28,13 @@
 
 
 #include "edf_annotations.h"
-#include "edf_annot_list_ii.h"
 
+
+
+static void process_events(void)
+{
+  qApp->processEvents();
+}
 
 
 int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_trigger_signal)
@@ -78,10 +83,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
 
   struct edfparamblock *edfparam;
 
-  struct annotationblock *new_annotation=NULL,
-                         *temp_annotation;
-
-  struct annotationblock_ii annotblock_ii;
+  struct annotationblock annotblock_ii;
 
   inputfile = edf_hdr->file_hdl;
   edfsignals = edf_hdr->edfsignals;
@@ -423,8 +425,19 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
             {
               if(n >= 0)
               {
-                new_annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
-                if(new_annotation==NULL)
+                memset(&annotblock_ii, 0, sizeof(annotationblock));
+                annotblock_ii.file_num = edf_hdr->file_num;
+                annotblock_ii.onset = get_long_time(time_in_txt);
+                for(j=0; j<n; j++)
+                {
+                  if(j==MAX_ANNOTATION_LEN)  break;
+                  annotblock_ii.annotation[j] = scratchpad[j];
+                }
+                annotblock_ii.annotation[j] = 0;
+
+                if(duration)  strcpy(annotblock_ii.duration, duration_in_txt);
+
+                if(edfplus_annotation_add_item(&edf_hdr->annot_list, annotblock_ii))
                 {
                   progress.reset();
                   QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred while reading annotations.");
@@ -435,54 +448,6 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
                   free(duration_in_txt);
                   return(1);
                 }
-
-                new_annotation->next_annotation = NULL;
-                new_annotation->file_num = edf_hdr->file_num;
-
-                new_annotation->annotation[0] = 0;
-
-                if(duration)  strcpy(new_annotation->duration, duration_in_txt);
-                else  new_annotation->duration[0] = 0;
-
-                for(j=0; j<n; j++)
-                {
-                  if(j==MAX_ANNOTATION_LEN)  break;
-                  new_annotation->annotation[j] = scratchpad[j];
-                }
-                new_annotation->annotation[j] = 0;
-
-                new_annotation->file_num = edf_hdr->file_num;
-
-                new_annotation->onset = get_long_time(time_in_txt);
-
-                if(edf_hdr->annotationlist!=NULL)
-                {
-                  temp_annotation = edf_hdr->annotationlist;
-                  while(temp_annotation->next_annotation)  temp_annotation = temp_annotation->next_annotation;
-
-                  new_annotation->former_annotation = temp_annotation;
-                  temp_annotation->next_annotation = new_annotation;
-                }
-                else
-                {
-                  new_annotation->former_annotation = NULL;
-                  edf_hdr->annotationlist = new_annotation;
-                }
-
-//                 memset(&annotblock_ii, 0, sizeof(annotationblock_ii));
-//                 annotblock_ii.file_num = edf_hdr->file_num;
-//                 annotblock_ii.onset = get_long_time(time_in_txt);
-//                 for(j=0; j<n; j++)
-//                 {
-//                   if(j==MAX_ANNOTATION_LEN)  break;
-//                   annotblock_ii.annotation[j] = scratchpad[j];
-//                 }
-//                 annotblock_ii.annotation[j] = 0;
-//
-//                 if(edfplus_annotation_ii_add_item(&edf_hdr->annot_list, annotblock_ii))
-//                 {
-//                   printf("error: edfplus_annotation_ii_add_item()\n");
-//                 }
               }
             }
 
@@ -574,8 +539,14 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
             {
               nk_triggers_cnt++;
 
-              new_annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
-              if(new_annotation==NULL)
+              memset(&annotblock_ii, 0, sizeof(annotationblock));
+              annotblock_ii.file_num = edf_hdr->file_num;
+              annotblock_ii.onset = ((long long)i * data_record_duration) + ((long long)k * nk_trigger_sample_duration);
+              annotblock_ii.onset += edf_hdr->starttime_offset;
+              strcpy(annotblock_ii.annotation, nk_triggerlabel[j]);
+              annotblock_ii.ident = (1 << ANNOT_ID_NK_TRIGGER);
+
+              if(edfplus_annotation_add_item(&edf_hdr->annot_list, annotblock_ii))
               {
                 progress.reset();
                 QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred while reading annotations.");
@@ -585,30 +556,6 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
                 free(time_in_txt);
                 free(duration_in_txt);
                 return(1);
-              }
-
-              new_annotation->file_num = edf_hdr->file_num;
-              new_annotation->next_annotation = NULL;
-              strcpy(new_annotation->annotation, nk_triggerlabel[j]);
-
-              new_annotation->onset = ((long long)i * data_record_duration) + ((long long)k * nk_trigger_sample_duration);
-
-              new_annotation->onset += edf_hdr->starttime_offset;
-
-              new_annotation->ident = (1 << ANNOT_ID_NK_TRIGGER);
-
-              if(edf_hdr->annotationlist!=NULL)
-              {
-                temp_annotation = edf_hdr->annotationlist;
-                while(temp_annotation->next_annotation)  temp_annotation = temp_annotation->next_annotation;
-
-                new_annotation->former_annotation = temp_annotation;
-                temp_annotation->next_annotation = new_annotation;
-              }
-              else
-              {
-                new_annotation->former_annotation = NULL;
-                edf_hdr->annotationlist = new_annotation;
               }
             }
           }
@@ -621,7 +568,13 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
     }
   }
 
-  edfplus_annotation_sort(&edf_hdr->annotationlist);
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+  qApp->processEvents();
+
+  edfplus_annotation_sort(&edf_hdr->annot_list, &process_events);
+
+  QApplication::restoreOverrideCursor();
 
   progress.reset();
 
@@ -632,8 +585,6 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
 
   return(0);
 }
-
-
 
 
 int EDF_annotations::is_duration_number(char *str)

@@ -84,25 +84,8 @@
 #include "spike_filter.h"
 #include "ecg_filter.h"
 #include "z_ratio_filter.h"
-#include "edf_annot_list_ii.h"
+#include "edf_annot_list.h"
 
-
-
-struct annotationblock{
-        int file_num;
-        long long onset;
-        char duration[16];
-        char annotation[MAX_ANNOTATION_LEN + 1];
-        struct annotationblock *former_annotation;
-        struct annotationblock *next_annotation;
-        int modified;
-        int x_pos;
-        int selected;
-        int jump;
-        int hided;
-        int hided_in_list;
-        unsigned int ident;
-       };
 
 struct edfparamblock{
         char   label[17];
@@ -163,8 +146,7 @@ struct edfhdrblock{
         int       annots_not_read;
         int       recording_len_sec;
         struct edfparamblock *edfparam;
-        struct annotationblock *annotationlist;
-        struct annotation_list_ii annot_list;
+        struct annotation_list annot_list;
       };
 
 struct signalcompblock{

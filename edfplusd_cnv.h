@@ -54,6 +54,7 @@
 #include "check_edf_file.h"
 #include "edf_annotations.h"
 #include "utils.h"
+#include "edf_annot_list.h"
 
 
 
@@ -80,7 +81,6 @@ char *recent_opendir,
 
 long long get_datarecord_timestamp(char *);
 void write_values_to_hdr(FILE *, long long, int, struct edfhdrblock *);
-void free_annotations(struct annotationblock *);
 
 private slots:
 

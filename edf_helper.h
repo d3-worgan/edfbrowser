@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017 Teunis van Beelen
+* Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017 Teunis van Beelen
 *
 * Email: teuniz@gmail.com
 *
@@ -26,43 +26,31 @@
 */
 
 
+#ifndef EDFPLUS_HELPER_H
+#define EDFPLUS_HELPER_H
 
 
-#ifndef PRINT_SCREEN_TO_BDF_H
-#define PRINT_SCREEN_TO_BDF_H
-
-
-
-#include <QtGlobal>
-#include <QApplication>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QString>
-#include <QCursor>
-
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "global.h"
-#include "mainwindow.h"
-#include "filter.h"
-#include "utc_date_time.h"
-#include "edf_helper.h"
-#include "edf_annot_list.h"
-
-#include "third_party/fidlib/fidlib.h"
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-class UI_Mainwindow;
+int edfplus_annotation_get_tal_timestamp_digit_cnt(struct edfhdrblock *);
+int edfplus_annotation_get_tal_timestamp_decimal_cnt(struct edfhdrblock *);
+
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
+
+#endif
 
 
 
-void print_screen_to_bdf(UI_Mainwindow *);
-
-
-
-#endif // PRINT_SCREEN_TO_BDF_H
 
 

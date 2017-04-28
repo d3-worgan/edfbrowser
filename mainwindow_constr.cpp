@@ -677,7 +677,7 @@ UI_Mainwindow::UI_Mainwindow()
   toolsmenu->addSeparator();
   toolsmenu->addAction("Header editor", this, SLOT(edit_header()));
   toolsmenu->addAction("Reduce signals, duration or samplerate", this, SLOT(reduce_signals()));
-  toolsmenu->addAction("Remove duplicates in annotations", this, SLOT(edfplus_annotation_remove_duplicates()));
+  toolsmenu->addAction("Remove duplicates in annotations", this, SLOT(edfplus_remove_duplicate_annotations()));
   toolsmenu->addSeparator();
   toolsmenu->addAction("Import annotations/events", this, SLOT(import_annotations()));
   toolsmenu->addAction("Export annotations/events", this, SLOT(export_annotations()));

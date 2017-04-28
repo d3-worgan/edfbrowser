@@ -33,7 +33,7 @@
 
 int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrblock *hdr)
 {
-  int i, j, k, n, p=0,
+  int i, j, k, n, p=0, r,
       new_edfsignals=0,
       signalslist[MAXSIGNALS],
       datarecords,
@@ -44,7 +44,8 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
       timestamp_digits,
       annots_per_datrec,
       space,
-      progress_steps;
+      progress_steps,
+      annot_cnt;
 
   char *readbuf,
        scratchpad[256],
@@ -53,8 +54,6 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
   long long time;
 
   FILE *inputfile;
-
-  struct annotationblock *annot;
 
   inputfile = hdr->file_hdl;
 
@@ -72,23 +71,25 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
 
   time = (hdr->datarecords * hdr->long_data_record_duration) / TIME_DIMENSION;
 
-  timestamp_decimals = get_tal_timestamp_decimal_cnt(hdr);
+  timestamp_decimals = edfplus_annotation_get_tal_timestamp_decimal_cnt(hdr);
   if(timestamp_decimals < 0)
   {
     return(1);
   }
 
-  timestamp_digits = get_tal_timestamp_digit_cnt(hdr);
+  timestamp_digits = edfplus_annotation_get_tal_timestamp_digit_cnt(hdr);
   if(timestamp_digits < 0)
   {
     return(1);
   }
 
-  annot = hdr->annotationlist;
+  struct annotation_list *annot_list = &hdr->annot_list;
 
-  annot_len = get_max_annotation_strlen(&annot);
+  struct annotationblock *annot_ptr;
 
-  i = edfplus_annotation_count(&annot);
+  annot_len = edfplus_annotation_get_max_annotation_strlen(annot_list);
+
+  i = edfplus_annotation_size(annot_list);
 
   annots_per_datrec = i / datarecords;
 
@@ -414,9 +415,11 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
 
   fseeko(inputfile, (long long)(hdr->hdrsize), SEEK_SET);
 
-  annot = hdr->annotationlist;
-
   time = hdr->starttime_offset;
+
+  annot_cnt = edfplus_annotation_size(annot_list);
+
+  r = 0;
 
   for(k=0; k<datarecords; k++)
   {
@@ -511,26 +514,32 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
     annot_buf[p++] = 20;
     annot_buf[p++] = 0;
 
-    if(annot!=NULL)
+    if(r < annot_cnt)
     {
       for(i=0; i<annots_per_datrec; i++)
       {
-        if(annot!=NULL)
+        if(r < annot_cnt)
         {
-          if(annot->onset<0)
+          annot_ptr = edfplus_annotation_get_item(annot_list, r);
+
+          if(annot_ptr == NULL)  break;
+
+          r++;
+
+          if(annot_ptr->onset<0)
           {
 #ifdef Q_OS_WIN32
-            p += __mingw_snprintf(annot_buf + p, 20, "-%lli.%07lli", -(annot->onset / TIME_DIMENSION), -(annot->onset % TIME_DIMENSION));
+            p += __mingw_snprintf(annot_buf + p, 20, "-%lli.%07lli", -(annot_ptr->onset / TIME_DIMENSION), -(annot_ptr->onset % TIME_DIMENSION));
 #else
-            p += snprintf(annot_buf + p, 20, "-%lli.%07lli", -(annot->onset / TIME_DIMENSION), -(annot->onset % TIME_DIMENSION));
+            p += snprintf(annot_buf + p, 20, "-%lli.%07lli", -(annot_ptr->onset / TIME_DIMENSION), -(annot_ptr->onset % TIME_DIMENSION));
 #endif
           }
           else
           {
 #ifdef Q_OS_WIN32
-            p += __mingw_snprintf(annot_buf + p, 20, "+%lli.%07lli", annot->onset / TIME_DIMENSION, annot->onset % TIME_DIMENSION);
+            p += __mingw_snprintf(annot_buf + p, 20, "+%lli.%07lli", annot_ptr->onset / TIME_DIMENSION, annot_ptr->onset % TIME_DIMENSION);
 #else
-            p += snprintf(annot_buf + p, 20, "+%lli.%07lli", annot->onset / TIME_DIMENSION, annot->onset % TIME_DIMENSION);
+            p += snprintf(annot_buf + p, 20, "+%lli.%07lli", annot_ptr->onset / TIME_DIMENSION, annot_ptr->onset % TIME_DIMENSION);
 #endif
           }
 
@@ -552,21 +561,19 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
             }
           }
 
-          if(annot->duration[0])
+          if(annot_ptr->duration[0])
           {
             annot_buf[p++] = 21;
 
-            p += sprintf(annot_buf + p, "%s", annot->duration);
+            p += sprintf(annot_buf + p, "%s", annot_ptr->duration);
           }
 
           annot_buf[p++] = 20;
 
-          p += sprintf(annot_buf + p, "%s", annot->annotation);
+          p += sprintf(annot_buf + p, "%s", annot_ptr->annotation);
 
           annot_buf[p++] = 20;
           annot_buf[p++] = 0;
-
-          annot = annot->next_annotation;
         }
       }
     }

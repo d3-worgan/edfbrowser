@@ -89,8 +89,6 @@ public:
 
 private:
 
-  struct annotationblock *annotation;
-
   int file_num,
       annot_num;
 

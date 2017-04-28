@@ -56,7 +56,6 @@ public:
 
   int get_annotations(struct edfhdrblock *, int);
 
-
 private:
 
   int is_duration_number(char *);
@@ -65,7 +64,6 @@ private:
   long long get_long_time(char *);
 
   int check_device(char *);
-
 };
 
 

@@ -124,7 +124,7 @@ void UI_ECGExport::Export_RR_intervals()
 
   QList<QListWidgetItem *> selectedlist;
 
-  struct annotationblock *annotation;
+  struct annotationblock annotation;
 
 
   selectedlist = list->selectedItems();
@@ -267,17 +267,11 @@ void UI_ECGExport::Export_RR_intervals()
         l_time += (mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime - signalcomp->edfhdr->viewtime);
       }
 
-      annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
-      if(annotation == NULL)
-      {
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
-        messagewindow.exec();
-        return;
-      }
-      annotation->onset = l_time;
-      strncpy(annotation->annotation, "R-onset", MAX_ANNOTATION_LEN);
-      annotation->annotation[MAX_ANNOTATION_LEN] = 0;
-      edfplus_annotation_add_item(&mainwindow->edfheaderlist[filenum]->annotationlist, annotation);
+      memset(&annotation, 0, sizeof(struct annotationblock));
+      annotation.onset = l_time;
+      strncpy(annotation.annotation, "R-onset", MAX_ANNOTATION_LEN);
+      annotation.annotation[MAX_ANNOTATION_LEN] = 0;
+      edfplus_annotation_add_item(&mainwindow->edfheaderlist[filenum]->annot_list, annotation);
     }
 
     if(mainwindow->annotations_dock[signalcomp->filenum] == NULL)
@@ -286,13 +280,13 @@ void UI_ECGExport::Export_RR_intervals()
 
       mainwindow->addDockWidget(Qt::RightDockWidgetArea, mainwindow->annotations_dock[filenum]->docklist, Qt::Vertical);
 
-      if(!mainwindow->edfheaderlist[filenum]->annotationlist)
+      if(edfplus_annotation_size(&mainwindow->edfheaderlist[filenum]->annot_list) < 1)
       {
         mainwindow->annotations_dock[filenum]->docklist->hide();
       }
     }
 
-    if(mainwindow->edfheaderlist[filenum]->annotationlist)
+    if(edfplus_annotation_size(&mainwindow->edfheaderlist[filenum]->annot_list) > 0)
     {
       mainwindow->annotations_dock[filenum]->docklist->show();
 

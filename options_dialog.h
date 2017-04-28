@@ -67,7 +67,7 @@
 #include "colordialog.h"
 #include "special_button.h"
 #include "signalcurve.h"
-
+#include "edf_annot_list.h"
 
 
 class UI_Mainwindow;

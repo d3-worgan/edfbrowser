@@ -215,7 +215,9 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
   FILE *annotationfile=NULL;
 
-  struct annotationblock *annot, *annot_list;
+  struct annotation_list *annot_list;
+
+  struct annotationblock *annot;
 
   struct edfhdrblock *hdr;
 
@@ -367,7 +369,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
     return;
   }
 
-  annot_list = edfplus_annotation_copy_list(&mainwindow->edfheaderlist[n]->annotationlist);
+  annot_list = edfplus_annotation_create_list_copy(&mainwindow->edfheaderlist[n]->annot_list);
 
   if(mergeRadioButton->isChecked() == true)
   {
@@ -375,23 +377,23 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
     {
       if(i != mainwindow->sel_viewtime)
       {
-        annot_cnt = edfplus_annotation_count(&mainwindow->edfheaderlist[i]->annotationlist);
+        annot_cnt = edfplus_annotation_size(&mainwindow->edfheaderlist[i]->annot_list);
 
         for(j=0; j < annot_cnt; j++)
         {
-          edfplus_annotation_add_copy(&annot_list, edfplus_annotation_item(&mainwindow->edfheaderlist[i]->annotationlist, j));
+          edfplus_annotation_add_item(annot_list, *(edfplus_annotation_get_item(&mainwindow->edfheaderlist[i]->annot_list, j)));
 
-          annot = edfplus_annotation_item(&annot_list, edfplus_annotation_count(&annot_list) - 1);
+          annot = edfplus_annotation_get_item(annot_list, edfplus_annotation_size(annot_list) - 1);
 
           annot->onset -= (mainwindow->edfheaderlist[i]->viewtime - mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime);
         }
       }
     }
 
-    edfplus_annotation_sort(&annot_list);
+    edfplus_annotation_sort(annot_list, NULL);
   }
 
-  annot_cnt = edfplus_annotation_count(&annot_list);
+  annot_cnt = edfplus_annotation_size(annot_list);
 
 ///////////////////////////// CSV (text) export //////////////////////////////////////
 
@@ -403,7 +405,8 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open annotationfile for writing.");
       messagewindow.exec();
       ExportAnnotsDialog->close();
-      edfplus_annotation_delete_list(&annot_list);
+      edfplus_annotation_empty_list(annot_list);
+      free(annot_list);
       return;
     }
 
@@ -416,9 +419,9 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       fprintf(annotationfile, "Onset%cAnnotation\n", separator);
     }
 
-    for(j=0; j < annot_cnt; j++)
+    for(j=0; j<annot_cnt; j++)
     {
-      annot = edfplus_annotation_item(&annot_list, j);
+      annot = edfplus_annotation_get_item(annot_list, j);
       if(annot == NULL)
       {
         break;
@@ -547,7 +550,8 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
     fclose(annotationfile);
 
-    edfplus_annotation_delete_list(&annot_list);
+    edfplus_annotation_empty_list(annot_list);
+    free(annot_list);
 
     QMessageBox messagewindow(QMessageBox::Information, "Ready", "Done.");
     messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
@@ -568,7 +572,8 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open annotationfile for writing.");
       messagewindow.exec();
       ExportAnnotsDialog->close();
-      edfplus_annotation_delete_list(&annot_list);
+      edfplus_annotation_empty_list(annot_list);
+      free(annot_list);
       return;
     }
 
@@ -585,7 +590,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
     for(j=0; j < annot_cnt; j++)
     {
-      annot = edfplus_annotation_item(&annot_list, j);
+      annot = edfplus_annotation_get_item(annot_list, j);
       if(annot == NULL)
       {
         break;
@@ -620,7 +625,8 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
     fclose(annotationfile);
 
-    edfplus_annotation_delete_list(&annot_list);
+    edfplus_annotation_empty_list(annot_list);
+    free(annot_list);
 
     QMessageBox messagewindow(QMessageBox::Information, "Ready", "Done.");
     messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
@@ -656,7 +662,8 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
       messagewindow.exec();
-      edfplus_annotation_delete_list(&annot_list);
+      edfplus_annotation_empty_list(annot_list);
+      free(annot_list);
       ExportAnnotsDialog->close();
       return;
     }
@@ -709,7 +716,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
     for(j=0; j < annot_cnt; j++)
     {
-      annot = edfplus_annotation_item(&annot_list, j);
+      annot = edfplus_annotation_get_item(annot_list, j);
       if(annot == NULL)
       {
         break;
@@ -773,7 +780,8 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       messagewindow.exec();
     }
 
-    edfplus_annotation_delete_list(&annot_list);
+    edfplus_annotation_empty_list(annot_list);
+    free(annot_list);
 
     QMessageBox messagewindow(QMessageBox::Information, "Ready", "Done.");
     messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));

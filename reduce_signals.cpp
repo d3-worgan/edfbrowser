@@ -555,15 +555,16 @@ void UI_ReduceSignalsWindow::StartConversion()
       timestamp_digits=0,
       timestamp_decimals=0,
       annot_len,
+      annot_cnt=0,
       tallen=0,
       len,
-      annot_cnt,
       annots_per_datrec=0,
       smplrt,
       tmp,
       val,
       progress_steps,
-      datrecs_processed;
+      datrecs_processed,
+      annot_list_sz=0;
 
   char *readbuf=NULL,
        scratchpad[256];
@@ -578,9 +579,10 @@ void UI_ReduceSignalsWindow::StartConversion()
 
   struct date_time_struct dts;
 
-  struct annotationblock *new_annot_list=NULL,
-                         *root_new_annot_list=NULL,
+  struct annotation_list new_annot_list,
                          *annot_list=NULL;
+
+  struct annotationblock *annot_ptr=NULL;
 
   union {
           unsigned int one;
@@ -589,6 +591,8 @@ void UI_ReduceSignalsWindow::StartConversion()
           signed short two_signed[2];
           unsigned char four[4];
         } var;
+
+  memset(&new_annot_list, 0, sizeof(struct annotation_list));
 
   QProgressDialog progress("Processing file...", "Abort", 0, 1);
   progress.setWindowModality(Qt::WindowModal);
@@ -622,8 +626,6 @@ void UI_ReduceSignalsWindow::StartConversion()
 
   annot_smp_per_record = 0;
 
-  annot_cnt = 0;
-
   aa_filter_order = spinBox4->value() - 1;
 
   time_diff = (long long)(spinBox1->value() - 1) * edfhdr->long_data_record_duration;
@@ -651,66 +653,66 @@ void UI_ReduceSignalsWindow::StartConversion()
 
   if(edfhdr->edfplus || edfhdr->bdfplus)
   {
-    timestamp_decimals = get_tal_timestamp_decimal_cnt(edfhdr);
+    timestamp_decimals = edfplus_annotation_get_tal_timestamp_decimal_cnt(edfhdr);
     if(timestamp_decimals < 0)
     {
       showpopupmessage("Error", "Internal error, get_tal_timestamp_decimal_cnt(");
       goto END_1;
     }
 
-    timestamp_digits = get_tal_timestamp_digit_cnt(edfhdr);
+    timestamp_digits = edfplus_annotation_get_tal_timestamp_digit_cnt(edfhdr);
     if(timestamp_digits < 0)
     {
       showpopupmessage("Error", "Internal error, get_tal_timestamp_digit_cnt(");
       goto END_1;
     }
 
-    annot_list = mainwindow->edfheaderlist[file_num]->annotationlist;
+    annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
 
-    while(annot_list != NULL)
+    annot_list_sz = edfplus_annotation_size(annot_list);
+
+    for(i=0; i<annot_list_sz; i++)
     {
-      l_temp = annot_list->onset - time_diff;
+      annot_ptr = edfplus_annotation_get_item(annot_list, i);
+
+      l_temp = annot_ptr->onset - time_diff;
 
       if((l_temp >= 0LL) && (l_temp <= endtime))
       {
-        annot_cnt++;
-
-        edfplus_annotation_add_copy(&new_annot_list, annot_list);
+        edfplus_annotation_add_item(&new_annot_list, *(edfplus_annotation_get_item(annot_list, i)));
       }
-
-      annot_list = annot_list->next_annotation;
     }
-
-    annot_list = new_annot_list;
-
-    root_new_annot_list = new_annot_list;
 
     new_starttime = edfhdr->utc_starttime + ((time_diff + edfhdr->starttime_offset) / TIME_DIMENSION);
 
     onset_diff = (new_starttime - edfhdr->utc_starttime) * TIME_DIMENSION;
 
-    while(annot_list != NULL)
+    annot_list_sz = edfplus_annotation_size(&new_annot_list);
+
+    if(annot_list_sz > 0)
     {
-      annot_list->onset -= onset_diff;
+      for(i=0; i<annot_list_sz; i++)
+      {
+        annot_ptr = edfplus_annotation_get_item(&new_annot_list, i);
 
-      annot_list = annot_list->next_annotation;
+        annot_ptr->onset -= onset_diff;
+      }
+
+      edfplus_annotation_sort(&new_annot_list, NULL);
+
+      annots_per_datrec = annot_list_sz / datarecords;
+
+      if(annot_list_sz % datarecords)
+      {
+        annots_per_datrec++;
+      }
     }
-
-    edfplus_annotation_sort(&new_annot_list);
-
-    annots_per_datrec = annot_cnt / datarecords;
-
-    if(annot_cnt % datarecords)
-    {
-      annots_per_datrec++;
-    }
-
-    annot_len = get_max_annotation_strlen(&new_annot_list);
-
-    if(!annot_cnt)
+    else
     {
       annots_per_datrec = 0;
     }
+
+    annot_len = edfplus_annotation_get_max_annotation_strlen(&new_annot_list);
 
     annot_recordsize = (annot_len * annots_per_datrec) + timestamp_digits + timestamp_decimals + 4;
 
@@ -1200,15 +1202,17 @@ void UI_ReduceSignalsWindow::StartConversion()
 
       tallen += 3;
 
-      if(new_annot_list != NULL)
+      if(annot_cnt < annot_list_sz)
       {
         for(i=0; i<annots_per_datrec; i++)
         {
-          if(new_annot_list != NULL)
+          if(annot_cnt < annot_list_sz)
           {
+            annot_ptr = edfplus_annotation_get_item(&new_annot_list, annot_cnt);
+
             len = snprintf(scratchpad, 256, "%+i.%07i",
-            (int)(new_annot_list->onset / TIME_DIMENSION),
-            (int)(new_annot_list->onset % TIME_DIMENSION));
+            (int)(annot_ptr->onset / TIME_DIMENSION),
+            (int)(annot_ptr->onset % TIME_DIMENSION));
 
             for(j=0; j<7; j++)
             {
@@ -1237,24 +1241,24 @@ void UI_ReduceSignalsWindow::StartConversion()
 
             tallen += len;
 
-            if(new_annot_list->duration[0]!=0)
+            if(annot_ptr->duration[0]!=0)
             {
               fputc(21, outputfile);
               tallen++;
 
-              tallen += fprintf(outputfile, "%s", new_annot_list->duration);
+              tallen += fprintf(outputfile, "%s", annot_ptr->duration);
             }
 
             fputc(20, outputfile);
             tallen++;
 
-            tallen += fprintf(outputfile, "%s", new_annot_list->annotation);
+            tallen += fprintf(outputfile, "%s", annot_ptr->annotation);
 
             fputc(20, outputfile);
             fputc(0, outputfile);
             tallen += 2;
 
-            new_annot_list = new_annot_list->next_annotation;
+            annot_cnt--;
           }
         }
       }
@@ -1311,9 +1315,7 @@ END_1:
 
   edfhdr = NULL;
 
-  edfplus_annotation_delete_list(&root_new_annot_list);
-
-  root_new_annot_list = NULL;
+  edfplus_annotation_empty_list(&new_annot_list);
 
   SignalsTablewidget->setRowCount(0);
 }

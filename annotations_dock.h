@@ -86,8 +86,6 @@ public:
 
 private:
 
-  struct annotationblock *annotation;
-
   int file_num,
       relative,
       selected,

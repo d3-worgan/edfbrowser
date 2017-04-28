@@ -30,402 +30,370 @@
 #include "edf_annot_list.h"
 
 
+#define EDF_ANNOT_MEMBLOCKSZ_II   1000
 
-void edfplus_annotation_add_item(struct annotationblock **list, struct annotationblock *annotation)
+#define TIME_DIMENSION_II (10000000LL)
+
+
+
+int edfplus_annotation_add_item(struct annotation_list *list, struct annotationblock annotation)
 {
-  struct annotationblock *annotlist;
+  struct annotationblock *tmp_block_list;
 
-  annotlist = *list;
+  int *tmp_idx;
 
-  annotation->next_annotation = NULL;
+  if(list == NULL)  return -1;
 
-  if(annotlist == NULL)
+  if(list->used_sz >= list->mem_sz)
   {
-    annotation->former_annotation = NULL;
-
-    *list = annotation;
-
-    return;
-  }
-
-  while(annotlist->next_annotation != NULL)
-  {
-    if(annotlist->next_annotation->onset > annotation->onset)
+    tmp_block_list = (struct annotationblock *)realloc(list->items, (list->mem_sz + EDF_ANNOT_MEMBLOCKSZ_II) * sizeof(struct annotationblock));
+    if(tmp_block_list == NULL)
     {
-      break;
+      return -2;
     }
 
-    annotlist = annotlist->next_annotation;
-  }
+    list->items = tmp_block_list;
 
-  annotation->next_annotation = annotlist->next_annotation;
-
-  if(annotation->next_annotation != NULL)
-  {
-    annotation->next_annotation->former_annotation = annotation;
-  }
-
-  annotlist->next_annotation = annotation;
-
-  annotation->former_annotation = annotlist;
-}
-
-
-void edfplus_annotation_add_copy(struct annotationblock **list, struct annotationblock *annotation)
-{
-  struct annotationblock *annotlist, *new_annot;
-
-  annotlist = *list;
-
-  new_annot = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
-  if(new_annot == NULL)
-  {
-    return;
-  }
-
-  memcpy(new_annot, annotation, sizeof(struct annotationblock));
-
-  new_annot->next_annotation = NULL;
-
-  if(annotlist == NULL)
-  {
-    new_annot->former_annotation = NULL;
-
-    *list = new_annot;
-
-    return;
-  }
-
-  while(annotlist->next_annotation != NULL)
-  {
-    annotlist = annotlist->next_annotation;
-  }
-
-  annotlist->next_annotation = new_annot;
-
-  new_annot->former_annotation = annotlist;
-}
-
-
-int edfplus_annotation_count(struct annotationblock **list)
-{
-  int n=0;
-
-  struct annotationblock *annotlist;
-
-  annotlist = *list;
-
-  while(annotlist != NULL)
-  {
-    annotlist = annotlist->next_annotation;
-
-    n++;
-  }
-
-  return(n);
-}
-
-
-void edfplus_annotation_delete(struct annotationblock **list, int n)
-{
-  struct annotationblock *annotlist;
-
-  annotlist = *list;
-
-  if(annotlist==NULL)
-  {
-    return;
-  }
-
-  while(n)
-  {
-    if(annotlist->next_annotation==NULL)
+    tmp_idx = (int *)realloc(list->idx, (list->mem_sz + EDF_ANNOT_MEMBLOCKSZ_II) * sizeof(int));
+    if(tmp_idx == NULL)
     {
-      return;
+      return -3;
     }
 
-    annotlist = annotlist->next_annotation;
+    list->idx = tmp_idx;
 
-    n--;
+    list->mem_sz += EDF_ANNOT_MEMBLOCKSZ_II;
   }
 
-  if(annotlist->former_annotation!=NULL)
-  {
-    annotlist->former_annotation->next_annotation = annotlist->next_annotation;
-  }
+  list->items[list->used_sz] = annotation;
 
-  if(annotlist->next_annotation!=NULL)
-  {
-    annotlist->next_annotation->former_annotation = annotlist->former_annotation;
-  }
+  list->idx[list->sz] = list->used_sz;
 
-  if(annotlist->former_annotation==NULL)
-  {
-    *list = annotlist->next_annotation;
-  }
+  list->sz++;
 
-  free(annotlist);
+  list->used_sz++;
+
+  return 0;
 }
 
 
-void edfplus_annotation_delete_list(struct annotationblock **list)
+void edfplus_annotation_remove_item(struct annotation_list *list, int n)
 {
-  struct annotationblock *annotlist;
+  int i;
 
-  annotlist = *list;
+  if(list == NULL)  return;
 
-  if(annotlist == NULL)
+  if((n >= list->sz) || (n < 0) || (list->sz < 1))  return;
+
+  list->sz--;
+
+  for(i=n; i<list->sz; i++)
   {
-    return;
+    list->idx[i] = list->idx[i+1];
   }
-
-  while(annotlist->next_annotation != NULL)
-  {
-    annotlist = annotlist->next_annotation;
-
-    free(annotlist->former_annotation);
-  }
-
-  free(annotlist);
-
-  *list = NULL;
 }
 
 
-struct annotationblock * edfplus_annotation_item(struct annotationblock **list, int n)
+int edfplus_annotation_size(struct annotation_list *list)
 {
-  struct annotationblock *annotlist;
+  if(list == NULL)  return 0;
 
-  annotlist = *list;
+  return(list->sz);
+}
 
-  if(annotlist == NULL)
+
+void edfplus_annotation_empty_list(struct annotation_list *list)
+{
+  if(list == NULL)  return;
+
+  free(list->items);
+  free(list->idx);
+  list->items = NULL;
+  list->idx = NULL;
+  list->sz = 0;
+  list->mem_sz = 0;
+  list->used_sz = 0;
+}
+
+
+int edfplus_annotation_get_index(struct annotation_list *list, struct annotationblock *annot)
+{
+  int i;
+
+  if(list == NULL)  return -2;
+
+  for(i=0; i<list->sz; i++)
   {
-    return(NULL);
-  }
-
-  while(n)
-  {
-    if(annotlist->next_annotation == NULL)
+    if(&list->items[list->idx[i]] == annot)
     {
-      return(NULL);
+      return i;
     }
-
-    annotlist = annotlist->next_annotation;
-
-    n--;
   }
 
-  return(annotlist);
+  return -1;
 }
 
 
-void edfplus_annotation_sort(struct annotationblock **list)  // sort the annotationlist based on the onset time
+struct annotationblock * edfplus_annotation_get_item(struct annotation_list *list, int n)
 {
-  struct annotationblock *p1, *p2, *p3, *pm, *p5;
+  if(list == NULL)  return NULL;
 
-  p1 = *list;
+  if((n >= list->sz) || (n < 0))  return NULL;
 
-  while(p1 != NULL)
+  return &list->items[list->idx[n]];
+}
+
+
+void edfplus_annotation_sort(struct annotation_list *list, void (*callback)(void))  /* sort the annotationlist based on the onset time */
+{
+//   int i, j, tmp;
+//
+//   if(list == NULL)  return;
+//
+//   for(i=0; i<(list->sz - 1); i++)
+//   {
+//     for(j=i+1; j>0; j--)
+//     {
+//       if(list->items[list->idx[j-1]].onset <= list->items[list->idx[j]].onset)
+//       {
+//         break;
+//       }
+//
+//       tmp = list->idx[j-1];
+//
+//       list->idx[j-1] = list->idx[j];
+//
+//       list->idx[j] = tmp;
+//     }
+//   }
+
+  int i, j, p, idx;
+
+  long long onset;
+
+//   printf("entering, list sz: %i\n", list->sz);
+
+  if(list == NULL)  return;
+
+//   for(i=0; i<list->sz; i++)
+//   {
+//     printf("idx: %i  onset: %lli\n", list->idx[i], list->items[list->idx[i]].onset);
+//   }
+//
+//   printf("start\n");
+
+  for(i=0; i<(list->sz - 1); i++)
   {
-    if(p1->next_annotation == NULL)
+    if(!(i % 1000))
     {
-      break;
-    }
-
-    if(p1->next_annotation->onset < p1->onset)
-    {
-      pm = p1;
-
-      p2 = p1->next_annotation;  // this one we take out
-
-      p3 = p2->next_annotation;
-
-// take out
-      p1->next_annotation = p3;
-
-      if(p3 != NULL)
+      if(callback != NULL)
       {
-        p3->former_annotation = p1;
+        callback();
       }
-// take out done
+    }
 
-      while(1)  // search backwards till we find the right place to put it
+    if(list->items[list->idx[i+1]].onset >= list->items[list->idx[i]].onset)
+    {
+      continue;
+    }
+
+    idx = list->idx[i+1];
+
+    onset = list->items[idx].onset;
+
+//     printf("i: %i   idx: %i\n", i, idx);
+
+    for(j=i/2, p=i; (p-j)>0; )
+    {
+      if(onset < list->items[list->idx[j]].onset)
       {
-        p5 = pm->former_annotation;
+        p = j;
 
-        if(p5 == NULL)
+        j /= 2;
+      }
+      else
+      {
+        if((p-j) == 1)
         {
-          pm->former_annotation = p2;
-
-          p2->next_annotation = pm;
-
-          p2->former_annotation = NULL;
-
-          *list = p2;
+          j++;
 
           break;
         }
 
-        if(p5->onset <= p2->onset)  // insert it here
-        {
-          pm->former_annotation = p2;
-
-          p2->next_annotation = pm;
-
-          p2->former_annotation = p5;
-
-          p5->next_annotation = p2;
-
-          break;
-        }
-
-        pm = p5;
+        j = (j + p) / 2;
       }
     }
-    else
+
+//     printf("move: %i\n", j);
+
+    memmove(list->idx + j + 1, list->idx + j, (i - j + 1) * sizeof(int));
+
+    list->idx[j] = idx;
+  }
+
+//   printf("new list:\n");
+//
+//   for(i=0; i<list->sz; i++)
+//   {
+//     printf("idx: %i  onset: %lli\n", list->idx[i], list->items[list->idx[i]].onset);
+//   }
+//
+//   printf("exiting\n");
+}
+
+
+struct annotation_list * edfplus_annotation_create_list_copy(struct annotation_list *list)
+{
+  struct annotation_list *cpy;
+
+  if(list == NULL)  return NULL;
+
+  cpy = (struct annotation_list *)calloc(1, sizeof(struct annotation_list));
+  if(cpy == NULL)
+  {
+    return NULL;
+  }
+
+  if(list->sz > 0)
+  {
+    cpy->items = (struct annotationblock *)calloc(1, sizeof(struct annotationblock) * list->mem_sz);
+    if(cpy->items == NULL)
     {
-      p1 = p1->next_annotation;  // continue searching the list from where we stopped before
+      free(cpy);
+      return NULL;
     }
+
+    cpy->idx = (int *)calloc(1, sizeof(int) * list->mem_sz);
+    if(cpy->idx == NULL)
+    {
+      free(cpy->items);
+      free(cpy);
+      return NULL;
+    }
+
+    cpy->mem_sz = list->mem_sz;
+
+    cpy->sz = list->sz;
+
+    cpy->used_sz = list->used_sz;
+
+    memcpy(cpy->items, list->items, cpy->mem_sz * sizeof(struct annotationblock));
+
+    memcpy(cpy->idx, list->idx, cpy->mem_sz * sizeof(int));
   }
+
+  return cpy;
 }
 
 
-struct annotationblock * edfplus_annotation_copy_list(struct annotationblock **list)
+void edfplus_annotation_copy_list(struct annotation_list *destlist, struct annotation_list *srclist)
 {
-  struct annotationblock *annot, *annot2, *annot3;
+  if((destlist == NULL) || (srclist == NULL)) return;
 
-  annot = *list;
-
-  if(annot==NULL)
+  if(destlist->sz > 0)
   {
-    return(NULL);
+    free(destlist->items);
+
+    destlist->items = NULL;
+
+    free(destlist->idx);
+
+    destlist->idx = NULL;
+
+    destlist->sz = 0;
+
+    destlist->mem_sz = 0;
+
+    destlist->used_sz = 0;
   }
 
-  annot2 = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
-
-  annot3 = annot2;
-
-  memcpy(annot2, annot, sizeof(struct annotationblock));
-
-  annot = annot->next_annotation;
-
-  while(annot!=NULL)
+  destlist->items = (struct annotationblock *)calloc(1, srclist->mem_sz * sizeof(struct annotationblock));
+  if(destlist->items == NULL)
   {
-    annot2->next_annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
-
-    memcpy(annot2->next_annotation, annot, sizeof(struct annotationblock));
-
-    annot2->next_annotation->former_annotation = annot2;
-
-    annot2 = annot2->next_annotation;
-
-    annot = annot->next_annotation;
+    return;
   }
 
-  return(annot3);
+  destlist->idx = (int *)calloc(1, srclist->mem_sz * sizeof(int));
+  if(destlist->idx == NULL)
+  {
+    free(destlist->items);
+    destlist->items = NULL;
+    return;
+  }
+
+  destlist->sz = srclist->sz;
+
+  destlist->used_sz = srclist->used_sz;
+
+  destlist->mem_sz = srclist->mem_sz;
+
+  memcpy(destlist->items, srclist->items, destlist->mem_sz * sizeof(struct annotationblock));
+
+  memcpy(destlist->idx, srclist->idx, destlist->mem_sz * sizeof(int));
 }
 
 
-int get_tal_timestamp_digit_cnt(struct edfhdrblock *hdr)
+int edfplus_annotation_remove_duplicates(struct annotation_list *list)
 {
-  int timestamp_digits;
+  int i, j, dup_cnt=0;
 
-  char scratchpad[256];
+  struct annotationblock *annot;
 
-  long long time;
+  if(list == NULL)  return -1;
 
+  if(list->sz < 2)  return 0;
 
-  if(hdr==NULL)
+  for(i=0; i<(list->sz - 1); i++)
   {
-    return(-1);
+    annot = &list->items[list->idx[i]];
+
+    if(annot->file_num != list->items[list->idx[i + 1]].file_num)  continue;
+
+    if(annot->onset != list->items[list->idx[i + 1]].onset)  continue;
+
+    if(strcmp(annot->annotation, list->items[list->idx[i + 1]].annotation))  continue;
+
+    if(strcmp(annot->duration, list->items[list->idx[i + 1]].duration))  continue;
+
+    list->sz--;
+
+    for(j=i; j<(list->sz); j++)
+    {
+      list->idx[j] = list->idx[j+1];
+    }
+
+    dup_cnt++;
   }
 
-  time = (hdr->datarecords * hdr->long_data_record_duration) / TIME_DIMENSION;
-
-#ifdef _WIN32
-  timestamp_digits = __mingw_snprintf(scratchpad, 256, "%lli", time);
-#else
-  timestamp_digits = snprintf(scratchpad, 256, "%lli", time);
-#endif
-
-  return(timestamp_digits);
+  return dup_cnt;
 }
 
 
-int get_tal_timestamp_decimal_cnt(struct edfhdrblock *hdr)
+int edfplus_annotation_get_max_annotation_strlen(struct annotation_list *list)
 {
   int i, j,
-      timestamp_decimals;
-
-
-  if(hdr==NULL)
-  {
-    return(-1);
-  }
-
-  j = 10;
-
-  for(timestamp_decimals=7; timestamp_decimals>0; timestamp_decimals--)
-  {
-    if(hdr->long_data_record_duration % j)
-    {
-      break;
-    }
-
-    j *= 10;
-  }
-
-  if((hdr->edfplus==1)||(hdr->bdfplus==1))
-  {
-    j = 10;
-
-    for(i=7; i>0; i--)
-    {
-      if(hdr->starttime_offset % j)
-      {
-        break;
-      }
-
-      j *= 10;
-    }
-
-    if(i > timestamp_decimals)
-    {
-      timestamp_decimals = i;
-    }
-  }
-
-  return(timestamp_decimals);
-}
-
-
-int get_max_annotation_strlen(struct annotationblock **list)
-{
-  int j,
       len,
       annot_descr_len=0,
       annot_duration_len=0,
       timestamp_digits=0,
       timestamp_decimals=0;
 
-  char scratchpad[256];
+  char scratchpad[1024];
 
   struct annotationblock *annot;
 
-
-  annot = list[0];
-
-  if(annot==NULL)
+  if(list == NULL)
   {
-    return(0);
+    return 0;
   }
 
-  while(annot!=NULL)
+  for(i=0; i<list->sz; i++)
   {
+    annot = &list->items[list->idx[i]];
 #ifdef _WIN32
-    len = __mingw_snprintf(scratchpad, 256, "%lli", annot->onset / TIME_DIMENSION);
+    len = __mingw_snprintf(scratchpad, 256, "%lli", annot->onset / TIME_DIMENSION_II);
 #else
-    len = snprintf(scratchpad, 256, "%lli", annot->onset / TIME_DIMENSION);
+    len = snprintf(scratchpad, 256, "%lli", annot->onset / TIME_DIMENSION_II);
 #endif
 
     if(len > timestamp_digits)
@@ -463,8 +431,6 @@ int get_max_annotation_strlen(struct annotationblock **list)
     {
       annot_duration_len = len;
     }
-
-    annot = annot->next_annotation;
   }
 
   if(annot_duration_len)
@@ -488,6 +454,17 @@ int get_max_annotation_strlen(struct annotationblock **list)
 
   return(annot_descr_len + annot_duration_len + timestamp_digits + timestamp_decimals + 4);
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

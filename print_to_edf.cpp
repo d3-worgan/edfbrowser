@@ -41,10 +41,12 @@ void print_screen_to_edf(UI_Mainwindow *mainwindow)
       temp=0,
       edfplus=0,
       tallen,
-      annotationlist_nr=0,
+      annotationlist_nr=-1,
       annotations_left=1,
       add_one_sec=0,
       annot_smp_per_record=16,
+      annot_list_sz=0,
+      annot_cnt=0,
       type,
       len;
 
@@ -83,17 +85,17 @@ void print_screen_to_edf(UI_Mainwindow *mainwindow)
           unsigned char two[2];
         } null_bytes[MAXSIGNALS];
 
-struct annotationblock *annotations_pntr;
+  struct date_time_struct date_time;
 
-struct date_time_struct date_time;
+  struct annotation_list *annot_list=NULL;
+
+  struct annotationblock *annot_ptr=NULL;
 
 /////////////////////////////////////////////////////////////////////////
 
   signalcomps = mainwindow->signalcomps;
   signalcomp = mainwindow->signalcomp;
   viewbuf = mainwindow->viewbuf;
-
-  annotations_pntr = mainwindow->edfheaderlist[0]->annotationlist;
 
   if((!mainwindow->files_open)||(!signalcomps))
   {
@@ -117,6 +119,8 @@ struct date_time_struct date_time;
       messagewindow.exec();
       return;
     }
+
+    annot_list = &mainwindow->edfheaderlist[i]->annot_list;
 
     if(mainwindow->edfheaderlist[i]->edfplus)
     {
@@ -1079,44 +1083,23 @@ struct date_time_struct date_time;
 
       tallen += 3;
 
-      if(annotations_left)
-      {
-        if(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)
-        {
-          annot_difftime = (referencetime - mainwindow->edfheaderlist[annotationlist_nr]->utc_starttime) * TIME_DIMENSION;
-        }
-
-        if(mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)
-        {
-          annot_difftime = (referencetime - mainwindow->edfheaderlist[mainwindow->sel_viewtime]->utc_starttime) * TIME_DIMENSION;
-        }
-
-        if((mainwindow->viewtime_sync==VIEWTIME_UNSYNCED) || (mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
-        {
-          annot_difftime = (referencetime - mainwindow->edfheaderlist[mainwindow->sel_viewtime]->utc_starttime) * TIME_DIMENSION;
-          annot_difftime += (mainwindow->edfheaderlist[annotationlist_nr]->viewtime - mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime);
-        }
-
-        if(annotationlist_nr != mainwindow->sel_viewtime)
-        {
-          annot_difftime -= mainwindow->edfheaderlist[mainwindow->sel_viewtime]->starttime_offset;
-          annot_difftime += mainwindow->edfheaderlist[annotationlist_nr]->starttime_offset;
-        }
-      }
-
       while(annotations_left)
       {
-        while(!annotations_pntr)
+        while((annot_list_sz < 1) || (annot_cnt >= annot_list_sz))
         {
           annotationlist_nr++;
           if(annotationlist_nr>=mainwindow->files_open)
           {
             annotations_left = 0;
-            annotations_pntr = NULL;
-
+            annot_list = NULL;
+            annot_list_sz = 0;
             break;
           }
-          annotations_pntr = mainwindow->edfheaderlist[annotationlist_nr]->annotationlist;
+          annot_list = &mainwindow->edfheaderlist[annotationlist_nr]->annot_list;
+
+          annot_list_sz = edfplus_annotation_size(annot_list);
+
+          annot_cnt = 0;
 
           if(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)
           {
@@ -1143,9 +1126,11 @@ struct date_time_struct date_time;
 
         if(!annotations_left)  break;
 
-        if(annotations_pntr)
+        if((annot_list != NULL) && (annot_cnt < annot_list_sz))
         {
-          l_temp = annotations_pntr->onset - annot_difftime;
+          annot_ptr = edfplus_annotation_get_item(annot_list, annot_cnt);
+
+          l_temp = annot_ptr->onset - annot_difftime;
 
           if((l_temp >= 0LL) && (l_temp < (mainwindow->pagetime + TIME_DIMENSION)))
           {
@@ -1153,30 +1138,30 @@ struct date_time_struct date_time;
             (int)(l_temp / TIME_DIMENSION),
             (int)(l_temp % TIME_DIMENSION));
 
-            if(annotations_pntr->duration[0]!=0)
+            if(annot_ptr->duration[0]!=0)
             {
               fputc(21, outputfile);
               tallen++;
 
-              tallen += fprintf(outputfile, "%s", annotations_pntr->duration);
+              tallen += fprintf(outputfile, "%s", annot_ptr->duration);
             }
 
             fputc(20, outputfile);
             tallen++;
 
-            tallen += fprintf(outputfile, "%s", annotations_pntr->annotation);
+            tallen += fprintf(outputfile, "%s", annot_ptr->annotation);
 
             fputc(20, outputfile);
             fputc(0, outputfile);
             tallen += 2;
 
-            annotations_pntr = annotations_pntr->next_annotation;
+            annot_cnt++;
 
             break;
           }
           else
           {
-            annotations_pntr = annotations_pntr->next_annotation;
+            annot_cnt++;
 
             continue;
           }
