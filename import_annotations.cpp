@@ -1691,12 +1691,6 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
   free(edfhdr);
   fclose(inputfile);
 
-  mainwindow->annotations_edited = 1;
-
-  mainwindow->annotations_dock[0]->updateList();
-
-  mainwindow->save_act->setEnabled(true);
-
   QApplication::restoreOverrideCursor();
 
   return(0);
