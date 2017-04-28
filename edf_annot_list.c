@@ -146,41 +146,11 @@ struct annotationblock * edfplus_annotation_get_item(struct annotation_list *lis
 
 void edfplus_annotation_sort(struct annotation_list *list, void (*callback)(void))  /* sort the annotationlist based on the onset time */
 {
-//   int i, j, tmp;
-//
-//   if(list == NULL)  return;
-//
-//   for(i=0; i<(list->sz - 1); i++)
-//   {
-//     for(j=i+1; j>0; j--)
-//     {
-//       if(list->items[list->idx[j-1]].onset <= list->items[list->idx[j]].onset)
-//       {
-//         break;
-//       }
-//
-//       tmp = list->idx[j-1];
-//
-//       list->idx[j-1] = list->idx[j];
-//
-//       list->idx[j] = tmp;
-//     }
-//   }
-
   int i, j, p, idx;
 
   long long onset;
 
-//   printf("entering, list sz: %i\n", list->sz);
-
   if(list == NULL)  return;
-
-//   for(i=0; i<list->sz; i++)
-//   {
-//     printf("idx: %i  onset: %lli\n", list->idx[i], list->items[list->idx[i]].onset);
-//   }
-//
-//   printf("start\n");
 
   for(i=0; i<(list->sz - 1); i++)
   {
@@ -200,8 +170,6 @@ void edfplus_annotation_sort(struct annotation_list *list, void (*callback)(void
     idx = list->idx[i+1];
 
     onset = list->items[idx].onset;
-
-//     printf("i: %i   idx: %i\n", i, idx);
 
     for(j=i/2, p=i; (p-j)>0; )
     {
@@ -224,21 +192,10 @@ void edfplus_annotation_sort(struct annotation_list *list, void (*callback)(void
       }
     }
 
-//     printf("move: %i\n", j);
-
     memmove(list->idx + j + 1, list->idx + j, (i - j + 1) * sizeof(int));
 
     list->idx[j] = idx;
   }
-
-//   printf("new list:\n");
-//
-//   for(i=0; i<list->sz; i++)
-//   {
-//     printf("idx: %i  onset: %lli\n", list->idx[i], list->items[list->idx[i]].onset);
-//   }
-//
-//   printf("exiting\n");
 }
 
 
