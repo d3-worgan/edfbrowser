@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
 
-  app.setAttribute(Qt::AA_DontUseNativeMenuBar);
+//   app.setAttribute(Qt::AA_DontUseNativeMenuBar);
 
   QPixmap pixmap(":/images/splash.png");
   QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
