@@ -5,6 +5,9 @@
  - Improved memory management of annotations and annotations sorting algorithm,
    which results in faster processing when a file contains many annotations (> 10000).
 
+ - Fixed a bug with the realtime playback function that caused to playback only the
+   first file when multiple files were opened.
+
  - Fixed a bug in the Timesync -> Jump to dialog.
 
  - Bugfix in MIT (PhysioBank) converter: use default gain of 200 when adc gain is set to 0.
