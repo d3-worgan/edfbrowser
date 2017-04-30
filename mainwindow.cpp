@@ -1136,18 +1136,27 @@ void UI_Mainwindow::stop_playback_realtime()
 
 void UI_Mainwindow::playback_realtime_timer_func()
 {
-  if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
-  {
-    for(int i=0; i<files_open; i++)
-    {
-      edfheaderlist[i]->viewtime += (playback_realtime_time->restart() * 10000);
-    }
-  }
+  int i;
+
+  long long elapsed_time;
 
   if(viewtime_sync==VIEWTIME_UNSYNCED)
   {
     edfheaderlist[sel_viewtime]->viewtime += (playback_realtime_time->restart() * 10000);
   }
+  else if((viewtime_sync==VIEWTIME_SYNCED_OFFSET) ||
+      (viewtime_sync==VIEWTIME_SYNCED_ABSOLUT) ||
+      (viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
+      {
+        elapsed_time = playback_realtime_time->restart() * 10000LL;
+
+        for(i=0; i<files_open; i++)
+        {
+          edfheaderlist[i]->viewtime += elapsed_time;
+        }
+
+        playback_realtime_time->restart();
+      }
 
   setup_viewbuf();
 }
