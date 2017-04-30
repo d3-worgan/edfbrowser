@@ -87,6 +87,7 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   list->setFont(*mainwindow->monofont);
   list->setAutoFillBackground(true);
   list->setPalette(palette);
+  list->setUniformItemSizes(true);
 
   show_between_act = new QAction("Set timescale from here to next annotation", list);
   hide_annot_act = new QAction("Hide", list);
