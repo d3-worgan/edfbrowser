@@ -2147,10 +2147,10 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
     }
   }
 
+  edfplus_annotation_empty_list(&edfheaderlist[file_n]->annot_list);
   fclose(edfheaderlist[file_n]->file_hdl);
   free(edfheaderlist[file_n]->edfparam);
   free(edfheaderlist[file_n]);
-  edfplus_annotation_empty_list(&edfheaderlist[file_n]->annot_list);
 
   if(annotations_dock[file_n] != NULL)
   {
