@@ -79,7 +79,7 @@
 #define ACMAX 49  /* value of largest valid annot code (must be < 50) */
 
 
-char annotdescrlist[42][48]=
+static char annotdescrlist[42][48]=
   {"not-QRS","normal beat",
   "left bundle branch block beat", "right bundle branch block beat",
   "aberrated atrial premature beat", "premature ventricular contraction",

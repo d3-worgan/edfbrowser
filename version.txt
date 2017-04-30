@@ -2,12 +2,13 @@
  version 1.59      to be released
  --------------
 
- - Improved memory management of annotations and annotations sorting algorithm.
-   Results in faster processing when a file contains many annotations (> 10000).
+ - Improved memory management of annotations and annotations sorting algorithm,
+   which results in faster processing when a file contains many annotations (> 10000).
 
  - Fixed a bug in the Timesync -> Jump to dialog.
 
  - Bugfix in MIT (PhysioBank) converter: use default gain of 200 when adc gain is set to 0.
+   From now on, all PhysioBank files can be converted to EDF+ including events/annotations.
 
  - Don't update the onset time in the annotation editor when changing file position.
 

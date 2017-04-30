@@ -556,7 +556,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
   if(!strcmp(path, ""))
   {
-    return(1);
+    return 1;
   }
 
   get_directory_from_path(mainwindow->recent_opendir, path, MAX_PATH_LENGTH);
@@ -566,7 +566,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for reading.");
     messagewindow.exec();
-    return(1);
+    return 1;
   }
 
   if((xml_hdl->encoding != 1) && (xml_hdl->encoding != 2))
@@ -574,7 +574,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Encoding of XML-file must be UTF-8 or ISO-8859-1.");
     messagewindow.exec();
     xml_close(xml_hdl);
-    return(1);
+    return 1;
   }
 
   if(strcmp(xml_hdl->elementname[xml_hdl->level], "annotationlist"))
@@ -582,7 +582,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find root element \"annotationlist\".");
     messagewindow.exec();
     xml_close(xml_hdl);
-    return(1);
+    return 1;
   }
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -604,7 +604,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find child element \"annotation\".");
         messagewindow.exec();
         xml_close(xml_hdl);
-        return(1);
+        return 1;
       }
 
       break;
@@ -622,7 +622,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not get content of element \"annotation\".");
       messagewindow.exec();
       xml_close(xml_hdl);
-      return(1);
+      return 1;
     }
 
     if(strlen(result) > 17)
@@ -685,7 +685,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not get content of element \"duration\".");
         messagewindow.exec();
         xml_close(xml_hdl);
-        return(1);
+        return 1;
       }
 
       strncpy(duration, result, 16);
@@ -714,7 +714,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not get content of element \"description\".");
       messagewindow.exec();
       xml_close(xml_hdl);
-      return(1);
+      return 1;
     }
 
     if((!ignore_consecutive) || (strcmp(result, last_description)))
@@ -734,7 +734,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
         messagewindow.exec();
         xml_close(xml_hdl);
-        return(1);
+        return 1;
       }
 
       strcpy(last_description, result);
@@ -749,7 +749,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
   QApplication::restoreOverrideCursor();
 
-  return(0);
+  return 0;
 }
 
 
@@ -828,28 +828,28 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator must be one character or \"tab\".");
       messagewindow.exec();
-      return(1);
+      return 1;
     }
 
     if((str[0]<32)||(str[0]>126))
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character is not a valid ASCII character.");
       messagewindow.exec();
-      return(1);
+      return 1;
     }
 
     if(str[0]=='.')
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character can not be a dot.");
       messagewindow.exec();
-      return(1);
+      return 1;
     }
 
     if((str[0]>47)&&(str[0]<58))
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character can not be a number.");
       messagewindow.exec();
-      return(1);
+      return 1;
     }
 
     separator = str[0];
@@ -880,21 +880,21 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Onset and Description can not be in the same column.");
     messagewindow.exec();
-    return(1);
+    return 1;
   }
 
   if((duration_column == onset_column) && use_duration)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Onset and Duration can not be in the same column.");
     messagewindow.exec();
-    return(1);
+    return 1;
   }
 
   if((descr_column == duration_column) && (!manualdescription) && use_duration)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Duration and Description can not be in the same column.");
     messagewindow.exec();
-    return(1);
+    return 1;
   }
 
   mainwindow->import_annotations_var->onsettimeformat = onsettime_coding;
@@ -928,7 +928,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   if(!strcmp(path, ""))
   {
-    return(1);
+    return 1;
   }
 
   get_directory_from_path(mainwindow->recent_opendir, path, MAX_PATH_LENGTH);
@@ -938,7 +938,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for reading.");
     messagewindow.exec();
-    return(1);
+    return 1;
   }
 
   rewind(inputfile);
@@ -962,7 +962,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "File does not contain enough lines.");
       messagewindow.exec();
       fclose(inputfile);
-      return(1);
+      return 1;
     }
 
     if(temp=='\n')
@@ -1492,7 +1492,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
               QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
               messagewindow.exec();
               fclose(inputfile);
-              return(1);
+              return 1;
             }
 
             strcpy(last_description, description);
@@ -1526,7 +1526,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
             QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
             messagewindow.exec();
             fclose(inputfile);
-            return(1);
+            return 1;
           }
         }
       }
@@ -1561,7 +1561,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
       QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
       messagewindow.exec();
       fclose(inputfile);
-      return(1);
+      return 1;
     }
   }
 
@@ -1571,10 +1571,10 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while closing inputfile.");
     messagewindow.exec();
-    return(1);
+    return 1;
   }
 
-  return(0);
+  return 0;
 }
 
 
@@ -1599,7 +1599,7 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
 
   if(!strcmp(path, ""))
   {
-    return(1);
+    return 1;
   }
 
   get_directory_from_path(mainwindow->recent_opendir, path, MAX_PATH_LENGTH);
@@ -1609,7 +1609,7 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for reading.");
     messagewindow.exec();
-    return(1);
+    return 1;
   }
 
   rewind(inputfile);
@@ -1625,7 +1625,7 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
     QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
     messagewindow.exec();
     fclose(inputfile);
-    return(1);
+    return 1;
   }
 
   if(!(edfhdr->edfplus || edfhdr->bdfplus))
@@ -1635,7 +1635,7 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
     free(edfhdr->edfparam);
     free(edfhdr);
     fclose(inputfile);
-    return(1);
+    return 1;
   }
 
   strcpy(edfhdr->filename, path);
@@ -1651,7 +1651,7 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
     free(edfhdr->edfparam);
     free(edfhdr);
     fclose(inputfile);
-    return(1);
+    return 1;
   }
 
   annotlist_size = edfplus_annotation_size(&edfhdr->annot_list);
@@ -1663,7 +1663,7 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
     free(edfhdr->edfparam);
     free(edfhdr);
     fclose(inputfile);
-    return(1);
+    return 1;
   }
 
   starttime_diff = edfhdr->utc_starttime - mainwindow->edfheaderlist[mainwindow->sel_viewtime]->utc_starttime;
@@ -1693,7 +1693,7 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
 
   QApplication::restoreOverrideCursor();
 
-  return(0);
+  return 0;
 }
 
 
@@ -1760,14 +1760,14 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "You need to put at least one signal on the screen.");
     messagewindow.exec();
-    return(1);
+    return 1;
   }
 
   if(mainwindow->signalcomp[signal_nr]->num_of_signals > 1)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "The signal can not be a derivation of multiple signals.");
     messagewindow.exec();
-    return(1);
+    return 1;
   }
 
   mainwindow->import_annotations_var->dceventbittime = BitTimeSpinbox->value();
@@ -1807,7 +1807,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Bit Time is set too low compared to the samplerate of the selected signal.");
     messagewindow.exec();
-    return(1);
+    return 1;
   }
 
   triggervalue = mainwindow->import_annotations_var->triggerlevel / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue;
@@ -1818,21 +1818,21 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Trigger Level is equal or higher than physical maximum.");
     messagewindow.exec();
-    return(1);
+    return 1;
   }
 
   if(triggervalue <= signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].dig_min)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Trigger Level is equal or lower than physical minimum.");
     messagewindow.exec();
-    return(1);
+    return 1;
   }
 
   if(fseeko(inputfile, signalcomp->edfhdr->hdrsize + bufoffset, SEEK_SET))
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while reading inputfile. (fseek)");
     messagewindow.exec();
-    return(1);
+    return 1;
   }
 
   buf = (char *)malloc(bytes_per_datrec);
@@ -1840,7 +1840,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (buf)");
     messagewindow.exec();
-    return(1);
+    return 1;
   }
 
   annotations_found = 0;
@@ -1907,7 +1907,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while reading inputfile. (fread)");
       messagewindow.exec();
       free(buf);
-      return(1);
+      return 1;
     }
 
     for(i=0; i<smpls_per_datrec; i++)
@@ -1976,7 +1976,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
                     QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
                     messagewindow.exec();
                     free(buf);
-                    return(1);
+                    return 1;
                   }
 
                   annotations_found++;
@@ -2020,7 +2020,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
 
   progress.reset();
 
-  return(0);
+  return 0;
 }
 
 
