@@ -238,6 +238,11 @@ void UI_ECGExport::Export_RR_intervals()
 
   if(import_as_annots)
   {
+    if(mainwindow->annotationlist_backup==NULL)
+    {
+      mainwindow->annotationlist_backup = edfplus_annotation_create_list_copy(&mainwindow->edfheaderlist[filenum]->annot_list);
+    }
+
     for(i=0; i<beat_cnt; i++)
     {
       if(whole_recording)
