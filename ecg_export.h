@@ -52,6 +52,8 @@
 #include <QString>
 #include <QPixmap>
 #include <QCheckBox>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -89,7 +91,8 @@ QDialog      *myobjectDialog;
 QListWidget  *list;
 
 QPushButton  *startButton,
-             *cancelButton;
+             *cancelButton,
+             *helpButton;
 
 QGroupBox    *groupBox1;
 
@@ -107,6 +110,7 @@ void load_signalcomps(void);
 private slots:
 
 void Export_RR_intervals();
+void helpbuttonpressed();
 
 };
 

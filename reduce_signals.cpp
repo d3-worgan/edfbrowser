@@ -100,7 +100,7 @@ UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
   spinBox4 = new QSpinBox(myobjectDialog);
   spinBox4->setGeometry(595, 232, 100, 25);
   spinBox4->setRange(1, REDUCER_MAX_AA_FILTERS + 1);
-  spinBox4->setValue(REDUCER_MAX_AA_FILTERS + 1);
+  spinBox4->setValue(REDUCER_MAX_AA_FILTERS);
   spinBox4->setEnabled(false);
 
   SignalsTablewidget = new QTableWidget(myobjectDialog);
@@ -1332,7 +1332,7 @@ void UI_ReduceSignalsWindow::showpopupmessage(const char *str1, const char *str2
 void UI_ReduceSignalsWindow::helpbuttonpressed()
 {
 #ifdef Q_OS_LINUX
-  QDesktopServices::openUrl(QUrl("file:///usr/share/doc/edfbrowser/manual.html#Header_editor"));
+  QDesktopServices::openUrl(QUrl("file:///usr/share/doc/edfbrowser/manual.html#Reduce_signals"));
 #endif
 
 #ifdef Q_OS_WIN32
@@ -1340,7 +1340,7 @@ void UI_ReduceSignalsWindow::helpbuttonpressed()
 
   strcpy(p_path, "file:///");
   strcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
-  strcat(p_path, "\\EDFbrowser\\manual.html#Header_editor");
+  strcat(p_path, "\\EDFbrowser\\manual.html#Reduce_signals");
   QDesktopServices::openUrl(QUrl(p_path));
 #endif
 }

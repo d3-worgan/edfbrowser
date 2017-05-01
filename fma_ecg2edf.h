@@ -46,6 +46,8 @@
 #include <QMessageBox>
 #include <QString>
 #include <QPixmap>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -71,7 +73,8 @@ private:
 QDialog       *myobjectDialog;
 
 QPushButton   *pushButton1,
-              *pushButton2;
+              *pushButton2,
+              *helpButton;
 
 QLabel        *PatientnameLabel,
               *RecordingLabel,
@@ -105,6 +108,7 @@ void deleteFilters(void);
 private slots:
 
 void SelectFileButton();
+void helpbuttonpressed();
 
 };
 

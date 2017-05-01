@@ -145,7 +145,7 @@ UI_MIT2EDFwindow::UI_MIT2EDFwindow(char *recent_dir, char *save_dir)
   textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
-  sprintf(txt_string, "MIT to EDF+ converter.\n");
+  sprintf(txt_string, "MIT (PhysioBank) to EDF+ converter.\n");
   textEdit1->append(txt_string);
 
   QObject::connect(pushButton1, SIGNAL(clicked()), this, SLOT(SelectFileButton()));

@@ -3416,7 +3416,6 @@ QString UI_Mainwindow::specialFolder(int type)
 #endif
 
 
-
 int UI_Mainwindow::file_is_opened(const char *o_path)
 {
   int i;

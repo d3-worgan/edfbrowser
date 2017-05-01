@@ -90,6 +90,7 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent)
   separatorBox = new QComboBox(ExportAnnotsDialog);
   separatorBox->addItem("comma");
   separatorBox->addItem("tab");
+  separatorBox->addItem("semicolon");
 
   asciiSecondsRadioButton = new QRadioButton("seconds relative to start of file");
   asciiSecondsRadioButton->setChecked(true);
@@ -262,17 +263,22 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
     csv_format = 8;
   }
 
-   mainwindow->export_annotations_var->format = csv_format;
+  mainwindow->export_annotations_var->format = csv_format;
 
   if(separatorBox->currentIndex() == 0)
   {
     separator = ',';
     mainwindow->export_annotations_var->separator = 0;
   }
-  else
+  else if(separatorBox->currentIndex() == 1)
   {
     separator = '\t';
     mainwindow->export_annotations_var->separator = 1;
+  }
+  else
+  {
+    separator = ';';
+    mainwindow->export_annotations_var->separator = 2;
   }
 
   if(durationCheckBox->checkState() == Qt::Checked)

@@ -92,8 +92,13 @@ UI_FMaudio2EDFwindow::UI_FMaudio2EDFwindow(char *recent_dir, char *save_dir)
   pushButton2->setGeometry(480, 250, 100, 25);
   pushButton2->setText("Close");
 
+  helpButton = new QPushButton(myobjectDialog);
+  helpButton->setGeometry(240, 250, 100, 25);
+  helpButton->setText("Help");
+
   QObject::connect(pushButton1, SIGNAL(clicked()), this,           SLOT(SelectFileButton()));
   QObject::connect(pushButton2, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
+  QObject::connect(helpButton,  SIGNAL(clicked()), this,           SLOT(helpbuttonpressed()));
 
   myobjectDialog->exec();
 }
@@ -770,6 +775,25 @@ bool UI_FMaudio2EDFwindow::allocateFilters(int uf, int usf, int dsf)
 
   return true;
 }
+
+
+void UI_FMaudio2EDFwindow::helpbuttonpressed()
+{
+#ifdef Q_OS_LINUX
+  QDesktopServices::openUrl(QUrl("file:///usr/share/doc/edfbrowser/manual.html#FMaudio_to_EDF"));
+#endif
+
+#ifdef Q_OS_WIN32
+  char p_path[MAX_PATH_LENGTH];
+
+  strcpy(p_path, "file:///");
+  strcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
+  strcat(p_path, "\\EDFbrowser\\manual.html#FMaudio_to_EDF");
+  QDesktopServices::openUrl(QUrl(p_path));
+#endif
+}
+
+
 
 
 

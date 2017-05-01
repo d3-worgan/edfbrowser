@@ -82,10 +82,15 @@ UI_ECGExport::UI_ECGExport(QWidget *w_parent)
   cancelButton->setGeometry(280, 400, 100, 25);
   cancelButton->setText("Cancel");
 
+  helpButton = new QPushButton(myobjectDialog);
+  helpButton->setGeometry(280, 300, 100, 25);
+  helpButton->setText("Help");
+
   load_signalcomps();
 
   QObject::connect(cancelButton, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
   QObject::connect(startButton,  SIGNAL(clicked()), this,           SLOT(Export_RR_intervals()));
+  QObject::connect(helpButton,   SIGNAL(clicked()), this,           SLOT(helpbuttonpressed()));
 
   myobjectDialog->exec();
 }
@@ -433,6 +438,25 @@ void UI_ECGExport::load_signalcomps(void)
     list->addItem(item);
   }
 }
+
+
+void UI_ECGExport::helpbuttonpressed()
+{
+#ifdef Q_OS_LINUX
+  QDesktopServices::openUrl(QUrl("file:///usr/share/doc/edfbrowser/manual.html#ECG_detection"));
+#endif
+
+#ifdef Q_OS_WIN32
+  char p_path[MAX_PATH_LENGTH];
+
+  strcpy(p_path, "file:///");
+  strcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
+  strcat(p_path, "\\EDFbrowser\\manual.html#ECG_detection");
+  QDesktopServices::openUrl(QUrl(p_path));
+#endif
+}
+
+
 
 
 
