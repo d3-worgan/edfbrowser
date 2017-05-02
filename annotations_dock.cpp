@@ -733,15 +733,18 @@ void UI_Annotationswindow::updateList(void)
 
   annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
 
+  sz = edfplus_annotation_size(annot_list);
+
   QMessageBox messagewindow(QMessageBox::NoIcon, "Busy", "Sorting annotations...");
   messagewindow.setStandardButtons(QMessageBox::NoButton);
-  messagewindow.show();
+  if(sz > 2000)
+  {
+    messagewindow.show();
+  }
 
   edfplus_annotation_sort(annot_list, &process_events);
 
   messagewindow.setText("Populating list...");
-
-  sz = edfplus_annotation_size(annot_list);
 
   for(j=0; j<sz; j++)
   {
