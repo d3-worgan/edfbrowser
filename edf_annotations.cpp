@@ -83,7 +83,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
 
   struct edfparamblock *edfparam;
 
-  struct annotationblock annotblock_ii;
+  struct annotationblock annotblock;
 
   inputfile = edf_hdr->file_hdl;
   edfsignals = edf_hdr->edfsignals;
@@ -425,19 +425,19 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
             {
               if(n >= 0)
               {
-                memset(&annotblock_ii, 0, sizeof(annotationblock));
-                annotblock_ii.file_num = edf_hdr->file_num;
-                annotblock_ii.onset = get_long_time(time_in_txt);
+                memset(&annotblock, 0, sizeof(annotationblock));
+                annotblock.file_num = edf_hdr->file_num;
+                annotblock.onset = get_long_time(time_in_txt);
                 for(j=0; j<n; j++)
                 {
                   if(j==MAX_ANNOTATION_LEN)  break;
-                  annotblock_ii.annotation[j] = scratchpad[j];
+                  annotblock.annotation[j] = scratchpad[j];
                 }
-                annotblock_ii.annotation[j] = 0;
+                annotblock.annotation[j] = 0;
 
-                if(duration)  strcpy(annotblock_ii.duration, duration_in_txt);
+                if(duration)  strcpy(annotblock.duration, duration_in_txt);
 
-                if(edfplus_annotation_add_item(&edf_hdr->annot_list, annotblock_ii))
+                if(edfplus_annotation_add_item(&edf_hdr->annot_list, annotblock))
                 {
                   progress.reset();
                   QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred while reading annotations.");
@@ -539,14 +539,14 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
             {
               nk_triggers_cnt++;
 
-              memset(&annotblock_ii, 0, sizeof(annotationblock));
-              annotblock_ii.file_num = edf_hdr->file_num;
-              annotblock_ii.onset = ((long long)i * data_record_duration) + ((long long)k * nk_trigger_sample_duration);
-              annotblock_ii.onset += edf_hdr->starttime_offset;
-              strcpy(annotblock_ii.annotation, nk_triggerlabel[j]);
-              annotblock_ii.ident = (1 << ANNOT_ID_NK_TRIGGER);
+              memset(&annotblock, 0, sizeof(annotationblock));
+              annotblock.file_num = edf_hdr->file_num;
+              annotblock.onset = ((long long)i * data_record_duration) + ((long long)k * nk_trigger_sample_duration);
+              annotblock.onset += edf_hdr->starttime_offset;
+              strcpy(annotblock.annotation, nk_triggerlabel[j]);
+              annotblock.ident = (1 << ANNOT_ID_NK_TRIGGER);
 
-              if(edfplus_annotation_add_item(&edf_hdr->annot_list, annotblock_ii))
+              if(edfplus_annotation_add_item(&edf_hdr->annot_list, annotblock))
               {
                 progress.reset();
                 QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred while reading annotations.");
