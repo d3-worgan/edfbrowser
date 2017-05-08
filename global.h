@@ -44,7 +44,7 @@
 #endif
 
 #define PROGRAM_NAME "EDFbrowser"
-#define PROGRAM_VERSION "1.58"
+#define PROGRAM_VERSION "1.59"
 #define MINIMUM_QT_VERSION 0x040701
 #define MAXFILES 32
 #define MAXSIGNALS 512

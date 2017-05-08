@@ -1,5 +1,5 @@
 
- version 1.59      to be released
+ version 1.59      May 8, 2017
  --------------
 
  - Improved memory management of annotations and annotations sorting algorithm,

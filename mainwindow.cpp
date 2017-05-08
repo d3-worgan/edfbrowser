@@ -613,7 +613,7 @@ void UI_Mainwindow::convert_wave_to_edf()
 
 void UI_Mainwindow::convert_fm_audio_to_edf()
 {
-  UI_FMaudio2EDFwindow fma2edf(recent_opendir, recent_savedir);
+  UI_FMaudio2EDFwindow fma2edf(this, recent_opendir, recent_savedir);
 }
 
 

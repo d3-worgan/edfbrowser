@@ -54,11 +54,13 @@
 #include <string.h>
 
 #include "global.h"
+#include "mainwindow.h"
 #include "utils.h"
 #include "edflib.h"
 #include "ravg_filter.h"
 
 
+class UI_Mainwindow;
 
 
 class UI_FMaudio2EDFwindow : public QObject
@@ -66,7 +68,9 @@ class UI_FMaudio2EDFwindow : public QObject
   Q_OBJECT
 
 public:
-  UI_FMaudio2EDFwindow(char *recent_dir=NULL, char *save_dir=NULL);
+  UI_FMaudio2EDFwindow(QWidget *, char *recent_dir=NULL, char *save_dir=NULL);
+
+  UI_Mainwindow  *mainwindow;
 
 private:
 

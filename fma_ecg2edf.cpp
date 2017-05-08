@@ -46,8 +46,10 @@
 
 
 
-UI_FMaudio2EDFwindow::UI_FMaudio2EDFwindow(char *recent_dir, char *save_dir)
+UI_FMaudio2EDFwindow::UI_FMaudio2EDFwindow(QWidget *w_parent, char *recent_dir, char *save_dir)
 {
+  mainwindow = (UI_Mainwindow *)w_parent;
+
   recent_opendir = recent_dir;
   recent_savedir = save_dir;
 

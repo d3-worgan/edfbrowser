@@ -102,7 +102,7 @@ class UI_ImportAnnotationswindow : public QObject
 
 public:
 
-UI_ImportAnnotationswindow(QWidget *parent);
+UI_ImportAnnotationswindow(QWidget *);
 
 UI_Mainwindow  *mainwindow;
 
