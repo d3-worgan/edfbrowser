@@ -686,6 +686,28 @@ void UI_LoadMontagewindow::LoadButtonClicked()
           xml_go_up(xml_hdl);
           break;
         }
+
+        if(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].bitvalue
+          != newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue)
+        {
+          free(newsignalcomp);
+          skip = 1;
+          signalcomps_read++;
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          break;
+        }
+
+        if(strcmp(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].physdimension,
+                  newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension))
+        {
+          free(newsignalcomp);
+          skip = 1;
+          signalcomps_read++;
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          break;
+        }
       }
 
       newsignalcomp->sensitivity[signals_read] = newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].bitvalue / (newsignalcomp->voltpercm * mainwindow->pixelsizefactor);
