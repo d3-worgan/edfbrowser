@@ -435,7 +435,7 @@ void UI_Signalswindow::AddButtonClicked()
 
     if(bitvalue!=0.0)
     {
-      if(bitvalue!=mainwindow->edfheaderlist[row]->edfparam[s].bitvalue)
+      if(dblcmp(bitvalue, mainwindow->edfheaderlist[row]->edfparam[s].bitvalue))
       {
         QMessageBox messagewindow(QMessageBox::Warning, "Warning",
                                      "It is only possible to make combinations/derivations with signals which:\n"

@@ -687,8 +687,8 @@ void UI_LoadMontagewindow::LoadButtonClicked()
           break;
         }
 
-        if(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].bitvalue
-          != newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue)
+        if(dblcmp(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].bitvalue,
+                  newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue))
         {
           free(newsignalcomp);
           skip = 1;
