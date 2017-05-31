@@ -42,8 +42,6 @@ win32 {
     QTPLUGIN += windowsprintersupport
 } else:mac {
     QTPLUGIN += cocoaprintersupport
-} else {
-    QTPLUGIN += cupsprintersupport
 }
 }
 
