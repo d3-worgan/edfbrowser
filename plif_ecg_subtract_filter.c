@@ -85,7 +85,7 @@ struct plif_subtract_filter_settings * plif_create_subtract_filter(int sf, int p
 
   if(sf % pwlf)  return NULL;  /* ratio between the samplefrequency and the powerline frequency must be a multiple integer */
 
-  if((lt < 25) || (lt > 100000))  return NULL;  /* range for the linear detection threshold */
+  if((lt < 1) || (lt > 100000))  return NULL;  /* range for the linear detection threshold */
 
   st = (struct plif_subtract_filter_settings *) calloc(1, sizeof(struct plif_subtract_filter_settings));
   if(st==NULL)  return(NULL);
