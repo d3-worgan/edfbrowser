@@ -4,6 +4,8 @@
 
  - Improve parameter checking for signal composition when loading a montage file.
 
+ - Added a powerline interference removal filter for ECG signals.
+
 
 
  version 1.59      May 8, 2017
