@@ -157,6 +157,8 @@
 #include "spike_filter_dialog.h"
 #include "mit2edf.h"
 #include "biox2edf.h"
+#include "plif_ecg_subtract_filter.h"
+#include "plif_ecg_subtract_filter_dialog.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -488,8 +490,10 @@ private slots:
   void export_to_ascii();
   void check_edf_compatibility();
   void add_new_filter();
+  void add_plif_ecg_filter();
   void add_spike_filter();
   void remove_all_filters();
+  void remove_all_plif_ecg_filters();
   void remove_all_spike_filters();
 //  void add_new_math_func();
 //  void remove_all_math_funcs();

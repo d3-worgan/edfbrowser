@@ -465,6 +465,20 @@ void UI_SignalChooser::signalDelete()
 
     mainwindow->signalcomp[sigcomp_nr]->fidfilter_cnt = 0;
 
+    if(mainwindow->signalcomp[sigcomp_nr]->plif_ecg_filter)
+    {
+      plif_free_subtract_filter(mainwindow->signalcomp[sigcomp_nr]->plif_ecg_filter);
+
+      mainwindow->signalcomp[sigcomp_nr]->plif_ecg_filter = NULL;
+    }
+
+    if(mainwindow->signalcomp[sigcomp_nr]->plif_ecg_filter_sav)
+    {
+      plif_free_subtract_filter(mainwindow->signalcomp[sigcomp_nr]->plif_ecg_filter_sav);
+
+      mainwindow->signalcomp[sigcomp_nr]->plif_ecg_filter_sav = NULL;
+    }
+
     free(mainwindow->signalcomp[sigcomp_nr]);
 
     for(i=sigcomp_nr; i<mainwindow->signalcomps - 1; i++)

@@ -32,6 +32,7 @@
   <li><a href="#Adjust_filters">Adjust filters</a></li>
   <li><a href="#Powerspectrum">Powerspectrum</a></li>
   <li><a href="#Averaging_EP">Averaging (evoked potentials or other triggers)</a></li>
+  <li><a href="#ECG_PLIF_filter">ECG powerline interference filter</a></li>
   <li><a href="#ECG_detection">ECG heartrate detection</a></li>
   <li><a href="#HR_statistics">Heart Rate statistics</a></li>
   <li><a href="#Spike_filter">Spike filter</a></li>
@@ -443,6 +444,56 @@
   See <a href="#Import_annotations">Import annotations/events</a> how to import triggers/events/annotations.<br>
 <br>
   Note: It is also possible to change the selection of annotations/triggers for averaging, by <a href="#Annotation_editor">editing the annotationlist</a> first.
+</p>
+
+<p><br></p>
+
+<p><a href="#Table_of_Contents">Table of Contents</a></p>
+
+<p><br><br></p>
+
+<h3><a name="ECG_PLIF_filter">ECG powerline interference filter</a></h3>
+
+<p>
+  The ECG powerline interference filter is inspired by the subtraction method described by:<br>
+ - Subtraction Method For Powerline Interference Removing From ECG<br>
+   Chavdar Levkov, Georgy Mihov, Ratcho Ivanov, Ivan K. Daskalov Ivaylo Christov, Ivan Dotsinsky<br>
+<br>
+ - Removal of power-line interference from the ECG: a review of the subtraction procedure<br>
+   Chavdar Levkov, Georgy Mihov, Ratcho Ivanov, Ivan Daskalov, Ivaylo Christov and Ivan Dotsinsky<br>
+<br>
+ - Accuracy of 50 Hz interference subtraction from an electrocardiogram I. A, Dotsinsky I.K. Daskalov<br>
+<br>
+ - Dynamic powerline interference subtraction from biosignals<br>
+   Ivaylo I. Christov<br>
+<br>
+  The subtraction method extracts the powerline interference noise during a<br>
+  a linear region between two consecutive QRS complexes and stores it in a buffer.<br>
+  The reference noise from the buffer is used to subtract it from the signal outside<br>
+  the linear region i.e. during the QRS complex.<br>
+  This method only works correctly when the samplefrequency of the ECG recording is a<br>
+  multiple integer of the powerline frequency.<br>
+  In case they are synchronized, this method will remove also the harmonics of the<br>
+  powerline frequency. In that case extra notch-filters for the harmonics are<br>
+  not necessary. The advantage of this method is that it will not cause ringing<br>
+  in the waveform of the QRS complex (like notch-filters do).<br>
+<br>
+  The following rules apply:<br>
+  - The samplefrequency of the ECG recording must be at least 500 Hz<br>
+  - The samplefrequency of the ECG recording must be a multiple integer of the powerline frequency<br>
+  - The physical dimension (units) of the ECG signal must be expressed in uV, mV or V.<br>
+<br>
+  The threshold for the detection of the linear region can be set between 10 - 200 uV.<br>
+  If, during a certain period, the differences between the maximum and the minimum levels are<br>
+  less than the threshold level, that period will be considered linear and used to extract the<br>
+  powerline interference noise which in turn will be used to subtract from the signal.<br>
+  Setting this threshold too low, can cause the filter not to detect a linear region.<br>
+  Setting this threshold too high, can cause the filter to use non-linear regions for<br>
+  noise extraction which can cause distortion of the waveform.<br>
+<br>
+  Note: Good results will be achieved when the accuracy of the recording sampleclock is &lt=100ppm.<br>
+  A nearly perfect result will achieved when the recording sampleclock is synchronized with the<br>
+  powerlinefrequency in hardware (e.g. using a PLL).
 </p>
 
 <p><br></p>

@@ -594,6 +594,23 @@ void UI_AveragerWindow::process_avg(struct signalcompblock *signalcomp)
       dig_value = signalcomp->fidfuncp[k](signalcomp->fidbuf[k], dig_value);
     }
 
+    if(signalcomp->plif_ecg_filter)
+    {
+      if(s==signalcomp->sample_start)
+      {
+        if(mainwindow->edfheaderlist[signalcomp->filenum]->viewtime<=0)
+        {
+          plif_reset_subtract_filter(signalcomp->plif_ecg_filter, 0);
+        }
+        else
+        {
+          plif_subtract_filter_state_copy(signalcomp->plif_ecg_filter, signalcomp->plif_ecg_filter_sav);
+        }
+      }
+
+      dig_value = plif_run_subtract_filter(dig_value, signalcomp->plif_ecg_filter);
+    }
+
     if(signalcomp->ecg_filter != NULL)
     {
       if(s==signalcomp->sample_start)

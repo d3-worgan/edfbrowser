@@ -876,6 +876,14 @@ void UI_Mainwindow::add_new_filter()
 }
 
 
+void UI_Mainwindow::add_plif_ecg_filter()
+{
+  if(!files_open)  return;
+
+  UI_PLIF_ECG_filter_dialog plifecgfilterdialog(this);
+}
+
+
 void UI_Mainwindow::add_spike_filter()
 {
   if(!files_open)  return;
@@ -1886,6 +1894,41 @@ void UI_Mainwindow::remove_all_filters()
 }
 
 
+void UI_Mainwindow::remove_all_plif_ecg_filters()
+{
+  int i,
+      update_scr=0;
+
+  if(!files_open)  return;
+
+  for(i=0; i<signalcomps; i++)
+  {
+    if(signalcomp[i]->plif_ecg_filter)
+    {
+      plif_free_subtract_filter(signalcomp[i]->plif_ecg_filter);
+
+      signalcomp[i]->plif_ecg_filter = NULL;
+
+      update_scr = 1;
+    }
+
+    if(signalcomp[i]->plif_ecg_filter_sav)
+    {
+      plif_free_subtract_filter(signalcomp[i]->plif_ecg_filter_sav);
+
+      signalcomp[i]->plif_ecg_filter_sav = NULL;
+
+      update_scr = 1;
+    }
+  }
+
+  if(update_scr)
+  {
+    setup_viewbuf();
+  }
+}
+
+
 void UI_Mainwindow::remove_all_spike_filters()
 {
   int i,
@@ -1964,6 +2007,8 @@ void UI_Mainwindow::remove_all_signals()
   remove_all_filters();
 
   remove_all_spike_filters();
+
+  remove_all_plif_ecg_filters();
 
   for(i=0; i<signalcomps; i++)
   {
@@ -2097,6 +2142,20 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
       }
 
       signalcomp[j]->filter_cnt = 0;
+
+      if(signalcomp[j]->plif_ecg_filter)
+      {
+        plif_free_subtract_filter(signalcomp[j]->plif_ecg_filter);
+
+        signalcomp[j]->plif_ecg_filter = NULL;
+      }
+
+      if(signalcomp[j]->plif_ecg_filter_sav)
+      {
+        plif_free_subtract_filter(signalcomp[j]->plif_ecg_filter_sav);
+
+        signalcomp[j]->plif_ecg_filter_sav = NULL;
+      }
 
       if(signalcomp[j]->spike_filter)
       {

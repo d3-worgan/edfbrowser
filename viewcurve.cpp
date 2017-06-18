@@ -2578,6 +2578,23 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
           dig_value = signalcomp[i]->fidfuncp[k](signalcomp[i]->fidbuf[k], dig_value);
         }
 
+        if(signalcomp[i]->plif_ecg_filter)
+        {
+          if(s==signalcomp[i]->sample_start)
+          {
+            if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime<=0)
+            {
+              plif_reset_subtract_filter(signalcomp[i]->plif_ecg_filter, 0);
+            }
+            else
+            {
+              plif_subtract_filter_state_copy(signalcomp[i]->plif_ecg_filter, signalcomp[i]->plif_ecg_filter_sav);
+            }
+          }
+
+          dig_value = plif_run_subtract_filter(dig_value, signalcomp[i]->plif_ecg_filter);
+        }
+
         if(signalcomp[i]->ecg_filter != NULL)
         {
           if(s==signalcomp[i]->sample_start)
@@ -3045,6 +3062,23 @@ void drawCurve_stage_1_thread::run()
         }
 
         dig_value = signalcomp->fidfuncp[k](signalcomp->fidbuf[k], dig_value);
+      }
+
+      if(signalcomp->plif_ecg_filter)
+      {
+        if(s==signalcomp->sample_start)
+        {
+          if(mainwindow->edfheaderlist[signalcomp->filenum]->viewtime<=0)
+          {
+            plif_reset_subtract_filter(signalcomp->plif_ecg_filter, 0);
+          }
+          else
+          {
+            plif_subtract_filter_state_copy(signalcomp->plif_ecg_filter, signalcomp->plif_ecg_filter_sav);
+          }
+        }
+
+        dig_value = plif_run_subtract_filter(dig_value, signalcomp->plif_ecg_filter);
       }
 
       if(signalcomp->ecg_filter != NULL)
@@ -3972,6 +4006,20 @@ void ViewCurve::RemovesignalButton()
   }
 
   mainwindow->signalcomp[signal_nr]->filter_cnt = 0;
+
+  if(mainwindow->signalcomp[signal_nr]->plif_ecg_filter)
+  {
+    plif_free_subtract_filter(mainwindow->signalcomp[signal_nr]->plif_ecg_filter);
+
+    mainwindow->signalcomp[signal_nr]->plif_ecg_filter = NULL;
+  }
+
+  if(mainwindow->signalcomp[signal_nr]->plif_ecg_filter_sav)
+  {
+    plif_free_subtract_filter(mainwindow->signalcomp[signal_nr]->plif_ecg_filter_sav);
+
+    mainwindow->signalcomp[signal_nr]->plif_ecg_filter_sav = NULL;
+  }
 
   if(mainwindow->signalcomp[signal_nr]->spike_filter)
   {

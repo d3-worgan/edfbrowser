@@ -84,6 +84,16 @@ void UI_Mainwindow::setup_viewbuf()
       }
     }
 
+    if(signalcomp[i]->plif_ecg_filter)
+    {
+      hasprefilter = 1;
+
+      if(pre_time < 2.0)
+      {
+        pre_time = 2.0;
+      }
+    }
+
     if(signalcomp[i]->ravg_filter_cnt)
     {
       hasprefilter = 1;
@@ -135,7 +145,7 @@ void UI_Mainwindow::setup_viewbuf()
   {
     for(i=0; i<signalcomps; i++)
     {
-      if((signalcomp[i]->filter_cnt) || (signalcomp[i]->spike_filter) || (signalcomp[i]->ravg_filter_cnt) || (signalcomp[i]->fidfilter_cnt) || (signalcomp[i]->ecg_filter != NULL) || (signalcomp[i]->zratio_filter != NULL))
+      if((signalcomp[i]->filter_cnt) || (signalcomp[i]->spike_filter) || (signalcomp[i]->ravg_filter_cnt) || (signalcomp[i]->fidfilter_cnt) || (signalcomp[i]->plif_ecg_filter != NULL) || (signalcomp[i]->ecg_filter != NULL) || (signalcomp[i]->zratio_filter != NULL))
       {
         signalcomp[i]->edfhdr->prefiltertime = (long long)(pre_time * ((double)TIME_DIMENSION));
         if(signalcomp[i]->edfhdr->prefiltertime>signalcomp[i]->edfhdr->viewtime)
@@ -322,7 +332,7 @@ void UI_Mainwindow::setup_viewbuf()
 
     for(i=0; i<signalcomps; i++)
     {
-      if((!signalcomp[i]->filter_cnt) && (!signalcomp[i]->spike_filter) && (!signalcomp[i]->ravg_filter_cnt) && (!signalcomp[i]->fidfilter_cnt) && (signalcomp[i]->ecg_filter == NULL) && (signalcomp[i]->zratio_filter == NULL)) continue;
+      if((!signalcomp[i]->filter_cnt) && (!signalcomp[i]->spike_filter) && (!signalcomp[i]->ravg_filter_cnt) && (!signalcomp[i]->fidfilter_cnt) && (!signalcomp[i]->plif_ecg_filter) && (signalcomp[i]->ecg_filter == NULL) && (signalcomp[i]->zratio_filter == NULL)) continue;
 
       for(s=0; s<signalcomp[i]->samples_in_prefilterbuf; s++)
       {
@@ -395,6 +405,11 @@ void UI_Mainwindow::setup_viewbuf()
           dig_value = signalcomp[i]->fidfuncp[j](signalcomp[i]->fidbuf[j], dig_value);
         }
 
+        if(signalcomp[i]->plif_ecg_filter)
+        {
+          dig_value = plif_run_subtract_filter(dig_value, signalcomp[i]->plif_ecg_filter);
+        }
+
         if(signalcomp[i]->ecg_filter != NULL)
         {
           if(s == 0)
@@ -440,6 +455,11 @@ void UI_Mainwindow::setup_viewbuf()
         for(j=0; j<signalcomp[i]->fidfilter_cnt; j++)
         {
           memcpy(signalcomp[i]->fidbuf2[j], signalcomp[i]->fidbuf[j], fid_run_bufsize(signalcomp[i]->fid_run[j]));
+        }
+
+        if(signalcomp[i]->plif_ecg_filter)
+        {
+          plif_subtract_filter_state_copy(signalcomp[i]->plif_ecg_filter_sav, signalcomp[i]->plif_ecg_filter);
         }
 
         if(signalcomp[i]->ecg_filter != NULL)

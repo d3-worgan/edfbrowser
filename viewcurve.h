@@ -66,6 +66,7 @@
 #include "utils.h"
 #include "adjustfiltersettings.h"
 #include "spike_filter.h"
+#include "plif_ecg_subtract_filter.h"
 #include "ravg_filter.h"
 #include "ecg_filter.h"
 #include "statistics_dialog.h"

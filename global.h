@@ -85,6 +85,7 @@
 #include "ecg_filter.h"
 #include "z_ratio_filter.h"
 #include "edf_annot_list.h"
+#include "plif_ecg_subtract_filter.h"
 
 
 struct edfparamblock{
@@ -223,6 +224,10 @@ struct signalcompblock{
         double spike_filter_velocity;
         int spike_filter_holdoff;
         struct spike_filter_settings *spike_filter;
+        int plif_ecg_subtract_filter_threshold;
+        int plif_ecg_subtract_filter_plf;
+        struct plif_subtract_filter_settings *plif_ecg_filter;
+        struct plif_subtract_filter_settings *plif_ecg_filter_sav;
         struct zratio_filter_settings *zratio_filter;
         double zratio_crossoverfreq;
         int spectr_dialog[MAXSPECTRUMDIALOGS];

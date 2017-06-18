@@ -610,6 +610,9 @@ UI_Mainwindow::UI_Mainwindow()
   filtermenu->addAction("Adjust", this, SLOT(filterproperties_dialog()));
   filtermenu->addAction("Remove all", this, SLOT(remove_all_filters()));
   filtermenu->addSeparator();
+  filtermenu->addAction("Powerline interference removal for ECG", this, SLOT(add_plif_ecg_filter()));
+  filtermenu->addAction("Remove all Powerline interference filters", this, SLOT(remove_all_plif_ecg_filters()));
+  filtermenu->addSeparator();
   filtermenu->addAction("Spike", this, SLOT(add_spike_filter()));
   filtermenu->addAction("Remove all spike filters", this, SLOT(remove_all_spike_filters()));
   menubar->addMenu(filtermenu);
