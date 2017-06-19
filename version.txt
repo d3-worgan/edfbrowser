@@ -6,6 +6,9 @@
 
  - Added a powerline interference removal filter for ECG signals.
 
+ - Added the possibility to fix the EDF-header in case the value for digital maximum
+   is lower than digital minimum.
+
 
 
  version 1.59      May 8, 2017

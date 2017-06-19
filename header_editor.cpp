@@ -898,9 +898,10 @@ void UI_headerEditorWindow::read_header()
 
 void UI_headerEditorWindow::save_hdr()
 {
-  int i, j, p, len, hassign;
+  int i, j, p, len, hassign, digmin=0, digmax=0, dig_ok;
 
   char scratchpad[256],
+       scratchpad2[256],
        str[256];
 
   long long filesize,
@@ -1319,6 +1320,7 @@ void UI_headerEditorWindow::save_hdr()
       strncpy(scratchpad, hdr + 256 + (edfsignals * 120) + (i * 8), 8);  // digital minimum
       hassign = 0;
       p = 0;
+      dig_ok = 0;
       if((scratchpad[0] == '+') || (scratchpad[0] == '-'))
       {
         hassign = 1;
@@ -1340,19 +1342,21 @@ void UI_headerEditorWindow::save_hdr()
         scratchpad[8] = 0;
         fseeko(file, (long long)(256 + (edfsignals * 120) + (i * 8)), SEEK_SET);
         fprintf(file, "%s", scratchpad);
+        digmin = atoi(scratchpad);
+        dig_ok++;
       }
 
-      strncpy(scratchpad, hdr + 256 + (edfsignals * 128) + (i * 8), 8);  // digital maximum
+      strncpy(scratchpad2, hdr + 256 + (edfsignals * 128) + (i * 8), 8);  // digital maximum
       hassign = 0;
       p = 0;
-      if((scratchpad[0] == '+') || (scratchpad[0] == '-'))
+      if((scratchpad2[0] == '+') || (scratchpad2[0] == '-'))
       {
         hassign = 1;
         p++;
       }
       for(; p<8; p++)
       {
-        if((scratchpad[p] < '0') || (scratchpad[p] > '9'))
+        if((scratchpad2[p] < '0') || (scratchpad2[p] > '9'))
         {
           break;
         }
@@ -1361,11 +1365,26 @@ void UI_headerEditorWindow::save_hdr()
       {
         for(; p<8; p++)
         {
-          scratchpad[p] = ' ';
+          scratchpad2[p] = ' ';
         }
-        scratchpad[8] = 0;
+        scratchpad2[8] = 0;
         fseeko(file, (long long)(256 + (edfsignals * 128) + (i * 8)), SEEK_SET);
-        fprintf(file, "%s", scratchpad);
+        fprintf(file, "%s", scratchpad2);
+        digmax = atoi(scratchpad2);
+        dig_ok++;
+      }
+      if(dig_ok == 2)
+      {
+        if(digmax < digmin)
+        {
+          dig_ok++;
+
+          fseeko(file, (long long)(256 + (edfsignals * 120) + (i * 8)), SEEK_SET);
+          fprintf(file, "%s", scratchpad2);
+
+          fseeko(file, (long long)(256 + (edfsignals * 128) + (i * 8)), SEEK_SET);
+          fprintf(file, "%s", scratchpad);
+        }
       }
 
       strncpy(scratchpad, hdr + 256 + (edfsignals * 104) + (i * 8), 8);  // physical minimum
@@ -1384,21 +1403,30 @@ void UI_headerEditorWindow::save_hdr()
       fseeko(file, (long long)(256 + (edfsignals * 104) + (i * 8)), SEEK_SET);
       fprintf(file, "%s", scratchpad);
 
-      strncpy(scratchpad, hdr + 256 + (edfsignals * 112) + (i * 8), 8);  // physical maximum
+      strncpy(scratchpad2, hdr + 256 + (edfsignals * 112) + (i * 8), 8);  // physical maximum
       for(p=7; p>0; p--)
       {
-        if((scratchpad[p] < '0') || (scratchpad[p] > '9'))
+        if((scratchpad2[p] < '0') || (scratchpad2[p] > '9'))
         {
-          scratchpad[p] = ' ';
+          scratchpad2[p] = ' ';
         }
         else
         {
           break;
         }
       }
-      scratchpad[8] = 0;
+      scratchpad2[8] = 0;
       fseeko(file, (long long)(256 + (edfsignals * 112) + (i * 8)), SEEK_SET);
-      fprintf(file, "%s", scratchpad);
+      fprintf(file, "%s", scratchpad2);
+
+      if(dig_ok == 3)
+      {
+        fseeko(file, (long long)(256 + (edfsignals * 104) + (i * 8)), SEEK_SET);
+        fprintf(file, "%s", scratchpad2);
+
+        fseeko(file, (long long)(256 + (edfsignals * 112) + (i * 8)), SEEK_SET);
+        fprintf(file, "%s", scratchpad);
+      }
     }
 
     fseeko(file, (long long)(256 + (edfsignals * 224) + (i * 32)), SEEK_SET);  // reserved
