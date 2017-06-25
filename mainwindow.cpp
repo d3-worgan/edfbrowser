@@ -2754,6 +2754,8 @@ void UI_Mainwindow::set_display_time_whole_rec()
 {
   int i;
 
+  long long vtime=0LL;
+
   if(!files_open)  return;
 
   if(viewtime_sync==VIEWTIME_SYNCED_OFFSET)
@@ -2795,7 +2797,28 @@ void UI_Mainwindow::set_display_time_whole_rec()
     edfheaderlist[sel_viewtime]->viewtime = 0;
   }
 
-  pagetime = edfheaderlist[sel_viewtime]->datarecords * edfheaderlist[sel_viewtime]->long_data_record_duration;
+  for(i=0; i<files_open; i++)
+  {
+    if(edfheaderlist[i]->viewtime > vtime)
+    {
+      vtime = edfheaderlist[i]->viewtime;
+    }
+  }
+
+  for(i=0; i<files_open; i++)
+  {
+    edfheaderlist[i]->viewtime -= vtime;
+  }
+
+  pagetime = 0LL;
+
+  for(i=0; i<files_open; i++)
+  {
+    if(((edfheaderlist[i]->datarecords * edfheaderlist[i]->long_data_record_duration) - edfheaderlist[i]->viewtime) > pagetime)
+    {
+      pagetime = (edfheaderlist[i]->datarecords * edfheaderlist[i]->long_data_record_duration) - edfheaderlist[i]->viewtime;
+    }
+  }
 
   setup_viewbuf();
 }

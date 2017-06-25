@@ -9,6 +9,9 @@
  - Added the possibility to fix the EDF-header in case the value for digital maximum
    is lower than digital minimum.
 
+ - When "whole recording" is selected for the Timescale and multiple files are opened,
+   make sure all recordings are completely visible.
+
 
 
  version 1.59      May 8, 2017
