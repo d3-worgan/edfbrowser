@@ -64,6 +64,7 @@ double plif_run_subtract_filter(double, struct plif_subtract_filter_settings *);
 void plif_reset_subtract_filter(struct plif_subtract_filter_settings *, double);
 void plif_free_subtract_filter(struct plif_subtract_filter_settings *);
 void plif_subtract_filter_state_copy(struct plif_subtract_filter_settings *, struct plif_subtract_filter_settings *);
+struct plif_subtract_filter_settings * plif_subtract_filter_create_copy(struct plif_subtract_filter_settings *);
 
 
 #ifdef __cplusplus

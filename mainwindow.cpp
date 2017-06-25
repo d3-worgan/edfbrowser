@@ -3601,7 +3601,7 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
     return(NULL);
   }
 
-  memcpy(newsignalcomp, original_signalcomp, sizeof(struct signalcompblock));
+  *newsignalcomp = *original_signalcomp;
 
   if(newsignalcomp->spike_filter)
   {
@@ -3614,6 +3614,20 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
       return(NULL);
     }
   }
+
+  if(newsignalcomp->plif_ecg_filter)
+  {
+    newsignalcomp->plif_ecg_filter = plif_subtract_filter_create_copy(original_signalcomp->plif_ecg_filter);
+    if(newsignalcomp->plif_ecg_filter == NULL)
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "malloc() error");
+      messagewindow.exec();
+      free(signalcomp);
+      return(NULL);
+    }
+  }
+
+  newsignalcomp->plif_ecg_filter_sav = NULL;
 
   for(i=0; i<newsignalcomp->filter_cnt; i++)
   {

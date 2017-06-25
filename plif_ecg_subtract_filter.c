@@ -88,7 +88,7 @@ struct plif_subtract_filter_settings * plif_create_subtract_filter(int sf, int p
   if((lt < 1) || (lt > 100000))  return NULL;  /* range for the linear detection threshold */
 
   st = (struct plif_subtract_filter_settings *) calloc(1, sizeof(struct plif_subtract_filter_settings));
-  if(st==NULL)  return(NULL);
+  if(st==NULL)  return NULL;
 
   st->sf = sf;
   st->tpl = sf / pwlf;  /* the number of samples in one cycle of the powerline frequency */
@@ -100,14 +100,14 @@ struct plif_subtract_filter_settings * plif_create_subtract_filter(int sf, int p
   if(st->ravg_buf == NULL) /* buffer for the running average filter */
   {
     free(st);
-    return(NULL);
+    return NULL;
   }
   st->ref_buf = (double *)calloc(1, sizeof(double) * st->tpl);
   if(st->ref_buf == NULL)  /* buffer for the reference noise, used to be subtracted from the ECG signal */
   {
     free(st->ravg_buf);
     free(st);
-    return(NULL);
+    return NULL;
   }
   st->ref_buf_new = (double *)calloc(1, sizeof(double) * st->tpl);
   if(st->ref_buf_new == NULL)
@@ -115,7 +115,7 @@ struct plif_subtract_filter_settings * plif_create_subtract_filter(int sf, int p
     free(st->ref_buf);
     free(st->ravg_buf);
     free(st);
-    return(NULL);
+    return NULL;
   }
   for(i=0;i<PLIF_NBUFS; i++)
   {
@@ -126,7 +126,7 @@ struct plif_subtract_filter_settings * plif_create_subtract_filter(int sf, int p
       free(st->ref_buf);
       free(st->ref_buf_new);
       free(st);
-      return(NULL);
+      return NULL;
     }
   }
   for(i=0;i<PLIF_NBUFS; i++)
@@ -138,11 +138,86 @@ struct plif_subtract_filter_settings * plif_create_subtract_filter(int sf, int p
       free(st->ref_buf);
       free(st->ref_buf_new);
       free(st);
-      return(NULL);
+      return NULL;
     }
   }
 
-  return(st);
+  return st;
+}
+
+
+struct plif_subtract_filter_settings * plif_subtract_filter_create_copy(struct plif_subtract_filter_settings *st_ori)
+{
+  int i;
+
+  struct plif_subtract_filter_settings *st;
+
+  if(st_ori == NULL)
+  {
+    return NULL;
+  }
+
+  st = (struct plif_subtract_filter_settings *) calloc(1, sizeof(struct plif_subtract_filter_settings));
+  if(st==NULL)  return NULL;
+
+  *st = *st_ori;
+
+  st->ravg_buf = (double *)calloc(1, sizeof(double) * st->tpl);
+  if(st->ravg_buf == NULL)
+  {
+    free(st);
+    return NULL;
+  }
+  memcpy(st->ravg_buf, st_ori->ravg_buf, sizeof(double) * st->tpl);
+
+  st->ref_buf = (double *)calloc(1, sizeof(double) * st->tpl);
+  if(st->ref_buf == NULL)
+  {
+    free(st->ravg_buf);
+    free(st);
+    return NULL;
+  }
+  memcpy(st->ref_buf, st_ori->ref_buf, sizeof(double) * st->tpl);
+
+  st->ref_buf_new = (double *)calloc(1, sizeof(double) * st->tpl);
+  if(st->ref_buf_new == NULL)
+  {
+    free(st->ref_buf);
+    free(st->ravg_buf);
+    free(st);
+    return NULL;
+  }
+  memcpy(st->ref_buf_new, st_ori->ref_buf_new, sizeof(double) * st->tpl);
+
+  for(i=0;i<PLIF_NBUFS; i++)
+  {
+    st->ravg_noise_buf[i] = (double *)calloc(1, sizeof(double) * st->tpl);
+    if(st->ravg_noise_buf[i] == NULL)
+    {
+      free(st->ravg_buf);
+      free(st->ref_buf);
+      free(st->ref_buf_new);
+      free(st);
+      return NULL;
+    }
+    memcpy(st->ravg_noise_buf[i], st_ori->ravg_noise_buf[i], sizeof(double) * st->tpl);
+  }
+
+  for(i=0;i<PLIF_NBUFS; i++)
+  {
+    st->input_buf[i] = (double *)calloc(1, sizeof(double) * st->tpl);
+    if(st->input_buf[i] == NULL)
+    {
+      free(st->ravg_buf);
+      free(st->ref_buf);
+      free(st->ref_buf_new);
+      free(st);
+      return NULL;
+    }
+    memcpy(st->input_buf[i], st_ori->input_buf[i], sizeof(double) * st->tpl);
+  }
+
+  return st;
 }
 
 
@@ -153,6 +228,11 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
   static int incr=0;
 
   double ravg_val, output, fd_max, fd_min;
+
+  if(st == NULL)
+  {
+    return 0;
+  }
 
   st->input_buf[st->buf_idx][st->ravg_idx] = new_input;
 
