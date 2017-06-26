@@ -321,6 +321,15 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
       filterItem->appendRow(new QStandardItem(txtbuf));
     }
 
+    if(mainwindow->signalcomp[i]->plif_ecg_filter != NULL)
+    {
+      sprintf(txtbuf, "Powerline interference removal: %iHz  threshold: %iuV",
+              (mainwindow->signalcomp[i]->plif_ecg_subtract_filter_plf * 10) + 50,
+              mainwindow->signalcomp[i]->plif_ecg_subtract_filter_threshold);
+
+      filterItem->appendRow(new QStandardItem(txtbuf));
+    }
+
     if(mainwindow->signalcomp[i]->zratio_filter != NULL)
     {
       sprintf(txtbuf, "Z-ratio  cross-over frequency is %.1f Hz", mainwindow->signalcomp[i]->zratio_crossoverfreq);
