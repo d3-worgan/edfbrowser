@@ -1385,6 +1385,51 @@ void UI_headerEditorWindow::save_hdr()
           fseeko(file, (long long)(256 + (edfsignals * 128) + (i * 8)), SEEK_SET);
           fprintf(file, "%s", scratchpad);
         }
+        if(digmax == digmin)
+        {
+          if(edf)
+          {
+            if(digmax < 32767)
+            {
+              digmax++;
+              sprintf(scratchpad, "%i", digmax);
+              strcat(scratchpad, "        ");
+              scratchpad[8] = 0;
+              fseeko(file, (long long)(256 + (edfsignals * 128) + (i * 8)), SEEK_SET);
+              fprintf(file, "%s", scratchpad);
+            }
+            else
+            {
+              digmin--;
+              sprintf(scratchpad, "%i", digmin);
+              strcat(scratchpad, "        ");
+              scratchpad[8] = 0;
+              fseeko(file, (long long)(256 + (edfsignals * 120) + (i * 8)), SEEK_SET);
+              fprintf(file, "%s", scratchpad);
+            }
+          }
+          if(bdf)
+          {
+            if(digmax < 8388607)
+            {
+              digmax++;
+              sprintf(scratchpad, "%i", digmax);
+              strcat(scratchpad, "        ");
+              scratchpad[8] = 0;
+              fseeko(file, (long long)(256 + (edfsignals * 128) + (i * 8)), SEEK_SET);
+              fprintf(file, "%s", scratchpad);
+            }
+            else
+            {
+              digmin--;
+              sprintf(scratchpad, "%i", digmin);
+              strcat(scratchpad, "        ");
+              scratchpad[8] = 0;
+              fseeko(file, (long long)(256 + (edfsignals * 120) + (i * 8)), SEEK_SET);
+              fprintf(file, "%s", scratchpad);
+            }
+          }
+        }
       }
 
       strncpy(scratchpad, hdr + 256 + (edfsignals * 104) + (i * 8), 8);  // physical minimum

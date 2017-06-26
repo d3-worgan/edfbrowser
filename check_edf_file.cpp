@@ -1032,7 +1032,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     edfhdr->edfparam[i].dig_max = n;
     if(edfhdr->edfparam[i].dig_max<(edfhdr->edfparam[i].dig_min + 1))
     {
-      sprintf(txt_string, "Error, digital maximum of signal %i is less than or equal to digital minimum",
+      sprintf(txt_string, "Error, digital maximum of signal %i is less than or equal to digital minimum.\n"
+                          "Use the header editor to fix your file. Look at the manual for the details.",
              i + 1);
       free(edf_hdr);
       free(edfhdr->edfparam);

@@ -7,7 +7,7 @@
  - Added a powerline interference removal filter for ECG signals.
 
  - Added the possibility to fix the EDF-header in case the value for digital maximum
-   is lower than digital minimum.
+   is lower than or equal to digital minimum.
 
  - When "whole recording" is selected for the Timescale and multiple files are opened,
    make sure all recordings are completely visible.
