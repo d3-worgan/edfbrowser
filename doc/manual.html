@@ -471,8 +471,8 @@
   a linear region between two consecutive QRS complexes and stores it in a buffer.<br>
   The reference noise from the buffer is used to subtract it from the signal outside<br>
   the linear region i.e. during the QRS complex.<br>
-  This method only works correctly when the samplefrequency of the ECG recording is a<br>
-  multiple integer of the powerline frequency.<br>
+  This method only works correctly when the samplefrequency of the ECG recording is an<br>
+  integer multiple of the powerline frequency.<br>
   In case they are synchronized, this method will remove also the harmonics of the<br>
   powerline frequency. In that case extra notch-filters for the harmonics are<br>
   not necessary. The advantage of this method is that it will not cause ringing<br>
@@ -480,7 +480,7 @@
 <br>
   The following rules apply:<br>
   - The samplefrequency of the ECG recording must be at least 500 Hz<br>
-  - The samplefrequency of the ECG recording must be a multiple integer of the powerline frequency<br>
+  - The samplefrequency of the ECG recording must be a integer multiple of the powerline frequency<br>
   - The physical dimension (units) of the ECG signal must be expressed in uV, mV or V.<br>
 <br>
   The threshold for the detection of the linear region can be set between 10 - 200 uV.<br>
