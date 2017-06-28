@@ -55,6 +55,9 @@ struct plif_subtract_filter_settings{
                        int ravg_idx;
                        int buf_idx;
                        int fpl_corr;
+                       int linear;
+                       int incr;
+                       int shift;
                       };
 
 

@@ -182,6 +182,13 @@ void UI_PLIF_ECG_filter_dialog::ApplyButtonClicked()
 
       mainwindow->signalcomp[i]->plif_ecg_filter = NULL;
     }
+
+    if(mainwindow->signalcomp[i]->plif_ecg_filter_sav)
+    {
+      plif_free_subtract_filter(mainwindow->signalcomp[i]->plif_ecg_filter_sav);
+
+      mainwindow->signalcomp[i]->plif_ecg_filter_sav = NULL;
+    }
   }
 
   if(plfBox->currentIndex() == 0)
