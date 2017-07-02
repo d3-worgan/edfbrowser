@@ -228,6 +228,17 @@ void UI_SaveMontagewindow::SaveButtonClicked()
         fprintf(mtgfile, "    </fidfilter>\n");
       }
 
+      if(mainwindow->signalcomp[i]->plif_ecg_filter != NULL)
+      {
+        fprintf(mtgfile, "    <plif_ecg_filter>\n");
+
+        fprintf(mtgfile, "      <plf>%i</plf>\n", mainwindow->signalcomp[i]->plif_ecg_subtract_filter_plf);
+
+        fprintf(mtgfile, "      <linear_threshold>%i</linear_threshold>\n", mainwindow->signalcomp[i]->plif_ecg_subtract_filter_threshold);
+
+        fprintf(mtgfile, "    </plif_ecg_filter>\n");
+      }
+
       if(mainwindow->signalcomp[i]->ecg_filter != NULL)
       {
         fprintf(mtgfile, "    <ecg_filter>\n");

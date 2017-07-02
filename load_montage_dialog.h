@@ -57,6 +57,7 @@
 #include "utc_date_time.h"
 #include "utils.h"
 #include "spectrum_dock.h"
+#include "plif_ecg_subtract_filter.h"
 
 #include "third_party/fidlib/fidlib.h"
 

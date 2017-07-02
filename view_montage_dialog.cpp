@@ -109,7 +109,9 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       type,
       size,
       polarity=1,
-      holdoff=100;
+      holdoff=100,
+      plif_powerlinefrequency,
+      plif_linear_threshold;
 
   char result[XML_STRBUFLEN],
        composition_txt[2048],
@@ -827,6 +829,65 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       filterItem->appendRow(new QStandardItem(composition_txt));
 
       xml_go_up(xml_hdl);
+      xml_go_up(xml_hdl);
+    }
+
+    if(!xml_goto_nth_element_inside(xml_hdl, "plif_ecg_filter", 0))
+    {
+      if(xml_goto_nth_element_inside(xml_hdl, "plf", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      plif_powerlinefrequency = atoi(result);
+      if((plif_powerlinefrequency != 0) && (plif_powerlinefrequency != 1))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      plif_powerlinefrequency *= 10;
+      plif_powerlinefrequency += 50;
+      xml_go_up(xml_hdl);
+
+      if(xml_goto_nth_element_inside(xml_hdl, "linear_threshold", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      plif_linear_threshold = atoi(result);
+      if((plif_linear_threshold < 10) || (plif_linear_threshold > 200))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      xml_go_up(xml_hdl);
+
+      sprintf(composition_txt, "Powerline interference removal: %iHz  threshold: %iuV", plif_powerlinefrequency, plif_linear_threshold);
+
+      filterItem->appendRow(new QStandardItem(composition_txt));
+
       xml_go_up(xml_hdl);
     }
 

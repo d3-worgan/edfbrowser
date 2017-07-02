@@ -112,7 +112,11 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       size=0,
       amp_cat[3],
       f_ruler_cnt=0,
-      holdoff=100;
+      holdoff=100,
+      plif_powerlinefrequency,
+      plif_linear_threshold,
+      not_compatibel,
+      sf;
 
   char result[XML_STRBUFLEN],
        scratchpad[2048],
@@ -125,7 +129,8 @@ void UI_LoadMontagewindow::LoadButtonClicked()
   double frequency=1.0,
          frequency2=2.0,
          ripple=1.0,
-         velocity=1.0;
+         velocity=1.0,
+         dthreshold;
 
 
   struct xml_handle *xml_hdl;
@@ -256,6 +261,19 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       mainwindow->signalcomp[k]->fidfilter_cnt = 0;
 
+      if(mainwindow->signalcomp[k]->plif_ecg_filter)
+      {
+        plif_free_subtract_filter(mainwindow->signalcomp[k]->plif_ecg_filter);
+
+        mainwindow->signalcomp[k]->plif_ecg_filter = NULL;
+      }
+
+      if(mainwindow->signalcomp[k]->plif_ecg_filter_sav)
+      {
+        plif_free_subtract_filter(mainwindow->signalcomp[k]->plif_ecg_filter_sav);
+
+        mainwindow->signalcomp[k]->plif_ecg_filter_sav = NULL;
+      }
 
       if(mainwindow->signalcomp[k]->ecg_filter != NULL)
       {
@@ -346,6 +364,8 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     newsignalcomp->screen_offset = 0;
     newsignalcomp->filter_cnt = 0;
     newsignalcomp->ravg_filter_cnt = 0;
+    newsignalcomp->plif_ecg_filter = NULL;
+    newsignalcomp->plif_ecg_filter_sav = NULL;
     newsignalcomp->ecg_filter = NULL;
     newsignalcomp->fidfilter_cnt = 0;
     newsignalcomp->hasruler = 0;
@@ -1381,6 +1401,129 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       newsignalcomp->fidfilter_cnt = filters_read + 1;
 
       xml_go_up(xml_hdl);
+      xml_go_up(xml_hdl);
+    }
+
+    if(!xml_goto_nth_element_inside(xml_hdl, "plif_ecg_filter", 0))
+    {
+      not_compatibel = 0;
+
+      sf = ((long long)(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record) * TIME_DIMENSION) /
+           newsignalcomp->edfhdr->long_data_record_duration;
+
+      if(xml_goto_nth_element_inside(xml_hdl, "plf", 0))
+      {
+        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+        messagewindow.exec();
+        free(newsignalcomp);
+        xml_close(xml_hdl);
+        return;
+      }
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        free(newsignalcomp);
+        xml_close(xml_hdl);
+        return;
+      }
+      plif_powerlinefrequency = atoi(result);
+      if((plif_powerlinefrequency != 0) && (plif_powerlinefrequency != 1))
+      {
+        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+        messagewindow.exec();
+        free(newsignalcomp);
+        xml_close(xml_hdl);
+        return;
+      }
+      plif_powerlinefrequency *= 10;
+      plif_powerlinefrequency += 50;
+      xml_go_up(xml_hdl);
+
+      if(sf % plif_powerlinefrequency)  not_compatibel = 1;
+
+      if(xml_goto_nth_element_inside(xml_hdl, "linear_threshold", 0))
+      {
+        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+        messagewindow.exec();
+        free(newsignalcomp);
+        xml_close(xml_hdl);
+        return;
+      }
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        free(newsignalcomp);
+        xml_close(xml_hdl);
+        return;
+      }
+      plif_linear_threshold = atoi(result);
+      if((plif_linear_threshold < 10) || (plif_linear_threshold > 200))
+      {
+        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+        messagewindow.exec();
+        free(newsignalcomp);
+        xml_close(xml_hdl);
+        return;
+      }
+      xml_go_up(xml_hdl);
+
+      strcpy(str, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension);
+
+      remove_trailing_spaces(str);
+
+      if(!strcmp(str, "uV"))
+      {
+        dthreshold = plif_linear_threshold / newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue;
+      }
+      else if(!strcmp(str, "mV"))
+        {
+          dthreshold = (((double)(plif_linear_threshold)) / 1000.0) / newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue;
+        }
+        else if(!strcmp(str, "V"))
+          {
+            dthreshold = (((double)(plif_linear_threshold)) / 1000000.0) / newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue;
+          }
+          else
+          {
+            not_compatibel = 1;
+          }
+
+      if(!not_compatibel)
+      {
+        newsignalcomp->plif_ecg_filter = plif_create_subtract_filter(sf, plif_powerlinefrequency, dthreshold);
+        if(newsignalcomp->plif_ecg_filter == NULL)
+        {
+          sprintf(str2, "A memory allocation error occurred when creating a powerline interference removal filter.\n"
+                        "File: %s line: %i", __FILE__, __LINE__);
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+          messagewindow.exec();
+          free(newsignalcomp);
+          xml_close(xml_hdl);
+          return;
+        }
+
+        newsignalcomp->plif_ecg_filter_sav = plif_create_subtract_filter(sf, plif_powerlinefrequency, dthreshold);
+        if(newsignalcomp->plif_ecg_filter_sav == NULL)
+        {
+          sprintf(str2, "A memory allocation error occurred when creating a powerline interference removal filter.\n"
+                        "File: %s line: %i", __FILE__, __LINE__);
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+          messagewindow.exec();
+          free(newsignalcomp);
+          xml_close(xml_hdl);
+          return;
+        }
+
+        newsignalcomp->plif_ecg_subtract_filter_plf = plif_powerlinefrequency / 60;
+        newsignalcomp->plif_ecg_subtract_filter_threshold = plif_linear_threshold;
+      }
+
       xml_go_up(xml_hdl);
     }
 
