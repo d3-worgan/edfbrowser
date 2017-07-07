@@ -95,9 +95,6 @@ struct plif_subtract_filter_settings * plif_create_subtract_filter(int sf, int p
   st->ravg_idx = 0;
   st->buf_idx = 0;
   st->linear = 0;
-  st->incr = 0;
-  st->fpl_corr = 5;  /* not used for now */
-  st->shift = 12;  /* not used for now */
   st->linear_threshold = lt;  /* the threshold to detect the linear region */
   st->ravg_buf = (double *)calloc(1, sizeof(double) * st->tpl);
   if(st->ravg_buf == NULL) /* buffer for the running average filter */
@@ -112,14 +109,6 @@ struct plif_subtract_filter_settings * plif_create_subtract_filter(int sf, int p
     free(st);
     return NULL;
   }
-  st->ref_buf_new = (double *)calloc(1, sizeof(double) * st->tpl);
-  if(st->ref_buf_new == NULL)
-  {
-    free(st->ref_buf);
-    free(st->ravg_buf);
-    free(st);
-    return NULL;
-  }
   for(i=0;i<PLIF_NBUFS; i++)
   {
     st->ravg_noise_buf[i] = (double *)calloc(1, sizeof(double) * st->tpl);
@@ -127,7 +116,6 @@ struct plif_subtract_filter_settings * plif_create_subtract_filter(int sf, int p
     {
       free(st->ravg_buf);
       free(st->ref_buf);
-      free(st->ref_buf_new);
       free(st);
       return NULL;
     }
@@ -139,7 +127,6 @@ struct plif_subtract_filter_settings * plif_create_subtract_filter(int sf, int p
     {
       free(st->ravg_buf);
       free(st->ref_buf);
-      free(st->ref_buf_new);
       free(st);
       return NULL;
     }
@@ -151,18 +138,16 @@ struct plif_subtract_filter_settings * plif_create_subtract_filter(int sf, int p
 
 double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_settings *st)
 {
-  int i, j, n, p;
+  int i, j, n, pre, linear_buf_idx, linear_bufs;
 
-  double ravg_val, fd_max, fd_min;
+  double ravg_val, fd_max, fd_min, dtmp, thr, ret_val;
 
   if(st == NULL)
   {
     return 0;
   }
 
-  st->input_buf[st->buf_idx][st->ravg_idx] = new_input;
-
-/* running average filter */
+  /* running average filter */
   st->ravg_buf[st->ravg_idx] = new_input;
 
   ravg_val = 0;
@@ -174,54 +159,82 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
 
   ravg_val /= st->tpl;
 
+  /* delay the input with half tpl samples */
+  new_input = st->ravg_buf[(st->ravg_idx + (st->tpl / 2)) % st->tpl];
+
+  ret_val = new_input - st->ref_buf[st->ravg_idx];
+
+  st->input_buf[st->buf_idx][st->ravg_idx] = new_input;
+
   st->ravg_noise_buf[st->buf_idx][st->ravg_idx] = new_input - ravg_val;  /* store the noise extracted from the signal into the buffers */
 
-  p = st->ravg_idx;
-
-  if(++st->ravg_idx >= st->tpl)  /* buffer full? */
+  if(++st->ravg_idx >= st->tpl)  /* buffer full? if so, check for linearity */
   {
     st->ravg_idx = 0;
 
-    st->buf_idx++;  /* increment the index */
-    st->buf_idx %= PLIF_NBUFS; /* check boundary and roll-over if necessary */
+    fd_max = -1e9;
+    fd_min = 1e9;
 
-    for(j=0, st->linear=1; j<st->tpl; j++)
+    pre = (st->buf_idx - 1 + PLIF_NBUFS) % PLIF_NBUFS;  /* index to the buffer before */
+
+    for(i=0; i<st->tpl; i++)  /* compare this buffer with buffer before for their max and min values */
+    {                         /* distance between the 1th differences equals tpl in order to exclude the powerline noise from the detection */
+      dtmp = st->input_buf[st->buf_idx][i] - st->input_buf[pre][i];
+
+      if(dtmp > fd_max)  fd_max = dtmp;
+
+      if(dtmp < fd_min)  fd_min = dtmp;
+    }
+
+    st->linear_diff[st->buf_idx] = fd_max - fd_min;  /* for every buffer we store the maximum difference (related to the buffer before) */
+
+    thr = st->linear_threshold;
+
+    for(j=0; j<4; j++)
     {
-      fd_max = -1e9;
-      fd_min = 1e9;
-
-      for(i=0; i<PLIF_NBUFS; i++)  /* check all buffers for their max and min values */
-      {                             /* distance between the 1th differences equals tpl in order to exclude the noise from the detection */
-        if(st->input_buf[i][j] > fd_max)  fd_max = st->input_buf[i][j];
-
-        if(st->input_buf[i][j] < fd_min)  fd_min = st->input_buf[i][j];
-      }
-
-      if((fd_max - fd_min) > st->linear_threshold)  /* if we exceed the threshold, we are not in a linear region */
+      for(i=0, st->linear=0, linear_bufs=0; i<PLIF_NBUFS; i++)
       {
-        st->linear = 0;
+        linear_buf_idx = st->buf_idx - i + PLIF_NBUFS;
+        linear_buf_idx %= PLIF_NBUFS;
 
-        break;
+        if(st->linear_diff[linear_buf_idx] < thr) linear_bufs++;
+        else linear_bufs = 0;
+
+        if(linear_bufs == 3)
+        {
+          st->linear = 1;
+
+          linear_buf_idx += (PLIF_NBUFS - 1);
+          linear_buf_idx %= PLIF_NBUFS;
+
+          break;
+        }
       }
+
+      if(st->linear)  break;
+
+      thr *= 2;
     }
 
     if(st->linear)  /* are we in a linear region? */
     {
-      for(j=0, n=0; j<PLIF_NBUFS; j++)  /* average the buffers containing the extracted noise */
+      for(j=0, n=0; j<3; j++)  /* average the buffers containing the extracted noise */
       {
+        linear_buf_idx += j + PLIF_NBUFS;
+        linear_buf_idx %= PLIF_NBUFS;
+
         if(!n)
         {
           for(i=0; i<st->tpl; i++)
           {
-            st->ref_buf_new[i] = st->ravg_noise_buf[j][i];
+            st->ref_buf[i] = st->ravg_noise_buf[linear_buf_idx][i];
           }
         }
-
         else
         {
           for(i=0; i<st->tpl; i++)
           {
-            st->ref_buf_new[i] += st->ravg_noise_buf[j][i];
+            st->ref_buf[i] += st->ravg_noise_buf[linear_buf_idx][i];
           }
         }
 
@@ -230,14 +243,15 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
 
       for(i=0; i<st->tpl; i++)
       {
-        st->ref_buf_new[i] /= n;  /* calculate the average */
+        st->ref_buf[i] /= n;  /* calculate the average */
       }
-
-      memcpy(st->ref_buf, st->ref_buf_new, sizeof(double) * st->tpl);
     }
+
+    st->buf_idx++;  /* increment the index */
+    st->buf_idx %= PLIF_NBUFS; /* check boundary and roll-over if necessary */
   }
 
-  return new_input - st->ref_buf[p];
+  return ret_val;
 }
 
 
@@ -274,16 +288,6 @@ struct plif_subtract_filter_settings * plif_subtract_filter_create_copy(struct p
   }
   memcpy(st->ref_buf, st_ori->ref_buf, sizeof(double) * st->tpl);
 
-  st->ref_buf_new = (double *)calloc(1, sizeof(double) * st->tpl);
-  if(st->ref_buf_new == NULL)
-  {
-    free(st->ref_buf);
-    free(st->ravg_buf);
-    free(st);
-    return NULL;
-  }
-  memcpy(st->ref_buf_new, st_ori->ref_buf_new, sizeof(double) * st->tpl);
-
   for(i=0;i<PLIF_NBUFS; i++)
   {
     st->ravg_noise_buf[i] = (double *)calloc(1, sizeof(double) * st->tpl);
@@ -291,7 +295,6 @@ struct plif_subtract_filter_settings * plif_subtract_filter_create_copy(struct p
     {
       free(st->ravg_buf);
       free(st->ref_buf);
-      free(st->ref_buf_new);
       free(st);
       return NULL;
     }
@@ -305,11 +308,15 @@ struct plif_subtract_filter_settings * plif_subtract_filter_create_copy(struct p
     {
       free(st->ravg_buf);
       free(st->ref_buf);
-      free(st->ref_buf_new);
       free(st);
       return NULL;
     }
     memcpy(st->input_buf[i], st_ori->input_buf[i], sizeof(double) * st->tpl);
+  }
+
+  for(i=0;i<PLIF_NBUFS; i++)
+  {
+    st->linear_diff[i] = st_ori->linear_diff[i];
   }
 
   return st;
@@ -332,7 +339,6 @@ void plif_free_subtract_filter(struct plif_subtract_filter_settings *st)
     free(st->input_buf[i]);
   }
   free(st->ref_buf);
-  free(st->ref_buf_new);
   free(st);
 }
 
@@ -349,7 +355,6 @@ void plif_reset_subtract_filter(struct plif_subtract_filter_settings *st, double
   st->ravg_idx = 0;
   st->buf_idx = 0;
   st->linear = 0;
-  st->incr = 0;
 
   for(j=0; j<st->tpl; j++)
   {
@@ -364,10 +369,11 @@ void plif_reset_subtract_filter(struct plif_subtract_filter_settings *st, double
     {
       st->input_buf[i][j] = reference;
     }
+
+    st->linear_diff[i] = 1e9;
   }
 
   memset(st->ref_buf, 0, sizeof(double) * st->tpl);
-  memset(st->ref_buf_new, 0, sizeof(double) * st->tpl);
 }
 
 
@@ -383,17 +389,17 @@ void plif_subtract_filter_state_copy(struct plif_subtract_filter_settings *dest,
 
   dest->ravg_idx = src->ravg_idx;
   dest->buf_idx = src->buf_idx;
-  dest->fpl_corr = src->fpl_corr;
   dest->linear_threshold = src->linear_threshold;
 
   memcpy(dest->ravg_buf, src->ravg_buf, sizeof(double) * dest->tpl);
   memcpy(dest->ref_buf, src->ref_buf, sizeof(double) * dest->tpl);
-  memcpy(dest->ref_buf_new, src->ref_buf_new, sizeof(double) * dest->tpl);
 
   for(i=0; i<PLIF_NBUFS; i++)
   {
     memcpy(dest->ravg_noise_buf[i], src->ravg_noise_buf[i], sizeof(double) * dest->tpl);
     memcpy(dest->input_buf[i], src->input_buf[i], sizeof(double) * dest->tpl);
+
+    dest->linear_diff[i] = src->linear_diff[i];
   }
 }
 

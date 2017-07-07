@@ -35,7 +35,7 @@
 #include <stdio.h>
 
 
-#define PLIF_NBUFS   6
+#define PLIF_NBUFS   40
 
 
 #ifdef __cplusplus
@@ -50,14 +50,11 @@ struct plif_subtract_filter_settings{
                        double *ravg_noise_buf[PLIF_NBUFS];
                        double *input_buf[PLIF_NBUFS];
                        double *ref_buf;
-                       double *ref_buf_new;
                        double linear_threshold;
+                       double linear_diff[PLIF_NBUFS];
                        int ravg_idx;
                        int buf_idx;
-                       int fpl_corr;
                        int linear;
-                       int incr;
-                       int shift;
                       };
 
 

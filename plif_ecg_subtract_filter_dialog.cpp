@@ -60,7 +60,7 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
   linearThresholdSpinBox->setGeometry(240, 45, 150, 25);
   linearThresholdSpinBox->setSuffix(" uV");
   linearThresholdSpinBox->setRange(10, 200);
-  linearThresholdSpinBox->setValue(100);
+  linearThresholdSpinBox->setValue(20);
 
   plfLabel = new QLabel(plifecgfilterdialog);
   plfLabel->setGeometry(20, 90, 200, 25);
