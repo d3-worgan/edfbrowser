@@ -172,7 +172,7 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
   {
     st->ravg_idx = 0;
 
-    fd_max = -1e9;
+    fd_max = 1e-9;
     fd_min = 1e9;
 
     pre = (st->buf_idx - 1 + PLIF_NBUFS) % PLIF_NBUFS;  /* index to the buffer before */
