@@ -52,16 +52,6 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
   plifecgfilterdialog->setModal(true);
   plifecgfilterdialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  linearThresholdLabel = new QLabel(plifecgfilterdialog);
-  linearThresholdLabel->setGeometry(20, 45, 200, 25);
-  linearThresholdLabel->setText("Linear region detection threshold");
-
-  linearThresholdSpinBox = new QSpinBox(plifecgfilterdialog);
-  linearThresholdSpinBox->setGeometry(240, 45, 150, 25);
-  linearThresholdSpinBox->setSuffix(" uV");
-  linearThresholdSpinBox->setRange(10, 200);
-  linearThresholdSpinBox->setValue(20);
-
   plfLabel = new QLabel(plifecgfilterdialog);
   plfLabel->setGeometry(20, 90, 200, 25);
   plfLabel->setText("Powerline frequency");
@@ -139,8 +129,6 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
 
     if(mainwindow->signalcomp[s]->plif_ecg_filter != NULL)
     {
-      linearThresholdSpinBox->setValue(mainwindow->signalcomp[s]->plif_ecg_subtract_filter_threshold);
-
       plfBox->setCurrentIndex(mainwindow->signalcomp[s]->plif_ecg_subtract_filter_plf);
 
       item->setSelected(true);
@@ -154,7 +142,6 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
   QObject::connect(ApplyButton,            SIGNAL(clicked()),                this,                SLOT(ApplyButtonClicked()));
   QObject::connect(CancelButton,           SIGNAL(clicked()),                plifecgfilterdialog, SLOT(close()));
   QObject::connect(list,                   SIGNAL(itemSelectionChanged()),   this,                SLOT(ApplyButtonClicked()));
-  QObject::connect(linearThresholdSpinBox, SIGNAL(valueChanged(int)),        this,                SLOT(ApplyButtonClicked()));
   QObject::connect(plfBox,                 SIGNAL(currentIndexChanged(int)), this,                SLOT(ApplyButtonClicked()));
   QObject::connect(helpButton,             SIGNAL(clicked()),                this,                SLOT(helpbuttonpressed()));
 
@@ -227,15 +214,15 @@ void UI_PLIF_ECG_filter_dialog::ApplyButtonClicked()
 
     if(!strcmp(str, "uV"))
     {
-      dthreshold = linearThresholdSpinBox->value() / mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].bitvalue;
+      dthreshold = 10.0 / mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].bitvalue;
     }
     else if(!strcmp(str, "mV"))
       {
-        dthreshold = (((double)(linearThresholdSpinBox->value())) / 1000.0) / mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].bitvalue;
+        dthreshold = 1e-2 / mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].bitvalue;
       }
       else if(!strcmp(str, "V"))
         {
-          dthreshold = (((double)(linearThresholdSpinBox->value())) / 1000000.0) / mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].bitvalue;
+          dthreshold = 1e-5 / mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].bitvalue;
         }
 
     mainwindow->signalcomp[s]->plif_ecg_filter = plif_create_subtract_filter(sf, plf, dthreshold);
@@ -255,8 +242,6 @@ void UI_PLIF_ECG_filter_dialog::ApplyButtonClicked()
       messagewindow.exec();
       break;
     }
-
-    mainwindow->signalcomp[s]->plif_ecg_subtract_filter_threshold = linearThresholdSpinBox->value();
 
     mainwindow->signalcomp[s]->plif_ecg_subtract_filter_plf = plfBox->currentIndex();
   }

@@ -114,7 +114,6 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       f_ruler_cnt=0,
       holdoff=100,
       plif_powerlinefrequency,
-      plif_linear_threshold,
       not_compatibel,
       sf;
 
@@ -1444,50 +1443,21 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(sf % plif_powerlinefrequency)  not_compatibel = 1;
 
-      if(xml_goto_nth_element_inside(xml_hdl, "linear_threshold", 0))
-      {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
-        messagewindow.exec();
-        free(newsignalcomp);
-        xml_close(xml_hdl);
-        return;
-      }
-      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
-      {
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
-        messagewindow.exec();
-        free(newsignalcomp);
-        xml_close(xml_hdl);
-        return;
-      }
-      plif_linear_threshold = atoi(result);
-      if((plif_linear_threshold < 10) || (plif_linear_threshold > 200))
-      {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
-        messagewindow.exec();
-        free(newsignalcomp);
-        xml_close(xml_hdl);
-        return;
-      }
-      xml_go_up(xml_hdl);
-
       strcpy(str, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension);
 
       remove_trailing_spaces(str);
 
       if(!strcmp(str, "uV"))
       {
-        dthreshold = plif_linear_threshold / newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue;
+        dthreshold = 10.0 / newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue;
       }
       else if(!strcmp(str, "mV"))
         {
-          dthreshold = (((double)(plif_linear_threshold)) / 1000.0) / newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue;
+          dthreshold = 1e-2 / newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue;
         }
         else if(!strcmp(str, "V"))
           {
-            dthreshold = (((double)(plif_linear_threshold)) / 1000000.0) / newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue;
+            dthreshold = 1e-5 / newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue;
           }
           else
           {
@@ -1521,7 +1491,6 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         }
 
         newsignalcomp->plif_ecg_subtract_filter_plf = plif_powerlinefrequency / 60;
-        newsignalcomp->plif_ecg_subtract_filter_threshold = plif_linear_threshold;
       }
 
       xml_go_up(xml_hdl);

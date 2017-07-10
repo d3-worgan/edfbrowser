@@ -224,7 +224,6 @@ struct signalcompblock{
         double spike_filter_velocity;
         int spike_filter_holdoff;
         struct spike_filter_settings *spike_filter;
-        int plif_ecg_subtract_filter_threshold;
         int plif_ecg_subtract_filter_plf;
         struct plif_subtract_filter_settings *plif_ecg_filter;
         struct plif_subtract_filter_settings *plif_ecg_filter_sav;

@@ -323,9 +323,8 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
 
     if(mainwindow->signalcomp[i]->plif_ecg_filter != NULL)
     {
-      sprintf(txtbuf, "Powerline interference removal: %iHz  threshold: %iuV",
-              (mainwindow->signalcomp[i]->plif_ecg_subtract_filter_plf * 10) + 50,
-              mainwindow->signalcomp[i]->plif_ecg_subtract_filter_threshold);
+      sprintf(txtbuf, "Powerline interference removal: %iHz",
+              (mainwindow->signalcomp[i]->plif_ecg_subtract_filter_plf * 10) + 50);
 
       filterItem->appendRow(new QStandardItem(txtbuf));
     }

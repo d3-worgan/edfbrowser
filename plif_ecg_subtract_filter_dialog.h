@@ -85,10 +85,7 @@ QPushButton    *CancelButton,
 QListWidget    *list;
 
 QLabel         *listlabel,
-               *linearThresholdLabel,
                *plfLabel;
-
-QSpinBox       *linearThresholdSpinBox;
 
 QComboBox      *plfBox;
 

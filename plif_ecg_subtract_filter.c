@@ -66,10 +66,10 @@
  *
  * sf: samplefrequency (must be >= 500Hz and must be an integer multiple of the powerline frequency)
  *
- * pwlf: powerline frequency (must be 50Hz or 60Hz)
+ * pwlf: powerline frequency (must be set to 50Hz or 60Hz)
  *
- * lt: linear region threshold (default is 100uV) used to detect linear region
- *     between two consecutive QRS complexes
+ * lt: linear region threshold, MUST BE SET TO 10uV!
+ *     used to detect linear region between two consecutive QRS complexes
  *
  */
 struct plif_subtract_filter_settings * plif_create_subtract_filter(int sf, int pwlf, double lt)
@@ -188,10 +188,11 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
 
     st->linear_diff[st->buf_idx] = fd_max - fd_min;  /* for every buffer we store the maximum difference (related to the buffer before) */
 
-    thr = st->linear_threshold;
-
-    for(j=0; j<4; j++)
+    for(j=0; j<19; j++)
     {
+      thr = (j + 1) * st->linear_threshold;  /* first we try with the lowest threshold possible (10uV) */
+                                             /* if we can't find a linear region of at least 60 milli-seconds long, */
+                                             /* we increase the threshold and try again */
       for(i=0, st->linear=0, linear_bufs=0; i<PLIF_NBUFS; i++)
       {
         linear_buf_idx = st->buf_idx - i + PLIF_NBUFS;
@@ -200,7 +201,7 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
         if(st->linear_diff[linear_buf_idx] < thr) linear_bufs++;
         else linear_bufs = 0;
 
-        if(linear_bufs == 3)
+        if(linear_bufs == 3)  /* we need at least three consegutive buffers (60 milli-sec.) to pass the threshold limit */
         {
           st->linear = 1;
 
@@ -212,8 +213,6 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
       }
 
       if(st->linear)  break;
-
-      thr *= 2;
     }
 
     if(st->linear)  /* are we in a linear region? */
