@@ -986,6 +986,23 @@ void print_screen_to_edf(UI_Mainwindow *mainwindow)
             dig_value = signalcomp[i]->fidfuncp[p](signalcomp[i]->fidbuf[p], dig_value);
           }
 
+          if(signalcomp[i]->plif_ecg_filter)
+          {
+            if(smpls_written[i]==signalcomp[i]->sample_start)
+            {
+              if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime<=0)
+              {
+                plif_reset_subtract_filter(signalcomp[i]->plif_ecg_filter, 0);
+              }
+              else
+              {
+                plif_subtract_filter_state_copy(signalcomp[i]->plif_ecg_filter, signalcomp[i]->plif_ecg_filter_sav);
+              }
+            }
+
+            dig_value = plif_run_subtract_filter(dig_value, signalcomp[i]->plif_ecg_filter);
+          }
+
           if(signalcomp[i]->ecg_filter != NULL)
           {
             if(smpls_written[i]==signalcomp[i]->sample_start)
