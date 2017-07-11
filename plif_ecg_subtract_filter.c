@@ -44,6 +44,7 @@
 *
 * The subtraction method extracts the powerline interference noise during a
 * a linear region between two consecutive QRS complexes and stores it in a buffer.
+* Buffersize equals one complete powerlinefrequency cycle (20 milli-Sec.).
 * The reference noise from the buffer is used to subtract it from the signal outside
 * the linear region i.e. during the QRS complex.
 * This method only works correctly when the ratio of the samplefrequency and the
@@ -68,7 +69,7 @@
  *
  * pwlf: powerline frequency (must be set to 50Hz or 60Hz)
  *
- * lt: linear region threshold, MUST BE SET TO 10uV!
+ * lt: linear region threshold, MUST BE SET TO 5uV!
  *     used to detect linear region between two consecutive QRS complexes
  *
  */
@@ -188,9 +189,9 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
 
     st->linear_diff[st->buf_idx] = fd_max - fd_min;  /* for every buffer we store the maximum difference (related to the buffer before) */
 
-    for(j=0; j<19; j++)
+    for(j=0; j<39; j++)
     {
-      thr = (j + 1) * st->linear_threshold;  /* first we try with the lowest threshold possible (10uV) */
+      thr = (j + 1) * st->linear_threshold;  /* first we try with the lowest threshold possible (5uV) */
                                              /* if we can't find a linear region of at least 60 milli-seconds long, */
                                              /* we increase the threshold and try again */
       for(i=0, st->linear=0, linear_bufs=0; i<PLIF_NBUFS; i++)

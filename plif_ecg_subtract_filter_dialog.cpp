@@ -214,15 +214,15 @@ void UI_PLIF_ECG_filter_dialog::ApplyButtonClicked()
 
     if(!strcmp(str, "uV"))
     {
-      dthreshold = 10.0 / mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].bitvalue;
+      dthreshold = 5.0 / mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].bitvalue;
     }
     else if(!strcmp(str, "mV"))
       {
-        dthreshold = 1e-2 / mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].bitvalue;
+        dthreshold = 5e-3 / mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].bitvalue;
       }
       else if(!strcmp(str, "V"))
         {
-          dthreshold = 1e-5 / mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].bitvalue;
+          dthreshold = 5e-6 / mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].bitvalue;
         }
 
     mainwindow->signalcomp[s]->plif_ecg_filter = plif_create_subtract_filter(sf, plf, dthreshold);

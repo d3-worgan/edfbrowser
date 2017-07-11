@@ -483,14 +483,6 @@
   - The samplefrequency of the ECG recording must be an integer multiple of the powerline frequency<br>
   - The physical dimension (units) of the ECG signal must be expressed in uV, mV or V.<br>
 <br>
-  The threshold for the detection of the linear region can be set between 10 - 200 uV.<br>
-  If, during a certain period, the differences between the maximum and the minimum levels are<br>
-  less than the threshold level, that period will be considered linear and used to extract the<br>
-  powerline interference noise which in turn will be used to subtract from the signal.<br>
-  Setting this threshold too low, can cause the filter not to detect a linear region.<br>
-  Setting this threshold too high, can cause the filter to use non-linear regions for<br>
-  noise extraction which can cause distortion of the waveform.<br>
-<br>
   Note: Good results will be achieved when the accuracy of the recording sampleclock is &lt=100ppm.<br>
   A nearly perfect result will achieved when the recording sampleclock is synchronized with the<br>
   powerlinefrequency in hardware (e.g. using a PLL).
