@@ -1400,7 +1400,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       m_pagetime,
       vert_ruler_offset,
       vertical_distance,
-      marker_x;
+      marker_x,
+      annot_list_sz=0;
 
   char *viewbuf,
        string[600],
@@ -1885,7 +1886,9 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     {
       annot_list = &mainwindow->edfheaderlist[i]->annot_list;
 
-      for(j=0; j<annot_list->sz; j++)
+      annot_list_sz = edfplus_annotation_size(annot_list);
+
+      for(j=0; j<annot_list_sz; j++)
       {
         annot = edfplus_annotation_get_item(annot_list, j);
 
