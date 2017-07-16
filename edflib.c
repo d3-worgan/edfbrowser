@@ -39,7 +39,7 @@
 #include "edflib.h"
 
 
-#define EDFLIB_VERSION 111
+#define EDFLIB_VERSION 112
 #define EDFLIB_MAXFILES 64
 
 
@@ -4522,9 +4522,7 @@ int edfwrite_physical_samples(int handle, double *buf)
 
   for(i=0; i<sf; i++)
   {
-    value = buf[i] / bitvalue;
-
-    value -= phys_offset;
+    value = (buf[i] / bitvalue) - phys_offset;
 
     if(value>digmax)
     {
@@ -4662,9 +4660,7 @@ int edf_blockwrite_physical_samples(int handle, double *buf)
 
     for(i=0; i<sf; i++)
     {
-      value = buf[i + buf_offset] / bitvalue;
-
-      value -= phys_offset;
+      value = (buf[i + buf_offset] / bitvalue) - phys_offset;
 
       if(value>digmax)
       {
