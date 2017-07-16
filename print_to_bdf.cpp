@@ -165,8 +165,8 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
   {
     if(duration % signalcomp[i]->edfhdr->long_data_record_duration)
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "This combination of files can not be printed to EDF\n"
-                                                                "because the quotient of the datarecordblock durations is not an integer.");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "This combination of files can not be printed to BDF\n"
+                                                                "because the datarecordblock durations are not an integer multiple.");
       messagewindow.exec();
       return;
     }
