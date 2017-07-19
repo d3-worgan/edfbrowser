@@ -2766,6 +2766,16 @@ static long long edflib_get_long_duration(char *str)
 
   long long value=0, radix;
 
+  if((str[0] == '+') || (str[0] == '-'))
+  {
+    for(i=0; i<7; i++)
+    {
+      str[i] = str[i+1];
+    }
+
+    str[7] = ' ';
+  }
+
   for(i=0; i<8; i++)
   {
     if(str[i]==' ')
