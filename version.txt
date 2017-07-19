@@ -12,6 +12,8 @@
  - When "whole recording" is selected for the Timescale and multiple files are opened,
    make sure all recordings are completely visible.
 
+ - Fix erroneous reading of the datarecord duration field in the header
+   when the number has a sign.
 
 
  version 1.59      May 8, 2017
