@@ -86,6 +86,7 @@ struct {
         long long smp_period;
         int format[MAXSIGNALS];
         double adc_gain[MAXSIGNALS];
+        int baseline[MAXSIGNALS];
         int adc_resolution[MAXSIGNALS];
         int adc_zero[MAXSIGNALS];
         int init_val[MAXSIGNALS];

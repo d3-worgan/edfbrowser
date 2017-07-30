@@ -176,6 +176,11 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
   long long filesize;
 
+  union {
+    int one;
+    unsigned char four[4];
+  } var;
+
   pushButton1->setEnabled(false);
 
   strcpy(header_filename, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "MIT header files (*.hea *.HEA)").toLocal8Bit().data());
@@ -408,6 +413,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
     if((mit_hdr.format[j] != 212) &&
       (mit_hdr.format[j] != 16) &&
+      (mit_hdr.format[j] != 32) &&
       (mit_hdr.format[j] != 61))
     {
       snprintf(txt_string, 2048, "Error, unsupported format: %i  (error 16)\n", mit_hdr.format[j]);
@@ -447,7 +453,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
     if(atoi(charpntr + p) != 0)
     {
-      mit_hdr.adc_gain[j] = atoi(charpntr + p);
+      mit_hdr.adc_gain[j] = atof(charpntr + p);
     }
 
     p = ++i;
@@ -855,11 +861,6 @@ void UI_MIT2EDFwindow::SelectFileButton()
           if(l_end)
           {
             tmp1 += (fgetc(data_inputfile) << 8);
-
-            if(tmp1 & 0x8000)
-            {
-              tmp1 |= 0xffff0000;
-            }
           }
           else
           {
@@ -868,7 +869,69 @@ void UI_MIT2EDFwindow::SelectFileButton()
             tmp1 += fgetc(data_inputfile);
           }
 
+          if(tmp1 & 0x8000)
+          {
+            tmp1 |= 0xffff0000;
+          }
+
           buf[j * mit_hdr.sf_block + i] = tmp1;
+        }
+      }
+
+      if(edf_blockwrite_digital_samples(hdl, buf))
+      {
+        progress.reset();
+        textEdit1->append("A write error occurred during conversion.\n");
+        fclose(data_inputfile);
+        edfclose_file(hdl);
+        free(buf);
+        pushButton1->setEnabled(true);
+        return;
+      }
+    }
+  }
+
+  if(mit_hdr.format[0] == 32)
+  {
+    blocks /= 4;
+
+    progress.setMaximum(blocks);
+
+    for(k=0; k<blocks; k++)
+    {
+      if(!(k % 100))
+      {
+        progress.setValue(k);
+
+        qApp->processEvents();
+
+        if(progress.wasCanceled() == true)
+        {
+          textEdit1->append("Conversion aborted by user.\n");
+          fclose(data_inputfile);
+          edfclose_file(hdl);
+          free(buf);
+          pushButton1->setEnabled(true);
+          return;
+        }
+      }
+
+      for(i=0; i<mit_hdr.sf_block; i++)
+      {
+        for(j=0; j<mit_hdr.chns; j++)
+        {
+          tmp1 = fgetc(data_inputfile);
+          if(tmp1 == EOF)
+          {
+            goto OUT;
+          }
+
+          var.four[0] = tmp1;
+          var.four[1] = fgetc(data_inputfile);
+          var.four[2] = fgetc(data_inputfile);
+          var.four[3] = fgetc(data_inputfile);
+
+          buf[j * mit_hdr.sf_block + i] = var.one;
         }
       }
 
