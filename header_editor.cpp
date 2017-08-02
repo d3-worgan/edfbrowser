@@ -1528,6 +1528,10 @@ void UI_headerEditorWindow::save_hdr()
   fflush(file);
 
   read_header();
+
+  QMessageBox messagewindow(QMessageBox::Information, "Ready", "File has been saved.");
+  messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
+  messagewindow.exec();
 }
 
 
