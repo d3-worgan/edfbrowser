@@ -45,6 +45,7 @@ struct annotationblock{
         int file_num;
         long long onset;
         char duration[16];
+        long long long_duration;
         char annotation[MAX_ANNOTATION_LEN_II + 1];
         int modified;
         int x_pos;
@@ -75,6 +76,7 @@ struct annotation_list * edfplus_annotation_create_list_copy(struct annotation_l
 int edfplus_annotation_remove_duplicates(struct annotation_list *);
 int edfplus_annotation_get_max_annotation_strlen(struct annotation_list *);
 void edfplus_annotation_copy_list(struct annotation_list *, struct annotation_list *);
+long long edfplus_annotation_get_long_from_number(const char *);
 
 #ifdef __cplusplus
 } /* extern "C" */

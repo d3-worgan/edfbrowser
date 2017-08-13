@@ -413,6 +413,68 @@ int edfplus_annotation_get_max_annotation_strlen(struct annotation_list *list)
 }
 
 
+long long edfplus_annotation_get_long_from_number(const char *str)
+{
+  int i, len, hasdot=0, dotposition=0;
+
+  long long value=0, radix;
+
+  if((str[0] == '+') || (str[0] == '-'))
+  {
+    str++;
+  }
+
+  len = strlen(str);
+
+  for(i=0; i<len; i++)
+  {
+    if(str[i]=='.')
+    {
+      hasdot = 1;
+      dotposition = i;
+      break;
+    }
+  }
+
+  if(hasdot)
+  {
+    radix = TIME_DIMENSION_II;
+
+    for(i=dotposition-1; i>=0; i--)
+    {
+        value += ((long long)(str[i] - 48)) * radix;
+        radix *= 10;
+    }
+
+    radix = TIME_DIMENSION_II / 10;
+
+    for(i=dotposition+1; i<len; i++)
+    {
+        value += ((long long)(str[i] - 48)) * radix;
+        radix /= 10;
+    }
+  }
+  else
+  {
+    radix = TIME_DIMENSION_II;
+
+    for(i=len-1; i>=0; i--)
+    {
+        value += ((long long)(str[i] - 48)) * radix;
+        radix *= 10;
+    }
+  }
+
+  if(str[-1]=='-')  value = -value;
+
+  return(value);
+}
+
+
+
+
+
+
 
 
 

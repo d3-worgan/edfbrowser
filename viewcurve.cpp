@@ -1401,6 +1401,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       vert_ruler_offset,
       vertical_distance,
       marker_x,
+      marker_x2,
       annot_list_sz=0;
 
   char *viewbuf,
@@ -1417,7 +1418,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   struct annotation_list *annot_list;
 
+  struct annotationblock *annot;
+
   QFont paintersfont;
+
+  QColor tmp_color;
 
   if(mainwindow->exit_in_progress)
   {
@@ -1467,6 +1472,44 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
   }
 
   painter->fillRect(0, 0, w, h, backgroundcolor);
+
+  if(mainwindow->show_annot_markers)
+  {
+    tmp_color = QColor(0, 127, 127, 32);
+
+    for(i=0; i<mainwindow->files_open; i++)
+    {
+      annot_list = &mainwindow->edfheaderlist[i]->annot_list;
+
+      annot_list_sz = edfplus_annotation_size(annot_list);
+
+      for(j=0; j<annot_list_sz; j++)
+      {
+        annot = edfplus_annotation_get_item(annot_list, j);
+
+        if(annot->long_duration)
+        {
+          l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
+
+          if((l_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) && (!annot->hided) && (!annot->hided_in_list))
+          {
+            if(l_tmp > (mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
+            {
+              break;
+            }
+
+            l_tmp -= mainwindow->edfheaderlist[i]->viewtime;
+
+            marker_x = (int)((((double)w) / mainwindow->pagetime) * l_tmp);
+
+            marker_x2 = (int)((((double)w) / mainwindow->pagetime) * annot->long_duration);
+
+            painter->fillRect(marker_x, 0, marker_x2, h, tmp_color);
+          }
+        }
+      }
+    }
+  }
 
   m_pagetime = (int)(mainwindow->pagetime / TIME_DIMENSION);
 
@@ -1866,8 +1909,6 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       }
     }
   }
-
-  struct annotationblock *annot;
 
   if(mainwindow->show_annot_markers)
   {

@@ -589,6 +589,7 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
                     sprintf(str, "%.4f", (double)((datarecords * EDFLIB_TIME_DIMENSION) + ((long long)i * status_sample_duration) - annot_ptr->onset) / (double)EDFLIB_TIME_DIMENSION);
                     str[15] = 0;
                     strcpy(annot_ptr->duration, str);
+                    annot_ptr->long_duration = edfplus_annotation_get_long_from_number(str);
                     break;
                   }
                 }

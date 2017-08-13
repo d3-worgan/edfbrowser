@@ -435,7 +435,12 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
                 }
                 annotblock.annotation[j] = 0;
 
-                if(duration)  strcpy(annotblock.duration, duration_in_txt);
+                if(duration)
+                {
+                  strcpy(annotblock.duration, duration_in_txt);
+
+                  annotblock.long_duration = get_long_time(duration_in_txt);
+                }
 
                 if(edfplus_annotation_add_item(&edf_hdr->annot_list, annotblock))
                 {
@@ -651,7 +656,10 @@ long long EDF_annotations::get_long_time(char *str)
 
   long long value=0, radix;
 
-  str = str + 1;
+  if((str[0] == '+') || (str[0] == '-'))
+  {
+    str++;
+  }
 
   len = strlen(str);
 

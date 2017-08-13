@@ -58,6 +58,7 @@
 #include "annotations_dock.h"
 #include "popup_save_cancelwindow.h"
 #include "edf_annot_list.h"
+#include "utils.h"
 
 
 

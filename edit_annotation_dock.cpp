@@ -148,13 +148,17 @@ void UI_AnnotationEditwindow::modifyButtonClicked()
 
   annot->onset += mainwindow->edfheaderlist[file_num]->starttime_offset;
 
-  if(duration_spinbox->value()>0.0)
+  if(dblcmp(duration_spinbox->value(), 0.0) > 0)
   {
     snprintf(annot->duration, 16, "%f", duration_spinbox->value());
+
+    annot->long_duration = edfplus_annotation_get_long_from_number(annot->duration);
   }
   else
   {
     annot->duration[0] = 0;
+
+    annot->long_duration = 0LL;
   }
 
   strncpy(annot->annotation, annot_descript_lineEdit->text().toUtf8().data(), MAX_ANNOTATION_LEN);
@@ -227,13 +231,17 @@ void UI_AnnotationEditwindow::createButtonClicked()
 
   annotation.file_num = file_num;
 
-  if(duration_spinbox->value()>0.0)
+  if(dblcmp(duration_spinbox->value(), 0.0) > 0)
   {
     snprintf(annotation.duration, 16, "%f", duration_spinbox->value());
+
+    annotation.long_duration = edfplus_annotation_get_long_from_number(annotation.duration);
   }
   else
   {
     annotation.duration[0] = 0;
+
+    annotation.long_duration = 0LL;
   }
 
   strncpy(annotation.annotation, annot_descript_lineEdit->text().toUtf8().data(), MAX_ANNOTATION_LEN);

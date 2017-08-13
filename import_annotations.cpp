@@ -728,6 +728,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
       }
       annotation.annotation[MAX_ANNOTATION_LEN] = 0;
       strcpy(annotation.duration, duration);
+      annotation.long_duration = edfplus_annotation_get_long_from_number(duration);
       if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
       {
         QApplication::restoreOverrideCursor();
@@ -1484,6 +1485,8 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
                 {
                   strcpy(annotation.duration, duration);
                 }
+
+                annotation.long_duration = edfplus_annotation_get_long_from_number(duration);
               }
             }
             if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
@@ -1518,6 +1521,8 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
               {
                 strcpy(annotation.duration, duration);
               }
+
+              annotation.long_duration = edfplus_annotation_get_long_from_number(duration);
             }
           }
           if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
