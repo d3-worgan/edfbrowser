@@ -15,6 +15,9 @@
  - Fix erroneous reading of the datarecord duration field in the header
    when the number has a sign.
 
+ - Annotations: show the duration using an overlay in the background color.
+
+
 
  version 1.59      May 8, 2017
  --------------
