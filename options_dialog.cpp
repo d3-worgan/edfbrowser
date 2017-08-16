@@ -55,13 +55,13 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
     scrollarea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     frame = new QFrame;
-    frame->setMinimumSize(440, 780);
-    frame->setMaximumSize(440, 780);
+    frame->setMinimumSize(440, 820);
+    frame->setMaximumSize(440, 820);
   }
   else
   {
-    optionsdialog->setMinimumSize(440, 780);
-    optionsdialog->setMaximumSize(440, 780);
+    optionsdialog->setMinimumSize(440, 820);
+    optionsdialog->setMaximumSize(440, 820);
   }
   optionsdialog->setWindowTitle("Settings");
   optionsdialog->setModal(true);
@@ -188,12 +188,20 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   AnnotMkrButton->setGeometry(240, 420, 60, 15);
   AnnotMkrButton->setColor(mainwindow->maincurve->annot_marker_color);
 
+  label12_1 = new QLabel(tab1);
+  label12_1->setGeometry(20, 455, 200, 25);
+  label12_1->setText("Annotation duration background");
+
+  AnnotDurationButton = new SpecialButton(tab1);
+  AnnotDurationButton->setGeometry(240, 460, 60, 15);
+  AnnotDurationButton->setColor(mainwindow->maincurve->annot_duration_color);
+
   label11 = new QLabel(tab1);
-  label11->setGeometry(20, 455, 200, 25);
+  label11->setGeometry(20, 495, 200, 25);
   label11->setText("Print in grayscale");
 
   checkbox1 = new QCheckBox(tab1);
-  checkbox1->setGeometry(200, 458, 20, 20);
+  checkbox1->setGeometry(200, 498, 20, 20);
   checkbox1->setTristate(false);
   if(mainwindow->maincurve->blackwhite_printing)
   {
@@ -205,11 +213,11 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   }
 
   label13 = new QLabel(tab1);
-  label13->setGeometry(20, 495, 200, 25);
+  label13->setGeometry(20, 535, 200, 25);
   label13->setText("Clip signals to pane");
 
   checkbox4 = new QCheckBox(tab1);
-  checkbox4->setGeometry(200, 498, 20, 20);
+  checkbox4->setGeometry(200, 538, 20, 20);
   checkbox4->setTristate(false);
   if(mainwindow->clip_to_pane)
   {
@@ -221,23 +229,23 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   }
 
   colorSchema_Dark_Button = new QPushButton(tab1);
-  colorSchema_Dark_Button->setGeometry(140, 540, 140, 20);
+  colorSchema_Dark_Button->setGeometry(140, 580, 140, 20);
   colorSchema_Dark_Button->setText("Colorschema \"Dark\"");
 
   colorSchema_NK_Button = new QPushButton(tab1);
-  colorSchema_NK_Button->setGeometry(140, 570, 140, 20);
+  colorSchema_NK_Button->setGeometry(140, 610, 140, 20);
   colorSchema_NK_Button->setText("Colorschema \"NK\"");
 
   DefaultButton = new QPushButton(tab1);
-  DefaultButton->setGeometry(140, 600, 140, 20);
+  DefaultButton->setGeometry(140, 640, 140, 20);
   DefaultButton->setText("Default colorschema");
 
   saveColorSchemaButton = new QPushButton(tab1);
-  saveColorSchemaButton->setGeometry(140, 630, 140, 20);
+  saveColorSchemaButton->setGeometry(140, 670, 140, 20);
   saveColorSchemaButton->setText("Save colorschema");
 
   loadColorSchemaButton = new QPushButton(tab1);
-  loadColorSchemaButton->setGeometry(140, 660, 140, 20);
+  loadColorSchemaButton->setGeometry(140, 700, 140, 20);
   loadColorSchemaButton->setText("Load colorschema");
 
   QObject::connect(BgColorButton,           SIGNAL(clicked(SpecialButton *)), this, SLOT(BgColorButtonClicked(SpecialButton *)));
@@ -251,6 +259,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   QObject::connect(Crh2ColorButton,         SIGNAL(clicked(SpecialButton *)), this, SLOT(Crh2ColorButtonClicked(SpecialButton *)));
   QObject::connect(FrColorButton,           SIGNAL(clicked(SpecialButton *)), this, SLOT(FrColorButtonClicked(SpecialButton *)));
   QObject::connect(AnnotMkrButton,          SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotMkrButtonClicked(SpecialButton *)));
+  QObject::connect(AnnotDurationButton,     SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotDurationButtonClicked(SpecialButton *)));
   QObject::connect(checkbox1,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox1Clicked(int)));
   QObject::connect(checkbox2,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox2Clicked(int)));
   QObject::connect(checkbox3,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox3Clicked(int)));
@@ -1509,6 +1518,23 @@ void UI_OptionsDialog::AnnotMkrButtonClicked(SpecialButton *)
 }
 
 
+void UI_OptionsDialog::AnnotDurationButtonClicked(SpecialButton *)
+{
+  QColor temp;
+
+  temp = QColorDialog::getColor(mainwindow->maincurve->annot_duration_color, tab1, "Select Color", QColorDialog::ShowAlphaChannel);
+
+  if(temp.isValid())
+  {
+    mainwindow->maincurve->annot_duration_color = temp;
+
+    AnnotDurationButton->setColor(mainwindow->maincurve->annot_duration_color);
+
+    mainwindow->maincurve->update();
+  }
+}
+
+
 void UI_OptionsDialog::dspinbox4_4ValueChanged(double val)
 {
   mainwindow->default_amplitude = val;
@@ -1615,6 +1641,17 @@ void UI_OptionsDialog::saveColorSchemaButtonClicked()
                   mainwindow->maincurve->annot_marker_color.green(),
                   mainwindow->maincurve->annot_marker_color.blue());
 
+  fprintf(colorfile, " <annot_duration_color>\n"
+                  "  <red>%i</red>\n"
+                  "  <green>%i</green>\n"
+                  "  <blue>%i</blue>\n"
+                  "  <alpha>%i</alpha>\n"
+                  " </annot_duration_color>\n",
+                  mainwindow->maincurve->annot_duration_color.red(),
+                  mainwindow->maincurve->annot_duration_color.green(),
+                  mainwindow->maincurve->annot_duration_color.blue(),
+                  mainwindow->maincurve->annot_duration_color.alpha());
+
   fprintf(colorfile, " <signal_color>%i</signal_color>\n",
                   mainwindow->maincurve->signal_color);
 
@@ -1696,6 +1733,8 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
   mainwindow->get_rgbcolor_settings(xml_hdl, "baseline_color", 0, &mainwindow->maincurve->baseline_color);
 
   mainwindow->get_rgbcolor_settings(xml_hdl, "annot_marker_color", 0, &mainwindow->maincurve->annot_marker_color);
+
+  mainwindow->get_rgbcolor_settings(xml_hdl, "annot_duration_color", 0, &mainwindow->maincurve->annot_duration_color);
 
   if(xml_goto_nth_element_inside(xml_hdl, "signal_color", 0))
   {
@@ -1859,6 +1898,8 @@ void UI_OptionsDialog::update_interface(void)
   }
 
   AnnotMkrButton->setColor(mainwindow->maincurve->annot_marker_color);
+
+  AnnotDurationButton->setColor(mainwindow->maincurve->annot_duration_color);
 
   if(mainwindow->maincurve->blackwhite_printing)
   {

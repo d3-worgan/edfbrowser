@@ -43,10 +43,13 @@ void UI_Mainwindow::get_rgbcolor_settings(struct xml_handle *xml_hdl, const char
 
   if(xml_goto_nth_element_inside(xml_hdl, "red", 0))
   {
+    xml_go_up(xml_hdl);
     return;
   }
   if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
+    xml_go_up(xml_hdl);
+    xml_go_up(xml_hdl);
     return;
   }
   tmp_color.setRed(atoi(result));
@@ -55,10 +58,13 @@ void UI_Mainwindow::get_rgbcolor_settings(struct xml_handle *xml_hdl, const char
 
   if(xml_goto_nth_element_inside(xml_hdl, "green", 0))
   {
+    xml_go_up(xml_hdl);
     return;
   }
   if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
+    xml_go_up(xml_hdl);
+    xml_go_up(xml_hdl);
     return;
   }
   tmp_color.setGreen(atoi(result));
@@ -67,17 +73,31 @@ void UI_Mainwindow::get_rgbcolor_settings(struct xml_handle *xml_hdl, const char
 
   if(xml_goto_nth_element_inside(xml_hdl, "blue", 0))
   {
+    xml_go_up(xml_hdl);
     return;
   }
   if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
   {
+    xml_go_up(xml_hdl);
+    xml_go_up(xml_hdl);
     return;
   }
   tmp_color.setBlue(atoi(result));
 
+  xml_go_up(xml_hdl);
+
+  if(!xml_goto_nth_element_inside(xml_hdl, "alpha", 0))
+  {
+    if(!xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      tmp_color.setAlpha(atoi(result));
+    }
+
+    xml_go_up(xml_hdl);
+  }
+
   *rgb_color = tmp_color;
 
-  xml_go_up(xml_hdl);
   xml_go_up(xml_hdl);
 }
 
@@ -140,6 +160,8 @@ void UI_Mainwindow::read_color_settings()
   get_rgbcolor_settings(xml_hdl, "baseline_color", 0, &maincurve->baseline_color);
 
   get_rgbcolor_settings(xml_hdl, "annot_marker_color", 0, &maincurve->annot_marker_color);
+
+  get_rgbcolor_settings(xml_hdl, "annot_duration_color", 0, &maincurve->annot_duration_color);
 
   if(xml_goto_nth_element_inside(xml_hdl, "signal_color", 0))
   {
@@ -1767,6 +1789,17 @@ void UI_Mainwindow::write_settings()
                     maincurve->annot_marker_color.red(),
                     maincurve->annot_marker_color.green(),
                     maincurve->annot_marker_color.blue());
+
+    fprintf(cfgfile, "      <annot_duration_color>\n"
+                    "        <red>%i</red>\n"
+                    "        <green>%i</green>\n"
+                    "        <blue>%i</blue>\n"
+                    "        <alpha>%i</alpha>\n"
+                    "      </annot_duration_color>\n",
+                    maincurve->annot_duration_color.red(),
+                    maincurve->annot_duration_color.green(),
+                    maincurve->annot_duration_color.blue(),
+                    maincurve->annot_duration_color.alpha());
 
     fprintf(cfgfile, "      <signal_color>%i</signal_color>\n",
                     maincurve->signal_color);

@@ -126,6 +126,7 @@ SpecialButton  *BgColorButton,
                *Crh2ColorButton,
                *FrColorButton,
                *AnnotMkrButton,
+               *AnnotDurationButton,
                *slabel2_1,
                *slabel2_3;
 
@@ -141,6 +142,7 @@ QLabel         *label1,
                *label10,
                *label11,
                *label12,
+               *label12_1,
                *label13,
                *label4_1,
                *label4_2,
@@ -212,6 +214,7 @@ void Crh1ColorButtonClicked(SpecialButton *);
 void Crh2ColorButtonClicked(SpecialButton *);
 void FrColorButtonClicked(SpecialButton *);
 void AnnotMkrButtonClicked(SpecialButton *);
+void AnnotDurationButtonClicked(SpecialButton *);
 void checkbox1Clicked(int);
 void checkbox2Clicked(int);
 void checkbox3Clicked(int);

@@ -181,6 +181,7 @@ public:
          baseline_color,
          text_color,
          annot_marker_color,
+         annot_duration_color,
          backup_color_1,
          backup_color_2,
          backup_color_3,

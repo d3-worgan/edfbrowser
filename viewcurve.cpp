@@ -74,6 +74,7 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
   crosshair_2.color = Qt::cyan;
   floating_ruler_color = Qt::red;
   annot_marker_color = Qt::white;
+  annot_duration_color = QColor(0, 127, 127, 32);
 
   crosshair_1.active = 0;
   crosshair_2.active = 0;
@@ -1422,8 +1423,6 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   QFont paintersfont;
 
-  QColor tmp_color;
-
   if(mainwindow->exit_in_progress)
   {
     return;
@@ -1475,8 +1474,6 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   if(mainwindow->show_annot_markers)
   {
-    tmp_color = QColor(0, 127, 127, 32);
-
     for(i=0; i<mainwindow->files_open; i++)
     {
       annot_list = &mainwindow->edfheaderlist[i]->annot_list;
@@ -1504,7 +1501,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
             marker_x2 = (int)((((double)w) / mainwindow->pagetime) * annot->long_duration);
 
-            painter->fillRect(marker_x, 0, marker_x2, h, tmp_color);
+            painter->fillRect(marker_x, 0, marker_x2, h, annot_duration_color);
           }
         }
       }
