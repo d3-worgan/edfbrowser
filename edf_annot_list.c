@@ -144,6 +144,26 @@ struct annotationblock * edfplus_annotation_get_item(struct annotation_list *lis
 }
 
 
+int edfplus_annotation_get_index_at(struct annotation_list *list, long long onset, int start)
+{
+  int i;
+
+  if(list == NULL)  return -1;
+
+  if(start < 0)  return -1;
+
+  for(i=start; i<list->sz; i++)
+  {
+    if(list->items[list->idx[i]].onset >= onset)
+    {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+
 void edfplus_annotation_sort(struct annotation_list *list, void (*callback)(void))  /* sort the annotationlist based on the onset time */
 {
   int i, j, p, idx;
