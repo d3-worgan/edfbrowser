@@ -1421,6 +1421,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   struct annotationblock *annot;
 
+  struct date_time_struct date_time_str;
+
   QFont paintersfont;
 
   if(mainwindow->exit_in_progress)
@@ -1968,7 +1970,18 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
           }
           else
           {
-            snprintf(string, MAX_ANNOTATION_LEN + 32, "%i:%02i:%02i.%04i",
+            if(mainwindow->viewtime_indicator_type == 2)
+            {
+              utc_to_date_time((annot->onset / TIME_DIMENSION) + mainwindow->edfheaderlist[i]->utc_starttime, &date_time_str);
+
+              snprintf(string, 32, "%2i-%s ", date_time_str.day, date_time_str.month_str);
+            }
+            else
+            {
+              string[0] = 0;
+            }
+
+            snprintf(string + strlen(string), MAX_ANNOTATION_LEN + 32, "%i:%02i:%02i.%04i",
                     (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_DIMENSION)/ 3600) % 24),
                     (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_DIMENSION) % 3600) / 60),
                     (int)(((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_DIMENSION) % 60),

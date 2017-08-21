@@ -17,6 +17,9 @@
 
  - Annotations: show the duration using an overlay in the background color.
 
+ - Annotations: show the date when "relative" is unchecked in the annotations list and
+   viewtime/fileposition indicator is set to "date real (relative)" in the Settings dialog.
+
 
 
  version 1.59      May 8, 2017
