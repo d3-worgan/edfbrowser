@@ -750,7 +750,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
   fprintf(outputfile, "%-8i", 256 * edfsignals + 256);
   fprintf(outputfile, "                                            ");
   fprintf(outputfile, "-1      ");
-  if(samplefrequency<1.0)
+  if(dblcmp(samplefrequency, 1) < 0)
   {
     datrecduration = 1.0 / samplefrequency;
     snprintf(str, 256, "%.8f", datrecduration);
@@ -897,7 +897,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     fputc(' ', outputfile);
   }
 
-  if(samplefrequency<1.0)
+  if(dblcmp(samplefrequency, 1) < 0)
   {
     for(i=0; i<edfsignals; i++)
     {
@@ -1175,10 +1175,19 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     return;
   }
 
-  snprintf(txt_string, ASCII_MAX_LINE_LEN, "Done. EDF file is located at %s\n", outputfilename);
-  QMessageBox messagewindow(QMessageBox::Information, "Ready", txt_string);
-  messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
-  messagewindow.exec();
+  if(datarecords < 1)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Error: Input file does not contain enough lines\n"
+                                                              "to create at least one datarecord in the EDF/BDF file.");
+    messagewindow.exec();
+  }
+  else
+  {
+    snprintf(txt_string, ASCII_MAX_LINE_LEN, "Done. EDF file is located at %s\n", outputfilename);
+    QMessageBox messagewindow(QMessageBox::Information, "Ready", txt_string);
+    messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
+    messagewindow.exec();
+  }
 
   ascii2edfDialog->setEnabled(true);
 }
@@ -1687,7 +1696,7 @@ int UI_ASCII2EDFapp::check_input(void)
 
   samplefrequency = SamplefreqSpinbox->value();
 
-  if(samplefrequency>=1.0)
+  if(!(dblcmp(samplefrequency, 1) < 0))
   {
     if(samplefrequency>((double)((int)samplefrequency)))
     {
