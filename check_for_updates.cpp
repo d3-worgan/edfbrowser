@@ -41,7 +41,7 @@ Check_for_updates::Check_for_updates()
 
   manager = new QNetworkAccessManager(this);
 
-  request.setUrl(QUrl("https://teuniz.net/edfbrowser/latest_version.txt"));
+  request.setUrl(QUrl("http://www.teuniz.net/edfbrowser/latest_version.txt"));
   request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " OS_UNKNOWN");
 #ifdef Q_OS_LINUX
   request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_LINUX");
