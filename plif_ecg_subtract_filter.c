@@ -95,7 +95,6 @@ struct plif_subtract_filter_settings * plif_create_subtract_filter(int sf, int p
   st->tpl = sf / pwlf;  /* the number of samples in one cycle of the powerline frequency */
   st->ravg_idx = 0;
   st->buf_idx = 0;
-  st->linear = 0;
   st->linear_threshold = lt;  /* the threshold to detect the linear region */
   st->ravg_buf = (double *)calloc(1, sizeof(double) * st->tpl);
   if(st->ravg_buf == NULL) /* buffer for the running average filter */
@@ -139,7 +138,7 @@ struct plif_subtract_filter_settings * plif_create_subtract_filter(int sf, int p
 
 double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_settings *st)
 {
-  int i, j, n, pre, linear_buf_idx, linear_bufs;
+  int i, j, pre, linear_buf_idx, linear_bufs, linear;
 
   double ravg_val, fd_max, fd_min, dtmp, thr, ret_val;
 
@@ -194,7 +193,7 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
       thr = (j + 1) * st->linear_threshold;  /* first we try with the lowest threshold possible (5uV) */
                                              /* if we can't find a linear region of at least 60 milli-seconds long, */
                                              /* we increase the threshold and try again */
-      for(i=0, st->linear=0, linear_bufs=0; i<PLIF_NBUFS; i++)
+      for(i=0, linear=0, linear_bufs=0; i<(PLIF_NBUFS - 1); i++)
       {
         linear_buf_idx = st->buf_idx - i + PLIF_NBUFS;
         linear_buf_idx %= PLIF_NBUFS;
@@ -204,7 +203,7 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
 
         if(linear_bufs == 3)  /* we need at least three consegutive buffers (60 milli-sec.) to pass the threshold limit */
         {
-          st->linear = 1;
+          linear = 1;
 
           linear_buf_idx += (PLIF_NBUFS - 1);
           linear_buf_idx %= PLIF_NBUFS;
@@ -213,17 +212,17 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
         }
       }
 
-      if(st->linear)  break;
+      if(linear)  break;
     }
 
-    if(st->linear)  /* are we in a linear region? */
+    if(linear)  /* are we in a linear region? */
     {
-      for(j=0, n=0; j<3; j++)  /* average the buffers containing the extracted noise */
+      for(j=0; j<3; j++)  /* average the buffers containing the extracted noise */
       {
         linear_buf_idx += j + PLIF_NBUFS;
         linear_buf_idx %= PLIF_NBUFS;
 
-        if(!n)
+        if(!j)
         {
           for(i=0; i<st->tpl; i++)
           {
@@ -237,19 +236,17 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
             st->ref_buf[i] += st->ravg_noise_buf[linear_buf_idx][i];
           }
         }
-
-        n++;
       }
 
       for(i=0; i<st->tpl; i++)
       {
-        st->ref_buf[i] /= n;  /* calculate the average */
+        st->ref_buf[i] /= j;  /* calculate the average */
       }
     }
-
-    st->buf_idx++;  /* increment the index */
-    st->buf_idx %= PLIF_NBUFS; /* check boundary and roll-over if necessary */
   }
+
+  st->buf_idx++;  /* increment the index */
+  st->buf_idx %= PLIF_NBUFS; /* check boundary and roll-over if necessary */
 
   return ret_val;
 }
@@ -354,7 +351,6 @@ void plif_reset_subtract_filter(struct plif_subtract_filter_settings *st, double
 
   st->ravg_idx = 0;
   st->buf_idx = 0;
-  st->linear = 0;
 
   for(j=0; j<st->tpl; j++)
   {

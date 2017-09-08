@@ -54,7 +54,6 @@ struct plif_subtract_filter_settings{
                        double linear_diff[PLIF_NBUFS];
                        int ravg_idx;
                        int buf_idx;
-                       int linear;
                       };
 
 
