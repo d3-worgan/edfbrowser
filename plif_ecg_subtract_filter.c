@@ -138,7 +138,7 @@ struct plif_subtract_filter_settings * plif_create_subtract_filter(int sf, int p
 
 double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_settings *st)
 {
-  int i, j, pre, linear_buf_idx, linear_bufs, linear;
+  int i, j, pre, linear_buf_idx, linear_bufs, linear, idx2;
 
   double ravg_val, fd_max, fd_min, dtmp, thr, ret_val;
 
@@ -162,7 +162,11 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
   /* delay the input with half tpl samples */
 //  new_input = st->ravg_buf[(st->ravg_idx + (st->tpl / 2)) % st->tpl];
 
-  ret_val = new_input - st->ref_buf[st->ravg_idx];
+//  ret_val = new_input - st->ref_buf[st->ravg_idx];
+
+  idx2 = (st->ravg_idx + (st->tpl / 2)) % st->tpl;
+
+  ret_val = st->ravg_buf[idx2] - st->ref_buf[idx2];
 
   st->input_buf[st->buf_idx][st->ravg_idx] = new_input;
 
