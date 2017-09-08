@@ -160,7 +160,7 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
   ravg_val /= st->tpl;
 
   /* delay the input with half tpl samples */
-  new_input = st->ravg_buf[(st->ravg_idx + (st->tpl / 2)) % st->tpl];
+//  new_input = st->ravg_buf[(st->ravg_idx + (st->tpl / 2)) % st->tpl];
 
   ret_val = new_input - st->ref_buf[st->ravg_idx];
 
@@ -243,10 +243,10 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
         st->ref_buf[i] /= j;  /* calculate the average */
       }
     }
-  }
 
-  st->buf_idx++;  /* increment the index */
-  st->buf_idx %= PLIF_NBUFS; /* check boundary and roll-over if necessary */
+    st->buf_idx++;  /* increment the index */
+    st->buf_idx %= PLIF_NBUFS; /* check boundary and roll-over if necessary */
+  }
 
   return ret_val;
 }
