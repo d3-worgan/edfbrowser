@@ -138,7 +138,7 @@ struct plif_subtract_filter_settings * plif_create_subtract_filter(int sf, int p
 
 double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_settings *st)
 {
-  int i, j, pre, linear_buf_idx, linear_bufs, linear, idx2;
+  int i, j, pre, linear_buf_idx, linear_bufs, linear;
 
   double ravg_val, fd_max, fd_min, dtmp, thr, ret_val;
 
@@ -160,13 +160,9 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
   ravg_val /= st->tpl;
 
   /* delay the input with half tpl samples */
-//  new_input = st->ravg_buf[(st->ravg_idx + (st->tpl / 2)) % st->tpl];
+  new_input = st->ravg_buf[(st->ravg_idx + (st->tpl / 2)) % st->tpl];
 
-//  ret_val = new_input - st->ref_buf[st->ravg_idx];
-
-  idx2 = (st->ravg_idx + (st->tpl / 2)) % st->tpl;
-
-  ret_val = st->ravg_buf[idx2] - st->ref_buf[idx2];
+  ret_val = new_input - st->ref_buf[st->ravg_idx];
 
   st->input_buf[st->buf_idx][st->ravg_idx] = new_input;
 
@@ -205,12 +201,9 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
         if(st->linear_diff[linear_buf_idx] < thr) linear_bufs++;
         else linear_bufs = 0;
 
-        if(linear_bufs == 3)  /* we need at least three consegutive buffers (60 milli-sec.) to pass the threshold limit */
+        if(linear_bufs == 5)  /* we need five consegutive buffers (100 milli-sec.) to pass the threshold limit */
         {
           linear = 1;
-
-          linear_buf_idx += (PLIF_NBUFS - 1);
-          linear_buf_idx %= PLIF_NBUFS;
 
           break;
         }
@@ -221,7 +214,7 @@ double plif_run_subtract_filter(double new_input, struct plif_subtract_filter_se
 
     if(linear)  /* are we in a linear region? */
     {
-      for(j=0; j<3; j++)  /* average the buffers containing the extracted noise */
+      for(j=0; j<3; j++)  /* average three buffers from the five (don't use the first and the last buffer) containing the extracted noise */
       {
         linear_buf_idx += j + PLIF_NBUFS;
         linear_buf_idx %= PLIF_NBUFS;
