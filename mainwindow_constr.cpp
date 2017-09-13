@@ -1004,29 +1004,29 @@ UI_Mainwindow::UI_Mainwindow()
     }
   }
 
-  if(QT_VERSION < MINIMUM_QT_VERSION)
+  if((QT_VERSION < MINIMUM_QT4_VERSION) || ((QT_VERSION >= 0x050000) && (QT_VERSION < MINIMUM_QT5_VERSION)))
   {
-    QMessageBox messagewindow(QMessageBox::Warning, "Warning", "Qt version is too old");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "EDFbrowser has been compiled with a version of Qt\n"
+                                                              "which is too old and will likely cause problems!");
     messagewindow.exec();
   }
-  else
+
+  int v_nr;
+
+  char v_str[32];
+
+  strncpy(v_str, qVersion(), 32);
+  v_str[31] = 0;
+
+  v_nr = 0x10000 * atoi(v_str);
+  v_nr += 0x100 * atoi(v_str + 2);
+  v_nr += atoi(v_str + 4);
+
+  if((v_nr < MINIMUM_QT4_VERSION) || ((v_nr >= 0x050000) && (v_nr < MINIMUM_QT5_VERSION)))
   {
-    int v_nr;
-
-    char v_str[32];
-
-    strncpy(v_str, qVersion(), 32);
-    v_str[31] = 0;
-
-    v_nr = 0x10000 * atoi(v_str);
-    v_nr += 0x100 * atoi(v_str + 2);
-    v_nr += atoi(v_str + 4);
-
-    if(v_nr < MINIMUM_QT_VERSION)
-    {
-      QMessageBox messagewindow(QMessageBox::Warning, "Warning", "Qt version is too old");
-      messagewindow.exec();
-    }
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Your version of Qt is too old\n"
+                                                              "and will likely cause problems!");
+    messagewindow.exec();
   }
 
   pixmap = new QPixmap(":/images/splash.png");
