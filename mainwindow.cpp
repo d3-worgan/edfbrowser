@@ -1451,7 +1451,7 @@ void UI_Mainwindow::open_new_file()
     {
       break;
     }
-    act = new QAction(QString::fromLocal8Bit(&recent_file_path[i][0]));
+    act = new QAction(QString::fromLocal8Bit(&recent_file_path[i][0]), recent_filesmenu);
     act->setData(QVariant(i));
     recent_filesmenu->addAction(act);
   }

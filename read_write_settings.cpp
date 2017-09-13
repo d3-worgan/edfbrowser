@@ -374,7 +374,7 @@ void UI_Mainwindow::read_recent_file_settings()
     {
       strncpy(&recent_file_path[0][0], result, MAX_PATH_LENGTH);
       recent_file_path[0][MAX_PATH_LENGTH - 1] = 0;
-      act = new QAction(QString::fromLocal8Bit(&recent_file_path[0][0]));
+      act = new QAction(QString::fromLocal8Bit(&recent_file_path[0][0]), recent_filesmenu);
       act->setData(QVariant(0));
       recent_filesmenu->addAction(act);
 
@@ -395,7 +395,7 @@ void UI_Mainwindow::read_recent_file_settings()
         }
         strncpy(&recent_file_path[i][0], result, MAX_PATH_LENGTH);
         recent_file_path[i][MAX_PATH_LENGTH - 1] = 0;
-        act = new QAction(QString::fromLocal8Bit(&recent_file_path[i][0]));
+        act = new QAction(QString::fromLocal8Bit(&recent_file_path[i][0]), recent_filesmenu);
         act->setData(QVariant(i));
         recent_filesmenu->addAction(act);
       }
