@@ -1355,6 +1355,8 @@ void UI_Mainwindow::open_new_file()
 
   str[0] = 0;
 
+  QAction *act;
+
   struct edfhdrblock *edfhdr=NULL;
 
   if(annot_editor_active && files_open)
@@ -1449,7 +1451,9 @@ void UI_Mainwindow::open_new_file()
     {
       break;
     }
-    recent_filesmenu->addAction(QString::fromLocal8Bit(&recent_file_path[i][0]));
+    act = new QAction(QString::fromLocal8Bit(&recent_file_path[i][0]));
+    act->setData(QVariant(i));
+    recent_filesmenu->addAction(act);
   }
 
   present = 0;
@@ -3331,7 +3335,7 @@ long long UI_Mainwindow::get_long_time(char *str)
 
 void UI_Mainwindow::recent_file_action_func(QAction *action)
 {
-  strcpy(path, action->text().toLocal8Bit().data());
+  strcpy(path, &recent_file_path[action->data().toInt()][0]);
 
   cmdlineargument = 1;
 

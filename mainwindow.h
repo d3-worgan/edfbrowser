@@ -87,6 +87,7 @@
 #include <QList>
 #include <QProcess>
 #include <QProcessEnvironment>
+#include <QVariant>
 
 #include <stdio.h>
 #include <stdlib.h>

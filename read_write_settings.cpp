@@ -275,6 +275,8 @@ void UI_Mainwindow::read_recent_file_settings()
 
   cfg_path[0] = 0;
 
+  QAction *act;
+
 #ifdef Q_OS_WIN32
   strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
   strcat(cfg_path, "\\");
@@ -372,7 +374,9 @@ void UI_Mainwindow::read_recent_file_settings()
     {
       strncpy(&recent_file_path[0][0], result, MAX_PATH_LENGTH);
       recent_file_path[0][MAX_PATH_LENGTH - 1] = 0;
-      recent_filesmenu->addAction(QString::fromLocal8Bit(&recent_file_path[0][0]));
+      act = new QAction(QString::fromLocal8Bit(&recent_file_path[0][0]));
+      act->setData(QVariant(0));
+      recent_filesmenu->addAction(act);
 
       for(i=1; i<MAX_RECENTFILES; i++)
       {
@@ -391,7 +395,9 @@ void UI_Mainwindow::read_recent_file_settings()
         }
         strncpy(&recent_file_path[i][0], result, MAX_PATH_LENGTH);
         recent_file_path[i][MAX_PATH_LENGTH - 1] = 0;
-        recent_filesmenu->addAction(QString::fromLocal8Bit(&recent_file_path[i][0]));
+        act = new QAction(QString::fromLocal8Bit(&recent_file_path[i][0]));
+        act->setData(QVariant(i));
+        recent_filesmenu->addAction(act);
       }
     }
 
