@@ -2402,14 +2402,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
   for(i=0; i<signalcomps; i++)
   {
-    if(signalcomp[i]->samples_on_screen < (w / 2))
-    {
-      signalcomp[i]->sample_pixel_ratio = (((double)signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record / signalcomp[i]->edfhdr->data_record_duration) * ((double)mainwindow->pagetime / (double)TIME_DIMENSION)) / (double)w;
-    }
-    else
-    {
-      signalcomp[i]->sample_pixel_ratio = (double)signalcomp[i]->samples_on_screen / (double)w;
-    }
+    signalcomp[i]->sample_pixel_ratio = (double)signalcomp[i]->samples_on_screen / (double)w;
   }
 
   if((viewbuf==NULL)||(screensamples==NULL))
@@ -2756,7 +2749,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
           x2 = (int)(((double)s + 1.0) / signalcomp[i]->sample_pixel_ratio);
           y2 = value;
 
-          if(signalcomp[i]->samples_on_screen < (w / 2))
+          if(signalcomp[i]->samples_on_screen < w)
           {
             if(linear_interpol)
             {
@@ -3242,7 +3235,7 @@ void drawCurve_stage_1_thread::run()
         x2 = (int)(((double)s + 1.0) / signalcomp->sample_pixel_ratio);
         y2 = value;
 
-        if(signalcomp->samples_on_screen < (w / 2))
+        if(signalcomp->samples_on_screen < w)
         {
           if(linear_interpol)
           {
