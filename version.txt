@@ -20,6 +20,8 @@
  - Annotations: show the date when "relative" is unchecked in the annotations list and
    viewtime/fileposition indicator is set to "date real (relative)" in the Settings dialog.
 
+ - Added a workaround for KDE Plasma 5 bug 345023.
+
 
 
  version 1.59      May 8, 2017

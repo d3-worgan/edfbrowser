@@ -678,7 +678,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
         for(i=0; i<signalcomps; i++)
         {
           mainwindow->signalcomp[i]->screen_offset = mainwindow->signalcomp[i]->screen_offset * zoomfactor;
-          mainwindow->signalcomp[i]->screen_offset += (((double)h * (zoomfactor - 1.0) * (double)(i + 1.0)) / (double)(signalcomps + 1.0));
+          mainwindow->signalcomp[i]->screen_offset += (((double)h * (zoomfactor - 1.0) * (double)(i + 1)) / (double)(signalcomps + 1));
           mainwindow->signalcomp[i]->screen_offset -= ((double)mouse_press_coordinate_y * zoomfactor);
 
           mainwindow->signalcomp[i]->voltpercm = mainwindow->signalcomp[i]->voltpercm / ((double)h / (double)(m_y - mouse_press_coordinate_y));
@@ -2746,14 +2746,14 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
         {
           x1 = (int)((double)s / signalcomp[i]->sample_pixel_ratio);
           y1 = signalcomp[i]->oldvalue;
-          x2 = (int)(((double)s + 1.0) / signalcomp[i]->sample_pixel_ratio);
+          x2 = (int)(((double)(s + 1)) / signalcomp[i]->sample_pixel_ratio);
           y2 = value;
 
           if(signalcomp[i]->samples_on_screen < w)
           {
             if(linear_interpol)
             {
-              x1 = (int)(((double)s - 1.0) / signalcomp[i]->sample_pixel_ratio);
+              x1 = (int)(((double)(s - 1)) / signalcomp[i]->sample_pixel_ratio);
               x2 = (int)((double)s / signalcomp[i]->sample_pixel_ratio);
 
               graphicBuf[screensamples[i]].graphicLine[i].x1 = x1 - signalcomp[i]->pixels_shift;
@@ -3232,14 +3232,14 @@ void drawCurve_stage_1_thread::run()
       {
         x1 = (int)((double)s / signalcomp->sample_pixel_ratio);
         y1 = signalcomp->oldvalue;
-        x2 = (int)(((double)s + 1.0) / signalcomp->sample_pixel_ratio);
+        x2 = (int)(((double)(s + 1)) / signalcomp->sample_pixel_ratio);
         y2 = value;
 
         if(signalcomp->samples_on_screen < w)
         {
           if(linear_interpol)
           {
-            x1 = (int)(((double)s - 1.0) / signalcomp->sample_pixel_ratio);
+            x1 = (int)(((double)(s - 1)) / signalcomp->sample_pixel_ratio);
             x2 = (int)((double)s / signalcomp->sample_pixel_ratio);
 
             graphicBuf[*screensamples].graphicLine[i].x1 = x1 - signalcomp->pixels_shift;
