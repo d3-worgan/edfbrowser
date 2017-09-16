@@ -69,6 +69,9 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
   list->setGeometry(440, 45, 160, 300);
   list->setSelectionBehavior(QAbstractItemView::SelectRows);
   list->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  list->setToolTip("Only signals with a physical dimension V, mV or uV and\n"
+                   "a samplerate of >= 500Hz and\n"
+                   "an integer ratio to 50 or 60 Hz will be listed here.");
 
   CancelButton = new QPushButton(plifecgfilterdialog);
   CancelButton->setGeometry(300, 320, 100, 25);
