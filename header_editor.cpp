@@ -219,6 +219,8 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
   pushButton2 = new QPushButton(this);
   pushButton2->setGeometry(200, 510, 100, 25);
   pushButton2->setText("Save");
+  pushButton2->setToolTip("By clicking on \"Save\", the file will be checked for\n"
+                          "errors and, if found, it will try to correct them.");
 
   pushButton3 = new QPushButton(this);
   pushButton3->setGeometry(10, 510, 100, 25);
