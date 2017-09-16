@@ -1,5 +1,5 @@
 
- version 1.60      to be defined
+ version 1.60      September 16, 2017
  --------------
 
  - Improve parameter checking for signal composition when loading a montage file.
