@@ -139,9 +139,10 @@ UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, int annot_nr)
 
   list->setCurrentRow(0, QItemSelectionModel::Select);
 
-  annot_ptr = edfplus_annotation_get_item(&mainwindow->edfheaderlist[0]->annot_list, annot_nr);
+  annot_ptr = edfplus_annotation_get_item_visible_only(&mainwindow->edfheaderlist[0]->annot_list, annot_nr);
 
   strcpy(annot_str, annot_ptr->annotation);
+  remove_leading_spaces(annot_str);
   remove_trailing_spaces(annot_str);
 
   annotNameLabel->setText(annot_str);
@@ -250,6 +251,7 @@ void UI_AveragerWindow::startButtonClicked()
     {
       strcpy(str, annot_ptr->annotation);
 
+      remove_leading_spaces(str);
       remove_trailing_spaces(str);
 
       if(!strcmp(str, annot_str))
@@ -339,6 +341,7 @@ void UI_AveragerWindow::startButtonClicked()
       {
         strcpy(str, annot_ptr->annotation);
 
+        remove_leading_spaces(str);
         remove_trailing_spaces(str);
 
         if(!strcmp(str, annot_str))

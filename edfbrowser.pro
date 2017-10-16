@@ -127,6 +127,7 @@ HEADERS += biox2edf.h
 HEADERS += edf_helper.h
 HEADERS += plif_ecg_subtract_filter.h
 HEADERS += plif_ecg_subtract_filter_dialog.h
+HEADERS += annotlist_filter_dialog.h
 
 HEADERS += third_party/fidlib/fidlib.h
 HEADERS += third_party/fidlib/fidmkf.h
@@ -219,6 +220,7 @@ SOURCES += biox2edf.cpp
 SOURCES += edf_helper.c
 SOURCES += plif_ecg_subtract_filter.c
 SOURCES += plif_ecg_subtract_filter_dialog.cpp
+SOURCES += annotlist_filter_dialog.cpp
 
 SOURCES += third_party/fidlib/fidlib.c
 

@@ -62,6 +62,7 @@
 #include "utils.h"
 #include "averager_dialog.h"
 #include "edf_annot_list.h"
+#include "annotlist_filter_dialog.h"
 
 
 class UI_Mainwindow;
@@ -116,7 +117,8 @@ private:
           *hide_all_NK_triggers_act,
           *hide_all_BS_triggers_act,
           *unhide_all_NK_triggers_act,
-          *unhide_all_BS_triggers_act;
+          *unhide_all_BS_triggers_act,
+          *show_more_act;
 
 private slots:
 
@@ -136,6 +138,7 @@ private slots:
   void hide_all_BS_triggers(bool);
   void unhide_all_NK_triggers(bool);
   void unhide_all_BS_triggers(bool);
+  void show_more(bool);
 };
 
 

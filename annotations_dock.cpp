@@ -100,6 +100,7 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   hide_all_BS_triggers_act = new QAction("Hide all Biosemi triggers", list);
   unhide_all_NK_triggers_act = new QAction("Unhide all Nihon Kohden triggers", list);
   unhide_all_BS_triggers_act = new QAction("Unhide all Biosemi triggers", list);
+  show_more_act = new QAction("More...", list);
 
   list->setContextMenuPolicy(Qt::ActionsContextMenu);
   list->insertAction(NULL, show_between_act);
@@ -113,6 +114,7 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   list->insertAction(NULL, unhide_all_NK_triggers_act);
   list->insertAction(NULL, hide_all_BS_triggers_act);
   list->insertAction(NULL, unhide_all_BS_triggers_act);
+  list->insertAction(NULL, show_more_act);
 
   h_layout = new QHBoxLayout;
   h_layout->addWidget(checkbox1);
@@ -144,7 +146,40 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   QObject::connect(hide_all_BS_triggers_act,   SIGNAL(triggered(bool)),                this, SLOT(hide_all_BS_triggers(bool)));
   QObject::connect(unhide_all_NK_triggers_act, SIGNAL(triggered(bool)),                this, SLOT(unhide_all_NK_triggers(bool)));
   QObject::connect(unhide_all_BS_triggers_act, SIGNAL(triggered(bool)),                this, SLOT(unhide_all_BS_triggers(bool)));
+  QObject::connect(show_more_act,              SIGNAL(triggered(bool)),                this, SLOT(show_more(bool)));
   QObject::connect(lineedit1,                  SIGNAL(textEdited(const QString)),      this, SLOT(filter_edited(const QString)));
+}
+
+
+void UI_Annotationswindow::show_more(bool)
+{
+  struct annotation_list *annot_list;
+
+  struct annotationblock *annot;
+
+  if(mainwindow->files_open != 1)
+  {
+    return;
+  }
+
+  if(mainwindow->annot_editor_active)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Close the annotation editor and try again.");
+    messagewindow.exec();
+
+    return;
+  }
+
+  if(list->count() < 1)
+  {
+    return;
+  }
+
+  annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
+
+  annot = edfplus_annotation_get_item_visible_only(annot_list, list->currentRow());
+
+  UI_AnnotFilterWindow filter_wndw(mainwindow, annot);
 }
 
 
@@ -468,11 +503,13 @@ void UI_Annotationswindow::hide_annot(bool)
 
   if(n >= sz)  return;
 
-  annot = edfplus_annotation_get_item(annot_list, n);
+  annot = edfplus_annotation_get_item_visible_only(annot_list, n);
 
   annot->hided_in_list = 1;
 
   annot->hided = 1;
+
+  updateList();
 
   mainwindow->maincurve->update();
 }
@@ -503,6 +540,8 @@ void UI_Annotationswindow::unhide_annot(bool)
 
   annot->hided = 0;
 
+  updateList();
+
   mainwindow->maincurve->update();
 }
 
@@ -530,7 +569,7 @@ void UI_Annotationswindow::hide_same_annots(bool)
 
   if(n >= sz)  return;
 
-  annot = edfplus_annotation_get_item(annot_list, n);
+  annot = edfplus_annotation_get_item_visible_only(annot_list, n);
 
   strcpy(str1, annot->annotation);
 
@@ -556,6 +595,8 @@ void UI_Annotationswindow::hide_same_annots(bool)
     }
   }
 
+  updateList();
+
   mainwindow->maincurve->update();
 }
 
@@ -579,7 +620,7 @@ void UI_Annotationswindow::unhide_same_annots(bool)
 
   if(n >= sz)  return;
 
-  annot = edfplus_annotation_get_item(annot_list, n);
+  annot = edfplus_annotation_get_item_visible_only(annot_list, n);
 
   strcpy(str1, annot->annotation);
 
@@ -605,6 +646,8 @@ void UI_Annotationswindow::unhide_same_annots(bool)
     }
   }
 
+  updateList();
+
   mainwindow->maincurve->update();
 }
 
@@ -627,6 +670,8 @@ void UI_Annotationswindow::unhide_all_annots(bool)
 
     annot->hided_in_list = 0;
   }
+
+  updateList();
 
   mainwindow->maincurve->update();
 }

@@ -70,6 +70,7 @@ int edfplus_annotation_size(struct annotation_list *);
 void edfplus_annotation_empty_list(struct annotation_list *);
 void edfplus_annotation_remove_item(struct annotation_list *, int);
 struct annotationblock * edfplus_annotation_get_item(struct annotation_list *, int);
+struct annotationblock * edfplus_annotation_get_item_visible_only(struct annotation_list *, int);
 int edfplus_annotation_get_index(struct annotation_list *, struct annotationblock *);
 void edfplus_annotation_sort(struct annotation_list *, void (*)(void));
 struct annotation_list * edfplus_annotation_create_list_copy(struct annotation_list *);

@@ -144,6 +144,31 @@ struct annotationblock * edfplus_annotation_get_item(struct annotation_list *lis
 }
 
 
+struct annotationblock * edfplus_annotation_get_item_visible_only(struct annotation_list *list, int n)
+{
+  int i, j=0;
+
+  if(list == NULL)  return NULL;
+
+  if((n >= list->sz) || (n < 0))  return NULL;
+
+  for(i=0; i<list->sz; i++)
+  {
+    if(list->items[list->idx[i]].hided_in_list)
+    {
+      continue;
+    }
+
+    if(n == j++)
+    {
+      return &list->items[list->idx[i]];
+    }
+  }
+
+  return NULL;
+}
+
+
 int edfplus_annotation_get_index_at(struct annotation_list *list, long long onset, int start)
 {
   int i;
