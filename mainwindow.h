@@ -271,6 +271,8 @@ public:
 
   struct video_player_struct *video_player;
 
+  struct annot_filter_struct *annot_filter;
+
   UI_Annotationswindow *annotations_dock[MAXFILES];
 
   UI_AnnotationEditwindow *annotationEditDock;

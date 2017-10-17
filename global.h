@@ -288,6 +288,14 @@ struct video_player_struct{
         int fpos;
        };
 
+struct annot_filter_struct{
+       double tmin;
+       double tmax;
+       int invert;
+       int hide_other;
+       int hide_in_list_only;
+       };
+
 #endif
 
 

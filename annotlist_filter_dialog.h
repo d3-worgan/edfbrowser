@@ -47,6 +47,8 @@
 #include <QTime>
 #include <QTimeEdit>
 #include <QDoubleSpinBox>
+#include <QCheckBox>
+#include <QToolTip>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -71,7 +73,7 @@ class UI_AnnotFilterWindow : public QObject
   Q_OBJECT
 
 public:
-  UI_AnnotFilterWindow(QWidget *, struct annotationblock *);
+  UI_AnnotFilterWindow(QWidget *, struct annotationblock *, struct annot_filter_struct *);
 
   UI_Mainwindow *mainwindow;
 
@@ -81,12 +83,9 @@ private:
 QDialog     *annot_filter_dialog;
 
 QLabel      *annotLabel,
-            *annotNameLabel;
-//             *signalLabel,
-//             *ratioLabel,
-//             *bufsizeLabel,
-//             *time1Label,
-//             *time2Label;
+            *annotNameLabel,
+            *t1Label,
+            *t2Label;
 
 QPushButton *CloseButton,
             *ApplyButton;
@@ -104,17 +103,28 @@ QListWidget *list;
 QDoubleSpinBox *t1_dspinbox,
                *t2_dspinbox;
 
+QCheckBox *hide_in_list_checkbox,
+          *hide_other_checkbox,
+          *invert_checkbox;
+
 char sel_annot_str[MAX_ANNOTATION_LEN + 1];
 
 struct annotation_list *annot_list;
 
 struct annotationblock *sel_annot_ptr;
 
+struct annot_filter_struct *filter_params;
+
 UI_Annotationswindow *annots_dock;
 
 private slots:
 
 void apply_filter();
+void t1_dspinbox_changed(double);
+void t2_dspinbox_changed(double);
+void hide_other_checkbox_changed(int);
+void hide_in_list_checkbox_changed(int);
+void invert_checkbox_changed(int);
 
 };
 

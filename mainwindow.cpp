@@ -120,6 +120,7 @@ void UI_Mainwindow::closeEvent(QCloseEvent *cl_event)
     free(import_annotations_var);
     free(export_annotations_var);
     free(video_player);
+    free(annot_filter);
 
     cl_event->accept();
   }

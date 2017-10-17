@@ -179,7 +179,7 @@ void UI_Annotationswindow::show_more(bool)
 
   annot = edfplus_annotation_get_item_visible_only(annot_list, list->currentRow());
 
-  UI_AnnotFilterWindow filter_wndw(mainwindow, annot);
+  UI_AnnotFilterWindow filter_wndw(mainwindow, annot, mainwindow->annot_filter);
 }
 
 
