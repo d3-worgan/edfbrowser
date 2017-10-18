@@ -44,8 +44,8 @@ UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, struct annotationb
 
   annots_dock = mainwindow->annotations_dock[0];
 
-  annot_filter_dialog->setMinimumSize(600, 400);
-  annot_filter_dialog->setMaximumSize(600, 400);
+  annot_filter_dialog->setMinimumSize(430, 400);
+  annot_filter_dialog->setMaximumSize(430, 400);
   annot_filter_dialog->setWindowTitle("Filter annotations");
   annot_filter_dialog->setModal(true);
   annot_filter_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
