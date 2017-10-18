@@ -64,26 +64,24 @@ UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, struct annotationb
   t1Label->setText("Minimum interval:");
   t1Label->setToolTip("Minimum interval between two consegutive annotations");
 
-  t1_dspinbox = new QDoubleSpinBox(annot_filter_dialog);
-  t1_dspinbox->setGeometry(160, 65, 100, 25);
-  t1_dspinbox->setDecimals(3);
-  t1_dspinbox->setRange(0.001, 299.999);
-  t1_dspinbox->setSuffix(" sec");
-  t1_dspinbox->setValue(filter_params->tmin);
-  t1_dspinbox->setToolTip("Minimum interval between two consegutive annotations");
+  t1_spinbox = new QSpinBox(annot_filter_dialog);
+  t1_spinbox->setGeometry(160, 65, 100, 25);
+  t1_spinbox->setRange(1, 500000);
+  t1_spinbox->setSuffix(" mSec");
+  t1_spinbox->setValue(filter_params->tmin);
+  t1_spinbox->setToolTip("Minimum interval between two consegutive annotations");
 
   t2Label = new QLabel(annot_filter_dialog);
   t2Label->setGeometry(20, 110, 120, 25);
   t2Label->setText("Maximum interval:");
   t2Label->setToolTip("Maximum interval between two consegutive annotations");
 
-  t2_dspinbox = new QDoubleSpinBox(annot_filter_dialog);
-  t2_dspinbox->setGeometry(160, 110, 100, 25);
-  t2_dspinbox->setDecimals(3);
-  t2_dspinbox->setRange(0.002, 300.0);
-  t2_dspinbox->setSuffix(" sec");
-  t2_dspinbox->setValue(filter_params->tmax);
-  t2_dspinbox->setToolTip("Maximum interval between two consegutive annotations");
+  t2_spinbox = new QSpinBox(annot_filter_dialog);
+  t2_spinbox->setGeometry(160, 110, 100, 25);
+  t2_spinbox->setRange(1, 500000);
+  t2_spinbox->setSuffix(" mSec");
+  t2_spinbox->setValue(filter_params->tmax);
+  t2_spinbox->setToolTip("Maximum interval between two consegutive annotations");
 
   invert_checkbox = new QCheckBox("Invert ", annot_filter_dialog);
   invert_checkbox->setGeometry(20, 155, 200, 25);
@@ -141,19 +139,29 @@ UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, struct annotationb
 
   QObject::connect(CloseButton,           SIGNAL(clicked()),            annot_filter_dialog, SLOT(close()));
   QObject::connect(ApplyButton,           SIGNAL(clicked()),            this,                SLOT(apply_filter()));
-  QObject::connect(t1_dspinbox,           SIGNAL(valueChanged(double)), this,                SLOT(t1_dspinbox_changed(double)));
-  QObject::connect(t2_dspinbox,           SIGNAL(valueChanged(double)), this,                SLOT(t2_dspinbox_changed(double)));
-  QObject::connect(hide_other_checkbox,   SIGNAL(stateChanged(int)),    this,                SLOT(hide_other_checkbox_changed(int)));
-  QObject::connect(hide_in_list_checkbox, SIGNAL(stateChanged(int)),    this,                SLOT(hide_in_list_checkbox_changed(int)));
-  QObject::connect(invert_checkbox,       SIGNAL(stateChanged(int)),    this,                SLOT(invert_checkbox_changed(int)));
 
   annot_filter_dialog->exec();
 }
 
 
-void UI_AnnotFilterWindow::invert_checkbox_changed(int state)
+void UI_AnnotFilterWindow::apply_filter()
 {
-  if(state == Qt::Checked)
+  int i,
+      sz,
+      is_set=0,
+      t1_val,
+      t2_val;;
+
+  long long t1,
+            t_diff,
+            t_min,
+            t_max;
+
+  char annot_str[MAX_ANNOTATION_LEN + 1];
+
+  struct annotationblock *annot, *annot_before;
+
+  if(invert_checkbox->checkState() == Qt::Checked)
   {
     filter_params->invert = 1;
   }
@@ -161,25 +169,8 @@ void UI_AnnotFilterWindow::invert_checkbox_changed(int state)
   {
     filter_params->invert = 0;
   }
-}
 
-
-void UI_AnnotFilterWindow::hide_other_checkbox_changed(int state)
-{
-  if(state == Qt::Checked)
-  {
-    filter_params->hide_other = 1;
-  }
-  else
-  {
-    filter_params->hide_other = 0;
-  }
-}
-
-
-void UI_AnnotFilterWindow::hide_in_list_checkbox_changed(int state)
-{
-  if(state == Qt::Checked)
+  if(hide_in_list_checkbox->checkState() == Qt::Checked)
   {
     filter_params->hide_in_list_only = 1;
   }
@@ -187,60 +178,35 @@ void UI_AnnotFilterWindow::hide_in_list_checkbox_changed(int state)
   {
     filter_params->hide_in_list_only = 0;
   }
-}
 
-
-void UI_AnnotFilterWindow::t1_dspinbox_changed(double t1_val)
-{
-  double t2_val, diff;
-
-  t2_val = t2_dspinbox->value();
-
-  diff =  t2_val - t1_val;
-  if(diff < 0.001)
+  if(hide_other_checkbox->checkState() == Qt::Checked)
   {
-    t2_val = t1_val + 0.001;
+    filter_params->hide_other = 1;
+  }
+  else
+  {
+    filter_params->hide_other = 0;
+  }
 
-    t2_dspinbox->setValue(t2_val);
+  t1_val = t1_spinbox->value();
+
+  t2_val = t2_spinbox->value();
+
+  if(t1_val >= t2_val)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Minimum interval must be less than\n"
+                                                              "maximum interval");
+    messagewindow.exec();
+    return;
   }
 
   filter_params->tmin = t1_val;
+
   filter_params->tmax = t2_val;
-}
 
+  t_min = filter_params->tmin * (TIME_DIMENSION / 1000LL);
 
-void UI_AnnotFilterWindow::t2_dspinbox_changed(double t2_val)
-{
-  double t1_val, diff;
-
-  t1_val = t1_dspinbox->value();
-
-  diff =  t2_val - t1_val;
-  if(diff < 0.001)
-  {
-    t1_val = t2_val - 0.001;
-
-    t1_dspinbox->setValue(t1_val);
-  }
-
-  filter_params->tmin = t1_val;
-  filter_params->tmax = t2_val;
-}
-
-
-void UI_AnnotFilterWindow::apply_filter()
-{
-  int i, sz, is_set=0;
-
-  long long t1, t_diff, t_min, t_max;
-
-  char annot_str[MAX_ANNOTATION_LEN + 1];
-
-  struct annotationblock *annot, *annot_before;
-
-  t_min = filter_params->tmin * TIME_DIMENSION;
-
-  t_max = filter_params->tmax * TIME_DIMENSION;
+  t_max = filter_params->tmax * (TIME_DIMENSION / 1000LL);
 
   sz = edfplus_annotation_size(annot_list);
 

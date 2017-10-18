@@ -289,8 +289,8 @@ struct video_player_struct{
        };
 
 struct annot_filter_struct{
-       double tmin;
-       double tmax;
+       int tmin;
+       int tmax;
        int invert;
        int hide_other;
        int hide_in_list_only;

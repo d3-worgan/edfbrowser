@@ -36,17 +36,11 @@
 #include <QtGlobal>
 #include <QApplication>
 #include <QObject>
-#include <QListWidget>
-#include <QListWidgetItem>
 #include <QDialog>
 #include <QPushButton>
 #include <QLabel>
-#include <QProgressDialog>
-#include <QComboBox>
-#include <QList>
-#include <QTime>
-#include <QTimeEdit>
-#include <QDoubleSpinBox>
+#include <QMessageBox>
+#include <QSpinBox>
 #include <QCheckBox>
 #include <QToolTip>
 
@@ -92,16 +86,8 @@ QPushButton *CloseButton,
 
 QListWidget *list;
 
-// QComboBox   *ratioBox;
-//
-// QTimeEdit    *timeEdit1,
-//              *timeEdit2;
-//
-// QTime        time1,
-//              time2;
-
-QDoubleSpinBox *t1_dspinbox,
-               *t2_dspinbox;
+QSpinBox *t1_spinbox,
+         *t2_spinbox;
 
 QCheckBox *hide_in_list_checkbox,
           *hide_other_checkbox,
@@ -120,11 +106,6 @@ UI_Annotationswindow *annots_dock;
 private slots:
 
 void apply_filter();
-void t1_dspinbox_changed(double);
-void t2_dspinbox_changed(double);
-void hide_other_checkbox_changed(int);
-void hide_in_list_checkbox_changed(int);
-void invert_checkbox_changed(int);
 
 };
 
