@@ -305,7 +305,7 @@ void UI_Annotationswindow::unhide_all_BS_triggers(bool)
 
 void UI_Annotationswindow::filter_edited(const QString text)
 {
-  int i, n, len, sz;
+  int i, j, n, len, sz;
 
   char filter_str[32];
 
@@ -343,7 +343,7 @@ void UI_Annotationswindow::filter_edited(const QString text)
 
   len = strlen(filter_str);
 
-   if(invert_filter == 0)
+  if(invert_filter == 0)
   {
     for(i=0; i<sz; i++)
     {
@@ -356,9 +356,9 @@ void UI_Annotationswindow::filter_edited(const QString text)
 
         n = strlen(annot->annotation) - len + 1;
 
-        for(i=0; i<n; i++)
+        for(j=0; j<n; j++)
         {
-          if(!(strncmp(filter_str, annot->annotation + i, len)))
+          if(!(strncmp(filter_str, annot->annotation + j, len)))
           {
             annot->hided_in_list = 0;
 
@@ -383,9 +383,9 @@ void UI_Annotationswindow::filter_edited(const QString text)
 
         n = strlen(annot->annotation) - len + 1;
 
-        for(i=0; i<n; i++)
+        for(j=0; j<n; j++)
         {
-          if(!(strncmp(filter_str, annot->annotation + i, len)))
+          if(!(strncmp(filter_str, annot->annotation + j, len)))
           {
             annot->hided_in_list = 1;
 
