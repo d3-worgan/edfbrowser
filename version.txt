@@ -1,4 +1,11 @@
 
+ version 1.60      to be defined
+ --------------
+
+ - Fixed a bug that caused a freeze/lockup when using the annotationlist filter.
+
+
+
  version 1.60      September 16, 2017
  --------------
 
