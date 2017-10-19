@@ -1,5 +1,5 @@
 
- version 1.60      to be defined
+ version 1.61      to be defined
  --------------
 
  - Fixed a bug that caused a freeze/lockup when using the annotationlist filter.
