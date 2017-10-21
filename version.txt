@@ -4,6 +4,8 @@
 
  - Fixed a bug that caused a freeze/lockup when using the annotationlist filter.
 
+ - Added the possibility to filter annotations based on minimum and maximum interval time.
+
 
 
  version 1.60      September 16, 2017
