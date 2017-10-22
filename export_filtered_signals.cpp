@@ -916,60 +916,57 @@ void UI_ExportFilteredSignalsWindow::StartExport()
       {
         for(i=0; i<annots_per_datrec; i++)
         {
-          if(annot_cnt < annot_list_sz)
+          if(annot_cnt >= annot_list_sz)  break;
+
+          annot_ptr = edfplus_annotation_get_item(&new_annot_list, annot_cnt++);
+
+          len = snprintf(scratchpad, 256, "%+i.%07i",
+          (int)(annot_ptr->onset / TIME_DIMENSION),
+          (int)(annot_ptr->onset % TIME_DIMENSION));
+
+          for(j=0; j<7; j++)
           {
-            annot_ptr = edfplus_annotation_get_item(&new_annot_list, annot_cnt);
-
-            len = snprintf(scratchpad, 256, "%+i.%07i",
-            (int)(annot_ptr->onset / TIME_DIMENSION),
-            (int)(annot_ptr->onset % TIME_DIMENSION));
-
-            for(j=0; j<7; j++)
+            if(scratchpad[len - j - 1] != '0')
             {
-              if(scratchpad[len - j - 1] != '0')
-              {
-                break;
-              }
+              break;
             }
+          }
 
-            if(j)
+          if(j)
+          {
+            len -= j;
+
+            if(j == 7)
             {
-              len -= j;
-
-              if(j == 7)
-              {
-                len--;
-              }
+              len--;
             }
+          }
 
-            if(fwrite(scratchpad, len, 1, outputfile) != 1)
-            {
-              progress.reset();
-              showpopupmessage("Error", "Write error (5).");
-              goto END_4;
-            }
+          if(fwrite(scratchpad, len, 1, outputfile) != 1)
+          {
+            progress.reset();
+            showpopupmessage("Error", "Write error (5).");
+            goto END_4;
+          }
 
-            tallen += len;
+          tallen += len;
 
-            if(annot_ptr->duration[0]!=0)
-            {
-              fputc(21, outputfile);
-              tallen++;
-
-              tallen += fprintf(outputfile, "%s", annot_ptr->duration);
-            }
-
-            fputc(20, outputfile);
+          if(annot_ptr->duration[0]!=0)
+          {
+            fputc(21, outputfile);
             tallen++;
 
-            tallen += fprintf(outputfile, "%s", annot_ptr->annotation);
-
-            fputc(20, outputfile);
-            fputc(0, outputfile);
-            tallen += 2;
-
-            annot_cnt--;
+            tallen += fprintf(outputfile, "%s", annot_ptr->duration);
           }
+
+          fputc(20, outputfile);
+          tallen++;
+
+          tallen += fprintf(outputfile, "%s", annot_ptr->annotation);
+
+          fputc(20, outputfile);
+          fputc(0, outputfile);
+          tallen += 2;
         }
       }
 
