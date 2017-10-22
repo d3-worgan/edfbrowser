@@ -160,6 +160,7 @@
 #include "biox2edf.h"
 #include "plif_ecg_subtract_filter.h"
 #include "plif_ecg_subtract_filter_dialog.h"
+#include "export_filtered_signals.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -567,6 +568,7 @@ private slots:
   void convert_mit_to_edf();
   void convert_biox_to_edf();
   void video_process_error(QProcess::ProcessError);
+  void export_filtered_signals();
 //  void search_pattern();
 
 protected:

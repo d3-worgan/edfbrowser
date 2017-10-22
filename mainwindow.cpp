@@ -3217,6 +3217,12 @@ void UI_Mainwindow::export_ecg_rr_interval_to_ascii()
 }
 
 
+void UI_Mainwindow::export_filtered_signals()
+{
+  UI_ExportFilteredSignalsWindow filt_signalswdw(this);
+}
+
+
 void UI_Mainwindow::export_annotations()
 {
   if(!files_open)
