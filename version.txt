@@ -6,6 +6,9 @@
 
  - Added the possibility to filter annotations based on minimum and maximum interval time.
 
+ - Fixed a regression bug that could cause a crash when using the "reduce signals" tool
+   with an EDF+ file.
+
 
 
  version 1.60      September 16, 2017
