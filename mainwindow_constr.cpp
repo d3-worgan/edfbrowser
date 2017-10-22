@@ -177,7 +177,7 @@ UI_Mainwindow::UI_Mainwindow()
   export_annotations_var->format = 1;
   export_annotations_var->duration = 0;
 
-  average_period = 0.3;
+  average_period = 300;
 
   average_ratio = 0;
 

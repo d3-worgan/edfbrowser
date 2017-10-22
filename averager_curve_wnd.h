@@ -78,7 +78,7 @@ public:
                         int,
                         int,
                         char *,
-                        double);
+                        int);
 
   ~UI_AverageCurveWindow();
 
@@ -95,13 +95,13 @@ private:
       averagecurvedialognumber,
       avg_cnt,
       avg_trigger_position_ratio,
-      flywheel_value;
+      flywheel_value,
+      avg_period;
 
   double pagetime,
          *avgbuf,
          avg_max_value,
-         avg_min_value,
-         avg_period;
+         avg_min_value;
 
   long long avg_samples_on_screen;
 

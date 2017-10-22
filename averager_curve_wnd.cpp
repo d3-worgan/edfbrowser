@@ -41,7 +41,7 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
                                              int acnt,
                                              int trigger_position,
                                              char *annotation,
-                                             double avg__period)
+                                             int avg__period)
 {
   char str[1024];
 
@@ -464,7 +464,7 @@ void UI_AverageCurveWindow::export_edf(void)
   }
 
   edfwrite_annotation_latin1(edf_hdl,
-                             (avg_period * 10000.0) / (double)avg_trigger_position_ratio,
+                             (avg_period * 10) / avg_trigger_position_ratio,
                              -1,
                              avg_annotation);
 

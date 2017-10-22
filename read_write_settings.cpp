@@ -1213,7 +1213,9 @@ void UI_Mainwindow::read_general_settings()
       return;
     }
 
-    average_period = atof(result);
+    average_period = atoi(result);
+
+    if(average_period < 1)  average_period = 300;
 
     xml_go_up(xml_hdl);
   }
@@ -1994,7 +1996,7 @@ void UI_Mainwindow::write_settings()
 
     fprintf(cfgfile, "    <mousewheelsens>%i</mousewheelsens>\n", mousewheelsens);
 
-    fprintf(cfgfile, "    <average_period>%f</average_period>\n", average_period);
+    fprintf(cfgfile, "    <average_period>%i</average_period>\n", average_period);
 
     fprintf(cfgfile, "    <average_ratio>%i</average_ratio>\n", average_ratio);
 

@@ -118,7 +118,7 @@ private:
           *hide_all_BS_triggers_act,
           *unhide_all_NK_triggers_act,
           *unhide_all_BS_triggers_act,
-          *show_more_act;
+          *filt_ival_time_act;
 
 private slots:
 
@@ -138,7 +138,7 @@ private slots:
   void hide_all_BS_triggers(bool);
   void unhide_all_NK_triggers(bool);
   void unhide_all_BS_triggers(bool);
-  void show_more(bool);
+  void filt_ival_time(bool);
 };
 
 

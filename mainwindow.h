@@ -224,7 +224,8 @@ public:
       timescale_doubler,
       viewtime_indicator_type,
       mainwindow_title_type,
-      linear_interpol;
+      linear_interpol,
+      average_period;
 
   long long pagetime,
             maxfilesize_to_readin_annotations;
@@ -242,7 +243,6 @@ public:
 
   double pixelsizefactor,
          x_pixelsizefactor,
-         average_period,
          default_amplitude;
 
   struct{

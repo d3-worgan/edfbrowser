@@ -67,7 +67,7 @@ class UI_AnnotFilterWindow : public QObject
   Q_OBJECT
 
 public:
-  UI_AnnotFilterWindow(QWidget *, struct annotationblock *, struct annot_filter_struct *);
+  UI_AnnotFilterWindow(QWidget *, struct annotationblock *, struct annot_filter_struct *, int);
 
   UI_Mainwindow *mainwindow;
 
@@ -92,6 +92,8 @@ QSpinBox *t1_spinbox,
 QCheckBox *hide_in_list_checkbox,
           *hide_other_checkbox,
           *invert_checkbox;
+
+int file_num;
 
 char sel_annot_str[MAX_ANNOTATION_LEN + 1];
 

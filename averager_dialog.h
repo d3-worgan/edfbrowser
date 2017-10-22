@@ -46,7 +46,7 @@
 #include <QList>
 #include <QTime>
 #include <QTimeEdit>
-#include <QDoubleSpinBox>
+#include <QSpinBox>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -69,7 +69,7 @@ class UI_AveragerWindow : public QObject
   Q_OBJECT
 
 public:
-  UI_AveragerWindow(QWidget *, int);
+  UI_AveragerWindow(QWidget *, int, int);
 
   ~UI_AveragerWindow();
 
@@ -101,11 +101,12 @@ QTimeEdit    *timeEdit1,
 QTime        time1,
              time2;
 
-QDoubleSpinBox *avg_periodspinbox;
+QSpinBox *avg_periodspinbox;
 
 char annot_str[MAX_ANNOTATION_LEN + 1];
 
-int signal_nr;
+int signal_nr,
+    file_num;
 
 double *avgbuf;
 
