@@ -118,6 +118,10 @@ UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
   pushButton1 = new QPushButton(myobjectDialog);
   pushButton1->setGeometry(20, 528, 100, 25);
   pushButton1->setText("Select File");
+  if(mainwindow->files_open < 2)
+  {
+    pushButton1->setEnabled(false);
+  }
 
   pushButton2 = new QPushButton(myobjectDialog);
   pushButton2->setGeometry(575, 528, 100, 25);
@@ -165,6 +169,11 @@ UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
   file_num = -1;
 
   inputpath[0] = 0;
+
+  if(mainwindow->files_open == 1)
+  {
+    SelectFileButton();
+  }
 
   myobjectDialog->exec();
 }
@@ -426,11 +435,18 @@ void UI_ReduceSignalsWindow::SelectFileButton()
   label4->setEnabled(false);
   label5->setEnabled(false);
 
-  UI_activeFileChooserWindow afchooser(&file_num, mainwindow);
-
-  if(file_num < 0)
+  if(mainwindow->files_open > 1)
   {
-    return;
+    UI_activeFileChooserWindow afchooser(&file_num, mainwindow);
+
+    if(file_num < 0)
+    {
+      return;
+    }
+  }
+  else
+  {
+    file_num = 0;
   }
 
   edfhdr = mainwindow->edfheaderlist[file_num];

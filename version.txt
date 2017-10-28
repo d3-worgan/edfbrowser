@@ -9,6 +9,8 @@
  - Fixed a regression bug that could cause a crash when using the "reduce signals" tool
    with an EDF+ file.
 
+ - Added a tool to export filtered and or derivated signals to a new file.
+
 
 
  version 1.60      September 16, 2017

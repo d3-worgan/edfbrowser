@@ -165,27 +165,27 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_start)
 
   if((datarecord_start < 0) || (datarecord_start >= hdr->datarecords))
   {
-    return(-1);
+    return(-2);
   }
 
   if(datarecord_cnt > (hdr->datarecords - datarecord_start))
   {
-    return(-1);
+    return(-3);
   }
 
   if(fseeko(inputfile, ((long long)hdr->hdrsize) + (((long long)datarecord_start) * ((long long) hdr->recordsize)), SEEK_SET) == -1LL)
   {
-    return(-1);
+    return(-4);
   }
 
   if(fread(readbuf, hdr->recordsize * datarecord_cnt, 1, inputfile) != 1)
   {
-    return(-1);
+    return(-5);
   }
 
   if((readbuf == NULL) || (processed_samples_buf == NULL))
   {
-    return(-1);
+    return(-6);
   }
 
   for(s=0; s<total_samples; s++)

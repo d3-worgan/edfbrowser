@@ -107,8 +107,7 @@ QTreeView    *tree;
 
 QStandardItemModel *t_model;
 
-int  signalslist[MAXSIGNALS],
-     file_num;
+int  file_num;
 
 char  inputpath[MAX_PATH_LENGTH],
       outputpath[MAX_PATH_LENGTH],
@@ -118,8 +117,6 @@ FILE *inputfile,
      *outputfile;
 
 struct edfhdrblock *edfhdr;
-
-struct ravg_filter_settings *filterlist[MAXSIGNALS][4];
 
 void showpopupmessage(const char *, const char *);
 

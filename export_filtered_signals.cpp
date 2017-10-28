@@ -101,6 +101,10 @@ UI_ExportFilteredSignalsWindow::UI_ExportFilteredSignalsWindow(QWidget *w_parent
   pushButton1 = new QPushButton(myobjectDialog);
   pushButton1->setGeometry(20, 528, 100, 25);
   pushButton1->setText("Select File");
+  if(mainwindow->files_open < 2)
+  {
+    pushButton1->setEnabled(false);
+  }
 
   pushButton2 = new QPushButton(myobjectDialog);
   pushButton2->setGeometry(575, 528, 100, 25);
@@ -125,6 +129,11 @@ UI_ExportFilteredSignalsWindow::UI_ExportFilteredSignalsWindow(QWidget *w_parent
   file_num = -1;
 
   inputpath[0] = 0;
+
+  if(mainwindow->files_open == 1)
+  {
+    SelectFileButton();
+  }
 
   myobjectDialog->exec();
 }
@@ -269,14 +278,12 @@ void UI_ExportFilteredSignalsWindow::radioButton2Toggled(bool checked)
 
 void UI_ExportFilteredSignalsWindow::SelectFileButton()
 {
-  int i, j,
-      days;
+  int days;
 
   long long seconds,
             milliSec;
 
-  char txt_string[2048],
-       str[256];
+  char txt_string[2048];
 
   label1->clear();
   label4->clear();
@@ -302,11 +309,18 @@ void UI_ExportFilteredSignalsWindow::SelectFileButton()
   label4->setEnabled(false);
   label5->setEnabled(false);
 
-  UI_activeFileChooserWindow afchooser(&file_num, mainwindow);
-
-  if(file_num < 0)
+  if(mainwindow->files_open > 1)
   {
-    return;
+    UI_activeFileChooserWindow afchooser(&file_num, mainwindow);
+
+    if(file_num < 0)
+    {
+      return;
+    }
+  }
+  else
+  {
+    file_num = 0;
   }
 
   edfhdr = mainwindow->edfheaderlist[file_num];
@@ -382,9 +396,10 @@ void UI_ExportFilteredSignalsWindow::SelectFileButton()
 
 void UI_ExportFilteredSignalsWindow::StartExport()
 {
-  int i, j, k, n,
+  int i, j, k,
       new_edfsignals,
       datarecords=0,
+      start_datarecord=0,
       annot_smp_per_record,
       annot_recordsize,
       timestamp_digits=0,
@@ -395,25 +410,27 @@ void UI_ExportFilteredSignalsWindow::StartExport()
       len,
       annots_per_datrec=0,
       smplrt,
-      tmp,
-      val,
       progress_steps,
       datrecs_processed,
       annot_list_sz=0,
-      smp_per_record[MAXSIGNALS];
+      smp_per_record[MAXSIGNALS],
+      signalslist[MAXSIGNALS],
+      digmin,
+      digmax,
+      value;
 
-  char *readbuf=NULL,
-       scratchpad[256];
+  char scratchpad[256];
 
-  double *filtered_blockread_buf[MAXSIGNALS];
+  double *filtered_blockread_buf[MAXSIGNALS],
+         bitvalue,
+         phys_offset;
 
   long long new_starttime,
             time_diff,
             onset_diff,
             taltime,
             l_temp,
-            endtime=0,
-            l_tmp;
+            endtime=0;
 
   struct date_time_struct dts;
 
@@ -422,15 +439,9 @@ void UI_ExportFilteredSignalsWindow::StartExport()
 
   struct annotationblock *annot_ptr=NULL;
 
-  union {
-          unsigned int one;
-          signed int one_signed;
-          unsigned short two[2];
-          signed short two_signed[2];
-          unsigned char four[4];
-        } var;
-
   FilteredBlockReadClass *block_reader[MAXSIGNALS];
+
+  struct signalcompblock *signalcomp[MAXSIGNALS];
 
   for(i=0; i<MAXSIGNALS; i++)
   {
@@ -462,8 +473,6 @@ void UI_ExportFilteredSignalsWindow::StartExport()
     return;
   }
 
-  new_edfsignals = 0;
-
   annot_smp_per_record = 0;
 
   time_diff = (long long)(spinBox1->value() - 1) * edfhdr->long_data_record_duration;
@@ -472,13 +481,17 @@ void UI_ExportFilteredSignalsWindow::StartExport()
 
   endtime = (long long)(spinBox2->value() - (spinBox1->value() - 1)) * edfhdr->long_data_record_duration + taltime;
 
-  for(i=0; i<mainwindow->signalcomps; i++)
+  for(i=0, new_edfsignals=0; i<mainwindow->signalcomps; i++)
   {
     if(mainwindow->signalcomp[i]->filenum != file_num)  continue;
 
+    signalcomp[new_edfsignals] = mainwindow->signalcomp[i];
+
+    signalslist[new_edfsignals] = signalcomp[new_edfsignals]->edfsignal[0];
+
     block_reader[new_edfsignals] = new FilteredBlockReadClass;
 
-    filtered_blockread_buf[new_edfsignals] = block_reader[new_edfsignals]->init_signalcomp(mainwindow->signalcomp[i], 1, 0);
+    filtered_blockread_buf[new_edfsignals] = block_reader[new_edfsignals]->init_signalcomp(signalcomp[new_edfsignals], 1, 0);
 
     smp_per_record[new_edfsignals] = block_reader[new_edfsignals]->samples_in_buf();
 
@@ -491,15 +504,9 @@ void UI_ExportFilteredSignalsWindow::StartExport()
     goto END_1;
   }
 
-  for(i=0; i<edfhdr->edfsignals; i++)
-  {
-    if(!edfhdr->edfparam[i].annotation)
-    {
-      signalslist[new_edfsignals++] = i;
-    }
-  }
+  start_datarecord = spinBox1->value() - 1;
 
-  datarecords = spinBox2->value() - spinBox1->value() + 1;
+  datarecords = spinBox2->value() - start_datarecord;
 
   if(edfhdr->edfplus || edfhdr->bdfplus)
   {
@@ -601,12 +608,6 @@ void UI_ExportFilteredSignalsWindow::StartExport()
     annot_recordsize = 0;
   }
 
-  readbuf = (char *)malloc(edfhdr->recordsize);
-  if(readbuf==NULL)
-  {
-    showpopupmessage("Error", "Malloc error, (readbuf).");
-    goto END_2;
-  }
 ///////////////////////////////////////////////////////////////////
 
   outputpath[0] = 0;
@@ -738,7 +739,10 @@ void UI_ExportFilteredSignalsWindow::StartExport()
 
   for(i=0; i<new_edfsignals; i++)
   {
-    fprintf(outputfile, "%s", edfhdr->edfparam[signalslist[i]].label);
+    snprintf(scratchpad, 16, "%s", signalcomp[i]->signallabel);
+    strcat(scratchpad, "                ");
+    scratchpad[16] = 0;
+    fprintf(outputfile, "%s", scratchpad);
   }
   if(edfhdr->edfplus)
   {
@@ -865,8 +869,6 @@ void UI_ExportFilteredSignalsWindow::StartExport()
     progress_steps = 1;
   }
 
-  fseeko(inputfile, (long long)edfhdr->hdrsize + ((long long)(spinBox1->value() - 1) * (long long)edfhdr->recordsize), SEEK_SET);
-
   for(datrecs_processed=0; datrecs_processed<datarecords; datrecs_processed++)
   {
     if(!(datrecs_processed % progress_steps))
@@ -881,47 +883,56 @@ void UI_ExportFilteredSignalsWindow::StartExport()
       }
     }
 
-    if(fread(readbuf, edfhdr->recordsize, 1, inputfile) != 1)
+    for(i=0; i<new_edfsignals; i++)
     {
-      progress.reset();
-      showpopupmessage("Error", "Read error (2).");
-      goto END_4;
-    }
-
-    if(edfhdr->edf)
-    {
-      for(i=0; i<new_edfsignals; i++)
+      if(block_reader[i]->process_signalcomp(start_datarecord))
       {
-        smplrt = edfhdr->edfparam[signalslist[i]].smp_per_record;
-
-        for(j=0; j<smplrt; j++)
-        {
-          fputc(readbuf[edfhdr->edfparam[signalslist[i]].buf_offset + (j * 2)], outputfile);
-          if(fputc(readbuf[edfhdr->edfparam[signalslist[i]].buf_offset + (j * 2) + 1], outputfile)==EOF)
-          {
-            progress.reset();
-            showpopupmessage("Error", "Write error (4).");
-            goto END_4;
-          }
-        }
+        progress.reset();
+        showpopupmessage("Error", "Read error (2).");
+        goto END_4;
       }
     }
-    else
-    {
-      for(i=0; i<new_edfsignals; i++)
-      {
-        smplrt = edfhdr->edfparam[signalslist[i]].smp_per_record;
 
-        for(j=0; j<smplrt; j++)
+    start_datarecord++;
+
+    for(i=0; i<new_edfsignals; i++)
+    {
+      digmax = edfhdr->edfparam[signalslist[i]].dig_max;
+
+      digmin = edfhdr->edfparam[signalslist[i]].dig_min;
+
+      bitvalue = edfhdr->edfparam[signalslist[i]].bitvalue;
+
+      phys_offset = edfhdr->edfparam[signalslist[i]].offset;
+
+      smplrt = smp_per_record[i];
+
+      for(j=0; j<smplrt; j++)
+      {
+        value = (filtered_blockread_buf[i][j] / bitvalue) - phys_offset;
+
+        if(value>digmax)
         {
-          fputc(readbuf[edfhdr->edfparam[signalslist[i]].buf_offset + (j * 3)], outputfile);
-          fputc(readbuf[edfhdr->edfparam[signalslist[i]].buf_offset + (j * 3) + 1], outputfile);
-          if(fputc(readbuf[edfhdr->edfparam[signalslist[i]].buf_offset + (j * 3) + 2], outputfile)==EOF)
-          {
-            progress.reset();
-            showpopupmessage("Error", "Write error (4).");
-            goto END_4;
-          }
+          value = digmax;
+        }
+
+        if(value<digmin)
+        {
+          value = digmin;
+        }
+
+        fputc(value&0xff, outputfile);
+
+        if(fputc((value>>8)&0xff, outputfile)==EOF)
+        {
+          progress.reset();
+          showpopupmessage("Error", "Write error (4).");
+          goto END_4;
+        }
+
+        if(edfhdr->bdf)
+        {
+          fputc((value>>16)&0xff, outputfile);
         }
       }
     }
@@ -1031,13 +1042,7 @@ END_4:
 
 END_3:
 
-END_2:
-
-  if(readbuf != NULL)
-  {
-    free(readbuf);
-    readbuf = NULL;
-  }
+//END_2:
 
 END_1:
 
