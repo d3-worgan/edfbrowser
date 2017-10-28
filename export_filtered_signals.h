@@ -49,6 +49,9 @@
 #include <QProgressDialog>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QTreeView>
+#include <QStandardItemModel>
+#include <QStandardItem>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -62,6 +65,7 @@
 #include "active_file_chooser.h"
 #include "edf_annot_list.h"
 #include "edf_helper.h"
+#include "filteredblockread.h"
 
 
 
@@ -99,6 +103,10 @@ QRadioButton *radioButton1,
 
 QDialog      *myobjectDialog;
 
+QTreeView    *tree;
+
+QStandardItemModel *t_model;
+
 int  signalslist[MAXSIGNALS],
      file_num;
 
@@ -123,6 +131,7 @@ void spinBox1changed(int);
 void spinBox2changed(int);
 void radioButton1Toggled(bool);
 void radioButton2Toggled(bool);
+void populate_tree_view();
 
 };
 
