@@ -63,18 +63,52 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
 
   original_sensitivity = (double *)calloc(1, sizeof(double[MAXSIGNALS]));
 
-  backgroundcolor = Qt::gray;
-  small_ruler_color = Qt::black;
-  big_ruler_color = Qt::darkGray;
-  mouse_rect_color = Qt::black;
-  text_color = Qt::black;
-  signal_color = Qt::blue;
-  baseline_color = Qt::darkGray;
-  crosshair_1.color = Qt::red;
-  crosshair_2.color = Qt::cyan;
-  floating_ruler_color = Qt::red;
-  annot_marker_color = Qt::white;
-  annot_duration_color = QColor(0, 127, 127, 32);
+////////////////////////////////////////////////////////
+
+  backgroundcolor.setRed(64);
+  backgroundcolor.setGreen(64);
+  backgroundcolor.setBlue(64);
+
+  small_ruler_color.setRed(255);
+  small_ruler_color.setGreen(255);
+  small_ruler_color.setBlue(255);
+
+  big_ruler_color.setRed(128);
+  big_ruler_color.setGreen(128);
+  big_ruler_color.setBlue(128);
+
+  mouse_rect_color.setRed(255);
+  mouse_rect_color.setGreen(255);
+  mouse_rect_color.setBlue(255);
+
+  text_color.setRed(255);
+  text_color.setGreen(255);
+  text_color.setBlue(255);
+
+  baseline_color.setRed(128);
+  baseline_color.setGreen(128);
+  baseline_color.setBlue(128);
+
+  annot_marker_color.setRed(255);
+  annot_marker_color.setGreen(255);
+  annot_marker_color.setBlue(255);
+
+  annot_duration_color.setRed(0);
+  annot_duration_color.setGreen(127);
+  annot_duration_color.setBlue(127);
+  annot_duration_color.setAlpha(32);
+
+  signal_color = 12;
+
+  floating_ruler_color = 10;
+
+  blackwhite_printing = 1;
+
+  crosshair_1.color = 7;
+
+  crosshair_2.color = 10;
+
+/////////////////////////////////////////////////////////
 
   crosshair_1.active = 0;
   crosshair_2.active = 0;

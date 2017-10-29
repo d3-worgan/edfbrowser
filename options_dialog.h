@@ -61,6 +61,7 @@
 #include <QGridLayout>
 #include <QDesktopWidget>
 #include <QFileDialog>
+#include <QGroupBox>
 
 #include "global.h"
 #include "mainwindow.h"
@@ -106,7 +107,7 @@ QVBoxLayout    *mainLayout;
 QHBoxLayout    *horLayout;
 
 QPushButton    *CloseButton,
-               *DefaultButton,
+               *colorSchema_Blue_on_Gray_Button,
                *colorSchema_NK_Button,
                *colorSchema_Dark_Button,
                *ApplyButton,
@@ -199,6 +200,8 @@ QRadioButton   *radiobutton1,
 
 QLineEdit      *lineEdit3_1;
 
+QGroupBox      *groupbox1;
+
 void update_interface(void);
 
 private slots:
@@ -226,7 +229,6 @@ void checkbox4_3Clicked(int);
 void checkbox4_4Clicked(int);
 void checkbox4_5Clicked(int);
 void checkbox4_6Clicked(int);
-void DefaultButtonClicked();
 void ApplyButtonClicked();
 void colorBarButtonClicked(SpecialButton *);
 void DefaultButton2Clicked();
@@ -248,6 +250,7 @@ void saveColorSchemaButtonClicked();
 void loadColorSchemaButtonClicked();
 void loadColorSchema_NK();
 void loadColorSchema_Dark();
+void loadColorSchema_blue_gray();
 void dspinbox4_4ValueChanged(double);
 
 };
