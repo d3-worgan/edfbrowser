@@ -309,6 +309,8 @@ void UI_ExportFilteredSignalsWindow::SelectFileButton()
   label4->setEnabled(false);
   label5->setEnabled(false);
 
+  t_model->clear();
+
   if(mainwindow->files_open > 1)
   {
     UI_activeFileChooserWindow afchooser(&file_num, mainwindow);
