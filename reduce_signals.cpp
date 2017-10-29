@@ -395,8 +395,7 @@ void UI_ReduceSignalsWindow::Set_SRdivider_all_signals()
 
 void UI_ReduceSignalsWindow::SelectFileButton()
 {
-  int i, j,
-      days;
+  int i, j, k, days, found;
 
   long long seconds,
             milliSec;
@@ -514,7 +513,6 @@ void UI_ReduceSignalsWindow::SelectFileButton()
       {
         if(!(edfhdr->edfparam[i].smp_per_record % j))
         {
-//          snprintf(str, 256, "%i  (%f", j, ((double)(edfhdr->edfparam[i].smp_per_record / j)) / edfhdr->data_record_duration);
           snprintf(str, 256, "%i  (", j);
           convert_to_metric_suffix(str + strlen(str),
                                    ((double)(edfhdr->edfparam[i].smp_per_record / j)) / edfhdr->data_record_duration,
@@ -524,6 +522,35 @@ void UI_ReduceSignalsWindow::SelectFileButton()
           ((QComboBox *)(SignalsTablewidget->cellWidget(i, 1)))->addItem(str, QVariant(j));
         }
       }
+    }
+  }
+
+  for(i=0, found=0; i<edfhdr->edfsignals; i++)
+  {
+    if(edfhdr->edfparam[i].annotation)  continue;
+
+    for(j=0; j<mainwindow->signalcomps; j++)
+    {
+      for(k=0; k<mainwindow->signalcomp[j]->num_of_signals; k++)
+      {
+        if(mainwindow->signalcomp[j]->edfsignal[k] == i)
+        {
+          found = 1;
+
+          break;
+        }
+      }
+
+      if(found)  break;
+    }
+
+    if(found)
+    {
+      found = 0;
+    }
+    else
+    {
+      ((QCheckBox *)(SignalsTablewidget->cellWidget(i, 0)))->setCheckState(Qt::Unchecked);
     }
   }
 
