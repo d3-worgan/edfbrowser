@@ -95,7 +95,7 @@ openSUSE: sudo zypper install -t pattern devel_basis
 #                                                                                           #
 # This will not mess with your system libraries. The new compiled libraries will be stored  #
 #                                                                                           #
-# in a new and separate directory: /usr/local/Qt-5.9.1                                      #
+# in a new and separate directory: /usr/local/Qt-5.9.2                                      #
 #                                                                                           #
 # It will not interfere with other Qt programs.                                             #
 #                                                                                           #
