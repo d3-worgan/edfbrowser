@@ -1624,6 +1624,86 @@ void UI_Mainwindow::read_general_settings()
     xml_go_up(xml_hdl);
   }
 
+  if(!(xml_goto_nth_element_inside(xml_hdl, "annotfilter_var", 0)))
+  {
+    if(!(xml_goto_nth_element_inside(xml_hdl, "tmin", 0)))
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        xml_close(xml_hdl);
+        return;
+      }
+
+      annot_filter->tmin = atoi(result);
+      if(annot_filter->tmin < 1)  annot_filter->tmin = 1;
+      if(annot_filter->tmin > 500000)  annot_filter->tmin = 500000;
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(!(xml_goto_nth_element_inside(xml_hdl, "tmax", 0)))
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        xml_close(xml_hdl);
+        return;
+      }
+
+      annot_filter->tmax = atoi(result);
+      if(annot_filter->tmax < 1)  annot_filter->tmax = 1;
+      if(annot_filter->tmax > 500000)  annot_filter->tmax = 500000;
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(!(xml_goto_nth_element_inside(xml_hdl, "invert", 0)))
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        xml_close(xml_hdl);
+        return;
+      }
+
+      annot_filter->invert = atoi(result);
+      if(annot_filter->invert < 0)  annot_filter->invert = 0;
+      if(annot_filter->invert > 1)  annot_filter->invert = 1;
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(!(xml_goto_nth_element_inside(xml_hdl, "hide_other", 0)))
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        xml_close(xml_hdl);
+        return;
+      }
+
+      annot_filter->hide_other = atoi(result);
+      if(annot_filter->hide_other < 0)  annot_filter->hide_other = 0;
+      if(annot_filter->hide_other > 1)  annot_filter->hide_other = 1;
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(!(xml_goto_nth_element_inside(xml_hdl, "hide_in_list_only", 0)))
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        xml_close(xml_hdl);
+        return;
+      }
+
+      annot_filter->hide_in_list_only = atoi(result);
+      if(annot_filter->hide_in_list_only < 0)  annot_filter->hide_in_list_only = 0;
+      if(annot_filter->hide_in_list_only > 1)  annot_filter->hide_in_list_only = 1;
+
+      xml_go_up(xml_hdl);
+    }
+
+    xml_go_up(xml_hdl);
+  }
+
   if(!(xml_goto_nth_element_inside(xml_hdl, "check_for_updates", 0)))
   {
     if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
@@ -2049,6 +2129,20 @@ void UI_Mainwindow::write_settings()
     fprintf(cfgfile, "      <phys_dim>%s</phys_dim>\n", str);
 
     fprintf(cfgfile, "    </raw2edf_var>\n");
+
+    fprintf(cfgfile, "    <annotfilter_var>\n");
+
+    fprintf(cfgfile, "      <tmin>%i</tmin>\n", annot_filter->tmin);
+
+    fprintf(cfgfile, "      <tmax>%i</tmax>\n", annot_filter->tmax);
+
+    fprintf(cfgfile, "      <invert>%i</invert>\n", annot_filter->invert);
+
+    fprintf(cfgfile, "      <hide_other>%i</hide_other>\n", annot_filter->hide_other);
+
+    fprintf(cfgfile, "      <hide_in_list_only>%i</hide_in_list_only>\n", annot_filter->hide_in_list_only);
+
+    fprintf(cfgfile, "    </annotfilter_var>\n");
 
     fprintf(cfgfile, "    <check_for_updates>%i</check_for_updates>\n", check_for_updates);
 

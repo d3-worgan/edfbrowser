@@ -212,6 +212,13 @@ UI_Mainwindow::UI_Mainwindow()
   raw2edf_var.skipbytes = 1;
   strcpy(raw2edf_var.phys_dim, "uV");
 
+  annot_filter = (struct annot_filter_struct *)calloc(1, sizeof(struct annot_filter_struct));
+  annot_filter->tmin = 1000;
+  annot_filter->tmax = 2000;
+  annot_filter->invert = 0;
+  annot_filter->hide_other = 1;
+  annot_filter->hide_in_list_only = 1;
+
   read_general_settings();
 
   maincurve = new ViewCurve(this);
@@ -231,13 +238,6 @@ UI_Mainwindow::UI_Mainwindow()
 
   video_player = (struct video_player_struct *)calloc(1, sizeof(struct video_player_struct));
   video_player->poll_timer = 100;
-
-  annot_filter = (struct annot_filter_struct *)calloc(1, sizeof(struct annot_filter_struct));
-  annot_filter->tmin = 1000;
-  annot_filter->tmax = 2000;
-  annot_filter->invert = 0;
-  annot_filter->hide_other = 1;
-  annot_filter->hide_in_list_only = 1;
 
   live_stream_timer = new QTimer;
   live_stream_timer->setSingleShot(true);

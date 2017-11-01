@@ -152,7 +152,7 @@ void UI_AnnotFilterWindow::apply_filter()
       sz,
       is_set=0,
       t1_val,
-      t2_val;;
+      t2_val;
 
   long long t1,
             t_diff,
