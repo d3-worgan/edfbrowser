@@ -11,6 +11,8 @@
 
  - Added a tool to export filtered and or derivated signals to a new file.
 
+ - Added the possibility to view the Heart Rate Variability using the annotation list.
+
 
 
  version 1.60      September 16, 2017

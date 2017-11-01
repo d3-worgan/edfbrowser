@@ -102,6 +102,26 @@ int edfplus_annotation_size(struct annotation_list *list)
 }
 
 
+int edfplus_annotation_cnt(struct annotation_list *list, struct annotationblock *annot)
+{
+  int i, n=0;
+
+  struct annotationblock *tmp_annot;
+
+  for(i=0; i<list->sz; i++)
+  {
+    tmp_annot = &list->items[list->idx[i]];
+
+    if(!strcmp(tmp_annot->annotation, annot->annotation))
+    {
+      if(!tmp_annot->hided_in_list)  n++;
+    }
+  }
+
+  return n;
+}
+
+
 void edfplus_annotation_empty_list(struct annotation_list *list)
 {
   if(list == NULL)  return;

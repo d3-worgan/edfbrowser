@@ -128,6 +128,10 @@ UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, struct annotationb
   ApplyButton->setGeometry(20, 355, 100, 25);
   ApplyButton->setText("Apply");
 
+  UndoButton = new QPushButton(annot_filter_dialog);
+  UndoButton->setGeometry(165, 355, 100, 25);
+  UndoButton->setText("Undo");
+
   CloseButton = new QPushButton(annot_filter_dialog);
   CloseButton->setGeometry(310, 355, 100, 25);
   CloseButton->setText("Close");
@@ -139,10 +143,34 @@ UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, struct annotationb
 
   annotNameLabel->setText(sel_annot_str);
 
-  QObject::connect(CloseButton,           SIGNAL(clicked()),            annot_filter_dialog, SLOT(close()));
-  QObject::connect(ApplyButton,           SIGNAL(clicked()),            this,                SLOT(apply_filter()));
+  QObject::connect(CloseButton, SIGNAL(clicked()), annot_filter_dialog, SLOT(close()));
+  QObject::connect(ApplyButton, SIGNAL(clicked()), this,                SLOT(apply_filter()));
+  QObject::connect(UndoButton,  SIGNAL(clicked()), this,                SLOT(undo_filter()));
 
   annot_filter_dialog->exec();
+}
+
+
+void UI_AnnotFilterWindow::undo_filter()
+{
+  int i, sz;
+
+  struct annotationblock *annot;
+
+  sz = edfplus_annotation_size(annot_list);
+
+  for(i=0; i<sz; i++)
+  {
+    annot = edfplus_annotation_get_item(annot_list, i);
+
+    annot->hided_in_list = 0;
+
+    annot->hided = 0;
+  }
+
+  annots_dock->updateList();
+
+  mainwindow->maincurve->update();
 }
 
 

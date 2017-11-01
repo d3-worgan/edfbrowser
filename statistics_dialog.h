@@ -51,6 +51,7 @@
 #include "global.h"
 #include "ecg_filter.h"
 #include "signalcurve.h"
+#include "edf_annot_list.h"
 
 
 
@@ -61,7 +62,10 @@ class UI_StatisticWindow : public QObject
 
 public:
 
-UI_StatisticWindow(struct signalcompblock *, long long);
+UI_StatisticWindow(struct signalcompblock *,
+                   long long,
+                   struct annotation_list *annot_list=NULL,
+                   struct annotationblock *annot=NULL);
 
 private:
 

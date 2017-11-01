@@ -82,7 +82,8 @@ QLabel      *annotLabel,
             *t2Label;
 
 QPushButton *CloseButton,
-            *ApplyButton;
+            *ApplyButton,
+            *UndoButton;
 
 QListWidget *list;
 
@@ -108,6 +109,7 @@ UI_Annotationswindow *annots_dock;
 private slots:
 
 void apply_filter();
+void undo_filter();
 
 };
 

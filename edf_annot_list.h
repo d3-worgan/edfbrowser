@@ -67,6 +67,7 @@ struct annotation_list{
 
 int edfplus_annotation_add_item(struct annotation_list *, struct annotationblock);
 int edfplus_annotation_size(struct annotation_list *);
+int edfplus_annotation_cnt(struct annotation_list *, struct annotationblock *);
 void edfplus_annotation_empty_list(struct annotation_list *);
 void edfplus_annotation_remove_item(struct annotation_list *, int);
 struct annotationblock * edfplus_annotation_get_item(struct annotation_list *, int);

@@ -101,6 +101,7 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   unhide_all_NK_triggers_act = new QAction("Unhide all Nihon Kohden triggers", list);
   unhide_all_BS_triggers_act = new QAction("Unhide all Biosemi triggers", list);
   filt_ival_time_act = new QAction("Filter Interval Time", list);
+  show_stats_act = new QAction("Heart Rate Variability", list);
 
   list->setContextMenuPolicy(Qt::ActionsContextMenu);
   list->insertAction(NULL, show_between_act);
@@ -115,6 +116,7 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   list->insertAction(NULL, hide_all_BS_triggers_act);
   list->insertAction(NULL, unhide_all_BS_triggers_act);
   list->insertAction(NULL, filt_ival_time_act);
+  list->insertAction(NULL, show_stats_act);
 
   h_layout = new QHBoxLayout;
   h_layout->addWidget(checkbox1);
@@ -147,7 +149,40 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   QObject::connect(unhide_all_NK_triggers_act, SIGNAL(triggered(bool)),                this, SLOT(unhide_all_NK_triggers(bool)));
   QObject::connect(unhide_all_BS_triggers_act, SIGNAL(triggered(bool)),                this, SLOT(unhide_all_BS_triggers(bool)));
   QObject::connect(filt_ival_time_act,         SIGNAL(triggered(bool)),                this, SLOT(filt_ival_time(bool)));
+  QObject::connect(show_stats_act,             SIGNAL(triggered(bool)),                this, SLOT(show_stats(bool)));
   QObject::connect(lineedit1,                  SIGNAL(textEdited(const QString)),      this, SLOT(filter_edited(const QString)));
+}
+
+
+void UI_Annotationswindow::show_stats(bool)
+{
+  struct annotation_list *annot_list;
+
+  struct annotationblock *annot;
+
+  if(mainwindow->files_open < 1)
+  {
+    return;
+  }
+
+  if(mainwindow->annot_editor_active)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Close the annotation editor and try again.");
+    messagewindow.exec();
+
+    return;
+  }
+
+  if(list->count() < 1)
+  {
+    return;
+  }
+
+  annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
+
+  annot = edfplus_annotation_get_item_visible_only(annot_list, list->currentRow());
+
+  UI_StatisticWindow stats_wndw(NULL, 0LL, annot_list, annot);
 }
 
 

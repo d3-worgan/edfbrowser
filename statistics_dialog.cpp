@@ -31,15 +31,29 @@
 #include "statistics_dialog.h"
 
 
+#define STAT_JOB_SRC_SIGNAL 0
+#define STAT_JOB_SRC_ECG    1
+#define STAT_JOB_SRC_ANNOT  2
 
-UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long long pagetime)
+#define BEAT_IVAL_SIZE   262144
+
+
+
+
+UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
+                                       long long pagetime,
+                                       struct annotation_list *annot_list,
+                                       struct annotationblock *annot)
 {
   int i,
       tmp,
+      NN20,
+      pNN20,
       NN50,
-      pNN50;
+      pNN50,
+      job_src=0;
 
-  char stat_str[2048];
+  char stat_str[2048]={""};
 
   double d_tmp,
          average_bpm,
@@ -48,7 +62,11 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
          sdnn_rr,
          *buf_bpm,
          rmssd_rr,
-         *beat_interval_list;
+         *beat_interval_list=NULL;
+
+  long long l_tmp=0;
+
+  struct annotationblock *tmp_annot;
 
   StatDialog = new QDialog;
   StatDialog->setWindowTitle("Statistics");
@@ -57,7 +75,25 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
   StatDialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
   StatDialog->setWindowIcon(QIcon(":/images/edf.png"));
 
-  if(signalcomp->ecg_filter != NULL)
+  if(signalcomp != NULL)
+  {
+    if(signalcomp->ecg_filter != NULL)
+    {
+      job_src = STAT_JOB_SRC_ECG;
+    }
+    else
+    {
+      job_src = STAT_JOB_SRC_SIGNAL;
+    }
+  }
+  else
+  {
+    job_src = STAT_JOB_SRC_ANNOT;
+
+    beat_interval_list = (double *)malloc(sizeof(double) * BEAT_IVAL_SIZE);
+  }
+
+  if((job_src == STAT_JOB_SRC_ECG) || (job_src == STAT_JOB_SRC_ANNOT))
   {
     StatDialog->setMinimumSize(600, 400);
     StatDialog->setSizeGripEnabled(true);
@@ -79,10 +115,22 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
     curve1->setBackgroundColor(Qt::black);
     curve1->setRasterColor(Qt::gray);
     curve1->setTraceWidth(0);
-    curve1->setH_label(signalcomp->physdimension);
+    if(job_src == STAT_JOB_SRC_ECG)
+    {
+      curve1->setH_label(signalcomp->physdimension);
+    }
     curve1->setLowerLabel("HR (beats/min)");
     curve1->setDashBoardEnabled(false);
-    curve1->setUpperLabel1("Distribution");
+    if(job_src == STAT_JOB_SRC_ANNOT)
+    {
+      strcpy(stat_str, "Distribution ");
+      strcat(stat_str, annot->annotation);
+      curve1->setUpperLabel1(stat_str);
+    }
+    else
+    {
+      curve1->setUpperLabel1("Distribution");
+    }
     curve1->setFillSurfaceEnabled(true);
 
     vlayout2_1 = new QVBoxLayout;
@@ -91,7 +139,8 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
     vlayout2_1->addWidget(startSlider);
     vlayout2_1->addWidget(stopSlider);
   }
-  else
+
+  if(job_src == STAT_JOB_SRC_SIGNAL)
   {
     StatDialog->setMinimumSize(300, 400);
     StatDialog->setMaximumSize(300, 400);
@@ -116,7 +165,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
 
   hlayout1 = new QHBoxLayout;
   hlayout1->addLayout(vlayout1_1, 1);
-  if(signalcomp->ecg_filter != NULL)
+  if((job_src == STAT_JOB_SRC_ECG) || (job_src == STAT_JOB_SRC_ANNOT))
   {
     hlayout1->addLayout(vlayout2_1, 100);
   }
@@ -130,7 +179,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
     bpm_distribution[i] = 0;
   }
 
-  if(signalcomp->ecg_filter == NULL)
+  if(job_src == STAT_JOB_SRC_SIGNAL)
   {
     if((signalcomp->stat_cnt < 1) || (pagetime < 10LL))
     {
@@ -191,11 +240,39 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
       }
     }
   }
-  else
-  {
-    beat_cnt = ecg_filter_get_beat_cnt(signalcomp->ecg_filter);
 
-    beat_interval_list = ecg_filter_get_interval_beatlist(signalcomp->ecg_filter);
+  if((job_src == STAT_JOB_SRC_ECG) || (job_src == STAT_JOB_SRC_ANNOT))
+  {
+    if(job_src == STAT_JOB_SRC_ECG)
+    {
+      beat_cnt = ecg_filter_get_beat_cnt(signalcomp->ecg_filter);
+
+      beat_interval_list = ecg_filter_get_interval_beatlist(signalcomp->ecg_filter);
+    }
+
+    if(job_src == STAT_JOB_SRC_ANNOT)
+    {
+      for(i=0, beat_cnt=0; beat_cnt<BEAT_IVAL_SIZE; i++)
+      {
+        tmp_annot = edfplus_annotation_get_item_visible_only(annot_list, i);
+
+        if(tmp_annot == NULL)  break;
+
+        if(!strcmp(tmp_annot->annotation, annot->annotation))
+        {
+          if(beat_cnt)
+          {
+            beat_interval_list[beat_cnt - 1] = ((double)(tmp_annot->onset - l_tmp)) / (double)TIME_DIMENSION;
+          }
+
+          l_tmp = tmp_annot->onset;
+
+          beat_cnt++;
+        }
+      }
+
+      if(beat_cnt)  beat_cnt--;
+    }
 
     if(beat_cnt < 3)
     {
@@ -208,6 +285,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
       sdnn_bpm = 0.0;
       sdnn_rr = 0.0;
       rmssd_rr = 0.0;
+      NN20 = 0;
       NN50 = 0;
 
       buf_bpm = (double *)malloc(sizeof(double) * beat_cnt);
@@ -231,6 +309,11 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
 
           rmssd_rr += (d_tmp * d_tmp);
 
+          if(((beat_interval_list[i] - beat_interval_list[i + 1]) > 0.02 ) || ((beat_interval_list[i + 1] - beat_interval_list[i]) > 0.02 ))
+          {
+            NN20++;
+          }
+
           if(((beat_interval_list[i] - beat_interval_list[i + 1]) > 0.05 ) || ((beat_interval_list[i + 1] - beat_interval_list[i]) > 0.05 ))
           {
             NN50++;
@@ -243,6 +326,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
       rmssd_rr /= beat_cnt;
       rmssd_rr = sqrt(rmssd_rr);
 
+      pNN20 = (NN20 * 100) / (beat_cnt - 1);
       pNN50 = (NN50 * 100) / (beat_cnt - 1);
 
       for(i=0; i<beat_cnt; i++)
@@ -262,6 +346,8 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
               "RMSSD RR: %3i ms\n\n"
               "Mean HR:  %3.3f bpm\n\n"
               "SDNN HR:  %3.3f bpm\n\n"
+              "NN20:     %3i\n\n"
+              "pNN20:    %3i %%\n\n"
               "NN50:     %3i\n\n"
               "pNN50:    %3i %%\n\n",
               beat_cnt,
@@ -270,6 +356,8 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
               (int)rmssd_rr,
               average_bpm,
               sdnn_bpm,
+              NN20,
+              pNN20,
               NN50,
               pNN50);
 
@@ -337,6 +425,11 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
       QObject::connect(startSlider, SIGNAL(valueChanged(int)), this, SLOT(startSliderMoved(int)));
       QObject::connect(stopSlider,  SIGNAL(valueChanged(int)), this, SLOT(stopSliderMoved(int)));
     }
+  }
+
+  if(job_src == STAT_JOB_SRC_ANNOT)
+  {
+    free(beat_interval_list);
   }
 
   Label1->setText(stat_str);
