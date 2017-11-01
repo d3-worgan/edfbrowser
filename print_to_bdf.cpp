@@ -694,8 +694,6 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
       else  scratchpad[k+1] = 0;
 
       p = strlen(scratchpad);
-
-      if(p>80)  break;
     }
 
     for(j=0; j<signalcomp[i]->filter_cnt; j++)

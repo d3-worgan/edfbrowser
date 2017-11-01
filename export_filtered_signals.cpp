@@ -398,7 +398,8 @@ void UI_ExportFilteredSignalsWindow::SelectFileButton()
 
 void UI_ExportFilteredSignalsWindow::StartExport()
 {
-  int i, j, k,
+  int i, j, k, p,
+      type,
       new_edfsignals,
       datarecords=0,
       start_datarecord=0,
@@ -421,11 +422,13 @@ void UI_ExportFilteredSignalsWindow::StartExport()
       digmax,
       value;
 
-  char scratchpad[256];
+  char scratchpad[4096];
 
   double *filtered_blockread_buf[MAXSIGNALS],
          bitvalue,
-         phys_offset;
+         phys_offset,
+         frequency,
+         frequency2;
 
   long long new_starttime,
             time_diff,
@@ -832,7 +835,144 @@ void UI_ExportFilteredSignalsWindow::StartExport()
   }
   for(i=0; i<new_edfsignals; i++)
   {
-    fprintf(outputfile, "%s", edfhdr->edfparam[signalslist[i]].prefilter);
+//    fprintf(outputfile, "%s", edfhdr->edfparam[signalslist[i]].prefilter);
+
+    strcpy(scratchpad, edfhdr->edfparam[signalslist[i]].prefilter);
+    strcat(scratchpad, "                                                                                ");
+    for(p = strlen(scratchpad) - 1; p>=0; p--)
+    {
+      if(scratchpad[p]!=' ')  break;
+    }
+    p++;
+    if(p) p++;
+
+    for(j=0; j<signalcomp[i]->filter_cnt; j++)
+    {
+      if(signalcomp[i]->filter[j]->is_LPF == 1)
+      {
+        p += sprintf(scratchpad + p, "LP:%f", signalcomp[i]->filter[j]->cutoff_frequency);
+      }
+
+      if(signalcomp[i]->filter[j]->is_LPF == 0)
+      {
+        p += sprintf(scratchpad + p, "HP:%f", signalcomp[i]->filter[j]->cutoff_frequency);
+      }
+
+      for(k=(p-1); k>0; k--)
+      {
+        if(scratchpad[k]!='0')  break;
+      }
+
+      if(scratchpad[k]=='.')  scratchpad[k] = 0;
+      else  scratchpad[k+1] = 0;
+
+      strcat(scratchpad, "Hz ");
+
+      p = strlen(scratchpad);
+
+      if(p>80)  break;
+    }
+
+    for(j=0; j<signalcomp[i]->fidfilter_cnt; j++)
+    {
+      type = signalcomp[i]->fidfilter_type[j];
+
+      frequency = signalcomp[i]->fidfilter_freq[j];
+
+      frequency2 = signalcomp[i]->fidfilter_freq2[j];
+
+      if(type == 0)
+      {
+        p += sprintf(scratchpad + p, "HP:%f", frequency);
+      }
+
+      if(type == 1)
+      {
+        p += sprintf(scratchpad + p, "LP:%f", frequency);
+      }
+
+      if(type == 2)
+      {
+        p += sprintf(scratchpad + p, "N:%f", frequency);
+      }
+
+      if(type == 3)
+      {
+        p += sprintf(scratchpad + p, "BP:%f", frequency);
+      }
+
+      if(type == 4)
+      {
+        p += sprintf(scratchpad + p, "BS:%f", frequency);
+      }
+
+      for(k=(p-1); k>0; k--)
+      {
+        if(scratchpad[k]!='0')  break;
+      }
+
+      if(scratchpad[k]=='.')  scratchpad[k] = 0;
+      else  scratchpad[k+1] = 0;
+
+      p = strlen(scratchpad);
+
+      if((type == 3) || (type == 4))
+      {
+        p += sprintf(scratchpad + p, "-%f", frequency2);
+
+        for(k=(p-1); k>0; k--)
+        {
+          if(scratchpad[k]!='0')  break;
+        }
+
+        if(scratchpad[k]=='.')  scratchpad[k] = 0;
+        else  scratchpad[k+1] = 0;
+      }
+
+      strcat(scratchpad, "Hz ");
+
+      p = strlen(scratchpad);
+
+      if(p>80)  break;
+    }
+
+    for(j=0; j<signalcomp[i]->ravg_filter_cnt; j++)
+    {
+      if(signalcomp[i]->ravg_filter_type[j] == 0)
+      {
+        p += sprintf(scratchpad + p, "HP:%iSmpls ", signalcomp[i]->ravg_filter[j]->size);
+      }
+
+      if(signalcomp[i]->ravg_filter_type[j] == 1)
+      {
+        p += sprintf(scratchpad + p, "LP:%iSmpls ", signalcomp[i]->ravg_filter[j]->size);
+      }
+
+      p = strlen(scratchpad);
+
+      if(p>80)  break;
+    }
+
+    if(signalcomp[i]->ecg_filter != NULL)
+    {
+      p += sprintf(scratchpad + p, "ECG:HR ");
+    }
+
+    if(signalcomp[i]->zratio_filter != NULL)
+    {
+      p += sprintf(scratchpad + p, "Z-ratio ");
+    }
+
+    for(;p<81; p++)
+    {
+      scratchpad[p] = ' ';
+    }
+
+    if(fwrite(scratchpad, 80, 1, outputfile)!=1)
+    {
+      showpopupmessage("Error", "Write error (2).");
+      goto END_4;
+    }
   }
   if(edfhdr->edfplus || edfhdr->bdfplus)
   {
