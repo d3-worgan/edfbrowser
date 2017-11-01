@@ -9,7 +9,7 @@
  - Fixed a regression bug that could cause a crash when using the "reduce signals" tool
    with an EDF+ file.
 
- - Added a tool to export filtered and or derivated signals to a new file.
+ - Added a tool to export filtered and or derived signals to a new file.
 
  - Added the possibility to view the Heart Rate Variability using the annotation list.
 
