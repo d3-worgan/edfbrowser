@@ -43,6 +43,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QSlider>
+#include <QProgressDialog>
 
 #include <stdio.h>
 #include <stdlib.h>

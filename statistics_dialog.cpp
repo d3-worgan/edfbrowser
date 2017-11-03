@@ -252,6 +252,14 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
 
     if(job_src == STAT_JOB_SRC_ANNOT)
     {
+      QProgressDialog progress("Processing...", "Abort", 0, 1);
+      progress.setWindowModality(Qt::WindowModal);
+      progress.setMinimumDuration(200);
+      progress.reset();
+
+      progress.setRange(0, edfplus_annotation_size(annot_list));
+      progress.setValue(0);
+
       for(i=0, beat_cnt=0; beat_cnt<BEAT_IVAL_SIZE; i++)
       {
         tmp_annot = edfplus_annotation_get_item_visible_only(annot_list, i);
@@ -269,9 +277,23 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
 
           beat_cnt++;
         }
+
+        if(!(i%1000))
+        {
+          progress.setValue(i);
+
+          qApp->processEvents();
+
+          if(progress.wasCanceled() == true)
+          {
+            break;
+          }
+        }
       }
 
       if(beat_cnt)  beat_cnt--;
+
+      progress.reset();
     }
 
     if(beat_cnt < 3)
