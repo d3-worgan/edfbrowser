@@ -248,6 +248,10 @@ void UI_ECGExport::Export_RR_intervals()
       mainwindow->annotationlist_backup = edfplus_annotation_create_list_copy(&mainwindow->edfheaderlist[filenum]->annot_list);
     }
 
+    memset(&annotation, 0, sizeof(struct annotationblock));
+    strncpy(annotation.annotation, "R-onset", MAX_ANNOTATION_LEN);
+    annotation.annotation[MAX_ANNOTATION_LEN] = 0;
+
     for(i=0; i<beat_cnt; i++)
     {
       if(whole_recording)
@@ -277,10 +281,7 @@ void UI_ECGExport::Export_RR_intervals()
         l_time += (mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime - signalcomp->edfhdr->viewtime);
       }
 
-      memset(&annotation, 0, sizeof(struct annotationblock));
       annotation.onset = l_time;
-      strncpy(annotation.annotation, "R-onset", MAX_ANNOTATION_LEN);
-      annotation.annotation[MAX_ANNOTATION_LEN] = 0;
       edfplus_annotation_add_item(&mainwindow->edfheaderlist[filenum]->annot_list, annotation);
     }
 
