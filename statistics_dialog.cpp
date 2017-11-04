@@ -260,9 +260,11 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
       progress.setRange(0, edfplus_annotation_size(annot_list));
       progress.setValue(0);
 
+      int p_i=0, p_j=0;
+
       for(i=0, beat_cnt=0; beat_cnt<BEAT_IVAL_SIZE; i++)
       {
-        tmp_annot = edfplus_annotation_get_item_visible_only(annot_list, i);
+        tmp_annot = edfplus_annotation_get_item_visible_only_cached(annot_list, i, &p_i, &p_j);
 
         if(tmp_annot == NULL)  break;
 
