@@ -1037,6 +1037,13 @@ UI_Mainwindow::UI_Mainwindow()
     messagewindow.exec();
   }
 
+  if(edflib_version() != 112)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "There's a version problem with EDFlib.\n"
+                                                              "Can not continue.");
+    messagewindow.exec();
+  }
+
   pixmap = new QPixmap(":/images/splash.png");
   splash = new QSplashScreen(this, *pixmap, Qt::WindowStaysOnTopHint);
 
