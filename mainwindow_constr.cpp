@@ -1042,6 +1042,8 @@ UI_Mainwindow::UI_Mainwindow()
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "There's a version problem with EDFlib.\n"
                                                               "Can not continue.");
     messagewindow.exec();
+
+    menubar->setEnabled(false);
   }
 
   pixmap = new QPixmap(":/images/splash.png");
