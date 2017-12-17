@@ -691,12 +691,12 @@ UI_Mainwindow::UI_Mainwindow()
   toolsmenu->addSeparator();
   toolsmenu->addAction("Import annotations/events", this, SLOT(import_annotations()));
   toolsmenu->addAction("Export annotations/events", this, SLOT(export_annotations()));
-  toolsmenu->addAction("Export EDF/BDF to ASCII", this, SLOT(export_to_ascii()));
+  toolsmenu->addAction("Export EDF/BDF to ASCII (CSV)", this, SLOT(export_to_ascii()));
   toolsmenu->addAction("Export/Import ECG RR-interval", this, SLOT(export_ecg_rr_interval_to_ascii()));
   toolsmenu->addAction("Export Filtered Signals", this, SLOT(export_filtered_signals()));
   toolsmenu->addSeparator();
   toolsmenu->addAction("Convert Nihon Kohden to EDF+", this, SLOT(nk2edf_converter()));
-  toolsmenu->addAction("Convert ASCII to EDF/BDF", this, SLOT(convert_ascii_to_edf()));
+  toolsmenu->addAction("Convert ASCII (CSV) to EDF/BDF", this, SLOT(convert_ascii_to_edf()));
   toolsmenu->addAction("Convert Manscan to EDF+", this, SLOT(convert_manscan_to_edf()));
   toolsmenu->addAction("Convert SCP ECG to EDF+", this, SLOT(convert_scpecg_to_edf()));
   toolsmenu->addAction("Convert MIT (PhysioBank) to EDF+", this, SLOT(convert_mit_to_edf()));
