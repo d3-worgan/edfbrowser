@@ -1189,7 +1189,10 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     {
       if(scratchpad[j] != ' ')
       {
-        sprintf(txt_string, "Error, reserved field of signal %i is not empty.", i + 1);
+        sprintf(txt_string,
+                "Error, reserved field of signal %i is not empty.\n"
+                "Use the header editor to fix your file. Look at the manual for the details.",
+                i + 1);
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
