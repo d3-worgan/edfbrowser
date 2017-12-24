@@ -1187,12 +1187,11 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     strncpy(scratchpad, edf_hdr + 256 + (edfhdr->edfsignals * 224) + (i * 32), 32);
     for(j=0; j<32; j++)
     {
-      if(scratchpad[j] != ' ')
+      if((scratchpad[j]<32)||(scratchpad[j]>126))
       {
-        sprintf(txt_string,
-                "Error, reserved field of signal %i is not empty.\n"
-                "Use the header editor to fix your file. Look at the manual for the details.",
-                i + 1);
+        sprintf(txt_string, "Error, %ith character of reserved field of signal %i is not a valid 7-bit ASCII character.",
+        j + 1,
+        i + 1);
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
