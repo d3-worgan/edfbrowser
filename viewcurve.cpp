@@ -3542,9 +3542,9 @@ void ViewCurve::sidemenu_close()
   {
     strncpy(mainwindow->signalcomp[signal_nr]->alias, AliasLineEdit->text().toLatin1().data(), 16);
 
-    mainwindow->signalcomp[signal_nr]->alias[16] = 0;
-
     latin1_to_ascii(mainwindow->signalcomp[signal_nr]->alias, 16);
+
+    mainwindow->signalcomp[signal_nr]->alias[16] = 0;
 
     remove_trailing_spaces(mainwindow->signalcomp[signal_nr]->alias);
 

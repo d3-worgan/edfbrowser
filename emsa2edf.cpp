@@ -381,6 +381,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   if(len)
   {
     latin1_to_ascii(patientname, len);
+    patientname[len] = 0;
     for(i=0; i<len; i++)
     {
       if(patientname[i]==' ')
@@ -433,6 +434,8 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   {
     latin1_to_ascii(weight + 1, len);
 
+    weight[len] = 0;
+
     weight[0] = ' ';
 
     strcat(weight, " Kg");
@@ -446,6 +449,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   if(len)
   {
     latin1_to_ascii(equipment, len);
+    equipment[len] = 0;
     for(i=0; i<len; i++)
     {
       if(equipment[i]==' ')
@@ -770,6 +774,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
       scratchpad[j] = ' ';
     }
     latin1_to_ascii(scratchpad, 16);
+    scratchpad[len] = 0;
     fseeko(inputfile, (long long)(1025 + (i * 512)), SEEK_SET);
     if((fgetc(inputfile)=='E')&&(len<13))
     {

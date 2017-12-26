@@ -1615,8 +1615,8 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
         if(i < 1500)
         {
           strncpy(pat_dat.device_serial, str + i + 1, 48);
-          pat_dat.device_serial[48] = 0;
           latin1_to_ascii(pat_dat.device_serial, 48);
+          pat_dat.device_serial[48] = 0;
           remove_trailing_spaces(pat_dat.device_serial);
           remove_leading_spaces(pat_dat.device_serial);
         }
@@ -1632,8 +1632,8 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
             if(j == 1)
             {
               strncpy(pat_dat.device_ident, str + i + 1, 48);
-              pat_dat.device_ident[48] = 0;
               latin1_to_ascii(pat_dat.device_ident, 48);
+              pat_dat.device_ident[48] = 0;
               remove_trailing_spaces(pat_dat.device_ident);
               remove_leading_spaces(pat_dat.device_ident);
             }
@@ -1641,8 +1641,8 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
             if(j == 3)
             {
               strncpy(pat_dat.manufacturer, str + i + 1, 48);
-              pat_dat.manufacturer[48] = 0;
               latin1_to_ascii(pat_dat.manufacturer, 48);
+              pat_dat.manufacturer[48] = 0;
               remove_trailing_spaces(pat_dat.manufacturer);
               remove_leading_spaces(pat_dat.manufacturer);
 

@@ -1613,8 +1613,8 @@ void UI_Mainwindow::read_general_settings()
       }
 
       strncpy(raw2edf_var.phys_dim, result, 16);
-      raw2edf_var.phys_dim[15] = 0;
       latin1_to_ascii(raw2edf_var.phys_dim, 16);
+      raw2edf_var.phys_dim[15] = 0;
       remove_leading_spaces(raw2edf_var.phys_dim);
       remove_trailing_spaces(raw2edf_var.phys_dim);
 

@@ -37,7 +37,7 @@
 
 UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 {
-  char str[600];
+  char str[1024];
 
   buf1 = NULL;
   buf2 = NULL;
@@ -54,6 +54,8 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   signal_nr = -1;
 
   set_settings = 0;
+
+  physdimension[0] = 0;
 
   mainwindow = (UI_Mainwindow *)w_parent;
 

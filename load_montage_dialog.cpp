@@ -386,7 +386,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         strncpy(newsignalcomp->alias, result, 16);
         newsignalcomp->alias[16] = 0;
-        latin1_to_ascii(newsignalcomp->alias, 16);
+        latin1_to_ascii(newsignalcomp->alias, strlen(newsignalcomp->alias));
         remove_trailing_spaces(newsignalcomp->alias);
         remove_leading_spaces(newsignalcomp->alias);
       }
