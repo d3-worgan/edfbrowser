@@ -652,14 +652,19 @@ int EDF_annotations::is_onset_number(char *str)
 
 long long EDF_annotations::get_long_time(char *str)
 {
-  int i, len, hasdot=0, dotposition=0;
+  int i, len, hasdot=0, dotposition=0, neg=0;
 
   long long value=0, radix;
 
-  if((str[0] == '+') || (str[0] == '-'))
+  if(str[0] == '+')
   {
     str++;
   }
+  else if(str[0] == '-')
+    {
+      neg = 1;
+      str++;
+    }
 
   len = strlen(str);
 
@@ -702,7 +707,7 @@ long long EDF_annotations::get_long_time(char *str)
     }
   }
 
-  if(str[-1]=='-')  value = -value;
+  if(neg)  value = -value;
 
   return(value);
 }
