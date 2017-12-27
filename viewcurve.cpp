@@ -1833,11 +1833,6 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     }
   }
 
-  if((viewbuf==NULL)||(graphicBuf==NULL)||(screensamples==NULL))
-  {
-    return;
-  }
-
   if(mainwindow->show_baselines)
   {
     vertical_distance = h / (signalcomps + 1);
@@ -2060,6 +2055,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
       }
     }
+  }
+
+  if((viewbuf==NULL)||(graphicBuf==NULL)||(screensamples==NULL))
+  {
+    return;
   }
 
   if(mainwindow->clip_to_pane)

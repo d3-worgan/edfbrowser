@@ -4,6 +4,10 @@
 
  - Improve speed when processing annotations for heart rate variability.
 
+ - Update EDFlib.
+
+ - Bugfixes.
+
 
 
  version 1.61      November 1, 2017
