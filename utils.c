@@ -1305,11 +1305,11 @@ int is_integer_number(char *str)
 
 int is_number(char *str)
 {
-  int i=0, l, hasspace = 0, hassign=0, digit=0, hasdot=0, hasexp=0;
+  int i=0, len, hasspace=0, hassign=0, digit=0, hasdot=0, hasexp=0;
 
-  l = strlen(str);
+  len = strlen(str);
 
-  if(!l)  return 1;
+  if(!len)  return 1;
 
   if((str[0]=='+')||(str[0]=='-'))
   {
@@ -1317,7 +1317,7 @@ int is_number(char *str)
     i++;
   }
 
-  for(; i<l; i++)
+  for(; i<len; i++)
   {
     if((str[i]=='e')||(str[i]=='E'))
     {
@@ -1367,7 +1367,7 @@ int is_number(char *str)
 
   if(hasexp)
   {
-    if(++i==l)
+    if(++i==len)
     {
       return 1;
     }
@@ -1378,7 +1378,7 @@ int is_number(char *str)
       i++;
     }
 
-    for(; i<l; i++)
+    for(; i<len; i++)
     {
       if(str[i]==' ')
       {
