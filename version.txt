@@ -6,6 +6,10 @@
 
  - Update EDFlib.
 
+ - Fixed some memory leaks.
+
+ - Fixed some of-by-one out of boundary memory readings that potentially could cause a segfault.
+
  - Bugfixes.
 
 

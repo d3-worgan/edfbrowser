@@ -107,6 +107,8 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   {
     qrs_data.ref_beat[i] = NULL;
 
+    buf[i] = NULL;
+
     buf2[i] = NULL;
   }
 
@@ -1166,6 +1168,7 @@ EXIT_5:
   if(hdl >= 0)
   {
     edfclose_file(hdl);
+    hdl = -1;
   }
 
 EXIT_4:
@@ -1175,14 +1178,13 @@ EXIT_4:
     if(buf[i] != NULL)
     {
       free(buf[i]);
+      buf[i] = NULL;
     }
 
-    if(scp_ecg.bimodal)
+    if(buf2[i] != NULL)
     {
-      if(buf2[i] != NULL)
-      {
-        free(buf2[i]);
-      }
+      free(buf2[i]);
+      buf2[i] = NULL;
     }
   }
 
@@ -1191,6 +1193,7 @@ EXIT_3:
   if(block != NULL)
   {
     free(block);
+    block = NULL;
   }
 
 EXIT_2:
@@ -1198,6 +1201,7 @@ EXIT_2:
   if(inputfile != NULL)
   {
     fclose(inputfile);
+    inputfile = NULL;
   }
 
 EXIT_1:
@@ -1207,6 +1211,7 @@ EXIT_1:
     if(qrs_data.ref_beat[i] != NULL)
     {
       free(qrs_data.ref_beat[i]);
+      qrs_data.ref_beat[i] = NULL;
     }
   }
 

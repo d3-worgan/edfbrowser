@@ -741,6 +741,7 @@ void free_ecg_filter(struct ecg_filter_settings *settings)
   free(settings->avgfilter_35_buf);
   free(settings->avgfilter_35_buf_bu);
   free(settings->avgfilter_25_buf);
+  free(settings->avgfilter_25_buf_bu);
   free(settings->SV);
   free(settings->F);
   free(settings->F_bu);
