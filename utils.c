@@ -101,6 +101,13 @@ int get_filename_from_path(char *dest, const char *src, int size)
 
   i++;
 
+  if(i == len)
+  {
+    dest[0] = 0;
+
+    return 0;
+  }
+
   strncpy(dest, src + i, size);
 
   dest[size-1] = 0;
@@ -198,7 +205,7 @@ void remove_trailing_spaces(char *str)
 
   len = strlen(str);
 
-  for(i=(len-1); i>-1; i--)
+  for(i=(len-1); i>=0; i--)
   {
     if(str[i]!=' ')  break;
   }
@@ -674,7 +681,9 @@ void latin1_to_ascii(char *str, int len)
 
 int antoi(const char *input_str, int len)
 {
-  char str[1024];
+  char str[4096];
+
+  if(len > 4095)  len = 4095;
 
   strncpy(str, input_str, len);
 
