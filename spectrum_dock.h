@@ -193,6 +193,7 @@ void print_to_txt();
 void setdashboard();
 void update_flywheel(int);
 
+void open_close_dock(bool);
 };
 
 

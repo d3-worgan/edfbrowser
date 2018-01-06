@@ -110,6 +110,13 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(QWidget *w_parent)
 
 void UI_AnnotationEditwindow::open_close_dock(bool visible)
 {
+  if(mainwindow->files_open != 1)
+  {
+    dockedit->hide();
+
+    return;
+  }
+
   if(visible==true)
   {
     mainwindow->annot_editor_active = 1;

@@ -262,17 +262,29 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   t1->setTimerType(Qt::PreciseTimer);
 #endif
 
-  QObject::connect(t1,              SIGNAL(timeout()),              this, SLOT(update_curve()));
-  QObject::connect(amplitudeSlider, SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
-  QObject::connect(log_minslider,   SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
-  QObject::connect(spanSlider,      SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
-  QObject::connect(centerSlider,    SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
-  QObject::connect(sqrtButton,      SIGNAL(toggled(bool)),          this, SLOT(sqrtButtonClicked(bool)));
-  QObject::connect(vlogButton,      SIGNAL(toggled(bool)),          this, SLOT(vlogButtonClicked(bool)));
-  QObject::connect(colorBarButton,  SIGNAL(toggled(bool)),          this, SLOT(colorBarButtonClicked(bool)));
-  QObject::connect(curve1,          SIGNAL(extra_button_clicked()), this, SLOT(print_to_txt()));
-  QObject::connect(curve1,          SIGNAL(dashBoardClicked()),     this, SLOT(setdashboard()));
-  QObject::connect(flywheel1,       SIGNAL(dialMoved(int)),         this, SLOT(update_flywheel(int)));
+  QObject::connect(t1,              SIGNAL(timeout()),               this, SLOT(update_curve()));
+  QObject::connect(amplitudeSlider, SIGNAL(valueChanged(int)),       this, SLOT(sliderMoved(int)));
+  QObject::connect(log_minslider,   SIGNAL(valueChanged(int)),       this, SLOT(sliderMoved(int)));
+  QObject::connect(spanSlider,      SIGNAL(valueChanged(int)),       this, SLOT(sliderMoved(int)));
+  QObject::connect(centerSlider,    SIGNAL(valueChanged(int)),       this, SLOT(sliderMoved(int)));
+  QObject::connect(sqrtButton,      SIGNAL(toggled(bool)),           this, SLOT(sqrtButtonClicked(bool)));
+  QObject::connect(vlogButton,      SIGNAL(toggled(bool)),           this, SLOT(vlogButtonClicked(bool)));
+  QObject::connect(colorBarButton,  SIGNAL(toggled(bool)),           this, SLOT(colorBarButtonClicked(bool)));
+  QObject::connect(curve1,          SIGNAL(extra_button_clicked()),  this, SLOT(print_to_txt()));
+  QObject::connect(curve1,          SIGNAL(dashBoardClicked()),      this, SLOT(setdashboard()));
+  QObject::connect(flywheel1,       SIGNAL(dialMoved(int)),          this, SLOT(update_flywheel(int)));
+  QObject::connect(dock,            SIGNAL(visibilityChanged(bool)), this, SLOT(open_close_dock(bool)));
+}
+
+
+void UI_SpectrumDockWindow::open_close_dock(bool visible)
+{
+  if(mainwindow->files_open != 1 || signal_nr < 0)
+  {
+    dock->hide();
+
+    return;
+  }
 }
 
 
@@ -1406,21 +1418,25 @@ UI_SpectrumDockWindow::~UI_SpectrumDockWindow()
   if(buf2 != NULL)
   {
     free(buf2);
+    buf2 = NULL;
   }
 
   if(buf3 != NULL)
   {
     free(buf3);
+    buf3 = NULL;
   }
 
   if(buf4 != NULL)
   {
     free(buf4);
+    buf4 = NULL;
   }
 
   if(buf5 != NULL)
   {
     free(buf5);
+    buf5 = NULL;
   }
 
   delete SpectrumDialog;

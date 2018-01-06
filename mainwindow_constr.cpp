@@ -721,50 +721,6 @@ UI_Mainwindow::UI_Mainwindow()
   settingsmenu->addAction("Options", this, SLOT(show_options_dialog()));
   menubar->addMenu(settingsmenu);
 
-  former_page_Act = new QAction("<<", this);
-  former_page_Act->setShortcut(QKeySequence::MoveToPreviousPage);
-  connect(former_page_Act, SIGNAL(triggered()), this, SLOT(former_page()));
-  menubar->addAction(former_page_Act);
-
-  shift_page_left_Act = new QAction("<", this);
-  shift_page_left_Act->setShortcut(QKeySequence::MoveToPreviousChar);
-  connect(shift_page_left_Act, SIGNAL(triggered()), this, SLOT(shift_page_left()));
-  menubar->addAction(shift_page_left_Act);
-
-  playback_realtime_Act = new QAction("[play]", this);
-  connect(playback_realtime_Act, SIGNAL(triggered()), this, SLOT(playback_realtime()));
-  menubar->addAction(playback_realtime_Act);
-
-  shift_page_right_Act = new QAction(">", this);
-  shift_page_right_Act->setShortcut(QKeySequence::MoveToNextChar);
-  connect(shift_page_right_Act, SIGNAL(triggered()), this, SLOT(shift_page_right()));
-  menubar->addAction(shift_page_right_Act);
-
-  next_page_Act = new QAction(">>", this);
-  next_page_Act->setShortcut(QKeySequence::MoveToNextPage);
-  connect(next_page_Act, SIGNAL(triggered()), this, SLOT(next_page()));
-  menubar->addAction(next_page_Act);
-
-  shift_page_up_Act = new QAction("^", this);
-  shift_page_up_Act->setShortcut(QKeySequence::MoveToPreviousLine);
-  connect(shift_page_up_Act, SIGNAL(triggered()), this, SLOT(shift_page_up()));
-  menubar->addAction(shift_page_up_Act);
-
-  shift_page_down_Act = new QAction("v", this);
-  shift_page_down_Act->setShortcut(QKeySequence::MoveToNextLine);
-  connect(shift_page_down_Act, SIGNAL(triggered()), this, SLOT(shift_page_down()));
-  menubar->addAction(shift_page_down_Act);
-
-  zoomback_Act = new QAction("zoomback", this);
-  zoomback_Act->setShortcut(Qt::Key_Backspace);
-  connect(zoomback_Act, SIGNAL(triggered()), this, SLOT(zoomback()));
-  menubar->addAction(zoomback_Act);
-
-  zoomforward_Act = new QAction("zoomforward", this);
-  zoomforward_Act->setShortcut(Qt::Key_Insert);
-  connect(zoomforward_Act, SIGNAL(triggered()), this, SLOT(forward()));
-  menubar->addAction(zoomforward_Act);
-
   no_timesync_act = new QAction("no timelock", this);
   no_timesync_act->setCheckable(true);
 
@@ -823,6 +779,62 @@ UI_Mainwindow::UI_Mainwindow()
   helpmenu->addAction("Show splashscreen", this, SLOT(show_splashscreen()));
   menubar->addMenu(helpmenu);
 
+  navtoolbar = new QToolBar("Navigation Bar");
+  navtoolbar->setFloatable(false);
+  navtoolbar->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
+  addToolBar(Qt::TopToolBarArea, navtoolbar);
+  navtoolbar->setEnabled(true);
+
+  former_page_Act = new QAction("<<", this);
+  former_page_Act->setToolTip("Former Page");
+  former_page_Act->setShortcut(QKeySequence::MoveToPreviousPage);
+  connect(former_page_Act, SIGNAL(triggered()), this, SLOT(former_page()));
+  navtoolbar->addAction(former_page_Act);
+
+  shift_page_left_Act = new QAction("<", this);
+  shift_page_left_Act->setToolTip("Shift Left");
+  shift_page_left_Act->setShortcut(QKeySequence::MoveToPreviousChar);
+  connect(shift_page_left_Act, SIGNAL(triggered()), this, SLOT(shift_page_left()));
+  navtoolbar->addAction(shift_page_left_Act);
+
+  playback_realtime_Act = new QAction("[play]", this);
+  connect(playback_realtime_Act, SIGNAL(triggered()), this, SLOT(playback_realtime()));
+  navtoolbar->addAction(playback_realtime_Act);
+
+  shift_page_right_Act = new QAction(">", this);
+  shift_page_right_Act->setToolTip("Shift Right");
+  shift_page_right_Act->setShortcut(QKeySequence::MoveToNextChar);
+  connect(shift_page_right_Act, SIGNAL(triggered()), this, SLOT(shift_page_right()));
+  navtoolbar->addAction(shift_page_right_Act);
+
+  next_page_Act = new QAction(">>", this);
+  next_page_Act->setToolTip("Next Page");
+  next_page_Act->setShortcut(QKeySequence::MoveToNextPage);
+  connect(next_page_Act, SIGNAL(triggered()), this, SLOT(next_page()));
+  navtoolbar->addAction(next_page_Act);
+
+  shift_page_up_Act = new QAction("^", this);
+  shift_page_up_Act->setToolTip("Shift Up");
+  shift_page_up_Act->setShortcut(QKeySequence::MoveToPreviousLine);
+  connect(shift_page_up_Act, SIGNAL(triggered()), this, SLOT(shift_page_up()));
+  navtoolbar->addAction(shift_page_up_Act);
+
+  shift_page_down_Act = new QAction("v", this);
+  shift_page_down_Act->setToolTip("Shift Down");
+  shift_page_down_Act->setShortcut(QKeySequence::MoveToNextLine);
+  connect(shift_page_down_Act, SIGNAL(triggered()), this, SLOT(shift_page_down()));
+  navtoolbar->addAction(shift_page_down_Act);
+
+  zoomback_Act = new QAction("Zoom Out", this);
+  zoomback_Act->setShortcut(Qt::Key_Backspace);
+  connect(zoomback_Act, SIGNAL(triggered()), this, SLOT(zoomback()));
+  navtoolbar->addAction(zoomback_Act);
+
+  zoomforward_Act = new QAction("Zoom In", this);
+  zoomforward_Act->setShortcut(Qt::Key_Insert);
+  connect(zoomforward_Act, SIGNAL(triggered()), this, SLOT(forward()));
+  navtoolbar->addAction(zoomforward_Act);
+
   Escape_act = new QAction(this);
   Escape_act->setShortcut(Qt::Key_Escape);
   connect(Escape_act, SIGNAL(triggered()), this, SLOT(Escape_fun()));
@@ -841,7 +853,7 @@ UI_Mainwindow::UI_Mainwindow()
   connect(video_stop_act, SIGNAL(triggered()), this, SLOT(start_stop_video()));
   video_stop_act->setToolTip("Stop video");
 
-  slidertoolbar = new QToolBar();
+  slidertoolbar = new QToolBar("Video Playback");
   slidertoolbar->setFloatable(false);
   slidertoolbar->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
 #ifdef Q_OS_LINUX
@@ -1047,6 +1059,7 @@ UI_Mainwindow::UI_Mainwindow()
     messagewindow.exec();
 
     menubar->setEnabled(false);
+    navtoolbar->setEnabled(false);
   }
 
   pixmap = new QPixmap(":/images/splash.png");

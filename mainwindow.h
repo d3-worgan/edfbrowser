@@ -437,7 +437,8 @@ private:
 
   QPixmap  *pixmap;
 
-  QToolBar *slidertoolbar;
+  QToolBar *slidertoolbar,
+           *navtoolbar;
 
   QSlider  *positionslider;
 
