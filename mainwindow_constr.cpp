@@ -716,7 +716,10 @@ UI_Mainwindow::UI_Mainwindow()
   toolsmenu->addAction("Options", this, SLOT(show_options_dialog()));
   menubar->addMenu(toolsmenu);
 
-  menubar->addAction("S&ettings", this, SLOT(show_options_dialog()));
+  settingsmenu = new QMenu(this);
+  settingsmenu->setTitle("S&ettings");
+  settingsmenu->addAction("Options", this, SLOT(show_options_dialog()));
+  menubar->addMenu(settingsmenu);
 
   former_page_Act = new QAction("<<", this);
   former_page_Act->setShortcut(QKeySequence::MoveToPreviousPage);

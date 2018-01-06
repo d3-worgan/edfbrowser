@@ -327,6 +327,7 @@ private:
                *displaymenu,
                *amplitudemenu,
                *toolsmenu,
+               *settingsmenu,
                *helpmenu,
                *printmenu,
                *filtermenu,
