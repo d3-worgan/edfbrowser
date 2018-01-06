@@ -1128,6 +1128,8 @@ void UI_Mainwindow::playback_realtime()
 
     playback_realtime_Act->setText("[stop]");
 
+    playback_realtime_Act->setIcon(QIcon(":/images/media-playback-stop-symbolic.symbolic.png"));
+
     playback_realtime_active = 1;
   }
 }
@@ -1138,6 +1140,8 @@ void UI_Mainwindow::stop_playback_realtime()
   playback_realtime_timer->stop();
 
   playback_realtime_Act->setText("[play]");
+
+  playback_realtime_Act->setIcon(QIcon(":/images/media-playback-start-symbolic.symbolic.png"));
 
   playback_realtime_active = 0;
 }

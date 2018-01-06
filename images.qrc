@@ -3,5 +3,16 @@
     <file>images/edf.png</file>
     <file>images/splash.png</file>
     <file>images/ok.png</file>
+    <file>images/go-down-symbolic.symbolic.png</file>
+    <file>images/go-next-symbolic-rtl.symbolic.png</file>
+    <file>images/go-next-symbolic.symbolic.png</file>
+    <file>images/go-up-symbolic.symbolic.png</file>
+    <file>images/media-playback-pause-symbolic.symbolic.png</file>
+    <file>images/media-playback-start-symbolic.symbolic.png</file>
+    <file>images/media-playback-stop-symbolic.symbolic.png</file>
+    <file>images/go-first-symbolic.symbolic.png</file>
+    <file>images/go-first-symbolic-rtl.symbolic.png</file>
+    <file>images/zoom-in-symbolic.symbolic.png</file>
+    <file>images/zoom-out-symbolic.symbolic.png</file>
 </qresource>
 </RCC>
