@@ -277,7 +277,7 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 }
 
 
-void UI_SpectrumDockWindow::open_close_dock(bool visible)
+void UI_SpectrumDockWindow::open_close_dock(bool)
 {
   if(mainwindow->files_open != 1 || signal_nr < 0)
   {
