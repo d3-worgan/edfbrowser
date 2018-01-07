@@ -1,5 +1,5 @@
 
- version 1.62      to be defined
+ version 1.62      January 7, 2018
  --------------
 
  - Improve speed when processing annotations for heart rate variability.
