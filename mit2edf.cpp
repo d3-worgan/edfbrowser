@@ -102,7 +102,7 @@ static char annotdescrlist[42][48]=
   "waveform end", "R-on-T premature ventricular contraction"};
 
 
-#define ANNOT_EXT_CNT   7
+#define ANNOT_EXT_CNT   8
 
 
 char annotextlist[ANNOT_EXT_CNT][16]=
@@ -113,7 +113,8 @@ char annotextlist[ANNOT_EXT_CNT][16]=
     ".qrs",
     ".atr",
     ".apn",
-    ".st"
+    ".st",
+    ".pwave"
   };
 
 
@@ -615,8 +616,13 @@ void UI_MIT2EDFwindow::SelectFileButton()
     return;
   }
 
-  for(mit_hdr.sf_div=12; mit_hdr.sf_div>0; mit_hdr.sf_div--)
+  for(mit_hdr.sf_div=10; mit_hdr.sf_div>0; mit_hdr.sf_div--)
   {
+    if(mit_hdr.sf_div == 9)  continue;
+    if(mit_hdr.sf_div == 7)  continue;
+    if(mit_hdr.sf_div == 6)  continue;
+    if(mit_hdr.sf_div == 3)  continue;
+
     if(!(mit_hdr.sf % mit_hdr.sf_div))  break;
   }
 

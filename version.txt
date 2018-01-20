@@ -1,4 +1,11 @@
 
+ version 1.63      to be defined
+ --------------
+
+ - Fixed a bug in the MIT to EDF+ converter.
+
+
+
  version 1.62      January 7, 2018
  --------------
 
