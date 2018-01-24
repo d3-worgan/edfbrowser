@@ -641,6 +641,18 @@ void UI_MIT2EDFwindow::SelectFileButton()
     return;
   }
 
+  if(mit_hdr.sf_div == 1)
+  {
+    if(edf_set_number_of_annotation_signals(hdl, 2))
+    {
+      textEdit1->append("Error: edf_set_number_of_annotation_signals()\n");
+      fclose(data_inputfile);
+      edfclose_file(hdl);
+      pushButton1->setEnabled(true);
+      return;
+    }
+  }
+
   for(i=0; i<mit_hdr.chns; i++)
   {
     if(edf_set_samplefrequency(hdl, i, mit_hdr.sf_block))
