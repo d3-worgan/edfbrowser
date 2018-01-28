@@ -37,7 +37,7 @@ struct filter_settings * create_filter(int is_LPF, double cutoff_frequency, doub
   struct filter_settings *settings;
 
   settings = (struct filter_settings *) calloc(1, sizeof(struct filter_settings));
-  if(settings==NULL)  return(NULL);
+  if(settings==NULL)  return NULL;
 
   settings->is_LPF = is_LPF;
   settings->cutoff_frequency = cutoff_frequency;
@@ -47,7 +47,7 @@ struct filter_settings * create_filter(int is_LPF, double cutoff_frequency, doub
   settings->old_output = 0.0;
   settings->first_sample = 1;
 
-  return(settings);
+  return settings;
 }
 
 
@@ -58,11 +58,11 @@ struct filter_settings * create_filter_copy(struct filter_settings *src)
   settings = (struct filter_settings *)calloc(1, sizeof(struct filter_settings));
   if(settings==NULL)
   {
-    return(NULL);
+    return NULL;
   }
   memcpy(settings, src, sizeof(struct filter_settings));
 
-  return(settings);
+  return settings;
 }
 
 
@@ -96,13 +96,13 @@ int first_order_filter(int new_input, struct filter_settings *settings)
     {
       settings->old_output = new_input;
 
-      return(new_input);
+      return new_input;
     }
     else
     {
       settings->old_output = 0.0;
 
-      return(0);
+      return 0;
     }
   }
 
@@ -119,7 +119,7 @@ int first_order_filter(int new_input, struct filter_settings *settings)
   settings->old_input = new_input;
   settings->old_output = new_output;
 
-  return((int)new_output);
+  return (int)new_output;
 }
 
 
@@ -132,7 +132,7 @@ double get_filter_factor(double cutoff_frequency, double sample_frequency)
   t = 1.0 - t; // now t will be in the range 0.001 (at high sample-frequency and low cut-off)
                // to 0.999 (at low sample-frequency and high cut-off)
 
-  return(t);
+  return t;
 }
 
 

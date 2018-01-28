@@ -44,7 +44,7 @@ struct spike_filter_settings * create_spike_filter(int sf, double sv, int ho, in
   if((ho < 10) || (ho > 1000))  return NULL;
 
   st = (struct spike_filter_settings *) calloc(1, sizeof(struct spike_filter_settings));
-  if(st==NULL)  return(NULL);
+  if(st==NULL)  return NULL;
 
   st->sf = sf;    // samplefrequency
 
@@ -62,7 +62,7 @@ struct spike_filter_settings * create_spike_filter(int sf, double sv, int ho, in
 
   st->spike_pos = -1;
 
-  return(st);
+  return st;
 }
 
 
@@ -273,11 +273,11 @@ struct spike_filter_settings * create_spike_filter_copy(struct spike_filter_sett
   settings = (struct spike_filter_settings *) malloc(sizeof(struct spike_filter_settings));
   if(settings==NULL)
   {
-    return(NULL);
+    return NULL;
   }
   memcpy(settings, src, sizeof(struct spike_filter_settings));
 
-  return(settings);
+  return settings;
 }
 
 

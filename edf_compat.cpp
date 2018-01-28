@@ -626,24 +626,24 @@ int UI_EDFCompatwindow::is_duration_number(char *str)
 
   l = strlen(str);
 
-  if(!l)  return(1);
+  if(!l)  return 1;
 
-  if((str[0] == '.')||(str[l-1] == '.'))  return(1);
+  if((str[0] == '.')||(str[l-1] == '.'))  return 1;
 
   for(i=0; i<l; i++)
   {
     if(str[i]=='.')
     {
-      if(hasdot)  return(1);
+      if(hasdot)  return 1;
       hasdot++;
     }
     else
     {
-      if((str[i]<48)||(str[i]>57))  return(1);
+      if((str[i]<48)||(str[i]>57))  return 1;
     }
   }
 
-  return(0);
+  return 0;
 }
 
 
@@ -654,26 +654,26 @@ int UI_EDFCompatwindow::is_onset_number(char *str)
 
   l = strlen(str);
 
-  if(l<2)  return(1);
+  if(l<2)  return 1;
 
-  if((str[0]!='+')&&(str[0]!='-'))  return(1);
+  if((str[0]!='+')&&(str[0]!='-'))  return 1;
 
-  if((str[1] == '.')||(str[l-1] == '.'))  return(1);
+  if((str[1] == '.')||(str[l-1] == '.'))  return 1;
 
   for(i=1; i<l; i++)
   {
     if(str[i]=='.')
     {
-      if(hasdot)  return(1);
+      if(hasdot)  return 1;
       hasdot++;
     }
     else
     {
-      if((str[i]<48)||(str[i]>57))  return(1);
+      if((str[i]<48)||(str[i]>57))  return 1;
     }
   }
 
-  return(0);
+  return 0;
 }
 
 
@@ -684,7 +684,7 @@ int UI_EDFCompatwindow::is_integer_number(char *str)
 
   l = strlen(str);
 
-  if(!l)  return(1);
+  if(!l)  return 1;
 
   if((str[0]=='+')||(str[0]=='-'))
   {
@@ -698,7 +698,7 @@ int UI_EDFCompatwindow::is_integer_number(char *str)
     {
       if(!digit)
       {
-        return(1);
+        return 1;
       }
       hasspace++;
     }
@@ -706,21 +706,21 @@ int UI_EDFCompatwindow::is_integer_number(char *str)
     {
       if((str[i]<48)||(str[i]>57))
       {
-        return(1);
+        return 1;
       }
       else
       {
         if(hasspace)
         {
-          return(1);
+          return 1;
         }
         digit++;
       }
     }
   }
 
-  if(digit)  return(0);
-  else  return(1);
+  if(digit)  return 0;
+  else  return 1;
 }
 
 
@@ -731,7 +731,7 @@ int UI_EDFCompatwindow::is_number(char *str)
 
   l = strlen(str);
 
-  if(!l)  return(1);
+  if(!l)  return 1;
 
   if((str[0]=='+')||(str[0]=='-'))
   {
@@ -741,7 +741,7 @@ int UI_EDFCompatwindow::is_number(char *str)
 
   if(str[l-1]=='.')
   {
-    return(1);
+    return 1;
   }
 
   for(; i<l; i++)
@@ -750,11 +750,11 @@ int UI_EDFCompatwindow::is_number(char *str)
     {
       if(!digit)
       {
-        return(1);
+        return 1;
       }
       if(str[i-1]=='.')
       {
-        return(1);
+        return 1;
       }
       hasspace++;
     }
@@ -762,18 +762,18 @@ int UI_EDFCompatwindow::is_number(char *str)
     {
       if(((str[i]<48)||(str[i]>57))&&str[i]!='.')
       {
-        return(1);
+        return 1;
       }
       else
       {
         if(hasspace)
         {
-          return(1);
+          return 1;
         }
         if(str[i]=='.')
         {
-          if(hasdot||!i)  return(1);
-          if(hassign&&(i<2))  return(1);
+          if(hasdot||!i)  return 1;
+          if(hassign&&(i<2))  return 1;
           hasdot++;
         }
         else
@@ -784,8 +784,8 @@ int UI_EDFCompatwindow::is_number(char *str)
     }
   }
 
-  if(digit)  return(0);
-  else  return(1);
+  if(digit)  return 0;
+  else  return 1;
 }
 
 

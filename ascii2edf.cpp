@@ -1662,7 +1662,7 @@ int UI_ASCII2EDFapp::check_input(void)
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator must be one character or tab.");
       messagewindow.exec();
 
-      return(1);
+      return 1;
     }
 
     if((str[0]<32)||(str[0]>126))
@@ -1670,7 +1670,7 @@ int UI_ASCII2EDFapp::check_input(void)
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character is not a valid ASCII character.");
       messagewindow.exec();
 
-      return(1);
+      return 1;
     }
 
     if(str[0]=='.')
@@ -1678,7 +1678,7 @@ int UI_ASCII2EDFapp::check_input(void)
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character can not be a dot.");
       messagewindow.exec();
 
-      return(1);
+      return 1;
     }
 
     if((str[0]>47)&&(str[0]<58))
@@ -1686,7 +1686,7 @@ int UI_ASCII2EDFapp::check_input(void)
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character can not be a number.");
       messagewindow.exec();
 
-      return(1);
+      return 1;
     }
 
     separator = str[0];
@@ -1703,7 +1703,7 @@ int UI_ASCII2EDFapp::check_input(void)
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Only samplefrequencies below 1 Hz can have a decimal fraction.");
       messagewindow.exec();
 
-      return(1);
+      return 1;
     }
   }
 
@@ -1733,7 +1733,7 @@ int UI_ASCII2EDFapp::check_input(void)
           QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", big_str);
           messagewindow.exec();
 
-          return(1);
+          return 1;
         }
 
         for(k=0; k<len; k++)
@@ -1747,7 +1747,7 @@ int UI_ASCII2EDFapp::check_input(void)
             QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", big_str);
             messagewindow.exec();
 
-            return(1);
+            return 1;
           }
 
           if(str[k]==' ')
@@ -1761,7 +1761,7 @@ int UI_ASCII2EDFapp::check_input(void)
               QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", big_str);
               messagewindow.exec();
 
-              return(1);
+              return 1;
             }
           }
 
@@ -1777,7 +1777,7 @@ int UI_ASCII2EDFapp::check_input(void)
               QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", big_str);
               messagewindow.exec();
 
-              return(1);
+              return 1;
             }
 
             if((str[k]<48)||(str[k]>57))
@@ -1794,7 +1794,7 @@ int UI_ASCII2EDFapp::check_input(void)
                   QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", big_str);
                   messagewindow.exec();
 
-                  return(1);
+                  return 1;
                 }
                 else
                 {
@@ -1808,7 +1808,7 @@ int UI_ASCII2EDFapp::check_input(void)
                     QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", big_str);
                     messagewindow.exec();
 
-                    return(1);
+                    return 1;
                   }
 
                   dot = 1;
@@ -1824,7 +1824,7 @@ int UI_ASCII2EDFapp::check_input(void)
                 QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", big_str);
                 messagewindow.exec();
 
-                return(1);
+                return 1;
               }
             }
           }
@@ -1842,7 +1842,7 @@ int UI_ASCII2EDFapp::check_input(void)
             QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", big_str);
             messagewindow.exec();
 
-            return(1);
+            return 1;
           }
         }
       }
@@ -1862,10 +1862,10 @@ int UI_ASCII2EDFapp::check_input(void)
     QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "At least one row needs to be checked.");
     messagewindow.exec();
 
-    return(1);
+    return 1;
   }
 
-  return(0);
+  return 0;
 }
 
 

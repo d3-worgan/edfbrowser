@@ -1766,7 +1766,7 @@ int UI_UNISENS2EDFwindow::get_events_from_csv_files(int max_files, int edf_hdl, 
       progress.reset();
       sprintf(scratchpad, "Error, can not open csv file:\n%s\n", evtfilename[k]);
       textEdit1->append(QString::fromLocal8Bit(scratchpad));
-      return(1);
+      return 1;
     }
 
     sep = csv_sep[k];
@@ -1783,7 +1783,7 @@ int UI_UNISENS2EDFwindow::get_events_from_csv_files(int max_files, int edf_hdl, 
         {
           fclose(csvfile);
 
-          return(1);
+          return 1;
         }
       }
 
@@ -1845,7 +1845,7 @@ int UI_UNISENS2EDFwindow::get_events_from_csv_files(int max_files, int edf_hdl, 
               {
                 progress.reset();
                 textEdit1->append("An error occurred while writing the events to the EDF-file.\n");
-                return(1);
+                return 1;
               }
             }
 
@@ -1855,7 +1855,7 @@ int UI_UNISENS2EDFwindow::get_events_from_csv_files(int max_files, int edf_hdl, 
               {
                 progress.reset();
                 textEdit1->append("An error occurred while writing the events to the EDF-file.\n");
-                return(1);
+                return 1;
               }
             }
 
@@ -1878,7 +1878,7 @@ int UI_UNISENS2EDFwindow::get_events_from_csv_files(int max_files, int edf_hdl, 
 
   progress.reset();
 
-  return(0);
+  return 0;
 }
 
 
@@ -1908,7 +1908,7 @@ int UI_UNISENS2EDFwindow::count_events_from_csv_files(int max_files, const char 
     {
       sprintf(scratchpad, "Error, can not open csv file:\n%s\n", evtfilename[k]);
       textEdit1->append(QString::fromLocal8Bit(scratchpad));
-      return(1);
+      return 1;
     }
 
     while(1)
@@ -1925,7 +1925,7 @@ int UI_UNISENS2EDFwindow::count_events_from_csv_files(int max_files, const char 
 
   *result = evt_cnt;
 
-  return(0);
+  return 0;
 }
 
 
@@ -1940,13 +1940,13 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
   if(xml_get_attribute_of_element(xml_hdl, "id", str, 255) < 0)
   {
     textEdit1->append("Error, can not find attribute \"id\".\n");
-    return(1);
+    return 1;
   }
 
   if(strlen(str) < 1)
   {
     textEdit1->append("Error, attribute \"id\" has no value.\n");
-    return(1);
+    return 1;
   }
 
   strncpy(binfilename[file_nr], str, MAX_PATH_LENGTH - 1);
@@ -1992,13 +1992,13 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
   if(xml_get_attribute_of_element(xml_hdl, "sampleRate", str, 255) < 0)
   {
     textEdit1->append("Error, can not find attribute \"sampleRate\".\n");
-    return(1);
+    return 1;
   }
 
   if(strlen(str) < 1)
   {
     textEdit1->append("Error, attribute \"sampleRate\" has no value.");
-    return(1);
+    return 1;
   }
 
   sf_inv[file_nr] = 0;
@@ -2021,12 +2021,12 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
       }
       else
       {
-        return(US_SAMPLERATE_OUT_OF_RANGE);
+        return US_SAMPLERATE_OUT_OF_RANGE;
       }
     }
     else
     {
-      return(US_SAMPLERATE_OUT_OF_RANGE);
+      return US_SAMPLERATE_OUT_OF_RANGE;
     }
   }
 
@@ -2039,7 +2039,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
     if(strlen(str) < 1)
     {
       textEdit1->append("Error, attribute \"baseline\" has no value.\n");
-      return(1);
+      return 1;
     }
 
     baseline[file_nr] = strtoll(str, NULL, 0);
@@ -2054,7 +2054,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
     if(strlen(str) < 1)
     {
       textEdit1->append("Error, attribute \"adcZero\" has no value.\n");
-      return(1);
+      return 1;
     }
 
     adczero[file_nr] = strtoll(str, NULL, 0);
@@ -2073,7 +2073,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
   if((lsbval[file_nr] < -1000000.0) || (lsbval[file_nr] > 1000000.0))
   {
     textEdit1->append("Error, attribute \"lsbValue\" is out of range.\n");
-    return(1);
+    return 1;
   }
 
   physmax[file_nr] = lsbval[file_nr];
@@ -2083,7 +2083,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
   if(xml_get_attribute_of_element(xml_hdl, "dataType", str, 255) < 0)
   {
     textEdit1->append("Error, can not find attribute \"dataType\".\n");
-    return(1);
+    return 1;
   }
 
   if(csv_enc[file_nr])
@@ -2198,7 +2198,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
                       {
                         snprintf(scratchpad, 2047, "Error, unsupported combination of datatype: %s and csv file\n", str);
                         textEdit1->append(scratchpad);
-                        return(1);
+                        return 1;
                       }
   }
   else
@@ -2335,11 +2335,11 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
                           {
                             snprintf(scratchpad, 2047, "Error, unsupported combination of datatype: %s and binary file\n", str);
                             textEdit1->append(scratchpad);
-                            return(1);
+                            return 1;
                           }
   }
 
-  return(0);
+  return 0;
 }
 
 
@@ -2350,13 +2350,13 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_EVT_attributes(struct xml_ha
   if(xml_get_attribute_of_element(xml_hdl, "id", str, 255) < 0)
   {
     textEdit1->append("Error, can not find attribute \"id\".\n");
-    return(1);
+    return 1;
   }
 
   if(strlen(str) < 1)
   {
     textEdit1->append("Error, attribute \"id\" has no value.\n");
-    return(1);
+    return 1;
   }
 
   strncpy(evtfilename[file_nr], str, MAX_PATH_LENGTH - 1);
@@ -2364,13 +2364,13 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_EVT_attributes(struct xml_ha
   if(xml_get_attribute_of_element(xml_hdl, "sampleRate", str, 255) < 0)
   {
     textEdit1->append("Error, can not find attribute \"sampleRate\".\n");
-    return(1);
+    return 1;
   }
 
   if(strlen(str) < 1)
   {
     textEdit1->append("Error, attribute \"sampleRate\" has no value.\n");
-    return(1);
+    return 1;
   }
 
   evt_sf[file_nr] = atoi(str);
@@ -2378,10 +2378,10 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_EVT_attributes(struct xml_ha
   if((evt_sf[file_nr] < 1) || (evt_sf[file_nr] > 1000000))
   {
     textEdit1->append("Error, attribute \"sampleRate\" is out of range.\n");
-    return(1);
+    return 1;
   }
 
-  return(0);
+  return 0;
 }
 
 

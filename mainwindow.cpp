@@ -246,7 +246,7 @@ long long UI_Mainwindow::check_edf_file_datarecords(struct edfhdrblock *hdr)
   {
     hdr->datarecords = 0LL;
 
-    return(0LL);
+    return 0LL;
   }
 
   datarecords = ftello(hdr->file_hdl);
@@ -255,7 +255,7 @@ long long UI_Mainwindow::check_edf_file_datarecords(struct edfhdrblock *hdr)
   {
     hdr->datarecords = 0LL;
 
-    return(0LL);
+    return 0LL;
   }
 
   datarecords -= (long long)hdr->hdrsize;
@@ -266,12 +266,12 @@ long long UI_Mainwindow::check_edf_file_datarecords(struct edfhdrblock *hdr)
   {
     hdr->datarecords = 0LL;
 
-    return(0LL);
+    return 0LL;
   }
 
   hdr->datarecords = datarecords;
 
-  return(datarecords);
+  return datarecords;
 }
 
 
@@ -3350,7 +3350,7 @@ long long UI_Mainwindow::get_long_time(char *str)
 
   if(neg)  value = -value;
 
-  return(value);
+  return value;
 }
 
 
@@ -3532,11 +3532,11 @@ int UI_Mainwindow::file_is_opened(const char *o_path)
   {
     if(!strcmp(edfheaderlist[i]->filename, o_path))
     {
-      return(1);
+      return 1;
     }
   }
 
-  return(0);
+  return 0;
 }
 
 
@@ -3605,17 +3605,17 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
 
   if(signalcomps >= MAXSIGNALS)
   {
-    return(NULL);
+    return NULL;
   }
 
   if(original_signalcomp->ecg_filter != NULL)
   {
-    return(NULL);
+    return NULL;
   }
 
   if(original_signalcomp->zratio_filter != NULL)
   {
-    return(NULL);
+    return NULL;
   }
 
   newsignalcomp = (struct signalcompblock *)calloc(1, sizeof(struct signalcompblock));
@@ -3623,7 +3623,7 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "malloc() error");
     messagewindow.exec();
-    return(NULL);
+    return NULL;
   }
 
   *newsignalcomp = *original_signalcomp;
@@ -3636,7 +3636,7 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "malloc() error");
       messagewindow.exec();
       free(signalcomp);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -3648,7 +3648,7 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "malloc() error");
       messagewindow.exec();
       free(signalcomp);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -3662,7 +3662,7 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "malloc() error");
       messagewindow.exec();
       free(signalcomp);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -3674,7 +3674,7 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "malloc() error");
       messagewindow.exec();
       free(signalcomp);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -3772,7 +3772,7 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
       messagewindow.exec();
       free(err);
       free(signalcomp);
-      return(NULL);
+      return NULL;
     }
 
     newsignalcomp->fid_run[i] = fid_run_new(newsignalcomp->fidfilter[i], &newsignalcomp->fidfuncp[i]);
@@ -3788,7 +3788,7 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
 
   signalcomps++;
 
-  return(newsignalcomp);
+  return newsignalcomp;
 }
 
 

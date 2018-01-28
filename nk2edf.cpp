@@ -682,7 +682,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     fseeko(pntfile, 0x0604LL, SEEK_SET);
     if(fread(scratchpad, 10, 1, pntfile)!=1)
     {
-      return(2);
+      return 2;
     }
     scratchpad[10] = 0;
     latin1_to_ascii(scratchpad, strlen(scratchpad));
@@ -696,7 +696,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       p = i;
       if(fwrite(scratchpad, i, 1, outputfile)!=1)
       {
-        return(3);
+        return 3;
       }
     }
     else
@@ -710,7 +710,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     fseeko(pntfile, 0x064aLL, SEEK_SET);
     if(fread(scratchpad, 6, 1, pntfile)!=1)
     {
-      return(2);
+      return 2;
     }
     if(!strncmp(scratchpad, "Male", 4))  fputc('M', outputfile);
     else
@@ -725,7 +725,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     fseeko(pntfile, 0x0668LL, SEEK_SET);
     if(fread(scratchpad, 2, 1, pntfile)!=1)
     {
-      return(2);
+      return 2;
     }
     scratchpad[2] = 0;
     temp = atoi(scratchpad);
@@ -741,7 +741,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     fseeko(pntfile, 0x0665LL, SEEK_SET);
     if(fread(scratchpad, 2, 1, pntfile)!=1)
     {
-      return(2);
+      return 2;
     }
     scratchpad[2] = 0;
     temp = atoi(scratchpad);
@@ -749,7 +749,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     fseeko(pntfile, 0x0660LL, SEEK_SET);
     if(fread(scratchpad, 4, 1, pntfile)!=1)
     {
-      return(2);
+      return 2;
     }
     scratchpad[4] = 0;
     temp = atoi(scratchpad);
@@ -773,7 +773,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       fseeko(pntfile, 0x0668LL, SEEK_SET);
       if(fread(scratchpad, 2, 1, pntfile)!=1)
       {
-        return(2);
+        return 2;
       }
       scratchpad[2] = 0;
       temp = atoi(scratchpad);
@@ -793,7 +793,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       }
       if(fwrite(scratchpad, 2, 1, outputfile)!=1)
       {
-        return(3);
+        return 3;
       }
       p += 2;
       fputc('-', outputfile);
@@ -801,7 +801,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       fseeko(pntfile, 0x0665LL, SEEK_SET);
       if(fread(scratchpad, 2, 1, pntfile)!=1)
       {
-        return(2);
+        return 2;
       }
       scratchpad[2] = 0;
       temp = atoi(scratchpad);
@@ -837,7 +837,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       }
       if(fwrite(scratchpad, 3, 1, outputfile)!=1)
       {
-        return(3);
+        return 3;
       }
       p += 3;
       fputc('-', outputfile);
@@ -845,7 +845,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       fseeko(pntfile, 0x0660LL, SEEK_SET);
       if(fread(scratchpad, 4, 1, pntfile)!=1)
       {
-        return(2);
+        return 2;
       }
       scratchpad[4] = 0;
       temp = atoi(scratchpad);
@@ -865,7 +865,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       }
       if(fwrite(scratchpad, 4, 1, outputfile)!=1)
       {
-        return(3);
+        return 3;
       }
       p += 4;
     }
@@ -876,7 +876,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     fseeko(pntfile, 0x062eLL, SEEK_SET);
     if(fread(scratchpad, 20, 1, pntfile)!=1)
     {
-      return(2);
+      return 2;
     }
     scratchpad[20] = 0;
     latin1_to_ascii(scratchpad, strlen(scratchpad));
@@ -890,7 +890,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       p += i;
       if(fwrite(scratchpad, i, 1, outputfile)!=1)
       {
-        return(3);
+        return 3;
       }
     }
     else
@@ -903,14 +903,14 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
 
     if(fwrite("Startdate ", 10, 1, outputfile)!=1)
     {
-      return(3);
+      return 3;
     }
     p = 10;
     error = 0;
     fseeko(pntfile, 0x0046LL, SEEK_SET);
     if(fread(scratchpad, 2, 1, pntfile)!=1)
     {
-      return(2);
+      return 2;
     }
     scratchpad[2] = 0;
     temp = atoi(scratchpad);
@@ -926,7 +926,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     fseeko(pntfile, 0x0044LL, SEEK_SET);
     if(fread(scratchpad, 2, 1, pntfile)!=1)
     {
-      return(2);
+      return 2;
     }
     scratchpad[2] = 0;
     temp = atoi(scratchpad);
@@ -934,7 +934,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     fseeko(pntfile, 0x0040LL, SEEK_SET);
     if(fread(scratchpad, 4, 1, pntfile)!=1)
     {
-      return(2);
+      return 2;
     }
     scratchpad[4] = 0;
     temp = atoi(scratchpad);
@@ -958,7 +958,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       fseeko(pntfile, 0x0046LL, SEEK_SET);
       if(fread(scratchpad, 2, 1, pntfile)!=1)
       {
-        return(2);
+        return 2;
       }
       scratchpad[2] = 0;
       temp = atoi(scratchpad);
@@ -973,13 +973,13 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       }
       if(fwrite(scratchpad, 2, 1, outputfile)!=1)
       {
-        return(3);
+        return 3;
       }
       fputc('-', outputfile);
       fseeko(pntfile, 0x0044LL, SEEK_SET);
       if(fread(scratchpad, 2, 1, pntfile)!=1)
       {
-        return(2);
+        return 2;
       }
       scratchpad[2] = 0;
       temp = atoi(scratchpad);
@@ -1014,13 +1014,13 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       }
       if(fwrite(scratchpad, 3, 1, outputfile)!=1)
       {
-        return(3);
+        return 3;
       }
       fputc('-', outputfile);
       fseeko(pntfile, 0x0040LL, SEEK_SET);
       if(fread(scratchpad, 4, 1, pntfile)!=1)
       {
-        return(2);
+        return 2;
       }
       scratchpad[4] = 0;
       temp = atoi(scratchpad);
@@ -1035,7 +1035,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       }
       if(fwrite(scratchpad, 4, 1, outputfile)!=1)
       {
-        return(3);
+        return 3;
       }
       p += 11;
     }
@@ -1046,7 +1046,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     fseeko(pntfile, 0x061cLL, SEEK_SET);
     if(fread(scratchpad, 10, 1, pntfile)!=1)
     {
-      return(2);
+      return 2;
     }
     scratchpad[10] = 0;
     latin1_to_ascii(scratchpad, strlen(scratchpad));
@@ -1060,7 +1060,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       p += i;
       if(fwrite(scratchpad, i, 1, outputfile)!=1)
       {
-        return(3);
+        return 3;
       }
     }
     else
@@ -1075,7 +1075,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     fseeko(pntfile, 0x06aaLL, SEEK_SET);
     if(fread(scratchpad, 20, 1, pntfile)!=1)
     {
-      return(2);
+      return 2;
     }
     scratchpad[20] = 0;
     latin1_to_ascii(scratchpad, strlen(scratchpad));
@@ -1089,7 +1089,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       p += i;
       if(fwrite(scratchpad, i, 1, outputfile)!=1)
       {
-        return(3);
+        return 3;
       }
     }
     else
@@ -1103,13 +1103,13 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
 
     if(fwrite("Nihon_Kohden_", 13, 1, outputfile)!=1)
     {
-      return(3);
+      return 3;
     }
     p += 13;
     rewind(inputfile);
     if(fread(scratchpad, 16, 1, inputfile)!=1)
     {
-      return(2);
+      return 2;
     }
     scratchpad[16] = 0;
     latin1_to_ascii(scratchpad, strlen(scratchpad));
@@ -1120,7 +1120,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     }
     if(fwrite(scratchpad, i, 1, outputfile)!=1)
     {
-      return(3);
+      return 3;
     }
     p += i;
 
@@ -1131,7 +1131,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     fseeko(inputfile, 0x004fLL, SEEK_SET);
     if(fread(scratchpad, 32, 1, inputfile)!=1)
     {
-      return(2);
+      return 2;
     }
     scratchpad[32] = 0;
     latin1_to_ascii(scratchpad, strlen(scratchpad));
@@ -1142,18 +1142,18 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     p = 80 - i;
     if(fwrite(scratchpad, i, 1, outputfile)!=1)
     {
-      return(3);
+      return 3;
     }
     for(i=0; i<p; i++)  fputc(' ', outputfile);
 
     if(fwrite("Nihon Kohden ", 13, 1, outputfile)!=1)
     {
-      return(3);
+      return 3;
     }
     rewind(inputfile);
     if(fread(scratchpad, 16, 1, inputfile)!=1)
     {
-      return(2);
+      return 2;
     }
     scratchpad[16] = 0;
     latin1_to_ascii(scratchpad, strlen(scratchpad));
@@ -1164,7 +1164,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     p = 67 - i;
     if(fwrite(scratchpad, i, 1, outputfile)!=1)
     {
-      return(3);
+      return 3;
     }
     for(i=0; i<p; i++)  fputc(' ', outputfile);
   }
@@ -1203,11 +1203,11 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
   fseeko(inputfile, (long long)(0x001c + offset), SEEK_SET);
   if(fread((char *)(&record_duration), 4, 1, inputfile)!=1)
   {
-    return(2);
+    return 2;
   }
   if((record_duration < 10) || (record_duration > 99999999))
   {
-    return(4);
+    return 4;
   }
   fprintf(outputfile, "%-8u", record_duration);
   fprintf(outputfile, "0.1     ");
@@ -1289,7 +1289,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
 
   bufsize = 4194304;
   buf = (char *)calloc(1, bufsize);
-  if(buf==NULL)  return(1);
+  if(buf==NULL)  return 1;
 
   record_size = (samplefrequency / 10) * channels * 2;
   if(edfplus)  record_size += ANNOT_TRACKSIZE;
@@ -1344,7 +1344,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
         if(temp==EOF)
         {
           free(buf);
-          return(2);
+          return 2;
         }
         buf[j+(k*raster)+(i*record_size)+1] = temp;
       }
@@ -1401,7 +1401,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     if(fwrite(buf, records_in_buf * record_size, 1, outputfile)!=1)
     {
       free(buf);
-      return(3);
+      return 3;
     }
     left_records -= records_in_buf;
   }
@@ -1412,7 +1412,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
 
   free(buf);
 
-  return(0);
+  return 0;
 }
 
 
@@ -1434,7 +1434,7 @@ int UI_NK2EDFwindow::check_device(char *str)
   if(!strncmp(str, "EEG-1100B V02.00", 16))  error = 0;
   if(!strncmp(str, "EEG-1100C V02.00", 16))  error = 0;
 
-  return(error);
+  return error;
 }
 
 
@@ -1462,7 +1462,7 @@ int UI_NK2EDFwindow::read_21e_file(char *e21filepath)
     inputfile = fopeno(e21filepath, "rb");
     if(inputfile==NULL)
     {
-      return(1);
+      return 1;
     }
   }
 
@@ -1537,7 +1537,7 @@ int UI_NK2EDFwindow::read_21e_file(char *e21filepath)
 
   fclose(inputfile);
 
-  return(0);
+  return 0;
 }
 
 

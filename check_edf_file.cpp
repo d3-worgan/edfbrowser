@@ -52,14 +52,14 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   if(edf_hdr==NULL)
   {
     sprintf(txt_string, "Memory allocation error. (edf_hdr)");
-    return(NULL);
+    return NULL;
   }
 
   edfhdr = (struct edfhdrblock *)calloc(1, sizeof(struct edfhdrblock));
   if(edfhdr==NULL)
   {
     sprintf(txt_string, "Memory allocation error. (edfhdr)");
-    return(NULL);
+    return NULL;
   }
 
   rewind(inputfile);
@@ -68,7 +68,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     sprintf(txt_string, "Error, reading file");
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
 /**************************** VERSION ***************************************/
@@ -86,7 +86,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         i + 1);
         free(edf_hdr);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
     }
 
@@ -97,7 +97,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
             scratchpad + 1);
       free(edf_hdr);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
 
     edfhdr->bdf = 1;
@@ -112,7 +112,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         i + 1);
         free(edf_hdr);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
     }
 
@@ -123,7 +123,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
             scratchpad);
       free(edf_hdr);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
 
     edfhdr->edf = 1;
@@ -146,7 +146,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       i + 1);
       free(edf_hdr);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -166,7 +166,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       i + 1);
       free(edf_hdr);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -185,7 +185,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       i + 1);
       free(edf_hdr);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -197,7 +197,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
                         "You can fix this problem with the header editor, check the manual for details.");
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
   if((edf_hdr[168]<48)||(edf_hdr[168]>57))      error = 1;
@@ -215,7 +215,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
            "expected \"dd.mm.yy\"",
            scratchpad);
     free(edf_hdr);
-    return(NULL);
+    return NULL;
   }
 
   scratchpad[2] = 0;
@@ -230,7 +230,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
            "expected \"dd.mm.yy\" where \"dd\" should be more than 00 and less than 32",
            scratchpad);
     free(edf_hdr);
-    return(NULL);
+    return NULL;
   }
 
   if((atoi(scratchpad+3)<1)||(atoi(scratchpad+3)>12))
@@ -242,7 +242,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
            scratchpad);
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
   date_time.day = atoi(scratchpad);
@@ -269,7 +269,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       i + 1);
       free(edf_hdr);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -281,7 +281,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
                         "You can fix this problem with the header editor, check the manual for details.");
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
   if((edf_hdr[176]<48)||(edf_hdr[176]>57))      error = 1;
@@ -302,7 +302,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
            scratchpad);
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
   scratchpad[2] = 0;
@@ -318,7 +318,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
            scratchpad);
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
   if(atoi(scratchpad+3)>59)
@@ -330,7 +330,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
            scratchpad);
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
   if(atoi(scratchpad+6)>59)
@@ -342,7 +342,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
            scratchpad);
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
   date_time.hour = atoi(scratchpad);
@@ -369,7 +369,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       i + 1);
       free(edf_hdr);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -379,7 +379,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
            scratchpad);
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
   edfhdr->edfsignals = atoi(scratchpad);
   if(edfhdr->edfsignals<1)
@@ -388,7 +388,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
            edfhdr->edfsignals);
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
   if(edfhdr->edfsignals>MAXSIGNALS)
@@ -398,7 +398,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
            MAXSIGNALS);
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
 /***************** NUMBER OF BYTES IN HEADER *******************************/
@@ -414,7 +414,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       i + 1);
       free(edf_hdr);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -424,7 +424,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
            scratchpad);
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
   n  = atoi(scratchpad);
@@ -435,7 +435,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
            n, edfhdr->edfsignals, edfhdr->edfsignals * 256 + 256);
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
 /********************* RESERVED FIELD *************************************/
@@ -453,7 +453,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       i + 1);
       free(edf_hdr);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -501,7 +501,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       i + 1);
       free(edf_hdr);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -512,7 +512,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
            scratchpad);
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
   edfhdr->datarecords = atoi(scratchpad);
@@ -531,7 +531,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
 #endif
       free(edf_hdr);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -548,7 +548,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       i + 1);
       free(edf_hdr);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -558,7 +558,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
             scratchpad);
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
   edfhdr->data_record_duration = atof(scratchpad);
@@ -568,7 +568,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
             scratchpad);
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
   edfhdr->long_data_record_duration = get_long_duration(scratchpad);
@@ -582,7 +582,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   {
     sprintf(txt_string, "Memory allocation error. (edf_hdr takes %i bytes)", (edfhdr->edfsignals + 1) * 256);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
   rewind(inputfile);
@@ -591,7 +591,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     sprintf(txt_string, "Error, reading %i bytes from file", (edfhdr->edfsignals + 1) * 256);
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
   edfhdr->edfparam = (struct edfparamblock *)calloc(1, sizeof(struct edfparamblock[edfhdr->edfsignals]));
@@ -600,7 +600,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     sprintf(txt_string, "Memory allocation error! (edfparam)");
     free(edf_hdr);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
 
 /**************************** LABELS *************************************/
@@ -620,7 +620,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
     }
     if(edfhdr->edfplus)
@@ -650,7 +650,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     free(edf_hdr);
     free(edfhdr->edfparam);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
   if(edfhdr->bdfplus&&(!edfhdr->nr_annot_chns))
   {
@@ -658,7 +658,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     free(edf_hdr);
     free(edfhdr->edfparam);
     free(edfhdr);
-    return(NULL);
+    return NULL;
   }
   if((edfhdr->edfsignals!=edfhdr->nr_annot_chns)||((!edfhdr->edfplus)&&(!edfhdr->bdfplus)))
   {
@@ -668,7 +668,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -688,7 +688,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
     }
     strncpy(edfhdr->edfparam[i].transducer, edf_hdr + 256 + (edfhdr->edfsignals * 16) + (i * 80), 80);
@@ -707,7 +707,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
             free(edf_hdr);
             free(edfhdr->edfparam);
             free(edfhdr);
-            return(NULL);
+            return NULL;
           }
         }
       }
@@ -725,7 +725,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
             free(edf_hdr);
             free(edfhdr->edfparam);
             free(edfhdr);
-            return(NULL);
+            return NULL;
           }
         }
       }
@@ -748,7 +748,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
     }
     strncpy(edfhdr->edfparam[i].physdimension, edf_hdr + 256 + (edfhdr->edfsignals * 96) + (i * 8), 8);
@@ -772,7 +772,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
     }
 
@@ -784,7 +784,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
 
     edfhdr->edfparam[i].phys_min = atof(scratchpad);
@@ -807,7 +807,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
     }
 
@@ -819,7 +819,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
 
     edfhdr->edfparam[i].phys_max = atof(scratchpad);
@@ -830,7 +830,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -851,7 +851,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
     }
 
@@ -864,7 +864,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
 
     n = atoi(scratchpad);
@@ -882,7 +882,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
           free(edf_hdr);
           free(edfhdr->edfparam);
           free(edfhdr);
-          return(NULL);
+          return NULL;
         }
       }
     }
@@ -900,7 +900,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
           free(edf_hdr);
           free(edfhdr->edfparam);
           free(edfhdr);
-          return(NULL);
+          return NULL;
         }
       }
     }
@@ -914,7 +914,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
     }
     if(edfhdr->bdf)
@@ -927,7 +927,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
     }
     edfhdr->edfparam[i].dig_min = n;
@@ -950,7 +950,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
     }
 
@@ -963,7 +963,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
 
     n = atoi(scratchpad);
@@ -981,7 +981,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
           free(edf_hdr);
           free(edfhdr->edfparam);
           free(edfhdr);
-          return(NULL);
+          return NULL;
         }
       }
     }
@@ -999,7 +999,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
           free(edf_hdr);
           free(edfhdr->edfparam);
           free(edfhdr);
-          return(NULL);
+          return NULL;
         }
       }
     }
@@ -1013,7 +1013,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
     }
     else
@@ -1026,7 +1026,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
     }
     edfhdr->edfparam[i].dig_max = n;
@@ -1038,7 +1038,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -1058,7 +1058,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
     }
     strncpy(edfhdr->edfparam[i].prefilter, edf_hdr + 256 + (edfhdr->edfsignals * 136) + (i * 80), 80);
@@ -1077,7 +1077,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
             free(edf_hdr);
             free(edfhdr->edfparam);
             free(edfhdr);
-            return(NULL);
+            return NULL;
           }
         }
       }
@@ -1095,7 +1095,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
             free(edf_hdr);
             free(edfhdr->edfparam);
             free(edfhdr);
-            return(NULL);
+            return NULL;
           }
         }
       }
@@ -1121,7 +1121,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
     }
 
@@ -1133,7 +1133,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
 
     n = atoi(scratchpad);
@@ -1145,7 +1145,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
     edfhdr->edfparam[i].smp_per_record = n;
     edfhdr->recordsize += n;
@@ -1162,7 +1162,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
   }
   else
@@ -1176,7 +1176,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -1195,7 +1195,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
     }
     strncpy(edfhdr->edfparam[i].reserved, edf_hdr + 256 + (edfhdr->edfsignals * 224) + (i * 32), 32);
@@ -1281,7 +1281,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
 
     p = 0;
@@ -1453,7 +1453,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       }
       free(edf_hdr);
       free(edfhdr->edfparam);
-      return(NULL);
+      return NULL;
     }
 
     if(edf_hdr[98]!='X')
@@ -1487,7 +1487,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
 
       date_time.year = atoi(scratchpad2 + 7);
@@ -1498,7 +1498,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
-        return(NULL);
+        return NULL;
       }
 
       date_time_to_utc(&edfhdr->utc_starttime, date_time);
@@ -1628,7 +1628,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
-      return(NULL);
+      return NULL;
     }
   }
 
@@ -1650,7 +1650,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
 
   free(edf_hdr);
 
-  return(edfhdr);
+  return edfhdr;
 }
 
 
@@ -1662,7 +1662,7 @@ int EDFfileCheck::is_integer_number(char *str)
 
   l = strlen(str);
 
-  if(!l)  return(1);
+  if(!l)  return 1;
 
   if((str[0]=='+')||(str[0]=='-'))
   {
@@ -1676,7 +1676,7 @@ int EDFfileCheck::is_integer_number(char *str)
     {
       if(!digit)
       {
-        return(1);
+        return 1;
       }
       hasspace++;
     }
@@ -1684,21 +1684,21 @@ int EDFfileCheck::is_integer_number(char *str)
     {
       if((str[i]<48)||(str[i]>57))
       {
-        return(1);
+        return 1;
       }
       else
       {
         if(hasspace)
         {
-          return(1);
+          return 1;
         }
         digit++;
       }
     }
   }
 
-  if(digit)  return(0);
-  else  return(1);
+  if(digit)  return 0;
+  else  return 1;
 }
 
 
@@ -1709,7 +1709,7 @@ int EDFfileCheck::is_number(char *str)
 
   l = strlen(str);
 
-  if(!l)  return(1);
+  if(!l)  return 1;
 
   if((str[0]=='+')||(str[0]=='-'))
   {
@@ -1723,7 +1723,7 @@ int EDFfileCheck::is_number(char *str)
     {
       if((!digit)||hasexp)
       {
-        return(1);
+        return 1;
       }
       hasexp++;
       hassign = 0;
@@ -1736,7 +1736,7 @@ int EDFfileCheck::is_number(char *str)
     {
       if(!digit)
       {
-        return(1);
+        return 1;
       }
       hasspace++;
     }
@@ -1744,17 +1744,17 @@ int EDFfileCheck::is_number(char *str)
     {
       if(((str[i]<48)||(str[i]>57))&&str[i]!='.')
       {
-        return(1);
+        return 1;
       }
       else
       {
         if(hasspace)
         {
-          return(1);
+          return 1;
         }
         if(str[i]=='.')
         {
-          if(hasdot)  return(1);
+          if(hasdot)  return 1;
           hasdot++;
         }
         else
@@ -1769,7 +1769,7 @@ int EDFfileCheck::is_number(char *str)
   {
     if(++i==l)
     {
-      return(1);
+      return 1;
     }
 
     if((str[i]=='+')||(str[i]=='-'))
@@ -1784,7 +1784,7 @@ int EDFfileCheck::is_number(char *str)
       {
         if(!digit)
         {
-          return(1);
+          return 1;
         }
         hasspace++;
       }
@@ -1792,13 +1792,13 @@ int EDFfileCheck::is_number(char *str)
       {
         if((str[i]<48)||(str[i]>57))
         {
-          return(1);
+          return 1;
         }
         else
         {
           if(hasspace)
           {
-            return(1);
+            return 1;
           }
 
           digit++;
@@ -1807,8 +1807,8 @@ int EDFfileCheck::is_number(char *str)
     }
   }
 
-  if(digit)  return(0);
-  else  return(1);
+  if(digit)  return 0;
+  else  return 1;
 }
 
 
@@ -1876,7 +1876,7 @@ long long EDFfileCheck::get_long_duration(char *str)
     }
   }
 
-  return(value);
+  return value;
 }
 
 

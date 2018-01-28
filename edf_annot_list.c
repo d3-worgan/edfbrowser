@@ -98,7 +98,7 @@ int edfplus_annotation_size(struct annotation_list *list)
 {
   if(list == NULL)  return 0;
 
-  return(list->sz);
+  return list->sz;
 }
 
 
@@ -497,7 +497,7 @@ int edfplus_annotation_get_max_annotation_strlen(struct annotation_list *list)
 //        timestamp_digits,
 //        timestamp_decimals);
 
-  return(annot_descr_len + annot_duration_len + timestamp_digits + timestamp_decimals + 4);
+  return annot_descr_len + annot_duration_len + timestamp_digits + timestamp_decimals + 4;
 }
 
 
@@ -555,7 +555,7 @@ long long edfplus_annotation_get_long_from_number(const char *str)
 
   if(str[-1]=='-')  value = -value;
 
-  return(value);
+  return value;
 }
 
 

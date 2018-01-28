@@ -40,9 +40,9 @@ inline static int xml_next_tag(int, struct xml_handle *);
 
 int xml_character_encoding_type(struct xml_handle *handle_p)
 {
-  if(handle_p==NULL)  return(-1);
+  if(handle_p==NULL)  return -1;
 
-  return(handle_p->encoding);
+  return handle_p->encoding;
 }
 
 
@@ -148,7 +148,7 @@ int xml_strncpy_encode_entity(char *dest, const char *src, int n)
 
   if(n < 1)
   {
-    return(0);
+    return 0;
   }
 
   *dest = 0;
@@ -200,7 +200,7 @@ int xml_strncpy_encode_entity(char *dest, const char *src, int n)
 
   dest[i] = 0;
 
-  return(i);
+  return i;
 }
 
 
@@ -269,7 +269,7 @@ int xml_strncpy_decode_entity(char *dest, const char *src, int n)
 
   if(n < 1)
   {
-    return(0);
+    return 0;
   }
 
   len = strlen(src);
@@ -330,7 +330,7 @@ int xml_strncpy_decode_entity(char *dest, const char *src, int n)
     }
   }
 
-  return(i);
+  return i;
 }
 
 
@@ -410,7 +410,7 @@ static int xml_attribute(const char *data, const char *item, char *result, int r
                 xml_strncpy_decode_entity(result, data + i, j - i);
                 result[j - i] = 0;
 
-                return(j - i);
+                return j - i;
               }
             }
           }
@@ -505,7 +505,7 @@ int xml_get_content_of_element(struct xml_handle *handle_p, char *buf, int sz)
 {
   int i, j, offset, len, deep=0, cdata=0;
 
-  if(handle_p==NULL)  return(XML_ERROR_INV_HDL);
+  if(handle_p==NULL)  return XML_ERROR_INV_HDL;
 
   offset = handle_p->offset[handle_p->level];
 

@@ -49,12 +49,12 @@ struct ecg_filter_settings * create_ecg_filter(double sf, double bitval, int pow
 
   struct ecg_filter_settings *settings;
 
-  if(sf < 99.9)  return(NULL);
+  if(sf < 99.9)  return NULL;
 
-  if((powerlinefreq != 50) && (powerlinefreq != 60)) return(NULL);
+  if((powerlinefreq != 50) && (powerlinefreq != 60)) return NULL;
 
   settings = (struct ecg_filter_settings *) calloc(1, sizeof(struct ecg_filter_settings));
-  if(settings==NULL)  return(NULL);
+  if(settings==NULL)  return NULL;
 
   d_tmp = sf / (double)powerlinefreq;
   settings->avgfilter_50_size = d_tmp;
@@ -77,7 +77,7 @@ struct ecg_filter_settings * create_ecg_filter(double sf, double bitval, int pow
   {
     free(settings);
 
-    return(NULL);
+    return NULL;
   }
   settings->avgfilter_50_buf_bu = (double *)calloc(1, settings->avgfilter_50_size * sizeof(double));
   if(settings->avgfilter_50_buf_bu == NULL)
@@ -85,7 +85,7 @@ struct ecg_filter_settings * create_ecg_filter(double sf, double bitval, int pow
     free(settings->avgfilter_50_buf);
     free(settings);
 
-    return(NULL);
+    return NULL;
   }
   settings->avgfilter_35_buf = (double *)calloc(1, settings->avgfilter_35_size * sizeof(double));
   if(settings->avgfilter_35_buf == NULL)
@@ -94,7 +94,7 @@ struct ecg_filter_settings * create_ecg_filter(double sf, double bitval, int pow
     free(settings->avgfilter_50_buf_bu);
     free(settings);
 
-    return(NULL);
+    return NULL;
   }
   settings->avgfilter_35_buf_bu = (double *)calloc(1, settings->avgfilter_35_size * sizeof(double));
   if(settings->avgfilter_35_buf_bu == NULL)
@@ -104,7 +104,7 @@ struct ecg_filter_settings * create_ecg_filter(double sf, double bitval, int pow
     free(settings->avgfilter_35_buf);
     free(settings);
 
-    return(NULL);
+    return NULL;
   }
   settings->avgfilter_25_buf = (double *)calloc(1, settings->avgfilter_25_size * sizeof(double));
   if(settings->avgfilter_25_buf == NULL)
@@ -115,7 +115,7 @@ struct ecg_filter_settings * create_ecg_filter(double sf, double bitval, int pow
     free(settings->avgfilter_35_buf_bu);
     free(settings);
 
-    return(NULL);
+    return NULL;
   }
   settings->avgfilter_25_buf_bu = (double *)calloc(1, settings->avgfilter_25_size * sizeof(double));
   if(settings->avgfilter_25_buf_bu == NULL)
@@ -127,7 +127,7 @@ struct ecg_filter_settings * create_ecg_filter(double sf, double bitval, int pow
     free(settings->avgfilter_25_buf);
     free(settings);
 
-    return(NULL);
+    return NULL;
   }
 
   settings->SV_idx = 0;
@@ -147,7 +147,7 @@ struct ecg_filter_settings * create_ecg_filter(double sf, double bitval, int pow
     free(settings->avgfilter_25_buf_bu);
     free(settings);
 
-    return(NULL);
+    return NULL;
   }
 
   settings->M_startslope = sf * 0.2;
@@ -184,7 +184,7 @@ struct ecg_filter_settings * create_ecg_filter(double sf, double bitval, int pow
     free(settings->SV);
     free(settings);
 
-    return(NULL);
+    return NULL;
   }
   settings->F_bu = (double *)calloc(1, settings->F_size * sizeof(double));
   if(settings->F_bu == NULL)
@@ -198,7 +198,7 @@ struct ecg_filter_settings * create_ecg_filter(double sf, double bitval, int pow
     free(settings->F);
     free(settings);
 
-    return(NULL);
+    return NULL;
   }
 
   for(i=0; i<5; i++)
@@ -236,7 +236,7 @@ struct ecg_filter_settings * create_ecg_filter(double sf, double bitval, int pow
     free(settings->F_bu);
     free(settings);
 
-    return(NULL);
+    return NULL;
   }
 
   settings->stat_smpl_buf = (long long *)malloc(sizeof(long long) * ECG_FILTER_STAT_BUFSIZE);
@@ -253,10 +253,10 @@ struct ecg_filter_settings * create_ecg_filter(double sf, double bitval, int pow
     free(settings->stat_buf);
     free(settings);
 
-    return(NULL);
+    return NULL;
   }
 
-  return(settings);
+  return settings;
 }
 
 
@@ -330,9 +330,9 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *settings)
 
   settings->avgfilter_25_mean /= settings->avgfilter_25_size;
 
-// return(settings->avgfilter_25_mean);  // debug
+// return settings->avgfilter_25_mean;  // debug
 
-// if(signalcompnr == 1)  return(settings->avgfilter_25_mean);  // debug
+// if(signalcompnr == 1)  return settings->avgfilter_25_mean;  // debug
 
 /* spatial velocity filter */
 
@@ -344,9 +344,9 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *settings)
 
   if(new_input < 0.0)  new_input *= -1.0;
 
-// return(new_input);  // debug
+// return new_input;  // debug
 
-// if(signalcompnr == 2)  return(new_input);  // debug
+// if(signalcompnr == 2)  return new_input;  // debug
 
   settings->F[settings->F_idx++] = new_input;
   settings->F_idx %= settings->F_size;
@@ -377,7 +377,7 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *settings)
 
   settings->F_value += (result / settings->F_sf_factor);
 
-// return(settings->F_value);  // debug
+// return settings->F_value;  // debug
 
 ////////////////////////////////////////////////
 
@@ -429,13 +429,13 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *settings)
 
     settings->sample_cntr++;
 
-// if(signalcompnr == 6)  return(settings->M_avg + settings->R_value);  // debug: check ecg detection treshold
-// if(signalcompnr == 3)  return(settings->M_avg);  // debug: check ecg detection treshold
-// if(signalcompnr == 4)  return(settings->F_value);  // debug: check ecg detection treshold
-// if(signalcompnr == 5)  return(settings->R_value);  // debug: check ecg detection treshold
-// if(signalcompnr == 7)  return(settings->T_peak_avg / 2.0);  // debug: check ecg detection treshold
+// if(signalcompnr == 6)  return settings->M_avg + settings->R_value;  // debug: check ecg detection treshold
+// if(signalcompnr == 3)  return settings->M_avg;  // debug: check ecg detection treshold
+// if(signalcompnr == 4)  return settings->F_value;  // debug: check ecg detection treshold
+// if(signalcompnr == 5)  return settings->R_value;  // debug: check ecg detection treshold
+// if(signalcompnr == 7)  return settings->T_peak_avg / 2.0;  // debug: check ecg detection treshold
 
-    return(settings->bpm / settings->bitvalue);
+    return settings->bpm / settings->bitvalue;
   }
 
   if(new_input > settings->T_peak_avg)
@@ -558,14 +558,14 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *settings)
     }
   }
 
-// if(signalcompnr == 6)  return(settings->M_avg + settings->F_value + settings->R_value);  // debug: check ecg detection treshold
-// if(signalcompnr == 6)  return(settings->M_avg + settings->R_value);  // debug: check ecg detection treshold
-// if(signalcompnr == 3)  return(settings->M_avg);  // debug: check ecg detection treshold
-// if(signalcompnr == 4)  return(settings->F_value);  // debug: check ecg detection treshold
-// if(signalcompnr == 5)  return(settings->R_value);  // debug: check ecg detection treshold
-// if(signalcompnr == 7)  return(settings->T_peak_avg / 2.0);  // debug: check ecg detection treshold
+// if(signalcompnr == 6)  return settings->M_avg + settings->F_value + settings->R_value;  // debug: check ecg detection treshold
+// if(signalcompnr == 6)  return settings->M_avg + settings->R_value;  // debug: check ecg detection treshold
+// if(signalcompnr == 3)  return settings->M_avg;  // debug: check ecg detection treshold
+// if(signalcompnr == 4)  return settings->F_value;  // debug: check ecg detection treshold
+// if(signalcompnr == 5)  return settings->R_value;  // debug: check ecg detection treshold
+// if(signalcompnr == 7)  return settings->T_peak_avg / 2.0;  // debug: check ecg detection treshold
 
-  return(settings->bpm / settings->bitvalue);
+  return settings->bpm / settings->bitvalue;
 }
 
 
@@ -753,19 +753,19 @@ void free_ecg_filter(struct ecg_filter_settings *settings)
 
 int ecg_filter_get_beat_cnt(struct ecg_filter_settings *settings)
 {
-  return(settings->stat_buf_idx);
+  return settings->stat_buf_idx;
 }
 
 
 long long * ecg_filter_get_onset_beatlist(struct ecg_filter_settings *settings)
 {
-  return(settings->stat_smpl_buf);
+  return settings->stat_smpl_buf;
 }
 
 
 double * ecg_filter_get_interval_beatlist(struct ecg_filter_settings *settings)
 {
-  return(settings->stat_buf);
+  return settings->stat_buf;
 }
 
 

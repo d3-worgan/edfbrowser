@@ -46,7 +46,7 @@ struct zratio_filter_settings * create_zratio_filter(int smp_per_record, long lo
   settings = (struct zratio_filter_settings *)calloc(1, sizeof(struct zratio_filter_settings));
   if(settings == NULL)
   {
-    return(NULL);
+    return NULL;
   }
 
   settings->crossoverfreq = crossoverf;
@@ -58,14 +58,14 @@ struct zratio_filter_settings * create_zratio_filter(int smp_per_record, long lo
   if(settings->dftblocksize < (ZRATIO_EPOCH_LEN * 100))
   {
     free(settings);
-    return(NULL);
+    return NULL;
   }
 
   settings->samplefreq = (double)smp_per_record / ((double)long_data_record_duration / TIME_DIMENSION);
   if(settings->samplefreq < 99.9999999)
   {
     free(settings);
-    return(NULL);
+    return NULL;
   }
 
   settings->fft_outputbufsize = settings->dftblocksize / 2;
@@ -74,7 +74,7 @@ struct zratio_filter_settings * create_zratio_filter(int smp_per_record, long lo
   if(settings->freqstep > 1.0001)
   {
     free(settings);
-    return(NULL);
+    return NULL;
   }
 
   settings->f2 = settings->crossoverfreq / settings->freqstep;
@@ -87,7 +87,7 @@ struct zratio_filter_settings * create_zratio_filter(int smp_per_record, long lo
   if(settings->fft_inputbuf == NULL)
   {
     free(settings);
-    return(NULL);
+    return NULL;
   }
 
   settings->fft_inputbuf_bu = (double *)malloc(sizeof(double) * settings->dftblocksize);
@@ -95,7 +95,7 @@ struct zratio_filter_settings * create_zratio_filter(int smp_per_record, long lo
   {
     free(settings->fft_inputbuf);
     free(settings);
-    return(NULL);
+    return NULL;
   }
 
   settings->fft_outputbuf = (double *)calloc(1, sizeof(double) * settings->fft_outputbufsize);
@@ -104,7 +104,7 @@ struct zratio_filter_settings * create_zratio_filter(int smp_per_record, long lo
     free(settings->fft_inputbuf);
     free(settings->fft_inputbuf_bu);
     free(settings);
-    return(NULL);
+    return NULL;
   }
 
   settings->kiss_fftbuf = (kiss_fft_cpx *)malloc((settings->fft_outputbufsize + 1) * sizeof(kiss_fft_cpx));
@@ -114,7 +114,7 @@ struct zratio_filter_settings * create_zratio_filter(int smp_per_record, long lo
     free(settings->fft_inputbuf_bu);
     free(settings->fft_outputbuf);
     free(settings);
-    return(NULL);
+    return NULL;
   }
 
   settings->cfg = kiss_fftr_alloc(settings->dftblocksize, 0, NULL, NULL);
@@ -123,7 +123,7 @@ struct zratio_filter_settings * create_zratio_filter(int smp_per_record, long lo
 
   settings->zratio_value = 0.0;
 
-  return(settings);
+  return settings;
 }
 
 
@@ -188,7 +188,7 @@ double run_zratio_filter(double new_sample, struct zratio_filter_settings *setti
     }
   }
 
-  return(settings->zratio_value / settings->bitvalue);
+  return settings->zratio_value / settings->bitvalue;
 }
 
 

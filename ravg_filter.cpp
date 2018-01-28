@@ -37,12 +37,12 @@ struct ravg_filter_settings * create_ravg_filter(int type, int size)
 {
   struct ravg_filter_settings *settings;
 
-  if((size < 2) || (size > 10000))  return(NULL);
+  if((size < 2) || (size > 10000))  return NULL;
 
-  if((type < 0) || (type > 1))  return(NULL);
+  if((type < 0) || (type > 1))  return NULL;
 
   settings = (struct ravg_filter_settings *) calloc(1, sizeof(struct ravg_filter_settings));
-  if(settings==NULL)  return(NULL);
+  if(settings==NULL)  return NULL;
 
   settings->size = size;
   settings->type = type;
@@ -55,17 +55,17 @@ struct ravg_filter_settings * create_ravg_filter(int type, int size)
   if(settings->buf == NULL)
   {
     free(settings);
-    return(NULL);
+    return NULL;
   }
   settings->buf2 = (double *)calloc(1, sizeof(double) * size);
   if(settings->buf2 == NULL)
   {
     free(settings->buf);
     free(settings);
-    return(NULL);
+    return NULL;
   }
 
-  return(settings);
+  return settings;
 }
 
 
@@ -76,7 +76,7 @@ struct ravg_filter_settings * create_ravg_filter_copy(struct ravg_filter_setting
   settings = (struct ravg_filter_settings *) calloc(1, sizeof(struct ravg_filter_settings));
   if(settings==NULL)
   {
-    return(NULL);
+    return NULL;
   }
   memcpy(settings, src, sizeof(struct ravg_filter_settings));
 
@@ -84,7 +84,7 @@ struct ravg_filter_settings * create_ravg_filter_copy(struct ravg_filter_setting
   if(settings->buf == NULL)
   {
     free(settings);
-    return(NULL);
+    return NULL;
   }
   memcpy(settings->buf, src->buf, settings->size);
 
@@ -93,11 +93,11 @@ struct ravg_filter_settings * create_ravg_filter_copy(struct ravg_filter_setting
   {
     free(settings->buf);
     free(settings);
-    return(NULL);
+    return NULL;
   }
   memcpy(settings->buf2, src->buf2, settings->size);
 
-  return(settings);
+  return settings;
 }
 
 
@@ -158,7 +158,7 @@ double run_ravg_filter(double new_input, struct ravg_filter_settings *settings)
 
     settings->mean = new_input;
 
-    return(new_input);
+    return new_input;
   }
 
   settings->mean -= (settings->buf[settings->buf_pntr] / settings->size);
@@ -176,15 +176,15 @@ double run_ravg_filter(double new_input, struct ravg_filter_settings *settings)
 
   if(settings->type == 0)  /* highpass */
   {
-    return(settings->buf[(settings->buf_pntr + (settings->size / 2)) % settings->size] - settings->mean);
+    return settings->buf[(settings->buf_pntr + (settings->size / 2)) % settings->size] - settings->mean;
   }
 
   if(settings->type == 1)  /* lowpass */
   {
-    return(settings->mean);
+    return settings->mean;
   }
 
-  return(0.0);
+  return 0.0;
 }
 
 
@@ -205,25 +205,25 @@ double ravg_filter_response(int type, int size, double freq)
 {
   if((type < 0) || (type > 1) || (size < 2) || (freq > 0.5))
   {
-    return(1.0);
+    return 1.0;
   }
 
   if(type)
   {
     if(freq < 0.000001)
     {
-      return(1.0);
+      return 1.0;
     }
 
-    return(fabs((sin(M_PI * freq * (double)size)) / ((double)size * sin(M_PI * freq))));
+    return fabs((sin(M_PI * freq * (double)size)) / ((double)size * sin(M_PI * freq)));
   }
 
   if(freq < 0.000001)
   {
-    return(0.0);
+    return 0.0;
   }
 
-  return(1.0 - fabs((sin(M_PI * freq * (double)size)) / ((double)size * sin(M_PI * freq))));
+  return 1.0 - fabs((sin(M_PI * freq * (double)size)) / ((double)size * sin(M_PI * freq)));
 }
 
 

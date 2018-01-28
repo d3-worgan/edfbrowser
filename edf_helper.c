@@ -42,7 +42,7 @@ int edfplus_annotation_get_tal_timestamp_digit_cnt(struct edfhdrblock *hdr)
 
   if(hdr==NULL)
   {
-    return(-1);
+    return -1;
   }
 
   time = (hdr->datarecords * hdr->long_data_record_duration) / TIME_DIMENSION;
@@ -53,7 +53,7 @@ int edfplus_annotation_get_tal_timestamp_digit_cnt(struct edfhdrblock *hdr)
   timestamp_digits = snprintf(scratchpad, 256, "%lli", time);
 #endif
 
-  return(timestamp_digits);
+  return timestamp_digits;
 }
 
 
@@ -65,7 +65,7 @@ int edfplus_annotation_get_tal_timestamp_decimal_cnt(struct edfhdrblock *hdr)
 
   if(hdr==NULL)
   {
-    return(-1);
+    return -1;
   }
 
   j = 10;
@@ -100,7 +100,7 @@ int edfplus_annotation_get_tal_timestamp_decimal_cnt(struct edfhdrblock *hdr)
     }
   }
 
-  return(timestamp_decimals);
+  return timestamp_decimals;
 }
 
 

@@ -187,7 +187,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Memory allocation error occurred when trying to read annotations.\n(cnv_buf)");
     messagewindow.exec();
-    return(1);
+    return 1;
   }
 
   max_tal_ln = 0;
@@ -205,7 +205,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Memory allocation error occurred when trying to read annotations.\n(scratchpad)");
     messagewindow.exec();
     free(cnv_buf);
-    return(1);
+    return 1;
   }
 
   time_in_txt = (char *)calloc(1, max_tal_ln + 3);
@@ -215,7 +215,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
     messagewindow.exec();
     free(cnv_buf);
     free(scratchpad);
-    return(1);
+    return 1;
   }
 
   duration_in_txt = (char *)calloc(1, max_tal_ln + 3);
@@ -226,7 +226,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
     free(cnv_buf);
     free(scratchpad);
     free(time_in_txt);
-    return(1);
+    return 1;
   }
 
   if(fseeko(inputfile, (long long)((edfsignals + 1) * 256), SEEK_SET))
@@ -237,7 +237,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
     free(scratchpad);
     free(time_in_txt);
     free(duration_in_txt);
-    return(2);
+    return 2;
   }
 
   QProgressDialog progress("Scanning file for annotations...", "Abort", 0, datarecords);
@@ -268,7 +268,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
         free(scratchpad);
         free(time_in_txt);
         free(duration_in_txt);
-        return(11);
+        return 11;
       }
     }
 
@@ -281,7 +281,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
       free(scratchpad);
       free(time_in_txt);
       free(duration_in_txt);
-      return(2);
+      return 2;
     }
 
 
@@ -451,7 +451,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
                   free(scratchpad);
                   free(time_in_txt);
                   free(duration_in_txt);
-                  return(1);
+                  return 1;
                 }
               }
             }
@@ -520,7 +520,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
         free(scratchpad);
         free(time_in_txt);
         free(duration_in_txt);
-        return(9);
+        return 9;
       }
     }
 
@@ -560,7 +560,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
                 free(scratchpad);
                 free(time_in_txt);
                 free(duration_in_txt);
-                return(1);
+                return 1;
               }
             }
           }
@@ -588,7 +588,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
   free(time_in_txt);
   free(duration_in_txt);
 
-  return(0);
+  return 0;
 }
 
 
@@ -598,24 +598,24 @@ int EDF_annotations::is_duration_number(char *str)
 
   l = strlen(str);
 
-  if(!l)  return(1);
+  if(!l)  return 1;
 
-  if((str[0] == '.')||(str[l-1] == '.'))  return(1);
+  if((str[0] == '.')||(str[l-1] == '.'))  return 1;
 
   for(i=0; i<l; i++)
   {
     if(str[i]=='.')
     {
-      if(hasdot)  return(1);
+      if(hasdot)  return 1;
       hasdot++;
     }
     else
     {
-      if((str[i]<48)||(str[i]>57))  return(1);
+      if((str[i]<48)||(str[i]>57))  return 1;
     }
   }
 
-  return(0);
+  return 0;
 }
 
 
@@ -626,26 +626,26 @@ int EDF_annotations::is_onset_number(char *str)
 
   l = strlen(str);
 
-  if(l<2)  return(1);
+  if(l<2)  return 1;
 
-  if((str[0]!='+')&&(str[0]!='-'))  return(1);
+  if((str[0]!='+')&&(str[0]!='-'))  return 1;
 
-  if((str[1] == '.')||(str[l-1] == '.'))  return(1);
+  if((str[1] == '.')||(str[l-1] == '.'))  return 1;
 
   for(i=1; i<l; i++)
   {
     if(str[i]=='.')
     {
-      if(hasdot)  return(1);
+      if(hasdot)  return 1;
       hasdot++;
     }
     else
     {
-      if((str[i]<48)||(str[i]>57))  return(1);
+      if((str[i]<48)||(str[i]>57))  return 1;
     }
   }
 
-  return(0);
+  return 0;
 }
 
 
@@ -709,7 +709,7 @@ long long EDF_annotations::get_long_time(char *str)
 
   if(neg)  value = -value;
 
-  return(value);
+  return value;
 }
 
 
@@ -717,7 +717,7 @@ int EDF_annotations::check_device(char *str)
 {
   int error = 1;
 
-  if(strlen(str) < 29)  return(1);
+  if(strlen(str) < 29)  return 1;
 
   if(!strncmp(str, "Nihon Kohden EEG-1100A V01.00", 29))  error = 0;
   if(!strncmp(str, "Nihon Kohden EEG-1100B V01.00", 29))  error = 0;
@@ -730,7 +730,7 @@ int EDF_annotations::check_device(char *str)
   if(!strncmp(str, "Nihon Kohden DAE-2100D V02.00", 29))  error = 0;
 //  if(!strncmp(str, "Nihon Kohden EEG-1200A V01.00", 29))  error = 0;
 
-  return(error);
+  return error;
 }
 
 

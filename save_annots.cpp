@@ -74,13 +74,13 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
   timestamp_decimals = edfplus_annotation_get_tal_timestamp_decimal_cnt(hdr);
   if(timestamp_decimals < 0)
   {
-    return(1);
+    return 1;
   }
 
   timestamp_digits = edfplus_annotation_get_tal_timestamp_digit_cnt(hdr);
   if(timestamp_digits < 0)
   {
-    return(1);
+    return 1;
   }
 
   struct annotation_list *annot_list = &hdr->annot_list;
@@ -131,14 +131,14 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
   readbuf = (char *)malloc(hdr->recordsize);
   if(readbuf==NULL)
   {
-    return(1);
+    return 1;
   }
 
   annot_buf = (char *)malloc(annot_recordsize + 10);
   if(annot_buf==NULL)
   {
     free(readbuf);
-    return(1);
+    return 1;
   }
 
 ///////////////////////////////////////////////////////////////////
@@ -163,7 +163,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
     {
       free(readbuf);
       free(annot_buf);
-      return(2);
+      return 2;
     }
 
     if((hdr->genuine_nk) && (hdr->nk_triggers_read))
@@ -200,7 +200,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
     {
       free(readbuf);
       free(annot_buf);
-      return(3);
+      return 3;
     }
   }
   else
@@ -210,38 +210,38 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
     {
       free(readbuf);
       free(annot_buf);
-      return(2);
+      return 2;
     }
     if(fwrite(scratchpad, 80, 1, outputfile)!=1)
     {
       free(readbuf);
       free(annot_buf);
-      return(3);
+      return 3;
     }
     sprintf(scratchpad, "Startdate X X X X ");
     if(fread(scratchpad + 18, 80, 1, inputfile)!=1)
     {
       free(readbuf);
       free(annot_buf);
-      return(2);
+      return 2;
     }
     if(fwrite(scratchpad, 80, 1, outputfile)!=1)
     {
       free(readbuf);
       free(annot_buf);
-      return(3);
+      return 3;
     }
     if(fread(scratchpad, 16, 1, inputfile)!=1)
     {
       free(readbuf);
       free(annot_buf);
-      return(2);
+      return 2;
     }
     if(fwrite(scratchpad, 16, 1, outputfile)!=1)
     {
       free(readbuf);
       free(annot_buf);
-      return(3);
+      return 3;
     }
   }
   fprintf(outputfile, "%-8i", (new_edfsignals * 256) + 512);
@@ -433,7 +433,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
       {
         free(readbuf);
         free(annot_buf);
-        return(4);
+        return 4;
       }
     }
 
@@ -442,7 +442,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
       progress.reset();
       free(readbuf);
       free(annot_buf);
-      return(2);
+      return 2;
     }
 
     if(hdr->edf)
@@ -587,7 +587,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
     {
       free(readbuf);
       free(annot_buf);
-      return(3);
+      return 3;
     }
 
     time += hdr->long_data_record_duration;
@@ -598,7 +598,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
   free(readbuf);
   free(annot_buf);
 
-  return(0);
+  return 0;
 }
 
 

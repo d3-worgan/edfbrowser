@@ -66,12 +66,12 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
 
   if(edfsignals < 1)
   {
-    return(0);
+    return 0;
   }
 
   if(long_data_record_duration != TIME_DIMENSION)
   {
-    return(0);
+    return 0;
   }
 
   sf = hdr->edfparam[0].smp_per_record;
@@ -80,7 +80,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
   {
     if(hdr->edfparam[i].smp_per_record != sf)
     {
-      return(0);
+      return 0;
     }
   }
 
@@ -112,7 +112,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
 
   if(error)
   {
-    return(0);
+    return 0;
   }
 
   for(i=0; i<edfsignals; i++)
@@ -127,7 +127,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
 
   if(i == edfsignals)
   {
-    return(0);
+    return 0;
   }
 
   bufsize = sf * 3;
@@ -137,7 +137,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Memory allocation error occurred when trying to read triggers.\n(buf)");
     messagewindow.exec();
-    return(1);
+    return 1;
   }
 
   if(fseeko(inputfile, ((long long)edfsignals + 1LL) * 256LL, SEEK_SET))
@@ -145,7 +145,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred when reading inputfile triggers.");
     messagewindow.exec();
     free(buf);
-    return(2);
+    return 2;
   }
 
   jump_file = status_signal * sf * 3;
@@ -194,7 +194,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred when reading inputfile triggers.");
       messagewindow.exec();
       free(buf);
-      return(2);
+      return 2;
     }
 
     if(fread(buf, bufsize, 1, inputfile)!=1)
@@ -203,7 +203,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred when reading inputfile triggers.");
       messagewindow.exec();
       free(buf);
-      return(2);
+      return 2;
     }
 
     for(i=0; i<bufsize; i+=3)
@@ -223,7 +223,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
             QMessageBox messagewindow(QMessageBox::Critical, "Error", "Malloc error (annotation).");
             messagewindow.exec();
             free(buf);
-            return(1);
+            return 1;
           }
 
           trigger_cnt++;
@@ -255,7 +255,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
               QMessageBox messagewindow(QMessageBox::Critical, "Error", "Malloc error (annotation).");
               messagewindow.exec();
               free(buf);
-              return(1);
+              return 1;
             }
 
             trigger_cnt++;
@@ -280,7 +280,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
 
   hdr->genuine_biosemi = 1;
 
-  return(0);
+  return 0;
 }
 
 

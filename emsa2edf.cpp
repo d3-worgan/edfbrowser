@@ -981,7 +981,7 @@ int UI_EMSA2EDFwindow::get_string(char *str, FILE *file, int offset, int maxlen)
   {
     str[0] = 0;
 
-    return(0);
+    return 0;
   }
 
   fseeko(file, (long long)(offset), SEEK_SET);
@@ -992,7 +992,7 @@ int UI_EMSA2EDFwindow::get_string(char *str, FILE *file, int offset, int maxlen)
   {
     str[0] = 0;
 
-    return(0);
+    return 0;
   }
 
   if(len>maxlen)
@@ -1004,12 +1004,12 @@ int UI_EMSA2EDFwindow::get_string(char *str, FILE *file, int offset, int maxlen)
   {
     str[0] = 0;
 
-    return(0);
+    return 0;
   }
 
   str[len] = 0;
 
-  return(len);
+  return len;
 }
 
 

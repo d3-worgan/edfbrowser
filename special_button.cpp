@@ -71,7 +71,7 @@ void SpecialButton::setColor(QColor newColor)
 
 QColor SpecialButton::color()
 {
-  return(ButtonColor);
+  return ButtonColor;
 }
 
 
@@ -85,7 +85,7 @@ void SpecialButton::setGlobalColor(int newColor)
 
 int SpecialButton::globalColor()
 {
-  return(global_Color);
+  return global_Color;
 }
 
 

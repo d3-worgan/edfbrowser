@@ -1230,25 +1230,25 @@ int UI_SCPECG2EDFwindow::read_data_section_zero(FILE *inputfile, char *block, lo
     if(fread(&(sp[i].section_id), 2, 1, inputfile) != 1)
     {
       textEdit1->append("A read-error occurred (20)\n");
-      return(-1);
+      return -1;
     }
 
     if(sp[i].section_id != i)
     {
       textEdit1->append("Error, section ID nr does not match (21)\n");
-      return(-1);
+      return -1;
     }
 
     if(fread(&(sp[i].section_length), 4, 1, inputfile) != 1)
     {
       textEdit1->append("A read-error occurred (22)\n");
-      return(-1);
+      return -1;
     }
 
     if(fread(&(sp[i].file_offset), 4, 1, inputfile) != 1)
     {
       textEdit1->append("A read-error occurred (23)\n");
-      return(-1);
+      return -1;
     }
 
     if((sp[i].section_length > 0) && (sp[i].file_offset > 0LL))
@@ -1262,26 +1262,26 @@ int UI_SCPECG2EDFwindow::read_data_section_zero(FILE *inputfile, char *block, lo
       if((sp[i].section_id == 1) || (sp[i].section_id == 3) || (sp[i].section_id == 6))
       {
         textEdit1->append("Error, a required section is missing (24)\n");
-        return(-1);
+        return -1;
       }
     }
 
     if((sp[i].file_offset + sp[i].section_length) > filesize)
     {
       textEdit1->append("Error, index + length of section is > filesize (25)\n");
-      return(-1);
+      return -1;
     }
 
     if(sp[i].present == 1)
     {
       if(read_section_header(i, inputfile, sp[i].file_offset, block))
       {
-        return(-1);
+        return -1;
       }
     }
   }
 
-  return(0);
+  return 0;
 }
 
 
@@ -1304,7 +1304,7 @@ int UI_SCPECG2EDFwindow::check_crc(FILE *inputfile, long long offset, long long 
     if(fread(block, SPCECGBUFSIZE, 1, inputfile) != 1)
     {
       textEdit1->append("A read-error occurred (3)\n");
-      return(-1);
+      return -1;
     }
 
     crc = crc_ccitt((unsigned char *)block, SPCECGBUFSIZE, crc);
@@ -1317,7 +1317,7 @@ int UI_SCPECG2EDFwindow::check_crc(FILE *inputfile, long long offset, long long 
     if(fread(block, ll_tmp, 1, inputfile) != 1)
     {
       textEdit1->append("A read-error occurred (4)\n");
-      return(-1);
+      return -1;
     }
 
     crc = crc_ccitt((unsigned char *)block, ll_tmp, crc);
@@ -1326,10 +1326,10 @@ int UI_SCPECG2EDFwindow::check_crc(FILE *inputfile, long long offset, long long 
   if(crc != crc2)
   {
     textEdit1->append("CRC check failed!\n");
-    return(-1);
+    return -1;
   }
 
-  return(0);
+  return 0;
 }
 
 
@@ -1342,55 +1342,55 @@ int UI_SCPECG2EDFwindow::read_section_header(int n, FILE *inputfile, long long o
   if(fread(&(sp[n].crc), 2, 1, inputfile) != 1)
   {
     textEdit1->append("A read-error occurred (5)\n");
-    return(-1);
+    return -1;
   }
 
   if(fread(&(sp[n].section_id), 2, 1, inputfile) != 1)
   {
     textEdit1->append("A read-error occurred (6)\n");
-    return(-1);
+    return -1;
   }
 
   if(sp[n].section_id != n)
   {
     textEdit1->append("Error, section ID does not match (188)");
-    return(-1);
+    return -1;
   }
 
   if(fread(&(sp[n].section_length), 4, 1, inputfile) != 1)
   {
     textEdit1->append("A read-error occurred (7)\n");
-    return(-1);
+    return -1;
   }
 
   if(fread(&(sp[n].section_version), 1, 1, inputfile) != 1)
   {
     textEdit1->append("A read-error occurred (8)\n");
-    return(-1);
+    return -1;
   }
 
   if(fread(&(sp[n].section_protocol_version), 1, 1, inputfile) != 1)
   {
     textEdit1->append("A read-error occurred (9)\n");
-    return(-1);
+    return -1;
   }
 
   if(fread(&(sp[n].reserved), 6, 1, inputfile) != 1)
   {
     textEdit1->append("A read-error occurred (10)\n");
-    return(-1);
+    return -1;
   }
 
   if(check_crc(inputfile, offset + 2, sp[n].section_length - 2LL, sp[n].crc, block))
   {
     sprintf(str, "CRC-error in section %i\n", n);
     textEdit1->append(str);
-    return(-1);
+    return -1;
   }
 
   sp[n].present = 1;
 
-  return(0);
+  return 0;
 }
 
 
@@ -1407,7 +1407,7 @@ unsigned short UI_SCPECG2EDFwindow::crc_ccitt(const unsigned char *message, int 
     remainder = crc_ccitt_table[data] ^ (remainder << 8);
   }
 
-  return(remainder);  /* The final remainder is the CRC. */
+  return remainder;  /* The final remainder is the CRC. */
 }
 
 
@@ -1503,7 +1503,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
 
   if(inputfile == NULL)
   {
-    return(-1);
+    return -1;
   }
 
   offset = sp[1].file_offset + 16LL;
@@ -1515,7 +1515,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
     if(fread(str, 3, 1, inputfile) != 1)
     {
       textEdit1->append("A read-error occurred (80)\n");
-      return(-1);
+      return -1;
     }
 
     len = *((unsigned short *)(str + 1));
@@ -1524,7 +1524,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
     {
       textEdit1->append("Found an error in section 1 (81)\n"
                         "Conversion aborted\n");
-      return(-1);
+      return -1;
     }
 
     offset += (len + 3);
@@ -1533,7 +1533,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
 
     if(tag == 255)
     {
-      return(0);
+      return 0;
     }
 
     if(len)
@@ -1548,7 +1548,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
       if(fread(str, n, 1, inputfile) != 1)
       {
         textEdit1->append("A read-error occurred (82)\n");
-        return(-1);
+        return -1;
       }
 
       str[n] = 0;
@@ -1659,7 +1659,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
     }
   }
 
-  return(0);
+  return 0;
 }
 
 

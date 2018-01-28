@@ -746,7 +746,7 @@ long long UI_EDFDwindow::get_datarecord_timestamp(char *str)
     value = -value;
   }
 
-  return(value);
+  return value;
 }
 
 

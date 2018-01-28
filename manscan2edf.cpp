@@ -738,7 +738,7 @@ int UI_MANSCAN2EDFwindow::get_events(struct segment_prop_struct *segprop, int se
   {
     if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
     {
-      return(0);
+      return 0;
     }
 
     strntolower(linebuf, 11);
@@ -753,14 +753,14 @@ int UI_MANSCAN2EDFwindow::get_events(struct segment_prop_struct *segprop, int se
   {
     if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
     {
-      return(0);
+      return 0;
     }
 
     strntolower(linebuf, 11);
 
     if(!(strncmp(linebuf, "datatypeid ", 11)))
     {
-      return(0);
+      return 0;
     }
 
     strntolower(linebuf, 33);
@@ -779,7 +779,7 @@ int UI_MANSCAN2EDFwindow::get_events(struct segment_prop_struct *segprop, int se
 
       if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
       {
-        return(0);
+        return 0;
       }
 
       strntolower(linebuf, 22);
@@ -790,7 +790,7 @@ int UI_MANSCAN2EDFwindow::get_events(struct segment_prop_struct *segprop, int se
         {
           if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
           {
-            return(-1);
+            return -1;
           }
 
           if(strlen(linebuf) == 0)
@@ -800,21 +800,21 @@ int UI_MANSCAN2EDFwindow::get_events(struct segment_prop_struct *segprop, int se
 
           if(strlen(linebuf) < 5)
           {
-            return(-1);
+            return -1;
           }
 
           if(order)
           {
             if(sscanf(linebuf, "%40s %i %i", annot_descr, &startsmpl, &durationsmpl) != 3)
             {
-              return(-1);
+              return -1;
             }
           }
           else
           {
             if(sscanf(linebuf, "%40s %i %i", annot_descr, &durationsmpl, &startsmpl) != 3)
             {
-              return(-1);
+              return -1;
             }
           }
 
@@ -844,7 +844,7 @@ int UI_MANSCAN2EDFwindow::get_events(struct segment_prop_struct *segprop, int se
 
           if(ev_cnt >= MBIMAXEVENTS)
           {
-            return(0);
+            return 0;
           }
         }
       }
@@ -855,7 +855,7 @@ int UI_MANSCAN2EDFwindow::get_events(struct segment_prop_struct *segprop, int se
     }
   }
 
-  return(0);
+  return 0;
 }
 
 
@@ -874,7 +874,7 @@ int UI_MANSCAN2EDFwindow::get_starttime_offset(struct segment_prop_struct *segpr
   {
     if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
     {
-      return(0);
+      return 0;
     }
 
     strntolower(linebuf, 11);
@@ -889,14 +889,14 @@ int UI_MANSCAN2EDFwindow::get_starttime_offset(struct segment_prop_struct *segpr
   {
     if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
     {
-      return(0);
+      return 0;
     }
 
     strntolower(linebuf, 11);
 
     if(!(strncmp(linebuf, "datatypeid ", 11)))
     {
-      return(0);
+      return 0;
     }
 
     strntolower(linebuf, 24);
@@ -909,14 +909,14 @@ int UI_MANSCAN2EDFwindow::get_starttime_offset(struct segment_prop_struct *segpr
 
   if(strlen(linebuf) < 25)
   {
-    return(-1);
+    return -1;
   }
 
   time = get_long_time(linebuf + 24);
 
   segprop->starttime_offset = time;
 
-  return(0);
+  return 0;
 }
 
 
@@ -933,7 +933,7 @@ int UI_MANSCAN2EDFwindow::get_recorder_version(struct segment_prop_struct *segpr
   {
     if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
     {
-      return(0);
+      return 0;
     }
 
     strntolower(linebuf, 11);
@@ -948,14 +948,14 @@ int UI_MANSCAN2EDFwindow::get_recorder_version(struct segment_prop_struct *segpr
   {
     if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
     {
-      return(0);
+      return 0;
     }
 
     strntolower(linebuf, 11);
 
     if(!(strncmp(linebuf, "datatypeid ", 11)))
     {
-      return(0);
+      return 0;
     }
 
     strntolower(linebuf, 25);
@@ -968,12 +968,12 @@ int UI_MANSCAN2EDFwindow::get_recorder_version(struct segment_prop_struct *segpr
 
   if(strlen(linebuf) < 26)
   {
-    return(-1);
+    return -1;
   }
 
   strncpy(segprop->recorder_version, linebuf + 25, 100);
 
-  return(0);
+  return 0;
 }
 
 
@@ -993,7 +993,7 @@ int UI_MANSCAN2EDFwindow::get_filter_settings(struct segment_prop_struct *segpro
   {
     if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
     {
-      return(0);
+      return 0;
     }
 
     strntolower(linebuf, 11);
@@ -1008,14 +1008,14 @@ int UI_MANSCAN2EDFwindow::get_filter_settings(struct segment_prop_struct *segpro
   {
     if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
     {
-      return(0);
+      return 0;
     }
 
     strntolower(linebuf, 11);
 
     if(!(strncmp(linebuf, "datatypeid ", 11)))
     {
-      return(0);
+      return 0;
     }
 
     strntolower(linebuf, 18);
@@ -1028,7 +1028,7 @@ int UI_MANSCAN2EDFwindow::get_filter_settings(struct segment_prop_struct *segpro
 
   if(strlen(linebuf) < 53)
   {
-    return(-1);
+    return -1;
   }
 
   strncpy(segprop->recorder_brand, linebuf + 8, 13);
@@ -1038,20 +1038,20 @@ int UI_MANSCAN2EDFwindow::get_filter_settings(struct segment_prop_struct *segpro
   chrpntr = strchr(chrpntr, ' ');
   if(chrpntr == NULL)
   {
-    return(-1);
+    return -1;
   }
 
   chrpntr++;
 
   if(strncmp(chrpntr, "highpass ", 9))
   {
-    return(-1);
+    return -1;
   }
 
   chrpntr = strchr(chrpntr, ' ');
   if(chrpntr == NULL)
   {
-    return(-1);
+    return -1;
   }
 
   chrpntr++;
@@ -1060,33 +1060,33 @@ int UI_MANSCAN2EDFwindow::get_filter_settings(struct segment_prop_struct *segpro
 
   if((hpf < 0.000001) || (hpf > 100000.0))
   {
-    return(-1);
+    return -1;
   }
 
   chrpntr = strchr(chrpntr, ' ');
   if(chrpntr == NULL)
   {
-    return(-1);
+    return -1;
   }
 
   chrpntr++;
 
   if(strncmp(chrpntr, "hz, ", 4))
   {
-    return(-1);
+    return -1;
   }
 
   chrpntr = strchr(chrpntr, ' ');
   if(chrpntr == NULL)
   {
-    return(-1);
+    return -1;
   }
 
   chrpntr++;
 
   if(strncmp(chrpntr, "lowpass ", 8))
   {
-    return(-1);
+    return -1;
   }
 
   chrpntr++;
@@ -1094,7 +1094,7 @@ int UI_MANSCAN2EDFwindow::get_filter_settings(struct segment_prop_struct *segpro
   chrpntr = strchr(chrpntr, ' ');
   if(chrpntr == NULL)
   {
-    return(-1);
+    return -1;
   }
 
   chrpntr++;
@@ -1103,26 +1103,26 @@ int UI_MANSCAN2EDFwindow::get_filter_settings(struct segment_prop_struct *segpro
 
   if((lpf < 0.000001) || (lpf > 100000.0))
   {
-    return(-1);
+    return -1;
   }
 
   chrpntr = strchr(chrpntr, ' ');
   if(chrpntr == NULL)
   {
-    return(-1);
+    return -1;
   }
 
   chrpntr++;
 
   if(strncmp(chrpntr, "hz", 2))
   {
-    return(-1);
+    return -1;
   }
 
   segprop->hpf = hpf;
   segprop->lpf = lpf;
 
-  return(0);
+  return 0;
 }
 
 
@@ -1142,7 +1142,7 @@ int UI_MANSCAN2EDFwindow::get_sample_rate(struct segment_prop_struct *segprop, i
   {
     if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
     {
-      return(0);
+      return 0;
     }
 
     strntolower(linebuf, 11);
@@ -1157,14 +1157,14 @@ int UI_MANSCAN2EDFwindow::get_sample_rate(struct segment_prop_struct *segprop, i
   {
     if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
     {
-      return(0);
+      return 0;
     }
 
     strntolower(linebuf, 11);
 
     if(!(strncmp(linebuf, "datatypeid ", 11)))
     {
-      return(0);
+      return 0;
     }
 
     strntolower(linebuf, 11);
@@ -1173,7 +1173,7 @@ int UI_MANSCAN2EDFwindow::get_sample_rate(struct segment_prop_struct *segprop, i
     {
       if(strlen(linebuf) < 12)
       {
-        return(-1);
+        return -1;
       }
 
       break;
@@ -1185,7 +1185,7 @@ int UI_MANSCAN2EDFwindow::get_sample_rate(struct segment_prop_struct *segprop, i
     {
       if(strlen(linebuf) < 17)
       {
-        return(-1);
+        return -1;
       }
 
       break;
@@ -1202,7 +1202,7 @@ int UI_MANSCAN2EDFwindow::get_sample_rate(struct segment_prop_struct *segprop, i
 
     if(d_tmp < 0.00001)
     {
-      return(-1);
+      return -1;
     }
 
     d_tmp = 1.0 / d_tmp;
@@ -1219,12 +1219,12 @@ int UI_MANSCAN2EDFwindow::get_sample_rate(struct segment_prop_struct *segprop, i
 
   if((sf < 1) || (sf > 100000))
   {
-    return(-1);
+    return -1;
   }
 
   segprop->samplefrequency = sf;
 
-  return(0);
+  return 0;
 }
 
 
@@ -1248,7 +1248,7 @@ int UI_MANSCAN2EDFwindow::get_start_date(struct segment_prop_struct *segprop, in
   {
     if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
     {
-      return(-1);
+      return -1;
     }
 
     strntolower(linebuf, 11);
@@ -1263,14 +1263,14 @@ int UI_MANSCAN2EDFwindow::get_start_date(struct segment_prop_struct *segprop, in
   {
     if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
     {
-      return(-1);
+      return -1;
     }
 
     strntolower(linebuf, 11);
 
     if(!(strncmp(linebuf, "datatypeid ", 11)))
     {
-      return(-1);
+      return -1;
     }
 
     strntolower(linebuf, 15);
@@ -1285,14 +1285,14 @@ int UI_MANSCAN2EDFwindow::get_start_date(struct segment_prop_struct *segprop, in
 
   if(len < 23)
   {
-    return(-1);
+    return -1;
   }
 
   p = 15;
 
   if(((linebuf[p+2] != '/') || (linebuf[p+5] != '/')) && ((linebuf[p+2] != '-') || (linebuf[p+5] != '-')))
   {
-    return(-1);
+    return -1;
   }
 
   if((linebuf[p]   < '0') || (linebuf[p]   > '9') ||
@@ -1302,7 +1302,7 @@ int UI_MANSCAN2EDFwindow::get_start_date(struct segment_prop_struct *segprop, in
      (linebuf[p+6] < '0') || (linebuf[p+6] > '9') ||
      (linebuf[p+7] < '0') || (linebuf[p+7] > '9'))
   {
-    return(-1);
+    return -1;
   }
 
   if((len - p) > 9)
@@ -1349,7 +1349,7 @@ int UI_MANSCAN2EDFwindow::get_start_date(struct segment_prop_struct *segprop, in
 
   if((startdate_day < 1) || (startdate_day > 31) || (startdate_month < 1) || (startdate_month > 12))
   {
-    return(-1);
+    return -1;
   }
 
   segprop->startdate_day = startdate_day;
@@ -1373,7 +1373,7 @@ int UI_MANSCAN2EDFwindow::get_start_date(struct segment_prop_struct *segprop, in
            (linebuf[p+6] < '0') || (linebuf[p+6] > '9') ||
            (linebuf[p+7] < '0') || (linebuf[p+7] > '9'))
         {
-          return(-1);
+          return -1;
         }
 
         starttime_hour   = atoi(linebuf + p);
@@ -1385,7 +1385,7 @@ int UI_MANSCAN2EDFwindow::get_start_date(struct segment_prop_struct *segprop, in
           starttime_hour = 0;
           starttime_minute = 0;
           starttime_second = 0;
-          return(-1);
+          return -1;
         }
 
         if((starttime_minute < 0) || (starttime_minute > 59))
@@ -1393,7 +1393,7 @@ int UI_MANSCAN2EDFwindow::get_start_date(struct segment_prop_struct *segprop, in
           starttime_hour = 0;
           starttime_minute = 0;
           starttime_second = 0;
-          return(-1);
+          return -1;
         }
 
         if((starttime_second < 0) || (starttime_second > 59))
@@ -1401,7 +1401,7 @@ int UI_MANSCAN2EDFwindow::get_start_date(struct segment_prop_struct *segprop, in
           starttime_hour = 0;
           starttime_minute = 0;
           starttime_second = 0;
-          return(-1);
+          return -1;
         }
 
         segprop->starttime_hour = starttime_hour;
@@ -1411,7 +1411,7 @@ int UI_MANSCAN2EDFwindow::get_start_date(struct segment_prop_struct *segprop, in
     }
   }
 
-  return(0);
+  return 0;
 }
 
 
@@ -1432,7 +1432,7 @@ int UI_MANSCAN2EDFwindow::get_channel_gain(struct segment_prop_struct *segprop, 
 
   if((channels < 1) || (channels > MAXSIGNALS))
   {
-    return(-1);
+    return -1;
   }
 
   rewind(inputfile);
@@ -1441,7 +1441,7 @@ int UI_MANSCAN2EDFwindow::get_channel_gain(struct segment_prop_struct *segprop, 
   {
     if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
     {
-      return(-1);
+      return -1;
     }
 
     strntolower(linebuf, 11);
@@ -1456,14 +1456,14 @@ int UI_MANSCAN2EDFwindow::get_channel_gain(struct segment_prop_struct *segprop, 
   {
     if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
     {
-      return(-1);
+      return -1;
     }
 
     strntolower(linebuf, 256);
 
     if(!(strncmp(linebuf, "datatypeid ", 11)))
     {
-      return(-1);
+      return -1;
     }
 
     if(!(strncmp(linebuf, "channel ", 8)))
@@ -1483,7 +1483,7 @@ int UI_MANSCAN2EDFwindow::get_channel_gain(struct segment_prop_struct *segprop, 
 
     if((chrpntr == NULL) || (strlen(chrpntr) < 17))
     {
-      return(-1);
+      return -1;
     }
 
     if(!(strncmp(chrpntr, "unitdisplaytofile", 17)))
@@ -1496,20 +1496,20 @@ int UI_MANSCAN2EDFwindow::get_channel_gain(struct segment_prop_struct *segprop, 
   {
     if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
     {
-      return(-1);
+      return -1;
     }
 
     chrpntr = strchr(linebuf, ' ');
     if(chrpntr == NULL)
     {
-      return(-1);
+      return -1;
     }
 
     len = chrpntr - linebuf;
 
     if(len < 1)
     {
-      return(-1);
+      return -1;
     }
 
     if(len > 16)
@@ -1528,7 +1528,7 @@ int UI_MANSCAN2EDFwindow::get_channel_gain(struct segment_prop_struct *segprop, 
       chrpntr = strchr(chrpntr, ' ');
       if(chrpntr == NULL)
       {
-        return(-1);
+        return -1;
       }
 
       chrpntr++;
@@ -1536,7 +1536,7 @@ int UI_MANSCAN2EDFwindow::get_channel_gain(struct segment_prop_struct *segprop, 
 
     if(chrpntr >= (linebuf + strlen(linebuf)))
     {
-      return(-1);
+      return -1;
     }
 
     gain = atof(chrpntr);
@@ -1552,7 +1552,7 @@ int UI_MANSCAN2EDFwindow::get_channel_gain(struct segment_prop_struct *segprop, 
     }
   }
 
-  return(0);
+  return 0;
 }
 
 
@@ -1571,7 +1571,7 @@ int UI_MANSCAN2EDFwindow::get_worddatafile(struct segment_prop_struct *segprop, 
   {
     if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
     {
-      return(-1);
+      return -1;
     }
 
     strntolower(linebuf, 11);
@@ -1586,14 +1586,14 @@ int UI_MANSCAN2EDFwindow::get_worddatafile(struct segment_prop_struct *segprop, 
   {
     if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
     {
-      return(-1);
+      return -1;
     }
 
     strntolower(linebuf, 11);
 
     if(!(strncmp(linebuf, "datatypeid ", 11)))
     {
-      return(-1);
+      return -1;
     }
 
     strntolower(linebuf, 12);
@@ -1606,7 +1606,7 @@ int UI_MANSCAN2EDFwindow::get_worddatafile(struct segment_prop_struct *segprop, 
 
   if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
   {
-    return(-1);
+    return -1;
   }
 
   channels = 0;
@@ -1652,7 +1652,7 @@ int UI_MANSCAN2EDFwindow::get_worddatafile(struct segment_prop_struct *segprop, 
 
     if(channels >= MAXSIGNALS)
     {
-      return(-1);
+      return -1;
     }
 
     if(j < 16)
@@ -1663,19 +1663,19 @@ int UI_MANSCAN2EDFwindow::get_worddatafile(struct segment_prop_struct *segprop, 
 
   if(channels < 1)
   {
-    return(-1);
+    return -1;
   }
 
   segprop->channels = channels;
 
   if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)  // data offset, sweeps, filename
   {
-    return(-1);
+    return -1;
   }
 
   if(strlen(linebuf) < 9)
   {
-    return(-1);
+    return -1;
   }
 
   for(len=0; ; len++)
@@ -1688,7 +1688,7 @@ int UI_MANSCAN2EDFwindow::get_worddatafile(struct segment_prop_struct *segprop, 
 
   if((len < 1) || (len > 255))
   {
-    return(-1);
+    return -1;
   }
 
   strncpy(scratchpad, linebuf, len);
@@ -1713,7 +1713,7 @@ int UI_MANSCAN2EDFwindow::get_worddatafile(struct segment_prop_struct *segprop, 
 
   if((len < 1) || (len > 255))
   {
-    return(-1);
+    return -1;
   }
 
   strncpy(scratchpad, linebuf + p, len);
@@ -1741,7 +1741,7 @@ int UI_MANSCAN2EDFwindow::get_worddatafile(struct segment_prop_struct *segprop, 
 
   if((len < 1) || (len > 255))
   {
-    return(-1);
+    return -1;
   }
 
   strncpy(scratchpad, linebuf + p, len);
@@ -1766,14 +1766,14 @@ int UI_MANSCAN2EDFwindow::get_worddatafile(struct segment_prop_struct *segprop, 
 
   if((len < 3) || (len > 255))
   {
-    return(-1);
+    return -1;
   }
 
   strncpy(scratchpad, linebuf + p, len);
   scratchpad[len] = 0;
   strcpy(segprop->datafilename, scratchpad);  // field 4
 
-  return(0);
+  return 0;
 }
 
 
@@ -1800,7 +1800,7 @@ int UI_MANSCAN2EDFwindow::get_number_of_segments(FILE *inputfile)
     }
   }
 
-  return(segment_cnt);
+  return segment_cnt;
 }
 
 
@@ -1815,7 +1815,7 @@ char * UI_MANSCAN2EDFwindow::fgetline(char *s, int size, FILE *stream)
   result = fgets(s, size, stream);
   if(result == NULL)
   {
-    return(result);
+    return result;
   }
 
   for(i=0; ; i++)
@@ -1859,7 +1859,7 @@ char * UI_MANSCAN2EDFwindow::fgetline(char *s, int size, FILE *stream)
         {
           s[spc1] = 0;
 
-          return(result);
+          return result;
         }
 
         n = spc2 - spc1;
@@ -1885,7 +1885,7 @@ char * UI_MANSCAN2EDFwindow::fgetline(char *s, int size, FILE *stream)
     }
   }
 
-  return(result);
+  return result;
 }
 
 
@@ -1976,7 +1976,7 @@ long long UI_MANSCAN2EDFwindow::get_long_time(const char *str)
     }
   }
 
-  return(value * sign);
+  return value * sign;
 }
 
 

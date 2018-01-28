@@ -38,7 +38,7 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
     datarecord_cnt = -1;
     total_samples = -1;
 
-    return(NULL);
+    return NULL;
   }
   signalcomp = i_signalcomp;
 
@@ -48,7 +48,7 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
     datarecord_cnt = -1;
     total_samples = -1;
 
-    return(NULL);
+    return NULL;
   }
 
   inputfile = hdr->file_hdl;
@@ -57,7 +57,7 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
     datarecord_cnt = -1;
     total_samples = -1;
 
-    return(NULL);
+    return NULL;
   }
 
   datarecord_cnt = i_datarecord_cnt;
@@ -67,7 +67,7 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
     datarecord_cnt = -1;
     total_samples = -1;
 
-    return(NULL);
+    return NULL;
   }
 
   samples_per_datrec = hdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
@@ -84,7 +84,7 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
     datarecord_cnt = -1;
     total_samples = -1;
 
-    return(NULL);
+    return NULL;
   }
 
   if(readbuf != NULL)
@@ -99,18 +99,18 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
 
     free(processed_samples_buf);
     processed_samples_buf = NULL;
-    return(NULL);
+    return NULL;
   }
 
   bitvalue = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue;
 
-  return(processed_samples_buf);
+  return processed_samples_buf;
 }
 
 
 int FilteredBlockReadClass::samples_in_buf(void)
 {
-  return(total_samples);
+  return total_samples;
 }
 
 
@@ -160,32 +160,32 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_start)
 
   if((total_samples < 1) || (datarecord_cnt < 1))
   {
-    return(-1);
+    return -1;
   }
 
   if((datarecord_start < 0) || (datarecord_start >= hdr->datarecords))
   {
-    return(-2);
+    return -2;
   }
 
   if(datarecord_cnt > (hdr->datarecords - datarecord_start))
   {
-    return(-3);
+    return -3;
   }
 
   if(fseeko(inputfile, ((long long)hdr->hdrsize) + (((long long)datarecord_start) * ((long long) hdr->recordsize)), SEEK_SET) == -1LL)
   {
-    return(-4);
+    return -4;
   }
 
   if(fread(readbuf, hdr->recordsize * datarecord_cnt, 1, inputfile) != 1)
   {
-    return(-5);
+    return -5;
   }
 
   if((readbuf == NULL) || (processed_samples_buf == NULL))
   {
-    return(-6);
+    return -6;
   }
 
   for(s=0; s<total_samples; s++)
@@ -272,7 +272,7 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_start)
     processed_samples_buf[s] = (dig_value * bitvalue);
   }
 
-  return(0);
+  return 0;
 }
 
 

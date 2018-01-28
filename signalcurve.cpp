@@ -2338,7 +2338,7 @@ void SignalCurve::setMarker1Color(QColor color)
 
 double SignalCurve::getMarker1Position(void)
 {
-  return(marker_1_position);
+  return marker_1_position;
 }
 
 
@@ -2377,7 +2377,7 @@ void SignalCurve::setMarker2Color(QColor color)
 
 double SignalCurve::getMarker2Position(void)
 {
-  return(marker_2_position);
+  return marker_2_position;
 }
 
 
@@ -2496,13 +2496,13 @@ void SignalCurve::setCursorEnabled(bool value)
 
 bool SignalCurve::isCursorEnabled(void)
 {
-  return(cursorEnabled);
+  return cursorEnabled;
 }
 
 
 bool SignalCurve::isCursorActive(void)
 {
-  return(crosshair_1_active);
+  return crosshair_1_active;
 }
 
 
@@ -2553,7 +2553,7 @@ void SignalCurve::setUpsidedownEnabled(bool value)
 
 int SignalCurve::getCursorPosition(void)
 {
-  return(crosshair_1_value_2);
+  return crosshair_1_value_2;
 }
 
 
@@ -2565,14 +2565,14 @@ int SignalCurve::get_directory_from_path(char *dest, const char *src, int ssize)
 
   if(ssize<1)
   {
-    return(-1);
+    return -1;
   }
 
   if(ssize<2)
   {
     dest[0] = 0;
 
-    return(0);
+    return 0;
   }
 
   len = strlen(src);
@@ -2581,7 +2581,7 @@ int SignalCurve::get_directory_from_path(char *dest, const char *src, int ssize)
   {
     dest[0] = 0;
 
-    return(0);
+    return 0;
   }
 
   for(i=len-1; i>=0; i--)
@@ -2603,7 +2603,7 @@ int SignalCurve::get_directory_from_path(char *dest, const char *src, int ssize)
     dest[ssize-1] = 0;
   }
 
-  return(strlen(dest));
+  return strlen(dest);
 }
 
 
