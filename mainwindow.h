@@ -219,6 +219,7 @@ public:
       spectrum_vlog,
       spectrumdock_sqrt,
       spectrumdock_vlog,
+      spectrumdock_colorbars,
       use_threads,
       check_for_updates,
       amplitude_doubler,

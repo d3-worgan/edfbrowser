@@ -1680,7 +1680,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
       strcpy(str, spectrum_color->label[0]);
       if(spectrum_color->method == 0)
       {
-        sprintf(str + strlen(str), " (%.1f%%)", (spectrum_color->value[i] * 100.0) / sum_colorbar_value);
+        sprintf(str + strlen(str), " (%.1f%%)", (spectrum_color->value[0] * 100.0) / sum_colorbar_value);
       }
       painter->setPen(Qt::lightGray);
       painter->drawText(10, 20, str);

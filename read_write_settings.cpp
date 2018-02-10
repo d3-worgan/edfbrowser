@@ -1357,6 +1357,26 @@ void UI_Mainwindow::read_general_settings()
     xml_go_up(xml_hdl);
   }
 
+  if(!(xml_goto_nth_element_inside(xml_hdl, "spectrumdock_colorbars", 0)))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    if(atoi(result) == 1)
+    {
+      spectrumdock_colorbars = 1;
+    }
+    else
+    {
+      spectrumdock_colorbars = 0;
+    }
+
+    xml_go_up(xml_hdl);
+  }
+
   if(!(xml_goto_nth_element_inside(xml_hdl, "spectrumdock_vlog", 0)))
   {
     if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
@@ -2091,6 +2111,8 @@ void UI_Mainwindow::write_settings()
     fprintf(cfgfile, "    <spectrum_vlog>%i</spectrum_vlog>\n", spectrum_vlog);
 
     fprintf(cfgfile, "    <spectrumdock_sqrt>%i</spectrumdock_sqrt>\n", spectrumdock_sqrt);
+
+    fprintf(cfgfile, "    <spectrumdock_colorbars>%i</spectrumdock_colorbars>\n", spectrumdock_colorbars);
 
     fprintf(cfgfile, "    <spectrumdock_vlog>%i</spectrumdock_vlog>\n", spectrumdock_vlog);
 

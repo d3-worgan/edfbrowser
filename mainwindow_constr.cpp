@@ -195,6 +195,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   spectrumdock_vlog = 0;
 
+  spectrumdock_colorbars = 0;
+
   z_score_var.crossoverfreq = 7.5;
   z_score_var.z_threshold = 0.0;
   z_score_var.zscore_page_len = 30;

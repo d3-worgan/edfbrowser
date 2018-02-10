@@ -118,6 +118,15 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   }
   curve1->create_button("to Text");
 
+  if(mainwindow->spectrumdock_colorbars)
+  {
+    curve1->enableSpectrumColors(spectrum_color);
+  }
+  else
+  {
+    curve1->disableSpectrumColors();
+  }
+
   if(!dashboard)
   {
     dock->setWidget(curve1);
@@ -181,6 +190,14 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   colorBarButton->setMinimumSize(50, 20);
   colorBarButton->setText("Colorbar");
   colorBarButton->setTristate(false);
+  if(mainwindow->spectrumdock_colorbars)
+  {
+    colorBarButton->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    colorBarButton->setCheckState(Qt::Unchecked);
+  }
 
   vlayout3 = new QVBoxLayout;
   vlayout3->addStretch(100);
@@ -446,10 +463,14 @@ void UI_SpectrumDockWindow::colorBarButtonClicked(bool value)
 {
   if(value == true)
   {
+    mainwindow->spectrumdock_colorbars = 1;
+
     curve1->enableSpectrumColors(spectrum_color);
   }
   else
   {
+    mainwindow->spectrumdock_colorbars = 0;
+
     curve1->disableSpectrumColors();
   }
 }
