@@ -3671,6 +3671,13 @@ void ViewCurve::AdjustFilterButton()
     return;
   }
 
+  if((!mainwindow->signalcomp[signal_nr]->filter_cnt) &&
+     (!mainwindow->signalcomp[signal_nr]->fidfilter_cnt) &&
+     (!mainwindow->signalcomp[signal_nr]->ravg_filter_cnt))
+  {
+    return;
+  }
+
   AdjustFilterSettings filtersettings(mainwindow->signalcomp[signal_nr], this);
 }
 
