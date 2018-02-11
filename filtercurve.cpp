@@ -50,6 +50,21 @@ FilterCurve::FilterCurve(QWidget *w_parent) : QWidget(w_parent)
 
   marker_1 = 0;
   marker_2 = 0;
+
+  filtcurve_font = new QFont;
+#ifdef Q_OS_WIN32
+  filtcurve_font->setFamily("Tahoma");
+  filtcurve_font->setPixelSize(11);
+#else
+  filtcurve_font->setFamily("Arial");
+  filtcurve_font->setPixelSize(12);
+#endif
+}
+
+
+FilterCurve::~FilterCurve()
+{
+  delete filtcurve_font;
 }
 
 
@@ -193,7 +208,7 @@ void FilterCurve::paintEvent(QPaintEvent *)
 
 /////////////////////////////////// draw the markers ///////////////////////////////////////////
 
-  painter.setFont(QFont("Arial", 8));
+  painter.setFont(*filtcurve_font);
 
   if((marker_1) || (marker_2))
   {

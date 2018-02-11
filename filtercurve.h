@@ -45,6 +45,7 @@ class FilterCurve: public QWidget
 
 public:
   FilterCurve(QWidget *parent=0);
+  ~FilterCurve();
 
   QSize sizeHint() const {return minimumSizeHint(); }
   QSize minimumSizeHint() const {return QSize(30,10); }
@@ -72,6 +73,8 @@ private:
          BackgroundColor,
          RasterColor,
          MarkerColor;
+
+  QFont *filtcurve_font;
 
   double max_value1,
          min_value1,

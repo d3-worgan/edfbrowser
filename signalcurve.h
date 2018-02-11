@@ -81,6 +81,7 @@ class SignalCurve: public QWidget
 
 public:
   SignalCurve(QWidget *parent=0);
+  ~SignalCurve();
 
   QSize sizeHint() const {return minimumSizeHint(); }
   QSize minimumSizeHint() const {return QSize(30,10); }
@@ -177,6 +178,8 @@ private:
          backup_color_6;
 
   QPrinter *printer;
+
+  QFont *sigcurve_font;
 
   QPen Marker1Pen,
        Marker2Pen;
