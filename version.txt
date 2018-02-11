@@ -2,7 +2,13 @@
  version 1.63      to be defined
  --------------
 
- - Fixed a bug in the MIT to EDF+ converter.
+ - Fixed a bug in the mit2edf converter.
+
+ - mit2edf converter: make sure there's always enough storage space in the file for annotations.
+
+ - Powerspectrum dock: fixed a bug that caused the percentage of the first frequency region always 0%.
+
+ - Signalcurve & filtercurve: set font to a fixed pixelsize.
 
 
 
