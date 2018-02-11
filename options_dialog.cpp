@@ -1037,7 +1037,7 @@ void UI_OptionsDialog::DefaultButton2Clicked()
 
   spinbox3_1->setValue(1000);
 
-  radiobutton2->setChecked(true);
+  radiobutton1->setChecked(true);
 
   ApplyButton2->setEnabled(true);
 }
