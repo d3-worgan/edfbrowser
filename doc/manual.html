@@ -937,12 +937,24 @@
   An ASCII-file must be organised in rows and columns.<br>
   In the import dialog, set the separatorcharacter (the character that separates the columns),<br>
   for example: "tab" (tabulator) or "," (comma).<br>
-  Also, set the columnnumber of the onsettime and the description/label.<br>
+  Make sure there's only one separator character between two columns.<br>
+  Also, grouping characters like the comma in for example "12,345.678" are not allowed.<br>
+  The example must be written as "12345.678".<br>
+  Set the columnnumber of the onsettime and the description/label.<br>
   If the file starts with a header, adjust the "Data starts at line" spinbox<br>
   in order to skip these lines.<br>
   If there's only one column in the ascii/txt file (with onset time values), check the<br>
   "Manual description" button and enter a description. This description will be used for all<br>
-  annotations that will be imported from that ascii/txt file.
+  annotations that will be imported from that ascii/txt file.<br>
+  <br>
+  The onset time encoding can be expressed as:
+<ul>
+  <li>relative from start of file and expressed in seconds</li>
+  <li>clock time: hh:mm:ss</li>
+  <li>clock time: hh:mm:ss.xxx</li>
+  <li>date time: yyyy-mm-ddThh:mm:ss</li>
+  <li>date time: yyyy-mm-ddThh:mm:ss.xxx</li>
+</ul>
 </p>
 <h4>XML</h4>
 <p>
