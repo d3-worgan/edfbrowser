@@ -919,7 +919,7 @@ void UI_Mainwindow::read_general_settings()
 
       import_annotations_var->format = atoi(result);
 
-      if((import_annotations_var->format < 0) || (import_annotations_var->format > 3))
+      if((import_annotations_var->format < 0) || (import_annotations_var->format > 4))
       {
         import_annotations_var->format = 1;
       }

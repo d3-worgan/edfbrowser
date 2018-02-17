@@ -10,6 +10,8 @@
 
  - Signalcurve & filtercurve: set font to a fixed pixelsize.
 
+ - Import annotations: added support for annotations in MIT / WFDB (physionet) format.
+
 
 
  version 1.62      January 7, 2018

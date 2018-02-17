@@ -112,7 +112,7 @@ QDialog        *ImportAnnotsDialog;
 
 QTabWidget     *tabholder;
 
-QWidget        *tab[4];
+QWidget        *tab[5];
 
 QLabel         *SeparatorLabel,
                *OnsetColumnLabel,
@@ -120,7 +120,8 @@ QLabel         *SeparatorLabel,
                *OnsetTimeLabel,
                *DCEventSignalLabel,
                *DCEventBitTimeLabel,
-               *DCEventTriggerLevelLabel;
+               *DCEventTriggerLevelLabel,
+               *SampleTimeLabel;
 
 QLineEdit      *SeparatorLineEdit,
                *DescriptionLineEdit;
@@ -129,7 +130,8 @@ QSpinBox       *OnsetColumnSpinBox,
                *DurationColumnSpinBox,
                *DescriptionColumnSpinBox,
                *DatastartSpinbox,
-               *BitTimeSpinbox;
+               *BitTimeSpinbox,
+               *SampleTimeSpinbox;
 
 QDoubleSpinBox *DCEventTriggerLevelSpinBox;
 
@@ -150,6 +152,7 @@ QHBoxLayout    *asciiSettingsHBoxLayout1,
                *DCEventHBoxLayout1,
                *DCEventHBoxLayout2,
                *DCEventHBoxLayout3,
+               *mitwfdbHBoxLayout1,
                *horLayout;
 
 QRadioButton   *DescriptionColumnRadioButton,
@@ -162,13 +165,14 @@ QPushButton    *CloseButton,
                *ImportButton,
                *helpButton;
 
-int tab_index_array[4];
+int tab_index_array[5];
 
 int import_from_xml(void);
 int import_from_ascii(void);
 int import_from_edfplus(void);
 int import_from_dcevent(void);
-
+int import_from_mitwfdb(void);
+int get_samplefreq_inf(void);
 
 private slots:
 

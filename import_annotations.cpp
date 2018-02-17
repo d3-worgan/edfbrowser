@@ -34,8 +34,82 @@
 #define ASCIICSV_FORMAT 1
 #define DCEVENT_FORMAT  2
 #define EDFPLUS_FORMAT  3
+#define MITWFDB_FORMAT  4
 
-#define TAB_CNT         4
+#define TAB_CNT         5
+
+#define NOTQRS  0 /* not-QRS (not a getann/putann code) */
+#define NORMAL  1 /* normal beat */
+#define LBBB  2 /* left bundle branch block beat */
+#define RBBB  3 /* right bundle branch block beat */
+#define ABERR 4 /* aberrated atrial premature beat */
+#define PVC 5 /* premature ventricular contraction */
+#define FUSION  6 /* fusion of ventricular and normal beat */
+#define NPC 7 /* nodal (junctional) premature beat */
+#define APC 8 /* atrial premature contraction */
+#define SVPB  9 /* premature or ectopic supraventricular beat */
+#define VESC  10  /* ventricular escape beat */
+#define NESC  11  /* nodal (junctional) escape beat */
+#define PACE  12  /* paced beat */
+#define UNKNOWN 13  /* unclassifiable beat */
+#define NOISE 14  /* signal quality change */
+#define ARFCT 16  /* isolated QRS-like artifact */
+#define STCH  18  /* ST change */
+#define TCH 19  /* T-wave change */
+#define SYSTOLE 20  /* systole */
+#define DIASTOLE 21 /* diastole */
+#define NOTE  22  /* comment annotation */
+#define MEASURE 23  /* measurement annotation */
+#define PWAVE 24  /* P-wave peak */
+#define BBB 25  /* left or right bundle branch block */
+#define PACESP  26  /* non-conducted pacer spike */
+#define TWAVE 27  /* T-wave peak */
+#define RHYTHM  28  /* rhythm change */
+#define UWAVE 29  /* U-wave peak */
+#define LEARN 30  /* learning */
+#define FLWAV 31  /* ventricular flutter wave */
+#define VFON  32  /* start of ventricular flutter/fibrillation */
+#define VFOFF 33  /* end of ventricular flutter/fibrillation */
+#define AESC  34  /* atrial escape beat */
+#define SVESC 35  /* supraventricular escape beat */
+#define LINK    36  /* link to external data (aux contains URL) */
+#define NAPC  37  /* non-conducted P-wave (blocked APB) */
+#define PFUS  38  /* fusion of paced and normal beat */
+#define WFON  39  /* waveform onset */
+#define PQ  WFON  /* PQ junction (beginning of QRS) */
+#define WFOFF 40  /* waveform end */
+#define JPT WFOFF /* J point (end of QRS) */
+#define RONT  41  /* R-on-T premature ventricular contraction */
+
+/* ... annotation codes between RONT+1 and ACMAX inclusive are user-defined */
+
+#define ACMAX 49  /* value of largest valid annot code (must be < 50) */
+
+
+static char annotdescrlist[42][48]=
+  {"not-QRS","normal beat",
+  "left bundle branch block beat", "right bundle branch block beat",
+  "aberrated atrial premature beat", "premature ventricular contraction",
+  "fusion of ventricular and normal beat", "nodal (junctional) premature beat",
+  "atrial premature contraction", "premature or ectopic supraventricular beat",
+  "ventricular escape beat", "nodal (junctional) escape beat",
+  "paced beat", "unclassifiable beat",
+  "signal quality change", "isolated QRS-like artifact",
+  "ST change", "T-wave change",
+  "systole", "diastole",
+  "comment annotation", "measurement annotation",
+  "P-wave peak", "left or right bundle branch block",
+  "non-conducted pacer spike", "T-wave peak",
+  "rhythm change", "U-wave peak",
+  "learning", "ventricular flutter wave",
+  "start of ventricular flutter/fibrillation", "end of ventricular flutter/fibrillation",
+  "atrial escape beat", "supraventricular escape beat",
+  "link to external data (aux contains URL)", "non-conducted P-wave (blocked APB)",
+  "fusion of paced and normal beat", "waveform onset",
+  "waveform end", "R-on-T premature ventricular contraction"};
+
+
+#define ANNOT_EXT_CNT   8
 
 
 UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
@@ -54,8 +128,8 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
 
   ImportAnnotsDialog = new QDialog;
 
-  ImportAnnotsDialog->setMinimumSize(490, 500);
-  ImportAnnotsDialog->setMaximumSize(490, 500);
+  ImportAnnotsDialog->setMinimumSize(520, 500);
+  ImportAnnotsDialog->setMaximumSize(520, 500);
   ImportAnnotsDialog->setWindowTitle("Import annotations/events");
   ImportAnnotsDialog->setModal(true);
   ImportAnnotsDialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -66,6 +140,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   tab_index_array[DCEVENT_FORMAT] = 1;
   tab_index_array[XML_FORMAT] = 2;
   tab_index_array[EDFPLUS_FORMAT] = 3;
+  tab_index_array[MITWFDB_FORMAT] = 4;
 
   for(i=0; i<TAB_CNT; i++)
   {
@@ -244,10 +319,32 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
 
   tab[tab_index_array[DCEVENT_FORMAT]]->setLayout(DCEventVBoxLayout);
 
+  SampleTimeLabel = new QLabel(ImportAnnotsDialog);
+  SampleTimeLabel->setText("Samplefrequency:");
+  SampleTimeLabel->setMinimumSize(130, 25);
+
+  SampleTimeSpinbox = new QSpinBox(ImportAnnotsDialog);
+  SampleTimeSpinbox->setRange(0,100000);
+  SampleTimeSpinbox->setSuffix(" Hz");
+  SampleTimeSpinbox->setMinimumSize(130, 25);
+  SampleTimeSpinbox->setValue(get_samplefreq_inf());
+  if(SampleTimeSpinbox->value() > 0)
+  {
+    SampleTimeSpinbox->setEnabled(false);
+  }
+
+  mitwfdbHBoxLayout1 = new QHBoxLayout;
+  mitwfdbHBoxLayout1->addWidget(SampleTimeLabel);
+  mitwfdbHBoxLayout1->addWidget(SampleTimeSpinbox);
+  mitwfdbHBoxLayout1->addStretch(2);
+
+  tab[tab_index_array[MITWFDB_FORMAT]]->setLayout(mitwfdbHBoxLayout1);
+
   tabholder->addTab(tab[tab_index_array[ASCIICSV_FORMAT]], "ASCII / CSV");
   tabholder->addTab(tab[tab_index_array[DCEVENT_FORMAT]],  "DC-event (8-bit serial code)");
   tabholder->addTab(tab[tab_index_array[XML_FORMAT]],      "XML");
   tabholder->addTab(tab[tab_index_array[EDFPLUS_FORMAT]],  "EDF+ / BDF+");
+  tabholder->addTab(tab[tab_index_array[MITWFDB_FORMAT]],  "MIT / WFDB");
 
   IgnoreConsecutiveCheckBox = new QCheckBox(" Ignore consecutive events with the\n same description");
   IgnoreConsecutiveCheckBox->setMinimumSize(300, 40);
@@ -331,7 +428,8 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
     IgnoreConsecutiveCheckBox->setCheckState(Qt::Unchecked);
   }
 
-  if(mainwindow->import_annotations_var->format == EDFPLUS_FORMAT)
+  if((mainwindow->import_annotations_var->format == EDFPLUS_FORMAT) ||
+     (mainwindow->import_annotations_var->format == MITWFDB_FORMAT))
   {
     IgnoreConsecutiveCheckBox->setEnabled(false);
   }
@@ -389,7 +487,7 @@ void UI_ImportAnnotationswindow::TabChanged(int index)
     IgnoreConsecutiveCheckBox->setEnabled(true);
   }
 
-  if(index == tab_index_array[EDFPLUS_FORMAT])
+  if((index == tab_index_array[EDFPLUS_FORMAT]) || (index == tab_index_array[MITWFDB_FORMAT]))
   {
     IgnoreConsecutiveCheckBox->setEnabled(false);
   }
@@ -456,6 +554,11 @@ void UI_ImportAnnotationswindow::ImportButtonClicked()
 
   mainwindow->import_annotations_var->format = input_format;
 
+  if(input_format == MITWFDB_FORMAT)
+  {
+    error = import_from_mitwfdb();
+  }
+
   if(input_format == DCEVENT_FORMAT)
   {
     error = import_from_dcevent();
@@ -514,6 +617,154 @@ void UI_ImportAnnotationswindow::ImportButtonClicked()
   {
     ImportAnnotsDialog->close();
   }
+}
+
+
+int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
+{
+  int annot_code, tc=0, skip, total_annots=0;
+
+  long long bytes_read, filesize, sampletime;
+
+  char path[MAX_PATH_LENGTH];
+
+  unsigned char a_buf[128];
+
+  struct annotationblock annotation;
+
+  FILE *inputfile=NULL;
+
+  if(SampleTimeSpinbox->value() < 1)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Please set the samplefrequency.\n"
+      "The onset time of the annotations in MIT/WFDB format are expressed in samples offset from the start of the recording.\n"
+      "Because your file contains different samplerates, you need to specify which samplerate should be used to\n"
+      "calculate the onset time of the annotations."
+    );
+    messagewindow.exec();
+    return 1;
+  }
+
+  sampletime = TIME_DIMENSION / SampleTimeSpinbox->value();
+
+  strcpy(path, QFileDialog::getOpenFileName(0, "Open MIT WFDB annotation file", QString::fromLocal8Bit(mainwindow->recent_opendir), "MIT annotation files (*.ari *.ecg *.trigger *.qrs *.atr *.apn *.st *.pwave)").toLocal8Bit().data());
+
+  if(!strcmp(path, ""))
+  {
+    return 1;
+  }
+
+  get_directory_from_path(mainwindow->recent_opendir, path, MAX_PATH_LENGTH);
+
+  inputfile = fopeno(path, "rb");
+  if(inputfile==NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for reading.");
+    messagewindow.exec();
+    return 1;
+  }
+
+  fseeko(inputfile, 0LL, SEEK_END);
+  filesize = ftello(inputfile);
+
+  QProgressDialog progress("Converting annotations ...", "Abort", 0, filesize);
+
+  fseeko(inputfile, 0LL, SEEK_SET);
+
+  for(bytes_read=0LL; bytes_read < filesize; bytes_read += 2LL)
+  {
+    if(!(bytes_read % 100))
+    {
+      progress.setValue(bytes_read);
+
+      qApp->processEvents();
+
+      if(progress.wasCanceled() == true)
+      {
+        break;
+      }
+    }
+
+    skip = 0;
+
+    if(fread(a_buf, 2, 1, inputfile) != 1)
+    {
+      break;
+    }
+
+#pragma GCC diagnostic ignored "-Wstrict-aliasing"
+
+    if(*((unsigned short *)a_buf) == 0)  // end of file
+    {
+      break;
+    }
+
+    annot_code = a_buf[1] >> 2;
+
+    if(annot_code == 59)
+    {
+      if(fread(a_buf, 4, 1, inputfile) != 1)
+      {
+        break;
+      }
+
+      tc += (*((unsigned short *)a_buf) << 16);
+
+      tc += *((unsigned short *)(a_buf + 2));
+    }
+    else if(annot_code == 63)
+      {
+        skip = *((unsigned short *)a_buf) & 0x3ff;
+
+        if(skip % 2) skip++;
+      }
+      else if((annot_code >= 0) && (annot_code <= ACMAX))
+        {
+          tc += *((unsigned short *)a_buf) & 0x3ff;
+
+#pragma GCC diagnostic warning "-Wstrict-aliasing"
+
+          memset(&annotation, 0, sizeof(struct annotationblock));
+          annotation.onset = (long long)tc * sampletime;
+          if(annot_code < 42)
+          {
+            strncpy(annotation.annotation, annotdescrlist[annot_code], MAX_ANNOTATION_LEN);
+          }
+          else
+          {
+            strncpy(annotation.annotation, "user-defined", MAX_ANNOTATION_LEN);
+          }
+
+          annotation.annotation[MAX_ANNOTATION_LEN] = 0;
+
+          if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
+          {
+            progress.reset();
+            QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
+            messagewindow.exec();
+            fclose(inputfile);
+            return 1;
+          }
+
+          total_annots++;
+        }
+
+    if(skip)
+    {
+      if(fseek(inputfile, skip, SEEK_CUR) < 0)
+      {
+        break;
+      }
+
+      bytes_read += skip;
+    }
+  }
+
+  fclose(inputfile);
+
+  progress.reset();
+
+  return 0;
 }
 
 
@@ -2044,6 +2295,33 @@ void UI_ImportAnnotationswindow::helpbuttonpressed()
   QDesktopServices::openUrl(QUrl(p_path));
 #endif
 }
+
+
+int UI_ImportAnnotationswindow::get_samplefreq_inf(void)
+{
+  int i, smps=0;
+
+  if(mainwindow->files_open != 1)  return 0;
+
+  for(i=0; i<mainwindow->edfheaderlist[0]->edfsignals; i++)
+  {
+    if(mainwindow->edfheaderlist[0]->edfparam[i].annotation)  continue;
+
+    if(i == 0)
+    {
+      smps = mainwindow->edfheaderlist[0]->edfparam[i].smp_per_record;
+    }
+    else
+    {
+      if(smps != mainwindow->edfheaderlist[0]->edfparam[i].smp_per_record)  return 0;
+    }
+  }
+
+  if(!smps)  return 0;
+
+  return ((long long)smps * TIME_DIMENSION) / mainwindow->edfheaderlist[0]->long_data_record_duration;
+}
+
 
 
 
