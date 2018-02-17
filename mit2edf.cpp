@@ -105,7 +105,7 @@ static char annotdescrlist[42][48]=
 #define ANNOT_EXT_CNT   8
 
 
-char annotextlist[ANNOT_EXT_CNT][16]=
+static char annotextlist[ANNOT_EXT_CNT][16]=
   {
     ".ari",
     ".ecg",
