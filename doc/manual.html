@@ -929,8 +929,11 @@
 <h3><a name="Import_annotations">Import annotations/events</a></h3>
 
 <p>
-  This tool imports annotations/events. The inputfile can be ASCII (CSV), XML, EDF+ or BDF+.<br>
+  This tool imports annotations/events. The inputfile can be ASCII (CSV), XML, EDF+, BDF+ or MIT/WFDB format.<br>
   It's also possible to use a triggersignal in a DC-coupled channel/signal.<br>
+</p>
+<p>
+  Note: You have to open an EDF/BDF file first in order to be able to import annotations/events.<br>
 </p>
 <h4>ASCII</h4>
 <p>
@@ -948,6 +951,7 @@
   annotations that will be imported from that ascii/txt file.<br>
   <br>
   The onset time encoding can be expressed as:
+</p>
 <ul>
   <li>relative from start of file and expressed in seconds</li>
   <li>clock time: hh:mm:ss</li>
@@ -955,7 +959,6 @@
   <li>date time: yyyy-mm-ddThh:mm:ss</li>
   <li>date time: yyyy-mm-ddThh:mm:ss.xxx</li>
 </ul>
-</p>
 <h4>XML</h4>
 <p>
   XML-files need to be encoded either in ISO-8859-1 or UTF-8 character encoding.<br>
@@ -964,6 +967,7 @@
   Onset is expressed in the ISO date-time format "yyyy-mm-ddThh:mm:ss" or "yyyy-mm-ddThh:mm:ss.xxx".<br>
   Duration is expressed in seconds "145.23" or empty.<br>
   Example:<br>
+</p>
 <pre>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;annotationlist&gt;
@@ -984,8 +988,12 @@
  &lt;/annotation&gt;
 &lt;/annotationlist&gt;
 </pre>
+<h4>MIT/WFDB</h4>
 <p>
-  Note: You have to open an EDF/BDF file first in order to be able to import annotations/events.<br>
+  The onset time of the annotations in MIT/WFDB format are expressed in samples offset from the start of the recording.<br>
+  In case your file contains signals with different samplerates, you need to specify which samplerate should be used to<br>
+  calculate the onset time of the annotations.<br>
+  MIT/WFDB annotation files can have various extensions like *.ari *.ecg *.trigger *.qrs *.atr *.apn *.st *.pwave<br>
 </p>
 <h4>DC-events / DC-triggers</h4>
 <p>
@@ -995,6 +1003,7 @@
   The startbit has always a high level and the stopbit has always a lowlevel.<br>
   At idle the signal should stay at low level.<br>
   The following example shows a dc-event with decimal code 170:<br>
+</p>
 <pre>
                   onsettime of the event
                   |                               bittime
