@@ -783,7 +783,7 @@ UI_Mainwindow::UI_Mainwindow()
 
   navtoolbar = new QToolBar("Navigation Bar");
   navtoolbar->setFloatable(false);
-  navtoolbar->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
+  navtoolbar->setAllowedAreas(Qt::AllToolBarAreas);
   addToolBar(Qt::TopToolBarArea, navtoolbar);
   navtoolbar->setEnabled(true);
 
