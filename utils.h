@@ -98,6 +98,8 @@ int strtoipaddr(unsigned int *, const char *);  /* convert a string "192.168.1.1
 
 int dblcmp(double, double);  /* returns 0 when equal */
 
+int base64_dec(const void *, void *, int);
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

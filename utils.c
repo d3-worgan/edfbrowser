@@ -1978,7 +1978,92 @@ int dblcmp(double val1, double val2)
 }
 
 
+int base64_dec(const void *src, void *dest, int len)
+{
+  int i, len4=len/4;
 
+  const unsigned char *ptr_in=(const unsigned char *)src;
+
+  unsigned char *ptr_out=(unsigned char *)dest;
+
+  union{
+    unsigned char four[4];
+    unsigned short two[2];
+    unsigned int one;
+  } var;
+
+  unsigned char base64[256]={
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,62,0,0,0,63,52,53,54,55,56,57,58,59,60,61,0,0,0,0,0,0,
+    0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,0,0,0,0,0,0,
+    26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+
+  for(i=0; i<len4; i++)
+  {
+    var.one = base64[*(ptr_in++)];
+
+    var.one <<= 6;
+
+    var.one += base64[*(ptr_in++)];
+
+    var.one <<= 6;
+
+    var.one += base64[*(ptr_in++)];
+
+    var.one <<= 6;
+
+    var.one += base64[*(ptr_in++)];
+
+    var.one <<= 6;
+
+    *(ptr_out++) = var.four[2];
+
+    *(ptr_out++) = var.four[1];
+
+    *(ptr_out++) = var.four[0];
+  }
+
+  len %= 4;
+
+  if(len) len--;
+
+  if(len == 1)
+  {
+    var.one = base64[*(ptr_in++)];
+
+    var.one <<= 6;
+
+    var.one += base64[*(ptr_in++)];
+
+    var.one >>= 4;
+
+    *(ptr_out++) = var.four[0];
+  }
+  else if(len == 2)
+    {
+      var.one = base64[*(ptr_in++)];
+
+      var.one <<= 6;
+
+      var.one += base64[*(ptr_in++)];
+
+      var.one <<= 6;
+
+      var.one += base64[*(ptr_in++)];
+
+      var.one >>= 2;
+
+      *(ptr_out++) = var.four[1];
+
+      *(ptr_out++) = var.four[0];
+    }
+
+  return i * 4 + len;
+}
 
 
 
