@@ -143,6 +143,7 @@
 #include "ravg_filter.h"
 #include "wav2edf.h"
 #include "fma_ecg2edf.h"
+#include "mortara2edf.h"
 #include "averager_curve_wnd.h"
 #include "ecg_filter.h"
 #include "ecg_export.h"
@@ -534,6 +535,7 @@ private slots:
   void convert_fino_to_edf();
   void convert_wave_to_edf();
   void convert_fm_audio_to_edf();
+  void convert_mortara_to_edf();
   void convert_nexfin_to_edf();
   void edfd_converter();
   void slider_moved(int);

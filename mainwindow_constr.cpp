@@ -713,6 +713,7 @@ UI_Mainwindow::UI_Mainwindow()
   toolsmenu->addAction("Convert Wave to EDF", this, SLOT(convert_wave_to_edf()));
   toolsmenu->addAction("Convert Biox CB-1305-C to EDF", this, SLOT(convert_biox_to_edf()));
   toolsmenu->addAction("Convert FM Audio ECG to EDF", this, SLOT(convert_fm_audio_to_edf()));
+//  toolsmenu->addAction("Convert Mortara XML to EDF", this, SLOT(convert_mortara_to_edf()));
   toolsmenu->addAction("Convert Binary/raw data to EDF", this, SLOT(convert_binary_to_edf()));
   toolsmenu->addSeparator();
   toolsmenu->addAction("Options", this, SLOT(show_options_dialog()));

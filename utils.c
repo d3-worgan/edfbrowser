@@ -1980,7 +1980,7 @@ int dblcmp(double val1, double val2)
 
 int base64_dec(const void *src, void *dest, int len)
 {
-  int i, j, k, idx;
+  int i, j, idx;
 
   const unsigned char *arr_in=(const unsigned char *)src;
 
@@ -2002,48 +2002,62 @@ int base64_dec(const void *src, void *dest, int len)
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
-  for(i=0, j=0, k=0; i<len; i++)
+  for(i=0, j=0, idx=0; i<len; i++)
   {
     if((arr_in[i] == '\r') || (arr_in[i] == '\n'))
     {
       continue;
     }
 
-    idx = j % 4;
-
-    if(idx == 0)
+    if(arr_in[i] == '=')
     {
-      var.one = base64[arr_in[i]];
+      break;
+    }
 
+    if(arr_in[i] != 'A')
+    {
+      if(base64[arr_in[i]] == 0)
+      {
+        return -1;
+      }
+    }
+
+    var.one = base64[arr_in[i]];
+
+    idx++;
+
+    if(idx < 4)
+    {
       var.one <<= 6;
     }
-    else if(idx == 1)
-      {
-        var.one += base64[arr_in[i]];
+    else
+    {
+      idx = 0;
 
-        var.one <<= 6;
-      }
-      else if(idx == 2)
-        {
-          var.one += base64[arr_in[i]];
+      arr_out[j++] = var.four[2];
 
-          var.one <<= 6;
-        }
-        else if(idx == 3)
-          {
-            var.one += base64[arr_in[i]];
-          }
+      arr_out[j++] = var.four[1];
 
-    j++;
-
-    arr_out[k++] = var.four[2];
-
-    arr_out[k++] = var.four[1];
-
-    arr_out[k++] = var.four[0];
+      arr_out[j++] = var.four[0];
+    }
   }
 
-  return 0;
+  if(idx == 2)
+  {
+    var.one >>= 6;
+
+    arr_out[j++] = var.four[0];
+  }
+  else if(idx == 3)
+    {
+      var.one >>= 6;
+
+      arr_out[j++] = var.four[1];
+
+      arr_out[j++] = var.four[0];
+    }
+
+  return j;
 }
 
 
