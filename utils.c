@@ -1980,11 +1980,11 @@ int dblcmp(double val1, double val2)
 
 int base64_dec(const void *src, void *dest, int len)
 {
-  int i, len4=len/4;
+  int i, j, k, idx;
 
-  const unsigned char *ptr_in=(const unsigned char *)src;
+  const unsigned char *arr_in=(const unsigned char *)src;
 
-  unsigned char *ptr_out=(unsigned char *)dest;
+  unsigned char *arr_out=(unsigned char *)dest;
 
   union{
     unsigned char four[4];
@@ -2002,67 +2002,48 @@ int base64_dec(const void *src, void *dest, int len)
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
-  for(i=0; i<len4; i++)
+  for(i=0, j=0, k=0; i<len; i++)
   {
-    var.one = base64[*(ptr_in++)];
-
-    var.one <<= 6;
-
-    var.one += base64[*(ptr_in++)];
-
-    var.one <<= 6;
-
-    var.one += base64[*(ptr_in++)];
-
-    var.one <<= 6;
-
-    var.one += base64[*(ptr_in++)];
-
-    var.one <<= 6;
-
-    *(ptr_out++) = var.four[2];
-
-    *(ptr_out++) = var.four[1];
-
-    *(ptr_out++) = var.four[0];
-  }
-
-  len %= 4;
-
-  if(len) len--;
-
-  if(len == 1)
-  {
-    var.one = base64[*(ptr_in++)];
-
-    var.one <<= 6;
-
-    var.one += base64[*(ptr_in++)];
-
-    var.one >>= 4;
-
-    *(ptr_out++) = var.four[0];
-  }
-  else if(len == 2)
+    if((arr_in[i] == '\r') || (arr_in[i] == '\n'))
     {
-      var.one = base64[*(ptr_in++)];
-
-      var.one <<= 6;
-
-      var.one += base64[*(ptr_in++)];
-
-      var.one <<= 6;
-
-      var.one += base64[*(ptr_in++)];
-
-      var.one >>= 2;
-
-      *(ptr_out++) = var.four[1];
-
-      *(ptr_out++) = var.four[0];
+      continue;
     }
 
-  return i * 4 + len;
+    idx = j % 4;
+
+    if(idx == 0)
+    {
+      var.one = base64[arr_in[i]];
+
+      var.one <<= 6;
+    }
+    else if(idx == 1)
+      {
+        var.one += base64[arr_in[i]];
+
+        var.one <<= 6;
+      }
+      else if(idx == 2)
+        {
+          var.one += base64[arr_in[i]];
+
+          var.one <<= 6;
+        }
+        else if(idx == 3)
+          {
+            var.one += base64[arr_in[i]];
+          }
+
+    j++;
+
+    arr_out[k++] = var.four[2];
+
+    arr_out[k++] = var.four[1];
+
+    arr_out[k++] = var.four[0];
+  }
+
+  return 0;
 }
 
 
