@@ -407,8 +407,11 @@ static int xml_attribute(const char *data, const char *item, char *result, int r
             {
               if((j - i) < result_len)
               {
-                xml_strncpy_decode_entity(result, data + i, j - i);
-                result[j - i] = 0;
+                if(result != NULL)
+                {
+                  xml_strncpy_decode_entity(result, data + i, j - i);
+                  result[j - i] = 0;
+                }
 
                 return j - i;
               }
