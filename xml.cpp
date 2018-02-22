@@ -28,7 +28,7 @@
 
 #include "xml.h"
 
-
+// #define XMLDEBUG_TEST
 
 
 
@@ -421,10 +421,16 @@ static int xml_attribute(const char *data, const char *item, char *result, int r
         else  continue;
       }
 
+#ifdef XMLDEBUG_TEST
+      printf("XML: error at line: %i\n", __LINE__);
+#endif
       return XML_ERROR_GEN;
     }
   }
 
+#ifdef XMLDEBUG_TEST
+  printf("XML: error at line: %i\n", __LINE__);
+#endif
   return XML_ERROR_GEN;
 }
 
@@ -904,11 +910,17 @@ static int xml_process_tag(const char *str, struct xml_handle *handle_p)
   len = strlen(str);
   if(!len)  return XML_ERROR_GEN;
 
-  if((str[0]==' ')||(str[0]=='>'))  return XML_ERROR_GEN;
+  if((str[0]==' ')||(str[0]=='>'))
+  {
+#ifdef XMLDEBUG_TEST
+    printf("XML: error at line: %i\n", __LINE__);
+#endif
+    return XML_ERROR_GEN;
+  }
 
   for(i=0; i<len; i++)
   {
-    if((str[i]==' ')||(str[i]=='>'))  break;
+    if((str[i]==' ')||(str[i]=='>')||(str[i]=='\n')||(str[i]=='\r'))  break;
   }
 
   if((i + 1) > XML_STRBUFLEN)
@@ -918,6 +930,8 @@ static int xml_process_tag(const char *str, struct xml_handle *handle_p)
 
   strncpy(handle_p->elementname[handle_p->level], str, i);
   handle_p->elementname[handle_p->level][i] = 0;
+
+  while((str[i]=='\n')||(str[i]=='\r'))  i++;
 
   if(str[i]!=' ')  return 0;
 
@@ -1003,6 +1017,9 @@ inline static int xml_next_tag(int offset, struct xml_handle *handle_p) /* retur
     temp = fgetc(handle_p->file);
     if(temp==EOF)
     {
+#ifdef XMLDEBUG_TEST
+      printf("XML: error at line: %i\n", __LINE__);
+#endif
       return XML_ERROR_GEN;
     }
 
@@ -1046,7 +1063,13 @@ inline static int xml_next_tag(int offset, struct xml_handle *handle_p) /* retur
 
         if(temp=='>')
         {
-          if(!tagstart)  return XML_ERROR_GEN;
+          if(!tagstart)
+          {
+#ifdef XMLDEBUG_TEST
+            printf("XML: error at line: %i\n", __LINE__);
+#endif
+            return XML_ERROR_GEN;
+          }
 
           offset = ftell(handle_p->file);
           fp2 = offset - 1;
@@ -1085,7 +1108,13 @@ inline static int xml_next_tag(int offset, struct xml_handle *handle_p) /* retur
     }
   }
 
-  if(!fp2)  return XML_ERROR_GEN;
+  if(!fp2)
+  {
+#ifdef XMLDEBUG_TEST
+    printf("XML: error at line: %i\n", __LINE__);
+#endif
+    return XML_ERROR_GEN;
+  }
 
   fseek(handle_p->file, fp1, SEEK_SET);
 
@@ -1094,6 +1123,9 @@ inline static int xml_next_tag(int offset, struct xml_handle *handle_p) /* retur
   if(fread(handle_p->tag_search_result, fp2 - fp1, 1, handle_p->file) != 1)
   {
     handle_p->tag_search_result[0] = 0;
+#ifdef XMLDEBUG_TEST
+    printf("XML: error at line: %i\n", __LINE__);
+#endif
     return XML_ERROR_GEN;
   }
 

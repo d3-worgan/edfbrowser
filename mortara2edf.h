@@ -48,6 +48,7 @@
 #include <QPixmap>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QTextEdit>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -57,6 +58,8 @@
 #include "mainwindow.h"
 #include "utils.h"
 #include "edflib.h"
+#include "xml.h"
+
 
 
 class UI_Mainwindow;
@@ -74,6 +77,8 @@ public:
 private:
 
 QDialog       *myobjectDialog;
+
+QTextEdit    *textEdit1;
 
 QPushButton   *pushButton1,
               *pushButton2;
