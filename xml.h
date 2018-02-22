@@ -44,6 +44,7 @@
 #define XML_ERROR_STRLEN   -2
 #define XML_ERROR_MEMBUFSZ -3
 #define XML_ERROR_INV_HDL  -4
+#define XML_ERROR_NOTFOUND -5
 
 
 

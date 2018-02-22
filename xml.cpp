@@ -28,7 +28,7 @@
 
 #include "xml.h"
 
-// #define XMLDEBUG_TEST
+//#define XMLDEBUG_TEST
 
 
 
@@ -338,7 +338,13 @@ int xml_get_name_of_element(struct xml_handle *handle_p, char *buf, int sz)
 {
   if(handle_p == NULL)  return XML_ERROR_INV_HDL;
 
-  if(sz < 2)  return XML_ERROR_GEN;
+  if(sz < 2)
+  {
+#ifdef XMLDEBUG_TEST
+    printf("XML: error at line: %i\n", __LINE__);
+#endif
+    return XML_ERROR_GEN;
+  }
 
   strncpy(buf, handle_p->elementname[handle_p->level], sz);
 
@@ -352,9 +358,21 @@ int xml_get_attribute_of_element(struct xml_handle *handle_p, const char *attr_n
 {
   if(handle_p == NULL)  return XML_ERROR_INV_HDL;
 
-  if(strlen(attr_name) < 1)  return XML_ERROR_GEN;
+  if(strlen(attr_name) < 1)
+  {
+#ifdef XMLDEBUG_TEST
+    printf("XML: error at line: %i\n", __LINE__);
+#endif
+    return XML_ERROR_GEN;
+  }
 
-  if(content_len < 1)  return XML_ERROR_GEN;
+  if(content_len < 1)
+  {
+#ifdef XMLDEBUG_TEST
+    printf("XML: error at line: %i\n", __LINE__);
+#endif
+    return XML_ERROR_GEN;
+  }
 
   return xml_attribute(handle_p->attributes[handle_p->level], attr_name, str_buf, content_len);
 }
@@ -367,13 +385,22 @@ static int xml_attribute(const char *data, const char *item, char *result, int r
       item_len,
       quote=0;
 
-  if(data == NULL)  return XML_ERROR_GEN;
+  if(data == NULL)
+  {
+#ifdef XMLDEBUG_TEST
+    printf("XML: error at line: %i\n", __LINE__);
+#endif
+    return XML_ERROR_GEN;
+  }
 
   data_len = strlen(data);
   item_len = strlen(item);
 
   if((data_len < 4) || (item_len >= (data_len - 4)))
   {
+#ifdef XMLDEBUG_TEST
+    printf("XML: error at line: %i\n", __LINE__);
+#endif
     return XML_ERROR_GEN;
   }
 
@@ -428,10 +455,7 @@ static int xml_attribute(const char *data, const char *item, char *result, int r
     }
   }
 
-#ifdef XMLDEBUG_TEST
-  printf("XML: error at line: %i\n", __LINE__);
-#endif
-  return XML_ERROR_GEN;
+  return XML_ERROR_NOTFOUND;
 }
 
 
@@ -439,7 +463,7 @@ struct xml_handle * xml_get_handle(const char *filename)
 {
   int err;
 
-  char scratchpad[512];
+  char scratchpad[4096];
 
   struct xml_handle *handle_p;
 
@@ -468,7 +492,7 @@ struct xml_handle * xml_get_handle(const char *filename)
 
   if((handle_p->tag_search_result[0] == '?')  && (handle_p->tag_search_result[strlen(handle_p->tag_search_result) - 1] == '?'))
   {
-    if(xml_attribute(handle_p->tag_search_result, "encoding", scratchpad, 512) < 0)
+    if(xml_attribute(handle_p->tag_search_result, "encoding", scratchpad, 4096) < 0)
     {
       handle_p->encoding = 0;  // attribute encoding not present
     }
@@ -543,7 +567,13 @@ int xml_get_content_of_element(struct xml_handle *handle_p, char *buf, int sz)
 
   offset -= (len + 3);
 
-  if(offset < handle_p->offset[handle_p->level])  return XML_ERROR_GEN;
+  if(offset < handle_p->offset[handle_p->level])
+  {
+#ifdef XMLDEBUG_TEST
+    printf("XML: error at line: %i\n", __LINE__);
+#endif
+    return XML_ERROR_GEN;
+  }
 
   fseek(handle_p->file, handle_p->offset[handle_p->level], SEEK_SET);
 
@@ -556,6 +586,9 @@ int xml_get_content_of_element(struct xml_handle *handle_p, char *buf, int sz)
   {
     if(fread(handle_p->content[handle_p->level], offset - handle_p->offset[handle_p->level], 1, handle_p->file) != 1)
     {
+#ifdef XMLDEBUG_TEST
+      printf("XML: error at line: %i\n", __LINE__);
+#endif
       return XML_ERROR_GEN;
     }
   }
@@ -649,7 +682,13 @@ int xml_get_content_of_element(struct xml_handle *handle_p, char *buf, int sz)
     }
   }
 
-  if(sz < 2)  return XML_ERROR_GEN;
+  if(sz < 2)
+  {
+#ifdef XMLDEBUG_TEST
+    printf("XML: error at line: %i\n", __LINE__);
+#endif
+    return XML_ERROR_GEN;
+  }
 
   strncpy(buf, handle_p->content[handle_p->level], sz);
 
@@ -686,7 +725,10 @@ int xml_goto_nth_element_inside(struct xml_handle *handle_p, const char *name, i
       if(handle_p->tag_search_result[0]=='/')
       {
         if(deep)  deep--;
-        else  return XML_ERROR_GEN;
+        else
+        {
+          return XML_ERROR_NOTFOUND;
+        }
       }
       else
       {
@@ -736,6 +778,9 @@ int xml_goto_nth_element_inside(struct xml_handle *handle_p, const char *name, i
     }
   }
 
+#ifdef XMLDEBUG_TEST
+  printf("XML: error at line: %i\n", __LINE__);
+#endif
   return XML_ERROR_GEN;
 }
 
@@ -754,7 +799,13 @@ int xml_goto_next_element_with_same_name(struct xml_handle *handle_p)
     while(1)
     {
       offset = xml_next_tag(offset, handle_p);
-      if(offset < 0)  return XML_ERROR_GEN;
+      if(offset < 0)
+      {
+#ifdef XMLDEBUG_TEST
+        printf("XML: error at line: %i\n", __LINE__);
+#endif
+        return XML_ERROR_GEN;
+      }
 
       if((handle_p->tag_search_result[0]=='!') || (handle_p->tag_search_result[0]=='?'))
       {
@@ -793,7 +844,13 @@ int xml_goto_next_element_with_same_name(struct xml_handle *handle_p)
       if(handle_p->tag_search_result[0]=='/')
       {
         if(deep)  deep--;
-        else  return XML_ERROR_GEN;
+        else
+        {
+#ifdef XMLDEBUG_TEST
+          printf("XML: error at line: %i\n", __LINE__);
+#endif
+          return XML_ERROR_GEN;
+        }
       }
       else
       {
@@ -837,6 +894,9 @@ int xml_goto_next_element_with_same_name(struct xml_handle *handle_p)
     }
   }
 
+#ifdef XMLDEBUG_TEST
+  printf("XML: error at line: %i\n", __LINE__);
+#endif
   return XML_ERROR_GEN;
 }
 
@@ -886,6 +946,9 @@ int xml_goto_next_element_at_same_level(struct xml_handle *handle_p)
 
   if(handle_p->tag_search_result[0]=='/')
   {
+#ifdef XMLDEBUG_TEST
+    printf("XML: error at line: %i\n", __LINE__);
+#endif
     return XML_ERROR_GEN;
   }
 
@@ -908,7 +971,13 @@ static int xml_process_tag(const char *str, struct xml_handle *handle_p)
   if(handle_p==NULL)  return XML_ERROR_INV_HDL;
 
   len = strlen(str);
-  if(!len)  return XML_ERROR_GEN;
+  if(!len)
+  {
+#ifdef XMLDEBUG_TEST
+    printf("XML: error at line: %i\n", __LINE__);
+#endif
+    return XML_ERROR_GEN;
+  }
 
   if((str[0]==' ')||(str[0]=='>'))
   {
@@ -1054,6 +1123,9 @@ inline static int xml_next_tag(int offset, struct xml_handle *handle_p) /* retur
         {
           if(tagstart)
           {
+#ifdef XMLDEBUG_TEST
+            printf("XML: error at line: %i\n", __LINE__);
+#endif
             return XML_ERROR_GEN;
           }
 
