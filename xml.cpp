@@ -455,6 +455,9 @@ static int xml_attribute(const char *data, const char *item, char *result, int r
     }
   }
 
+#ifdef XMLDEBUG_TEST
+  printf("XML: error at line: %i\n", __LINE__);
+#endif
   return XML_ERROR_NOTFOUND;
 }
 
@@ -702,9 +705,21 @@ int xml_goto_nth_element_inside(struct xml_handle *handle_p, const char *name, i
 {
   int len, offset, deep=0, cnt=0, ts_len, has_endslash, err;
 
-  if(handle_p==NULL)  return XML_ERROR_INV_HDL;
+  if(handle_p==NULL)
+  {
+#ifdef XMLDEBUG_TEST
+    printf("XML: error at line: %i\n", __LINE__);
+#endif
+    return XML_ERROR_INV_HDL;
+  }
 
-  if(handle_p->level >= (XML_MAX_ED - 2))  return XML_ERROR_MEMBUFSZ;
+  if(handle_p->level >= (XML_MAX_ED - 2))
+  {
+#ifdef XMLDEBUG_TEST
+    printf("XML: error at line: %i\n", __LINE__);
+#endif
+    return XML_ERROR_MEMBUFSZ;
+  }
 
   len = strlen(name);
 
@@ -724,9 +739,15 @@ int xml_goto_nth_element_inside(struct xml_handle *handle_p, const char *name, i
 
       if(handle_p->tag_search_result[0]=='/')
       {
-        if(deep)  deep--;
+        if(deep)
+        {
+          deep--;
+        }
         else
         {
+#ifdef XMLDEBUG_TEST
+          printf("XML: error at line: %i\n", __LINE__);
+#endif
           return XML_ERROR_NOTFOUND;
         }
       }
@@ -755,7 +776,10 @@ int xml_goto_nth_element_inside(struct xml_handle *handle_p, const char *name, i
       {
         if(!strncmp(handle_p->tag_search_result, name, len))
         {
-          if((handle_p->tag_search_result[len]==' ')||(handle_p->tag_search_result[len]==0))
+          if((handle_p->tag_search_result[len]==' ') ||
+             (handle_p->tag_search_result[len]==0) ||
+             (handle_p->tag_search_result[len]=='\r') ||
+             (handle_p->tag_search_result[len]=='\n'))
           {
             if(cnt==n)
             {
@@ -877,7 +901,10 @@ int xml_goto_next_element_with_same_name(struct xml_handle *handle_p)
       {
         if(!strncmp(handle_p->tag_search_result, handle_p->elementname[handle_p->level], len))
         {
-          if((handle_p->tag_search_result[len]==' ')||(handle_p->tag_search_result[len]==0))
+          if((handle_p->tag_search_result[len]==' ') ||
+             (handle_p->tag_search_result[len]==0) ||
+             (handle_p->tag_search_result[len]=='\r') ||
+             (handle_p->tag_search_result[len]=='\n'))
           {
             handle_p->offset[handle_p->level] = offset;
             handle_p->one_tag[handle_p->level] = 0;
@@ -1190,7 +1217,13 @@ inline static int xml_next_tag(int offset, struct xml_handle *handle_p) /* retur
 
   fseek(handle_p->file, fp1, SEEK_SET);
 
-  if((fp2 - fp1 + 1) > XML_STRBUFLEN)  return XML_ERROR_STRLEN;
+  if((fp2 - fp1 + 1) > XML_STRBUFLEN)
+  {
+#ifdef XMLDEBUG_TEST
+    printf("XML: error at line: %i\n", __LINE__);
+#endif
+    return XML_ERROR_STRLEN;
+  }
 
   if(fread(handle_p->tag_search_result, fp2 - fp1, 1, handle_p->file) != 1)
   {
