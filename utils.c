@@ -2002,6 +2002,8 @@ int base64_dec(const void *src, void *dest, int len)
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
+  var.one = 0;
+
   for(i=0, j=0, idx=0; i<len; i++)
   {
     if(arr_in[i] <= ' ')
@@ -2022,7 +2024,7 @@ int base64_dec(const void *src, void *dest, int len)
       }
     }
 
-    var.one = base64[arr_in[i]];
+    var.one += base64[arr_in[i]];
 
     idx++;
 
@@ -2039,6 +2041,8 @@ int base64_dec(const void *src, void *dest, int len)
       arr_out[j++] = var.four[1];
 
       arr_out[j++] = var.four[0];
+
+      var.one = 0;
     }
   }
 
