@@ -539,7 +539,7 @@ struct xml_handle * xml_get_handle(const char *filename)
 
 int xml_get_content_of_element(struct xml_handle *handle_p, char *buf, int sz)
 {
-  int i, j, offset, len, deep=0, cdata=0;
+  int i, j, offset, len, deep=0, cdata=0, mem_sz;
 
   if(handle_p==NULL)  return XML_ERROR_INV_HDL;
 
@@ -580,10 +580,24 @@ int xml_get_content_of_element(struct xml_handle *handle_p, char *buf, int sz)
 
   fseek(handle_p->file, handle_p->offset[handle_p->level], SEEK_SET);
 
-  if(offset - handle_p->offset[handle_p->level] + 1 >= XML_STRBUFLEN)
+  mem_sz = offset - handle_p->offset[handle_p->level] + 2;
+  if(mem_sz > handle_p->content_sz[handle_p->level])
   {
-    return XML_ERROR_STRLEN;
+    if(mem_sz < XML_STRBUFLEN)  mem_sz = XML_STRBUFLEN;
+    free(handle_p->content[handle_p->level]);
+    handle_p->content[handle_p->level] = (char *)malloc(mem_sz);
+    if(handle_p->content[handle_p->level] == NULL)
+    {
+      handle_p->content_sz[handle_p->level] = 0;
+      return XML_ERROR_MALLOC;
+    }
+    else
+    {
+      handle_p->content_sz[handle_p->level] = mem_sz;
+    }
   }
+
+  handle_p->content[handle_p->level][0] = 0;
 
   if(offset > handle_p->offset[handle_p->level])
   {
@@ -786,8 +800,6 @@ int xml_goto_nth_element_inside(struct xml_handle *handle_p, const char *name, i
               handle_p->level++;
               handle_p->offset[handle_p->level] = offset;
               handle_p->one_tag[handle_p->level] = 0;
-              handle_p->elementname[handle_p->level][0] = 0;
-              handle_p->attributes[handle_p->level][0] = 0;
 
               err = xml_process_tag(handle_p->tag_search_result, handle_p);
               if(err)  return err;
@@ -908,8 +920,6 @@ int xml_goto_next_element_with_same_name(struct xml_handle *handle_p)
           {
             handle_p->offset[handle_p->level] = offset;
             handle_p->one_tag[handle_p->level] = 0;
-            handle_p->elementname[handle_p->level][0] = 0;
-            handle_p->attributes[handle_p->level][0] = 0;
 
             err = xml_process_tag(handle_p->tag_search_result, handle_p);
             if(err)  return err;
@@ -993,7 +1003,7 @@ int xml_goto_next_element_at_same_level(struct xml_handle *handle_p)
 /* Check if the element has one or two tags */
 static int xml_process_tag(const char *str, struct xml_handle *handle_p)
 {
-  int len, i, p;
+  int len, i, p, mem_sz;
 
   if(handle_p==NULL)  return XML_ERROR_INV_HDL;
 
@@ -1019,10 +1029,24 @@ static int xml_process_tag(const char *str, struct xml_handle *handle_p)
     if((str[i]==' ')||(str[i]=='>')||(str[i]=='\n')||(str[i]=='\r'))  break;
   }
 
-  if((i + 1) > XML_STRBUFLEN)
+  mem_sz = i + 2;
+  if(mem_sz > handle_p->elementname_sz[handle_p->level])
   {
-    return XML_ERROR_STRLEN;
+    if(mem_sz < XML_STRBUFLEN)  mem_sz = XML_STRBUFLEN;
+    free(handle_p->elementname[handle_p->level]);
+    handle_p->elementname[handle_p->level] = (char *)malloc(mem_sz);
+    if(handle_p->elementname[handle_p->level] == NULL)
+    {
+      handle_p->elementname_sz[handle_p->level] = 0;
+      return XML_ERROR_MALLOC;
+    }
+    else
+    {
+      handle_p->elementname_sz[handle_p->level] = mem_sz;
+    }
   }
+
+  handle_p->elementname[handle_p->level][0] = 0;
 
   strncpy(handle_p->elementname[handle_p->level], str, i);
   handle_p->elementname[handle_p->level][i] = 0;
@@ -1057,7 +1081,24 @@ static int xml_process_tag(const char *str, struct xml_handle *handle_p)
 
   if(str[len] == '/')  len--;
 
-  if((len + 1) > XML_STRBUFLEN)  return XML_ERROR_STRLEN;
+  mem_sz = len + 2;
+  if(mem_sz > handle_p->attributes_sz[handle_p->level])
+  {
+    if(mem_sz < XML_STRBUFLEN)  mem_sz = XML_STRBUFLEN;
+    free(handle_p->attributes[handle_p->level]);
+    handle_p->attributes[handle_p->level] = (char *)malloc(mem_sz);
+    if(handle_p->attributes[handle_p->level] == NULL)
+    {
+      handle_p->attributes_sz[handle_p->level] = 0;
+      return XML_ERROR_MALLOC;
+    }
+    else
+    {
+      handle_p->attributes_sz[handle_p->level] = mem_sz;
+    }
+  }
+
+  handle_p->attributes[handle_p->level][0] = 0;
 
   strncpy(handle_p->attributes[handle_p->level], str + p, len);
   handle_p->attributes[handle_p->level][len] = 0;
@@ -1068,9 +1109,20 @@ static int xml_process_tag(const char *str, struct xml_handle *handle_p)
 
 void xml_close(struct xml_handle *handle_p)  /* delete everything and close the file */
 {
+  int i;
+
   if(handle_p==NULL)  return;
 
   if(handle_p->file != NULL)  fclose(handle_p->file);
+
+  free(handle_p->tag_search_result);
+
+  for(i=0; i<XML_MAX_ED; i++)
+  {
+    free(handle_p->elementname[i]);
+    free(handle_p->attributes[i]);
+    free(handle_p->content[i]);
+  }
 
   free(handle_p);
 }
@@ -1099,12 +1151,11 @@ inline static int xml_next_tag(int offset, struct xml_handle *handle_p) /* retur
   int temp, fp1=0, fp2=0, tagstart=0,
       tag_char_cnt=0,
       comment=0,
-      cdata=0;
+      cdata=0,
+      mem_sz;
 
   char circ_buf[16];
 
-
-  handle_p->tag_search_result[0] = 0;
 
   fseek(handle_p->file, offset, SEEK_SET);
 
@@ -1217,13 +1268,27 @@ inline static int xml_next_tag(int offset, struct xml_handle *handle_p) /* retur
 
   fseek(handle_p->file, fp1, SEEK_SET);
 
-  if((fp2 - fp1 + 1) > XML_STRBUFLEN)
+  mem_sz = fp2 - fp1 + 2;
+  if(mem_sz > handle_p->tag_search_result_sz)
   {
+    if(mem_sz < XML_STRBUFLEN)  mem_sz = XML_STRBUFLEN;
+    free(handle_p->tag_search_result);
+    handle_p->tag_search_result = (char *)malloc(mem_sz);
+    if(handle_p->tag_search_result == NULL)
+    {
+      handle_p->tag_search_result_sz = 0;
 #ifdef XMLDEBUG_TEST
-    printf("XML: error at line: %i\n", __LINE__);
+      printf("XML: error at line: %i\n", __LINE__);
 #endif
-    return XML_ERROR_STRLEN;
+      return XML_ERROR_MALLOC;
+    }
+    else
+    {
+      handle_p->tag_search_result_sz = mem_sz;
+    }
   }
+
+  handle_p->tag_search_result[0] = 0;
 
   if(fread(handle_p->tag_search_result, fp2 - fp1, 1, handle_p->file) != 1)
   {

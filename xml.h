@@ -45,7 +45,7 @@
 #define XML_ERROR_MEMBUFSZ -3
 #define XML_ERROR_INV_HDL  -4
 #define XML_ERROR_NOTFOUND -5
-
+#define XML_ERROR_MALLOC   -6
 
 
 struct xml_handle
@@ -55,10 +55,14 @@ struct xml_handle
   int level;
   int offset[XML_MAX_ED];
   int one_tag[XML_MAX_ED];
-  char elementname[XML_MAX_ED][XML_STRBUFLEN];
-  char attributes[XML_MAX_ED][XML_STRBUFLEN];
-  char tag_search_result[XML_STRBUFLEN];
-  char content[XML_MAX_ED][XML_STRBUFLEN];
+  char *elementname[XML_MAX_ED];
+  int elementname_sz[XML_MAX_ED];
+  char *attributes[XML_MAX_ED];
+  int attributes_sz[XML_MAX_ED];
+  char *tag_search_result;
+  int tag_search_result_sz;
+  char *content[XML_MAX_ED];
+  int content_sz[XML_MAX_ED];
 };
 
 
