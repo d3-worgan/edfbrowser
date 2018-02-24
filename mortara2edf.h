@@ -60,6 +60,7 @@
 #include "edflib.h"
 #include "xml.h"
 
+#define MORTARA_MAX_CHNS 64
 
 
 class UI_Mainwindow;
@@ -87,6 +88,17 @@ char *recent_opendir,
      *recent_savedir;
 
 void enable_widgets(bool);
+
+int chan_cnt,
+    chan_offset[MORTARA_MAX_CHNS],
+    chan_bits[MORTARA_MAX_CHNS],
+    chan_units_per_mv[MORTARA_MAX_CHNS],
+    chan_duration[MORTARA_MAX_CHNS],
+    chan_sample_freq[MORTARA_MAX_CHNS];
+
+char chan_format[MORTARA_MAX_CHNS][17],
+     chan_name[MORTARA_MAX_CHNS][17];
+
 
 private slots:
 
