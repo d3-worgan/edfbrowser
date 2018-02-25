@@ -12,6 +12,8 @@
 
  - Import annotations: added support for annotations in MIT / WFDB (physionet) format.
 
+ - Added a Mortara ECG XML to EDF converter.
+
 
 
  version 1.62      January 7, 2018

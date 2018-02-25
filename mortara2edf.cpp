@@ -88,6 +88,8 @@ void UI_MortaraEDFwindow::SelectFileButton()
     chan_data_out[i] = NULL;
   }
 
+///////////////////////////////////////// OPEN THE XML FILE ///////////////////////
+
   strcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "XML files (*.xml *.XML)").toLocal8Bit().data());
 
   if(!strcmp(path, ""))
@@ -149,6 +151,8 @@ void UI_MortaraEDFwindow::SelectFileButton()
     textEdit1->append("Error, too many channels\n");
     goto OUT;
   }
+
+////////////////////////////////// GET THE LEAD PARAMETERS ////////////////////////
 
   for(i=0; i<chan_cnt; i++)
   {
@@ -316,6 +320,24 @@ void UI_MortaraEDFwindow::SelectFileButton()
     xml_go_up(xml_hdl);
   }
 
+  chan_sf = chan_sample_freq[0];
+
+  for(chan_sf_div=10; chan_sf_div>0; chan_sf_div--)
+  {
+    if(chan_sf_div == 9)  continue;
+    if(chan_sf_div == 7)  continue;
+    if(chan_sf_div == 6)  continue;
+    if(chan_sf_div == 3)  continue;
+
+    if(!(chan_sf % chan_sf_div))  break;
+  }
+
+  if(chan_sf_div < 1)  chan_sf_div = 1;
+
+  chan_sf_block = chan_sf / chan_sf_div;
+
+////////////////////////////// GET THE LEAD DATA ////////////////////////////////////
+
   for(i=0; i<chan_cnt; i++)
   {
     err = xml_goto_nth_element_inside(xml_hdl, "CHANNEL", i);
@@ -383,6 +405,131 @@ void UI_MortaraEDFwindow::SelectFileButton()
     xml_go_up(xml_hdl);
   }
 
+/////////////////////////////////////// GET THE START DATE AND TIME /////////////////////
+
+    len = xml_get_attribute_of_element(xml_hdl, "ACQUISITION_TIME_XML", start_date_time, 64);
+    if(len < 19)
+    {
+      textEdit1->append("Error, can not find attribute \"ACQUISITION_TIME_XML\"\n");
+      goto OUT;
+    }
+    start_date_time[4] = 0;
+    start_date_time[7] = 0;
+    start_date_time[10] = 0;
+    start_date_time[13] = 0;
+    start_date_time[16] = 0;
+    start_date_time[19] = 0;
+
+    err = 0;
+
+    if((start_date_time[0] < '0') || (start_date_time[0] > '9'))  err = 1;
+    if((start_date_time[1] < '0') || (start_date_time[1] > '9'))  err = 1;
+    if((start_date_time[2] < '0') || (start_date_time[2] > '9'))  err = 1;
+    if((start_date_time[3] < '0') || (start_date_time[3] > '9'))  err = 1;
+    if((start_date_time[5] < '0') || (start_date_time[5] > '9'))  err = 1;
+    if((start_date_time[6] < '0') || (start_date_time[6] > '9'))  err = 1;
+    if((start_date_time[8] < '0') || (start_date_time[8] > '9'))  err = 1;
+    if((start_date_time[9] < '0') || (start_date_time[8] > '9'))  err = 1;
+    if((start_date_time[11] < '0') || (start_date_time[11] > '9'))  err = 1;
+    if((start_date_time[12] < '0') || (start_date_time[12] > '9'))  err = 1;
+    if((start_date_time[14] < '0') || (start_date_time[14] > '9'))  err = 1;
+    if((start_date_time[15] < '0') || (start_date_time[15] > '9'))  err = 1;
+    if((start_date_time[17] < '0') || (start_date_time[17] > '9'))  err = 1;
+    if((start_date_time[18] < '0') || (start_date_time[18] > '9'))  err = 1;
+
+    if((atoi(start_date_time) < 1985) || (atoi(start_date_time) > 2099)) err = 1;
+    if((atoi(start_date_time + 5) < 1) || (atoi(start_date_time + 5) > 12)) err = 1;
+    if((atoi(start_date_time + 8) < 1) || (atoi(start_date_time + 8) > 31)) err = 1;
+    if(atoi(start_date_time + 11) > 23) err = 1;
+    if(atoi(start_date_time + 14) > 59) err = 1;
+    if(atoi(start_date_time + 17) > 59) err = 1;
+
+    if(err)
+    {
+      textEdit1->append("Error, malformed attribute \"ACQUISITION_TIME\"\n");
+      goto OUT;
+    }
+
+/////////////////////////////////////// GET SUBJECT ///////////////////////////////
+
+    subject_name[0] = 0;
+
+    err = xml_goto_nth_element_inside(xml_hdl, "SUBJECT", 0);
+    if(err)
+    {
+      textEdit1->append("Warning, subject name not present");
+    }
+    else
+    {
+      len = xml_get_attribute_of_element(xml_hdl, "FIRST_NAME", subject_name, 128);
+      if(len < 1)
+      {
+        textEdit1->append("Warning, subjects' first name not present");
+      }
+      else
+      {
+        strcat(subject_name, " ");
+      }
+
+      len = xml_get_attribute_of_element(xml_hdl, "LAST_NAME", subject_name + strlen(subject_name), 128);
+      if(len < 1)
+      {
+        textEdit1->append("Warning, subjects' last name not present");
+      }
+
+      if(char_encoding == 2)
+      {
+        utf8_to_latin1(subject_name);
+      }
+
+      len = xml_get_attribute_of_element(xml_hdl, "GENDER", scratchpad, 128);
+      if(len < 1)
+      {
+        textEdit1->append("Warning, subjects' gender not present");
+      }
+      if(scratchpad[0] == 'M')
+      {
+        subject_gender = 1;
+      }
+      else if(scratchpad[0] == 'F')
+        {
+          subject_gender = 0;
+        }
+        else
+        {
+          subject_gender = -1;
+        }
+
+      xml_go_up(xml_hdl);
+    }
+
+/////////////////////////////////////// GET DEVICE ///////////////////////////////
+
+    device_name[0] = 0;
+
+    err = xml_goto_nth_element_inside(xml_hdl, "SOURCE", 0);
+    if(err)
+    {
+      textEdit1->append("Warning, source/device info not present");
+    }
+    else
+    {
+      len = xml_get_attribute_of_element(xml_hdl, "MODEL", device_name, 128);
+      if(len < 1)
+      {
+        textEdit1->append("Warning, model name not present");
+      }
+
+      if(char_encoding == 2)
+      {
+        utf8_to_latin1(device_name);
+      }
+
+      xml_go_up(xml_hdl);
+    }
+
+/////////////////////////////////////// STORE TO EDF ///////////////////////////////
+
   remove_extension_from_filename(path);
   strcat(path, ".edf");
 
@@ -404,7 +551,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
 
   for(i=0; i<chan_cnt; i++)
   {
-    if(edf_set_samplefrequency(edf_hdl, i, chan_sample_freq[i]))
+    if(edf_set_samplefrequency(edf_hdl, i, chan_sf_block))
     {
       textEdit1->append("Error, edf_set_samplefrequency()\n");
       goto OUT;
@@ -450,13 +597,66 @@ void UI_MortaraEDFwindow::SelectFileButton()
     }
   }
 
-  datrecs = (chan_decoded_len[0] / chan_sample_freq[0]) / 2;
+  if(edf_set_startdatetime(edf_hdl, atoi(start_date_time), atoi(start_date_time + 5), atoi(start_date_time + 8),
+                           atoi(start_date_time + 11), atoi(start_date_time + 14), atoi(start_date_time + 17)))
+  {
+    textEdit1->append("Error, edf_set_startdatetime()\n");
+    goto OUT;
+  }
+
+  if(strlen(subject_name))
+  {
+    if(edf_set_patientname(edf_hdl, subject_name))
+    {
+      textEdit1->append("Error, edf_set_patientname()\n");
+      goto OUT;
+    }
+  }
+
+  if(subject_gender >= 0)
+  {
+    if(edf_set_gender(edf_hdl, subject_gender))
+    {
+      textEdit1->append("Error, edf_set_gender()\n");
+      goto OUT;
+    }
+  }
+
+  if(strlen(device_name))
+  {
+    if(edf_set_equipment(edf_hdl, device_name))
+    {
+      textEdit1->append("Error, edf_set_equipment()\n");
+      goto OUT;
+    }
+  }
+
+  if(chan_sf_div == 1)
+  {
+    if(edf_set_number_of_annotation_signals(edf_hdl, 2))
+    {
+      textEdit1->append("Error: edf_set_number_of_annotation_signals()\n");
+      goto OUT;
+    }
+  }
+  else
+  {
+    if(edf_set_datarecord_duration(edf_hdl, 100000 / chan_sf_div))
+    {
+      textEdit1->append("Error: edf_set_datarecord_duration()\n");
+      goto OUT;
+    }
+  }
+
+/////////////////// Start conversion //////////////////////////////////////////
+
+  datrecs = (chan_decoded_len[0] / chan_sf_block) / 2;
 
   for(j=0; j<datrecs; j++)
   {
     for(i=0; i<chan_cnt; i++)
     {
-      if(edfwrite_digital_short_samples(edf_hdl, ((signed short *)(chan_data_out[i])) + (j * chan_sample_freq[0])))
+      if(edfwrite_digital_short_samples(edf_hdl, ((signed short *)(chan_data_out[i])) + (j * chan_sf_block)))
       {
         textEdit1->append("Error, edfwrite_digital_short_samples()\n");
         goto OUT;

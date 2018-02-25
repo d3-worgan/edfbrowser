@@ -95,12 +95,19 @@ int chan_cnt,
     chan_units_per_mv[MORTARA_MAX_CHNS],
     chan_duration[MORTARA_MAX_CHNS],
     chan_sample_freq[MORTARA_MAX_CHNS],
-    chan_decoded_len[MORTARA_MAX_CHNS];
+    chan_decoded_len[MORTARA_MAX_CHNS],
+    chan_sf_div,
+    chan_sf,
+    chan_sf_block,
+    subject_gender;
 
 char chan_format[MORTARA_MAX_CHNS][17],
      chan_name[MORTARA_MAX_CHNS][17],
      *chan_data_in[MORTARA_MAX_CHNS],
-     *chan_data_out[MORTARA_MAX_CHNS];
+     *chan_data_out[MORTARA_MAX_CHNS],
+     start_date_time[64],
+     subject_name[512],
+     device_name[512];
 
 
 private slots:
