@@ -137,7 +137,7 @@ void Check_for_updates::replyFinished()
     return;
   }
 
-  QDesktopServices::openUrl(QUrl("http://www.teuniz.net/edfbrowser/"));
+  QDesktopServices::openUrl(QUrl("https://www.teuniz.net/edfbrowser/"));
 }
 
 
