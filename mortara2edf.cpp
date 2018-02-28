@@ -560,16 +560,45 @@ void UI_MortaraEDFwindow::SelectFileButton()
 
   for(i=0; i<chan_cnt; i++)
   {
-    if(edf_set_physical_maximum(edf_hdl, i, 32767000.0 / chan_units_per_mv[i]))
+    if(chan_units_per_mv[i] > 327)
     {
-      textEdit1->append("Error, edf_set_physical_maximum()\n");
-      goto OUT;
-    }
+      if(edf_set_physical_maximum(edf_hdl, i, 32767000.0 / chan_units_per_mv[i]))
+      {
+        textEdit1->append("Error, edf_set_physical_maximum()\n");
+        goto OUT;
+      }
 
-    if(edf_set_physical_minimum(edf_hdl, i, -32768000.0 / chan_units_per_mv[i]))
+      if(edf_set_physical_minimum(edf_hdl, i, -32768000.0 / chan_units_per_mv[i]))
+      {
+        textEdit1->append("Error, edf_set_physical_minimum()\n");
+        goto OUT;
+      }
+
+      if(edf_set_physical_dimension(edf_hdl, i, "uV"))
+      {
+        textEdit1->append("Error, edf_set_physical_dimension()\n");
+        goto OUT;
+      }
+    }
+    else
     {
-      textEdit1->append("Error, edf_set_physical_minimum()\n");
-      goto OUT;
+      if(edf_set_physical_maximum(edf_hdl, i, 32767.0 / chan_units_per_mv[i]))
+      {
+        textEdit1->append("Error, edf_set_physical_maximum()\n");
+        goto OUT;
+      }
+
+      if(edf_set_physical_minimum(edf_hdl, i, -32768.0 / chan_units_per_mv[i]))
+      {
+        textEdit1->append("Error, edf_set_physical_minimum()\n");
+        goto OUT;
+      }
+
+      if(edf_set_physical_dimension(edf_hdl, i, "mV"))
+      {
+        textEdit1->append("Error, edf_set_physical_dimension()\n");
+        goto OUT;
+      }
     }
 
     if(edf_set_digital_maximum(edf_hdl, i, 32767))
@@ -587,12 +616,6 @@ void UI_MortaraEDFwindow::SelectFileButton()
     if(edf_set_label(edf_hdl, i, chan_name[i]))
     {
       textEdit1->append("Error, edf_set_label()\n");
-      goto OUT;
-    }
-
-    if(edf_set_physical_dimension(edf_hdl, i, "uV"))
-    {
-      textEdit1->append("Error, edf_set_physical_dimension()\n");
       goto OUT;
     }
   }
