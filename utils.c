@@ -2065,14 +2065,14 @@ int base64_dec(const void *src, void *dest, int len)
 }
 
 
-/* returns also empty tokens, not thread safe! */
-char * strtok_e(char *str, const char *delim)
+/* returns also empty tokens */
+char * strtok_r_e(char *str, const char *delim, char **saveptr)
 {
   int i, j, delim_len;
 
   char *ptr;
 
-  static char *buf;
+  char *buf;
 
   if(delim == NULL)  return NULL;
 
@@ -2082,6 +2082,10 @@ char * strtok_e(char *str, const char *delim)
   if(str != NULL)
   {
     buf = str;
+  }
+  else
+  {
+    buf = *saveptr;
   }
 
   for(i=0; ; i++)
@@ -2093,6 +2097,8 @@ char * strtok_e(char *str, const char *delim)
         ptr = buf;
 
         buf += i;
+
+        *saveptr = buf;
 
         return ptr;
       }
@@ -2111,6 +2117,8 @@ char * strtok_e(char *str, const char *delim)
         ptr = buf;
 
         buf += (i + 1);
+
+        *saveptr = buf;
 
         return ptr;
       }

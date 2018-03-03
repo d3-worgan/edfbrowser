@@ -64,8 +64,8 @@ int sprint_number_nonlocalized(char *, double);
 long long atoll_x(const char *, int);
 void strntolower(char *, int);
 
-/* returns also empty tokens, not thread safe! */
-char * strtok_e(char *str, const char *delim);
+/* returns also empty tokens */
+char * strtok_r_e(char *, const char *, char **);
 
 /* 3th argument is the minimum digits that will be printed (minus sign not included), leading zero's will be added if necessary */
 /* if 4th argument is zero, only negative numbers will have the sign '-' character */

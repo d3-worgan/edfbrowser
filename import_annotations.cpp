@@ -1030,7 +1030,8 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
        description[256]={""},
        last_description[256]={""},
        duration[32]={""},
-       *charpntr=NULL;
+       *charpntr=NULL,
+       *saveptr=NULL;
 
   long long onset=0LL,
             last_onset=0LL;
@@ -1219,11 +1220,11 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
     {
       if(column == 0)
       {
-        charpntr = strtok_e(line, separator);
+        charpntr = strtok_r_e(line, separator, &saveptr);
       }
       else
       {
-        charpntr = strtok_e(NULL, separator);
+        charpntr = strtok_r_e(NULL, separator, &saveptr);
       }
 
       if(charpntr == NULL)
