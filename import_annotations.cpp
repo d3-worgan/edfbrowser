@@ -111,6 +111,9 @@ static char annotdescrlist[42][48]=
 
 #define ANNOT_EXT_CNT   8
 
+//#define IMPORT_ANNOTS_DEBUG
+
+
 
 UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
 {
@@ -774,10 +777,10 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
       digits,
       ignore_consecutive=0;
 
-  char path[MAX_PATH_LENGTH],
-       last_description[256],
-       result[XML_STRBUFLEN],
-       duration[32];
+  char path[MAX_PATH_LENGTH]={""},
+       last_description[256]={""},
+       result[XML_STRBUFLEN]={""},
+       duration[32]={""};
 
   long long onset=0LL,
             l_temp,
@@ -789,10 +792,6 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
   struct xml_handle *xml_hdl;
 
-
-  duration[0] = 0;
-
-  last_description[0] = 0;
 
   if(IgnoreConsecutiveCheckBox->checkState() == Qt::Checked)
   {
@@ -1007,11 +1006,8 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
 int UI_ImportAnnotationswindow::import_from_ascii(void)
 {
-  int i, j,
-      temp,
+  int j,
       column,
-      column_end,
-      str_start,
       line_nr,
       startline=1,
       onset_column=1,
@@ -1020,42 +1016,29 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
       onset_is_set,
       descr_is_set,
       duration_is_set,
-      max_descr_length,
+      max_descr_length=40,
       onsettime_coding=0,
-      digits,
-      days=0,
       ignore_consecutive=0,
       use_duration=0,
-      manualdescription;
+      manualdescription,
+      len;
 
-  char path[MAX_PATH_LENGTH],
-       line[2048],
-       scratchpad[256],
-       str[2048],
-       separator=',',
-       description[256],
-       last_description[256],
-       duration[32];
+  char path[MAX_PATH_LENGTH]={""},
+       line[4096]={""},
+       str[4096]={""},
+       separator[2]=";",
+       description[256]={""},
+       last_description[256]={""},
+       duration[32]={""},
+       *charpntr=NULL;
 
   long long onset=0LL,
-            l_temp,
-            last_onset=0LL,
-            utc_time=0LL;
+            last_onset=0LL;
 
   FILE *inputfile=NULL;
 
   struct annotationblock annotation;
 
-  struct date_time_struct date_time;
-
-
-  max_descr_length = 20;
-
-  description[0] = 0;
-
-  duration[0] = 0;
-
-  last_description[0] = 0;
 
   if(UseManualDescriptionRadioButton->isChecked() == true)
   {
@@ -1072,7 +1055,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   if(!strcmp(str, "tab"))
   {
-    separator = '\t';
+    separator[0] = '\t';
   }
   else
   {
@@ -1097,14 +1080,14 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
       return 1;
     }
 
-    if((str[0]>47)&&(str[0]<58))
+    if((str[0]>='0')&&(str[0]<='9'))
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character can not be a number.");
       messagewindow.exec();
       return 1;
     }
 
-    separator = str[0];
+    separator[0] = str[0];
   }
 
   strcpy(mainwindow->import_annotations_var->separator, str);
@@ -1204,631 +1187,127 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
     mainwindow->annotationlist_backup = edfplus_annotation_create_list_copy(&mainwindow->edfheaderlist[0]->annot_list);
   }
 
-  for(i=0; i<(startline-1);)
+  if(use_duration == 0)  duration_column = -1;
+
+  for(line_nr=1; !feof(inputfile); line_nr++)
   {
-    temp = fgetc(inputfile);
-
-    if(temp==EOF)
-    {
-      QApplication::restoreOverrideCursor();
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "File does not contain enough lines.");
-      messagewindow.exec();
-      fclose(inputfile);
-      return 1;
-    }
-
-    if(temp=='\n')
-    {
-      i++;
-    }
-  }
-
-  i = 0;
-
-  column = 0;
-
-  column_end = 1;
-
-  str_start = 0;
-
-  line_nr = startline;
-
-  onset_is_set = 0;
-
-  descr_is_set = 0;
-
-  duration_is_set = 0;
-
-  while(1)
-  {
-    temp = fgetc(inputfile);
-
-    if(temp==EOF)
+    if(fgets(line, 4096, inputfile) == NULL)
     {
       break;
     }
 
-    line[i] = temp;
+    if(line_nr < startline)  continue;
 
-    if(line[i]=='\r')
-    {
-      continue;
-    }
+    len = strlen(line);
 
-    if(separator!=',')
+    if(line[len-1] == '\n')
     {
-      if(line[i]==',')
+      line[len-1] = 0;
+
+      if(--len == 0)
       {
-        line[i] = '.';
+        continue;
       }
     }
 
-    if(line[i]==separator)
-    {
-      line[i] = 0;
+    onset_is_set = 0;
+    descr_is_set = 0;
+    duration_is_set = 0;
+    duration[0] = 0;
 
-      if(!column_end)
+    for(column=0; column<32; column++)
+    {
+      if(column == 0)
+      {
+        charpntr = strtok_e(line, separator);
+      }
+      else
+      {
+        charpntr = strtok_e(NULL, separator);
+      }
+
+      if(charpntr == NULL)
+      {
+        break;
+      }
+      else
       {
         if(column == onset_column)
         {
-          onset = 0LL;
-          strncpy(scratchpad, line + str_start, 30);
-          scratchpad[30] = 0;
-
-          if(onsettime_coding == 0)
-          {
-            onset = atoll_x(scratchpad, TIME_DIMENSION);
-            onset += mainwindow->edfheaderlist[0]->starttime_offset;
-
-            onset_is_set = 1;
-          }
-
-          if(onsettime_coding == 1)
-          {
-            if(strlen(scratchpad) > 6)
-            {
-              if((scratchpad[2] == ':') && (scratchpad[5] == ':'))
-              {
-                scratchpad[8] = 0;
-                onset = atoi(scratchpad) * 3600LL;
-                onset += (atoi(scratchpad + 3) * 60LL);
-                onset += (long long)(atoi(scratchpad + 6));
-                onset *= TIME_DIMENSION;
-                onset -= mainwindow->edfheaderlist[0]->l_starttime;
-                if(onset < last_onset)
-                {
-                  last_onset = onset;
-                  days++;
-                }
-
-                onset_is_set = 1;
-              }
-            }
-            if(strlen(scratchpad) > 5)
-            {
-              if((scratchpad[1] == ':') && (scratchpad[4] == ':'))
-              {
-                scratchpad[7] = 0;
-                onset = atoi(scratchpad) * 3600LL;
-                onset += (atoi(scratchpad + 2) * 60LL);
-                onset += (long long)(atoi(scratchpad + 5));
-                onset *= TIME_DIMENSION;
-                onset -= mainwindow->edfheaderlist[0]->l_starttime;
-                if(onset < last_onset)
-                {
-                  last_onset = onset;
-                  days++;
-                }
-
-                onset_is_set = 1;
-              }
-            }
-          }
-
-          if(onsettime_coding == 2)
-          {
-            if(strlen(scratchpad) > 8)
-            {
-              if((scratchpad[2] == ':') && (scratchpad[5] == ':') && ((scratchpad[8] == '.') || (scratchpad[8] == ',')))
-              {
-                for(digits=0; digits<32; digits++)
-                {
-                  if((scratchpad[9 + digits] < '0') || (scratchpad[9 + digits] > '9'))
-                  {
-                    break;
-                  }
-                }
-                scratchpad[9 + digits] = 0;
-                onset = atoi(scratchpad) * 3600LL;
-                onset += (atoi(scratchpad + 3) * 60LL);
-                onset += (long long)(atoi(scratchpad + 6));
-                onset *= TIME_DIMENSION;
-                if(digits)
-                {
-                  l_temp = (atoi(scratchpad + 9) * TIME_DIMENSION);
-                  for(; digits>0; digits--)
-                  {
-                    l_temp /= 10LL;
-                  }
-                  onset += l_temp;
-                }
-                onset -= mainwindow->edfheaderlist[0]->l_starttime;
-                if(onset < last_onset)
-                {
-                  last_onset = onset;
-                  days++;
-                }
-
-                onset_is_set = 1;
-              }
-            }
-            if(strlen(scratchpad) > 7)
-            {
-              if((scratchpad[1] == ':') && (scratchpad[4] == ':') && ((scratchpad[7] == '.') || (scratchpad[7] == ',')))
-              {
-                for(digits=0; digits<32; digits++)
-                {
-                  if((scratchpad[8 + digits] < '0') || (scratchpad[8 + digits] > '9'))
-                  {
-                    break;
-                  }
-                }
-                scratchpad[8 + digits] = 0;
-                onset = atoi(scratchpad) * 3600LL;
-                onset += (atoi(scratchpad + 2) * 60LL);
-                onset += (long long)(atoi(scratchpad + 5));
-                onset *= TIME_DIMENSION;
-                if(digits)
-                {
-                  l_temp = (atoi(scratchpad + 8) * TIME_DIMENSION);
-                  for(; digits>0; digits--)
-                  {
-                    l_temp /= 10LL;
-                  }
-                  onset += l_temp;
-                }
-                onset -= mainwindow->edfheaderlist[0]->l_starttime;
-                if(onset < last_onset)
-                {
-                  last_onset = onset;
-                  days++;
-                }
-
-                onset_is_set = 1;
-              }
-            }
-          }
-
-          if(onsettime_coding == 3)
-          {
-            if(strlen(scratchpad) > 17)
-            {
-              if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':'))
-              {
-                scratchpad[19] = 0;
-                date_time.year = atoi(scratchpad);
-                date_time.month = atoi(scratchpad + 5);
-                date_time.day = atoi(scratchpad + 8);
-                date_time.hour = atoi(scratchpad + 11);
-                date_time.minute = atoi(scratchpad + 14);
-                date_time.second = atoi(scratchpad + 17);
-                date_time_to_utc(&utc_time, date_time);
-                onset = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
-                onset *= TIME_DIMENSION;
-                onset_is_set = 1;
-              }
-            }
-          }
-
-          if(onsettime_coding == 4)
-          {
-            if(strlen(scratchpad) > 19)
-            {
-              if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':') && ((scratchpad[19] == ',') || (scratchpad[19] == '.')))
-              {
-                for(digits=0; digits<32; digits++)
-                {
-                  if((scratchpad[20 + digits] < '0') || (scratchpad[20 + digits] > '9'))
-                  {
-                    break;
-                  }
-                }
-                scratchpad[20 + digits] = 0;
-                date_time.year = atoi(scratchpad);
-                date_time.month = atoi(scratchpad + 5);
-                date_time.day = atoi(scratchpad + 8);
-                date_time.hour = atoi(scratchpad + 11);
-                date_time.minute = atoi(scratchpad + 14);
-                date_time.second = atoi(scratchpad + 17);
-                date_time_to_utc(&utc_time, date_time);
-                onset = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
-                onset *= TIME_DIMENSION;
-                if(digits)
-                {
-                  l_temp = (atoi(scratchpad + 20) * TIME_DIMENSION);
-                  for(; digits>0; digits--)
-                  {
-                    l_temp /= 10LL;
-                  }
-                  onset += l_temp;
-                }
-
-                onset_is_set = 1;
-              }
-            }
-          }
+          if(!strlen(charpntr))  continue;
+#ifdef IMPORT_ANNOTS_DEBUG
+          printf("  onset: ->%s<-", charpntr);
+#endif
+          get_onset_time_from_ascii(charpntr, &onset, &last_onset, onsettime_coding);
+          onset_is_set = 1;
         }
-
-        if((!manualdescription) && (column == descr_column))
-        {
-          strncpy(description, line + str_start, max_descr_length);
-          description[max_descr_length] = 0;
-          latin1_to_utf8(description, max_descr_length);
-          descr_is_set = 1;
-        }
-
-        if((use_duration) && (column == duration_column))
-        {
-          strncpy(duration, line + str_start, 16);
-          duration[15] = 0;
-
-          duration_is_set = 1;
-        }
-
-        column_end = 1;
-
-        column++;
-      }
-    }
-    else
-    {
-      if(line[i]!='\n')
-      {
-        if(column_end)
-        {
-          str_start = i;
-
-          column_end = 0;
-        }
-      }
-    }
-
-    if(line[i]=='\n')
-    {
-      line[i] = 0;
-
-      if(!column_end)
-      {
-        if(column == onset_column)
-        {
-          if((descr_is_set) || (manualdescription))
+        else if(column == descr_column)
           {
-            onset = 0LL;
-            strncpy(scratchpad, line + str_start, 30);
-            scratchpad[30] = 0;
-
-            if(onsettime_coding == 0)
-            {
-              onset = atoll_x(scratchpad, TIME_DIMENSION);
-              onset += mainwindow->edfheaderlist[0]->starttime_offset;
-
-              onset_is_set = 1;
-            }
-
-            if(onsettime_coding == 1)
-            {
-              if(strlen(scratchpad) > 6)
-              {
-                if((scratchpad[2] == ':') && (scratchpad[5] == ':'))
-                {
-                  scratchpad[8] = 0;
-                  onset = atoi(scratchpad) * 3600LL;
-                  onset += (atoi(scratchpad + 3) * 60LL);
-                  onset += (long long)(atoi(scratchpad + 6));
-                  onset *= TIME_DIMENSION;
-                  onset -= mainwindow->edfheaderlist[0]->l_starttime;
-                  if(onset < last_onset)
-                  {
-                    last_onset = onset;
-                    days++;
-                  }
-
-                  onset_is_set = 1;
-                }
-              }
-              if(strlen(scratchpad) > 5)
-              {
-                if((scratchpad[1] == ':') && (scratchpad[4] == ':'))
-                {
-                  scratchpad[7] = 0;
-                  onset = atoi(scratchpad) * 3600LL;
-                  onset += (atoi(scratchpad + 2) * 60LL);
-                  onset += (long long)(atoi(scratchpad + 5));
-                  onset *= TIME_DIMENSION;
-                  onset -= mainwindow->edfheaderlist[0]->l_starttime;
-                  if(onset < last_onset)
-                  {
-                    last_onset = onset;
-                    days++;
-                  }
-
-                  onset_is_set = 1;
-                }
-              }
-            }
-
-            if(onsettime_coding == 2)
-            {
-              if(strlen(scratchpad) > 8)
-              {
-                if((scratchpad[2] == ':') && (scratchpad[5] == ':') && ((scratchpad[8] == '.') || (scratchpad[8] == ',')))
-                {
-                  for(digits=0; digits<32; digits++)
-                  {
-                    if((scratchpad[9 + digits] < '0') || (scratchpad[9 + digits] > '9'))
-                    {
-                      break;
-                    }
-                  }
-                  scratchpad[9 + digits] = 0;
-                  onset = atoi(scratchpad) * 3600LL;
-                  onset += (atoi(scratchpad + 3) * 60LL);
-                  onset += (long long)(atoi(scratchpad + 6));
-                  onset *= TIME_DIMENSION;
-                  if(digits)
-                  {
-                    l_temp = (atoi(scratchpad + 9) * TIME_DIMENSION);
-                    for(; digits>0; digits--)
-                    {
-                      l_temp /= 10LL;
-                    }
-                    onset += l_temp;
-                  }
-                  onset -= mainwindow->edfheaderlist[0]->l_starttime;
-                  if(onset < last_onset)
-                  {
-                    last_onset = onset;
-                    days++;
-                  }
-
-                  onset_is_set = 1;
-                }
-              }
-              if(strlen(scratchpad) > 7)
-              {
-                if((scratchpad[1] == ':') && (scratchpad[4] == ':') && ((scratchpad[7] == '.') || (scratchpad[7] == ',')))
-                {
-                  for(digits=0; digits<32; digits++)
-                  {
-                    if((scratchpad[8 + digits] < '0') || (scratchpad[8 + digits] > '9'))
-                    {
-                      break;
-                    }
-                  }
-                  scratchpad[8 + digits] = 0;
-                  onset = atoi(scratchpad) * 3600LL;
-                  onset += (atoi(scratchpad + 2) * 60LL);
-                  onset += (long long)(atoi(scratchpad + 5));
-                  onset *= TIME_DIMENSION;
-                  if(digits)
-                  {
-                    l_temp = (atoi(scratchpad + 8) * TIME_DIMENSION);
-                    for(; digits>0; digits--)
-                    {
-                      l_temp /= 10LL;
-                    }
-                    onset += l_temp;
-                  }
-                  onset -= mainwindow->edfheaderlist[0]->l_starttime;
-                  if(onset < last_onset)
-                  {
-                    last_onset = onset;
-                    days++;
-                  }
-
-                  onset_is_set = 1;
-                }
-              }
-            }
-
-            if(onsettime_coding == 3)
-            {
-              if(strlen(scratchpad) > 17)
-              {
-                if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':'))
-                {
-                  scratchpad[19] = 0;
-                  date_time.year = atoi(scratchpad);
-                  date_time.month = atoi(scratchpad + 5);
-                  date_time.day = atoi(scratchpad + 8);
-                  date_time.hour = atoi(scratchpad + 11);
-                  date_time.minute = atoi(scratchpad + 14);
-                  date_time.second = atoi(scratchpad + 17);
-                  date_time_to_utc(&utc_time, date_time);
-                  onset = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
-                  onset *= TIME_DIMENSION;
-
-                  onset_is_set = 1;
-                }
-              }
-            }
-
-            if(onsettime_coding == 4)
-            {
-              if(strlen(scratchpad) > 19)
-              {
-                if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':') && ((scratchpad[19] == ',') || (scratchpad[19] == '.')))
-                {
-                  for(digits=0; digits<32; digits++)
-                  {
-                    if((scratchpad[20 + digits] < '0') || (scratchpad[20 + digits] > '9'))
-                    {
-                      break;
-                    }
-                  }
-                  scratchpad[20 + digits] = 0;
-                  date_time.year = atoi(scratchpad);
-                  date_time.month = atoi(scratchpad + 5);
-                  date_time.day = atoi(scratchpad + 8);
-                  date_time.hour = atoi(scratchpad + 11);
-                  date_time.minute = atoi(scratchpad + 14);
-                  date_time.second = atoi(scratchpad + 17);
-                  date_time_to_utc(&utc_time, date_time);
-                  onset = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
-                  onset *= TIME_DIMENSION;
-                  if(digits)
-                  {
-                    l_temp = (atoi(scratchpad + 20) * TIME_DIMENSION);
-                    for(; digits>0; digits--)
-                    {
-                      l_temp /= 10LL;
-                    }
-                    onset += l_temp;
-                  }
-
-                  onset_is_set = 1;
-                }
-              }
-            }
-          }
-        }
-
-        if((!manualdescription) && (column == descr_column))
-        {
-          if(onset_is_set)
-          {
-            strncpy(description, line + str_start, max_descr_length);
+            if(!strlen(charpntr))  continue;
+#ifdef IMPORT_ANNOTS_DEBUG
+            printf("  description: ->%s<-", charpntr);
+#endif
+            strncpy(description, charpntr, max_descr_length);
             description[max_descr_length] = 0;
             latin1_to_utf8(description, max_descr_length);
             descr_is_set = 1;
           }
-        }
-
-        if((use_duration) && (column == duration_column))
-        {
-          strncpy(duration, line + str_start, 15);
-          duration[15] = 0;
-
-          duration_is_set = 1;
-        }
+          else if(column == duration_column)
+            {
+#ifdef IMPORT_ANNOTS_DEBUG
+              printf("  duration: ->%s<-", charpntr);
+#endif
+              strncpy(duration, charpntr, 15);
+              duration[15] = 0;
+              duration_is_set = 1;
+            }
       }
-
-      if((!use_duration) || duration_is_set)
-      {
-        if(onset_is_set && descr_is_set && (!manualdescription))
-        {
-          if((!ignore_consecutive) || strcmp(description, last_description))
-          {
-            memset(&annotation, 0, sizeof(struct annotationblock));
-            annotation.onset = onset + (86400LL * TIME_DIMENSION * days);
-            strncpy(annotation.annotation, description, MAX_ANNOTATION_LEN);
-            annotation.annotation[MAX_ANNOTATION_LEN] = 0;
-            if(use_duration)
-            {
-              if((!(is_number(duration))) && (duration[0] != '-'))
-              {
-                remove_trailing_zeros(duration);
-                if(duration[0] == '+')
-                {
-                  strcpy(annotation.duration, duration + 1);
-                }
-                else
-                {
-                  strcpy(annotation.duration, duration);
-                }
-
-                annotation.long_duration = edfplus_annotation_get_long_from_number(duration);
-              }
-            }
-            if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
-            {
-              QApplication::restoreOverrideCursor();
-              QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
-              messagewindow.exec();
-              fclose(inputfile);
-              return 1;
-            }
-
-            strcpy(last_description, description);
-          }
-        }
-
-        if(onset_is_set && manualdescription)
-        {
-          memset(&annotation, 0, sizeof(struct annotationblock));
-          annotation.onset = onset + (86400LL * TIME_DIMENSION * days);
-          strncpy(annotation.annotation, description, MAX_ANNOTATION_LEN);
-          annotation.annotation[MAX_ANNOTATION_LEN] = 0;
-          if(use_duration)
-          {
-            if((!(is_number(duration))) && (duration[0] != '-'))
-            {
-              remove_trailing_zeros(duration);
-              if(duration[0] == '+')
-              {
-                strcpy(annotation.duration, duration + 1);
-              }
-              else
-              {
-                strcpy(annotation.duration, duration);
-              }
-
-              annotation.long_duration = edfplus_annotation_get_long_from_number(duration);
-            }
-          }
-          if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
-          {
-            QApplication::restoreOverrideCursor();
-            QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
-            messagewindow.exec();
-            fclose(inputfile);
-            return 1;
-          }
-        }
-      }
-
-      line_nr++;
-
-      str_start = 0;
-
-      i = 0;
-
-      column = 0;
-
-      column_end = 1;
-
-      onset_is_set = 0;
-
-      descr_is_set = 0;
-
-      duration_is_set = 0;
-
-      qApp->processEvents();
-
-      continue;
     }
-
-    i++;
-
-    if(i>2046)
+#ifdef IMPORT_ANNOTS_DEBUG
+    printf("  line %i\n", line_nr);
+#endif
+    if(onset_is_set && descr_is_set)
     {
-      QApplication::restoreOverrideCursor();
-      snprintf(scratchpad, 256, "Error, line %i is too long.\n", line_nr);
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
-      messagewindow.exec();
-      fclose(inputfile);
-      return 1;
+      if((!ignore_consecutive) || strcmp(description, last_description))
+      {
+        memset(&annotation, 0, sizeof(struct annotationblock));
+        annotation.onset = onset;
+        strncpy(annotation.annotation, description, MAX_ANNOTATION_LEN);
+        annotation.annotation[MAX_ANNOTATION_LEN] = 0;
+        if(use_duration && duration_is_set)
+        {
+          if((!(is_number(duration))) && (duration[0] != '-'))
+          {
+            remove_trailing_zeros(duration);
+            if(duration[0] == '+')
+            {
+              strcpy(annotation.duration, duration + 1);
+            }
+            else
+            {
+              strcpy(annotation.duration, duration);
+            }
+
+            annotation.long_duration = edfplus_annotation_get_long_from_number(duration);
+          }
+        }
+        if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
+        {
+          QApplication::restoreOverrideCursor();
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
+          messagewindow.exec();
+          fclose(inputfile);
+          return 1;
+        }
+
+        strcpy(last_description, description);
+      }
     }
   }
 
   QApplication::restoreOverrideCursor();
 
-  if(fclose(inputfile))
-  {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while closing inputfile.");
-    messagewindow.exec();
-    return 1;
-  }
+  fclose(inputfile);
 
   return 0;
 }
@@ -2320,6 +1799,221 @@ int UI_ImportAnnotationswindow::get_samplefreq_inf(void)
   if(!smps)  return 0;
 
   return ((long long)smps * TIME_DIMENSION) / mainwindow->edfheaderlist[0]->long_data_record_duration;
+}
+
+
+int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long long *onset_time, long long *last_onset, int encoding)
+{
+  int digits;
+
+  long long l_temp, onset = 0LL, utc_time=0LL;
+
+  char scratchpad[64];
+
+  struct date_time_struct date_time;
+
+  strncpy(scratchpad, str, 30);
+  scratchpad[30] = 0;
+
+  if(encoding == 0)
+  {
+    onset = atoll_x(scratchpad, TIME_DIMENSION);
+    onset += mainwindow->edfheaderlist[0]->starttime_offset;
+
+    *onset_time = onset;
+
+    return 0;
+  }
+
+  if(encoding == 1)
+  {
+    if(strlen(scratchpad) > 6)
+    {
+      if((scratchpad[2] == ':') && (scratchpad[5] == ':'))
+      {
+        scratchpad[8] = 0;
+        onset = atoi(scratchpad) * 3600LL;
+        onset += (atoi(scratchpad + 3) * 60LL);
+        onset += (long long)(atoi(scratchpad + 6));
+        onset *= TIME_DIMENSION;
+        onset -= mainwindow->edfheaderlist[0]->l_starttime;
+        if(onset < *last_onset)
+        {
+          onset += (86400LL * TIME_DIMENSION);
+          *last_onset = onset;
+        }
+
+        *onset_time = onset;
+
+        return 0;
+      }
+    }
+    if(strlen(scratchpad) > 5)
+    {
+      if((scratchpad[1] == ':') && (scratchpad[4] == ':'))
+      {
+        scratchpad[7] = 0;
+        onset = atoi(scratchpad) * 3600LL;
+        onset += (atoi(scratchpad + 2) * 60LL);
+        onset += (long long)(atoi(scratchpad + 5));
+        onset *= TIME_DIMENSION;
+        onset -= mainwindow->edfheaderlist[0]->l_starttime;
+        if(onset < *last_onset)
+        {
+          onset += (86400LL * TIME_DIMENSION);
+          *last_onset = onset;
+        }
+
+        *onset_time = onset;
+
+        return 0;
+      }
+    }
+  }
+
+  if(encoding == 2)
+  {
+    if(strlen(scratchpad) > 8)
+    {
+      if((scratchpad[2] == ':') && (scratchpad[5] == ':') && ((scratchpad[8] == '.') || (scratchpad[8] == ',')))
+      {
+        for(digits=0; digits<32; digits++)
+        {
+          if((scratchpad[9 + digits] < '0') || (scratchpad[9 + digits] > '9'))
+          {
+            break;
+          }
+        }
+        scratchpad[9 + digits] = 0;
+        onset = atoi(scratchpad) * 3600LL;
+        onset += (atoi(scratchpad + 3) * 60LL);
+        onset += (long long)(atoi(scratchpad + 6));
+        onset *= TIME_DIMENSION;
+        if(digits)
+        {
+          l_temp = (atoi(scratchpad + 9) * TIME_DIMENSION);
+          for(; digits>0; digits--)
+          {
+            l_temp /= 10LL;
+          }
+          onset += l_temp;
+        }
+        onset -= mainwindow->edfheaderlist[0]->l_starttime;
+        if(onset < *last_onset)
+        {
+          onset += (86400LL * TIME_DIMENSION);
+          *last_onset = onset;
+        }
+
+        *onset_time = onset;
+
+        return 0;
+      }
+    }
+    if(strlen(scratchpad) > 7)
+    {
+      if((scratchpad[1] == ':') && (scratchpad[4] == ':') && ((scratchpad[7] == '.') || (scratchpad[7] == ',')))
+      {
+        for(digits=0; digits<32; digits++)
+        {
+          if((scratchpad[8 + digits] < '0') || (scratchpad[8 + digits] > '9'))
+          {
+            break;
+          }
+        }
+        scratchpad[8 + digits] = 0;
+        onset = atoi(scratchpad) * 3600LL;
+        onset += (atoi(scratchpad + 2) * 60LL);
+        onset += (long long)(atoi(scratchpad + 5));
+        onset *= TIME_DIMENSION;
+        if(digits)
+        {
+          l_temp = (atoi(scratchpad + 8) * TIME_DIMENSION);
+          for(; digits>0; digits--)
+          {
+            l_temp /= 10LL;
+          }
+          onset += l_temp;
+        }
+        onset -= mainwindow->edfheaderlist[0]->l_starttime;
+        if(onset < *last_onset)
+        {
+          onset += (86400LL * TIME_DIMENSION);
+          *last_onset = onset;
+        }
+
+        *onset_time = onset;
+
+        return 0;
+      }
+    }
+  }
+
+  if(encoding == 3)
+  {
+    if(strlen(scratchpad) > 17)
+    {
+      if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':'))
+      {
+        scratchpad[19] = 0;
+        date_time.year = atoi(scratchpad);
+        date_time.month = atoi(scratchpad + 5);
+        date_time.day = atoi(scratchpad + 8);
+        date_time.hour = atoi(scratchpad + 11);
+        date_time.minute = atoi(scratchpad + 14);
+        date_time.second = atoi(scratchpad + 17);
+        date_time_to_utc(&utc_time, date_time);
+        onset = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
+        onset *= TIME_DIMENSION;
+
+        *onset_time = onset;
+
+        return 0;
+      }
+    }
+  }
+
+  if(encoding == 4)
+  {
+    if(strlen(scratchpad) > 19)
+    {
+      if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':') && ((scratchpad[19] == ',') || (scratchpad[19] == '.')))
+      {
+        for(digits=0; digits<32; digits++)
+        {
+          if((scratchpad[20 + digits] < '0') || (scratchpad[20 + digits] > '9'))
+          {
+            break;
+          }
+        }
+        scratchpad[20 + digits] = 0;
+        date_time.year = atoi(scratchpad);
+        date_time.month = atoi(scratchpad + 5);
+        date_time.day = atoi(scratchpad + 8);
+        date_time.hour = atoi(scratchpad + 11);
+        date_time.minute = atoi(scratchpad + 14);
+        date_time.second = atoi(scratchpad + 17);
+        date_time_to_utc(&utc_time, date_time);
+        onset = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
+        onset *= TIME_DIMENSION;
+        if(digits)
+        {
+          l_temp = (atoi(scratchpad + 20) * TIME_DIMENSION);
+          for(; digits>0; digits--)
+          {
+            l_temp /= 10LL;
+          }
+          onset += l_temp;
+        }
+
+        *onset_time = onset;
+
+        return 0;
+      }
+    }
+  }
+
+  return 0;
 }
 
 

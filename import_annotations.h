@@ -174,6 +174,8 @@ int import_from_dcevent(void);
 int import_from_mitwfdb(void);
 int get_samplefreq_inf(void);
 
+int get_onset_time_from_ascii(const char *, long long *, long long *, int);
+
 private slots:
 
 void ImportButtonClicked();
