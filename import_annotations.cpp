@@ -1238,8 +1238,10 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 #ifdef IMPORT_ANNOTS_DEBUG
           printf("  onset: ->%s<-", charpntr);
 #endif
-          get_onset_time_from_ascii(charpntr, &onset, &last_onset, onsettime_coding);
-          onset_is_set = 1;
+          if(get_onset_time_from_ascii(charpntr, &onset, &last_onset, onsettime_coding) == 0)
+          {
+            onset_is_set = 1;
+          }
         }
         else if(column == descr_column)
           {
@@ -2013,7 +2015,7 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
     }
   }
 
-  return 0;
+  return -1;
 }
 
 
