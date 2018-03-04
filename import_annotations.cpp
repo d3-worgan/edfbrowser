@@ -534,6 +534,9 @@ void UI_ImportAnnotationswindow::ImportButtonClicked()
       input_format,
       error=0;
 
+  char str[4096]={""};
+
+  mal_formatted_lines = 0;
 
   ImportAnnotsDialog->setEnabled(false);
 
@@ -609,9 +612,23 @@ void UI_ImportAnnotationswindow::ImportButtonClicked()
 
   if(!error)
   {
-    QMessageBox messagewindow(QMessageBox::Information, "Ready", "Done.");
-    messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
-    messagewindow.exec();
+    if((input_format == ASCIICSV_FORMAT) && (mal_formatted_lines > 0))
+    {
+      sprintf(str, "One or more lines were skipped because they were malformatted:\n"
+                   "line(s):");
+      for(i=0; i<mal_formatted_lines; i++)
+      {
+        sprintf(str + strlen(str), " %i,", mal_formatted_line_nrs[i]);
+      }
+      QMessageBox messagewindow(QMessageBox::Information, "Ready", str);
+      messagewindow.exec();
+    }
+    else
+    {
+      QMessageBox messagewindow(QMessageBox::Information, "Ready", "Done.");
+      messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
+      messagewindow.exec();
+    }
   }
 
   ImportAnnotsDialog->setEnabled(true);
@@ -1190,8 +1207,12 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   if(use_duration == 0)  duration_column = -1;
 
+  mal_formatted_lines = 0;
+
   for(line_nr=1; !feof(inputfile); line_nr++)
   {
+    if(line_nr == 0x7fffffff)  break;
+
     if(fgets(line, 4096, inputfile) == NULL)
     {
       break;
@@ -1304,6 +1325,13 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
         }
 
         strcpy(last_description, description);
+      }
+    }
+    else
+    {
+      if(mal_formatted_lines < 32)
+      {
+        mal_formatted_line_nrs[mal_formatted_lines++] = line_nr;
       }
     }
   }

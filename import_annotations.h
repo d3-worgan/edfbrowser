@@ -108,6 +108,9 @@ UI_Mainwindow  *mainwindow;
 
 private:
 
+int mal_formatted_lines,
+    mal_formatted_line_nrs[32];
+
 QDialog        *ImportAnnotsDialog;
 
 QTabWidget     *tabholder;
