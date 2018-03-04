@@ -35,170 +35,318 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
 {
   int i;
 
-  edfplus_layout = 0;
-
   mainwindow = (UI_Mainwindow *)w_parent;
 
   EDFhdrDialog = new QDialog;
 
-  EDFhdrDialog->setMinimumSize(690, 480);
-  EDFhdrDialog->setMaximumSize(690, 480);
+  EDFhdrDialog->setMinimumSize(770, 680);
 
   EDFhdrDialog->setWindowTitle("File Info");
   EDFhdrDialog->setModal(true);
   EDFhdrDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   filelist = new QListWidget(EDFhdrDialog);
-  filelist->setGeometry(10, 10, 670, 75);
+  filelist->setMinimumSize(670, 75);
+  filelist->setMaximumHeight(75);
   for(i=0; i<mainwindow->files_open; i++)
   {
     new QListWidgetItem(QString::fromLocal8Bit(mainwindow->edfheaderlist[i]->filename), filelist);
   }
 
+  tabholder = new QTabWidget(EDFhdrDialog);
+
+  tab1 = new QWidget;
+  tab2 = new QWidget;
+
   label1 = new QLabel(EDFhdrDialog);
-  label1->setGeometry(10, 120, 80, 25);
+  label1->setMinimumSize(130, 25);
+  label1->setMaximumSize(130, 25);
   label1->setText("Subject");
 
   label1a = new SpecialButton(EDFhdrDialog);
-  label1a->setGeometry(100, 120, 580, 25);
+  label1a->setMinimumSize(580, 25);
+  label1a->setMaximumSize(580, 25);
   label1a->setColor(Qt::white);
 
   label2 = new QLabel(EDFhdrDialog);
-  label2->setGeometry(10, 155, 80, 25);
+  label2->setMinimumSize(130, 25);
+  label2->setMaximumSize(130, 25);
   label2->setText("Recording");
 
   label2a = new SpecialButton(EDFhdrDialog);
-  label2a->setGeometry(100, 155, 580, 25);
+  label2a->setMinimumSize(580, 25);
+  label2a->setMaximumSize(580, 25);
   label2a->setColor(Qt::white);
 
   label3 = new QLabel(EDFhdrDialog);
-  label3->setGeometry(10, 190, 80, 25);
+  label3->setMinimumSize(130, 25);
+  label3->setMaximumSize(130, 25);
   label3->setText("Start");
 
   label3a = new SpecialButton(EDFhdrDialog);
-  label3a->setGeometry(100, 190, 180, 25);
+  label3a->setMinimumSize(580, 25);
+  label3a->setMaximumSize(580, 25);
   label3a->setColor(Qt::white);
 
   label4 = new QLabel(EDFhdrDialog);
-  label4->setGeometry(410, 190, 80, 25);
+  label4->setMinimumSize(130, 25);
+  label4->setMaximumSize(130, 25);
   label4->setText("Duration");
 
   label4a = new SpecialButton(EDFhdrDialog);
-  label4a->setGeometry(500, 190, 180, 25);
+  label4a->setMinimumSize(580, 25);
+  label4a->setMaximumSize(580, 25);
   label4a->setColor(Qt::white);
 
   label5 = new QLabel(EDFhdrDialog);
-  label5->setGeometry(10, 225, 80, 25);
+  label5->setMinimumSize(130, 25);
+  label5->setMaximumSize(130, 25);
   label5->setText("Reserved");
 
   label5a = new SpecialButton(EDFhdrDialog);
-  label5a->setGeometry(100, 225, 350, 25);
+  label5a->setMinimumSize(580, 25);
+  label5a->setMaximumSize(580, 25);
   label5a->setColor(Qt::white);
 
   label6 = new QLabel(EDFhdrDialog);
-  label6->setGeometry(10, 190, 130, 25);
+  label6->setMinimumSize(130, 25);
+  label6->setMaximumSize(130, 25);
   label6->setText("Birthdate");
   label6->setVisible(false);
 
   label6a = new SpecialButton(EDFhdrDialog);
-  label6a->setGeometry(150, 190, 530, 25);
+  label6a->setMinimumSize(580, 25);
+  label6a->setMaximumSize(580, 25);
   label6a->setColor(Qt::white);
   label6a->setVisible(false);
 
   label7 = new QLabel(EDFhdrDialog);
-  label7->setGeometry(10, 225, 130, 25);
+  label7->setMinimumSize(130, 25);
+  label7->setMaximumSize(130, 25);
   label7->setText("Subject name");
   label7->setVisible(false);
 
   label7a = new SpecialButton(EDFhdrDialog);
-  label7a->setGeometry(150, 225, 530, 25);
+  label7a->setMinimumSize(580, 25);
+  label7a->setMaximumSize(580, 25);
   label7a->setColor(Qt::white);
   label7a->setVisible(false);
 
   label8 = new QLabel(EDFhdrDialog);
-  label8->setGeometry(10, 260, 130, 25);
+  label8->setMinimumSize(130, 25);
+  label8->setMaximumSize(130, 25);
   label8->setText("Additional info");
   label8->setVisible(false);
 
   label8a = new SpecialButton(EDFhdrDialog);
-  label8a->setGeometry(150, 260, 530, 25);
+  label8a->setMinimumSize(580, 25);
+  label8a->setMaximumSize(580, 25);
   label8a->setColor(Qt::white);
   label8a->setVisible(false);
 
   label9 = new QLabel(EDFhdrDialog);
-  label9->setGeometry(10, 290, 130, 25);
+  label9->setMinimumSize(130, 25);
+  label9->setMaximumSize(130, 25);
   label9->setText("Startdate");
   label9->setVisible(false);
 
   label9a = new SpecialButton(EDFhdrDialog);
-  label9a->setGeometry(150, 290, 530, 25);
+  label9a->setMinimumSize(580, 25);
+  label9a->setMaximumSize(580, 25);
   label9a->setColor(Qt::white);
   label9a->setVisible(false);
 
   label10 = new QLabel(EDFhdrDialog);
-  label10->setGeometry(10, 325, 130, 25);
+  label10->setMinimumSize(130, 25);
+  label10->setMaximumSize(130, 25);
   label10->setText("Administr. code");
   label10->setVisible(false);
 
   label10a = new SpecialButton(EDFhdrDialog);
-  label10a->setGeometry(150, 325, 530, 25);
+  label10a->setMinimumSize(580, 25);
+  label10a->setMaximumSize(580, 25);
   label10a->setColor(Qt::white);
   label10a->setVisible(false);
 
   label11 = new QLabel(EDFhdrDialog);
-  label11->setGeometry(10, 360, 130, 25);
+  label11->setMinimumSize(130, 25);
+  label11->setMaximumSize(130, 25);
   label11->setText("Technician");
   label11->setVisible(false);
 
   label11a = new SpecialButton(EDFhdrDialog);
-  label11a->setGeometry(150, 360, 530, 25);
+  label11a->setMinimumSize(580, 25);
+  label11a->setMaximumSize(580, 25);
   label11a->setColor(Qt::white);
   label11a->setVisible(false);
 
   label12 = new QLabel(EDFhdrDialog);
-  label12->setGeometry(10, 395, 130, 25);
+  label12->setMinimumSize(130, 25);
+  label12->setMaximumSize(130, 25);
   label12->setText("Device");
   label12->setVisible(false);
 
   label12a = new SpecialButton(EDFhdrDialog);
-  label12a->setGeometry(150, 395, 530, 25);
+  label12a->setMinimumSize(580, 25);
+  label12a->setMaximumSize(580, 25);
   label12a->setColor(Qt::white);
   label12a->setVisible(false);
 
   label13 = new QLabel(EDFhdrDialog);
-  label13->setGeometry(10, 430, 130, 25);
+  label13->setMinimumSize(130, 25);
+  label13->setMaximumSize(130, 25);
   label13->setText("Additional info");
   label13->setVisible(false);
 
   label13a = new SpecialButton(EDFhdrDialog);
-  label13a->setGeometry(150, 430, 530, 25);
+  label13a->setMinimumSize(580, 25);
+  label13a->setMaximumSize(580, 25);
   label13a->setColor(Qt::white);
   label13a->setVisible(false);
 
   label20 = new QLabel(EDFhdrDialog);
-  label20->setGeometry(10, 260, 130, 25);
+  label20->setMinimumSize(130, 25);
+  label20->setMaximumSize(130, 25);
   label20->setText("Datarecord duration");
 
   label20a = new SpecialButton(EDFhdrDialog);
-  label20a->setGeometry(150, 260, 100, 25);
+  label20a->setMinimumSize(580, 25);
+  label20a->setMaximumSize(580, 25);
   label20a->setColor(Qt::white);
 
   label21 = new QLabel(EDFhdrDialog);
-  label21->setGeometry(410, 260, 80, 25);
+  label21->setMinimumSize(130, 25);
+  label21->setMaximumSize(130, 25);
   label21->setText("Version");
 
   label21a = new SpecialButton(EDFhdrDialog);
-  label21a->setGeometry(500, 260, 180, 25);
+  label21a->setMinimumSize(580, 25);
+  label21a->setMaximumSize(580, 25);
   label21a->setColor(Qt::white);
 
   signallist = new QTableWidget(EDFhdrDialog);
-  signallist->setGeometry(10, 295, 670, 100);
+  signallist->setMinimumSize(670, 100);
   signallist->setSelectionMode(QAbstractItemView::NoSelection);
   signallist->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
   pushButton1 = new QPushButton(EDFhdrDialog);
-  pushButton1->setGeometry(580, 445, 100, 25);
+  pushButton1->setMinimumSize(100, 25);
+  pushButton1->setMaximumSize(100, 25);
   pushButton1->setText("Close");
+
+  generalHBoxLayout1 = new QHBoxLayout;
+  generalHBoxLayout1->addWidget(label1);
+  generalHBoxLayout1->addWidget(label1a);
+  generalHBoxLayout1->addStretch(1000);
+
+  generalHBoxLayout2 = new QHBoxLayout;
+  generalHBoxLayout2->addWidget(label2);
+  generalHBoxLayout2->addWidget(label2a);
+  generalHBoxLayout2->addStretch(1000);
+
+  generalHBoxLayout3 = new QHBoxLayout;
+  generalHBoxLayout3->addWidget(label3);
+  generalHBoxLayout3->addWidget(label3a);
+  generalHBoxLayout3->addStretch(1000);
+
+  generalHBoxLayout4 = new QHBoxLayout;
+  generalHBoxLayout4->addWidget(label4);
+  generalHBoxLayout4->addWidget(label4a);
+  generalHBoxLayout4->addStretch(1000);
+
+  generalHBoxLayout5 = new QHBoxLayout;
+  generalHBoxLayout5->addWidget(label5);
+  generalHBoxLayout5->addWidget(label5a);
+  generalHBoxLayout5->addStretch(1000);
+
+  generalHBoxLayout6 = new QHBoxLayout;
+  generalHBoxLayout6->addWidget(label6);
+  generalHBoxLayout6->addWidget(label6a);
+  generalHBoxLayout6->addStretch(1000);
+
+  generalHBoxLayout7 = new QHBoxLayout;
+  generalHBoxLayout7->addWidget(label7);
+  generalHBoxLayout7->addWidget(label7a);
+  generalHBoxLayout7->addStretch(1000);
+
+  generalHBoxLayout8 = new QHBoxLayout;
+  generalHBoxLayout8->addWidget(label8);
+  generalHBoxLayout8->addWidget(label8a);
+  generalHBoxLayout8->addStretch(1000);
+
+  generalHBoxLayout9 = new QHBoxLayout;
+  generalHBoxLayout9->addWidget(label9);
+  generalHBoxLayout9->addWidget(label9a);
+  generalHBoxLayout9->addStretch(1000);
+
+  generalHBoxLayout10 = new QHBoxLayout;
+  generalHBoxLayout10->addWidget(label10);
+  generalHBoxLayout10->addWidget(label10a);
+  generalHBoxLayout10->addStretch(1000);
+
+  generalHBoxLayout11 = new QHBoxLayout;
+  generalHBoxLayout11->addWidget(label11);
+  generalHBoxLayout11->addWidget(label11a);
+  generalHBoxLayout11->addStretch(1000);
+
+  generalHBoxLayout12 = new QHBoxLayout;
+  generalHBoxLayout12->addWidget(label12);
+  generalHBoxLayout12->addWidget(label12a);
+  generalHBoxLayout12->addStretch(1000);
+
+  generalHBoxLayout13 = new QHBoxLayout;
+  generalHBoxLayout13->addWidget(label13);
+  generalHBoxLayout13->addWidget(label13a);
+  generalHBoxLayout13->addStretch(1000);
+
+  generalHBoxLayout14 = new QHBoxLayout;
+  generalHBoxLayout14->addWidget(label20);
+  generalHBoxLayout14->addWidget(label20a);
+  generalHBoxLayout14->addStretch(1000);
+
+  generalHBoxLayout15 = new QHBoxLayout;
+  generalHBoxLayout15->addWidget(label21);
+  generalHBoxLayout15->addWidget(label21a);
+  generalHBoxLayout15->addStretch(1000);
+
+  generalVBoxLayout1 = new QVBoxLayout;
+  generalVBoxLayout1->addLayout(generalHBoxLayout1);
+  generalVBoxLayout1->addLayout(generalHBoxLayout2);
+  generalVBoxLayout1->addLayout(generalHBoxLayout3);
+  generalVBoxLayout1->addLayout(generalHBoxLayout4);
+  generalVBoxLayout1->addLayout(generalHBoxLayout5);
+  generalVBoxLayout1->addLayout(generalHBoxLayout6);
+  generalVBoxLayout1->addLayout(generalHBoxLayout7);
+  generalVBoxLayout1->addLayout(generalHBoxLayout8);
+  generalVBoxLayout1->addLayout(generalHBoxLayout9);
+  generalVBoxLayout1->addLayout(generalHBoxLayout10);
+  generalVBoxLayout1->addLayout(generalHBoxLayout11);
+  generalVBoxLayout1->addLayout(generalHBoxLayout12);
+  generalVBoxLayout1->addLayout(generalHBoxLayout13);
+  generalVBoxLayout1->addLayout(generalHBoxLayout14);
+  generalVBoxLayout1->addLayout(generalHBoxLayout15);
+  generalVBoxLayout1->addStretch(1000);
+  tab1->setLayout(generalVBoxLayout1);
+
+  signalsHBoxLayout1 = new QHBoxLayout;
+  signalsHBoxLayout1->addWidget(signallist);
+  tab2->setLayout(signalsHBoxLayout1);
+
+  tabholder->addTab(tab1, "General");
+  tabholder->addTab(tab2, "Signals");
+
+  mainHBoxLayout1 = new QHBoxLayout;
+  mainHBoxLayout1->addStretch(100);
+  mainHBoxLayout1->addWidget(pushButton1);
+
+  mainVBoxLayout1 = new QVBoxLayout;
+  mainVBoxLayout1->addWidget(filelist);
+  mainVBoxLayout1->addSpacing(10);
+  mainVBoxLayout1->addWidget(tabholder, 1000);
+  mainVBoxLayout1->addSpacing(10);
+  mainVBoxLayout1->addLayout(mainHBoxLayout1);
+
+  EDFhdrDialog->setLayout(mainVBoxLayout1);
 
   QObject::connect(pushButton1, SIGNAL(clicked()),              EDFhdrDialog, SLOT(close()));
   QObject::connect(filelist,    SIGNAL(currentRowChanged(int)), this,         SLOT(show_params(int)));
@@ -225,46 +373,13 @@ void UI_EDFhdrwindow::show_params(int row)
 
   if(mainwindow->edfheaderlist[row]->edfplus || mainwindow->edfheaderlist[row]->bdfplus)
   {
-    edfplus_layout = 1;
-
-    EDFhdrDialog->setMinimumSize(690, 765);
-    EDFhdrDialog->setMaximumSize(690, 765);
-
-    pushButton1->setGeometry(580, 730, 100, 25);
-
-    signallist->setGeometry(10, 580, 670, 100);
-
-    label20a->setGeometry(150, 545, 100, 25);
-
-    label20->setGeometry(10, 545, 130, 25);
-
-    label21->setGeometry(410, 545, 80, 25);
-
-    label21a->setGeometry(500, 545, 180, 25);
-
-    label5a->setGeometry(150, 500, 350, 25);
-
-    label5->setGeometry(10, 500, 80, 25);
-
-    label4a->setGeometry(500, 465, 180, 25);
-
-    label4->setGeometry(410, 465, 80, 25);
-
-    label3a->setGeometry(150, 465, 180, 25);
-
-    label3->setGeometry(10, 465, 80, 25);
-
-    label1a->setGeometry(150, 120, 530, 25);
-
+    label1a->setText(mainwindow->edfheaderlist[row]->plus_patientcode);
     label1a->setText(mainwindow->edfheaderlist[row]->plus_patientcode);
 
-    label1->setGeometry(10, 120, 130, 25);
     label1->setText("Subject code");
 
-    label2a->setGeometry(150, 155, 530, 25);
     label2a->setText(mainwindow->edfheaderlist[row]->plus_gender);
 
-    label2->setGeometry(10, 155, 130, 25);
     label2->setText("Sex");
 
     label6->setVisible(true);
@@ -299,7 +414,7 @@ void UI_EDFhdrwindow::show_params(int row)
     label13a->setVisible(true);
     label13a->setText(mainwindow->edfheaderlist[row]->plus_recording_additional);
   }
-  else
+  else // old EDF
   {
     label6->setVisible(false);
     label6a->setVisible(false);
@@ -318,29 +433,13 @@ void UI_EDFhdrwindow::show_params(int row)
     label13->setVisible(false);
     label13a->setVisible(false);
 
-    EDFhdrDialog->setMinimumSize(690, 480);
-    EDFhdrDialog->setMaximumSize(690, 480);
-
-    label1->setGeometry(10, 120, 80, 25);
     label1->setText("Subject");
-    label1a->setGeometry(100, 120, 580, 25);
+
     label1a->setText(mainwindow->edfheaderlist[row]->patient);
-    label2->setGeometry(10, 155, 80, 25);
+
     label2->setText("Recording");
-    label2a->setGeometry(100, 155, 580, 25);
+
     label2a->setText(mainwindow->edfheaderlist[row]->recording);
-    label3a->setGeometry(100, 190, 180, 25);
-    label3->setGeometry(10, 190, 80, 25);
-    label4a->setGeometry(500, 190, 180, 25);
-    label4->setGeometry(410, 190, 80, 25);
-    label5a->setGeometry(100, 225, 350, 25);
-    label5->setGeometry(10, 225, 80, 25);
-    label20->setGeometry(10, 260, 130, 25);
-    label20a->setGeometry(150, 260, 100, 25);
-    label21->setGeometry(410, 260, 80, 25);
-    label21a->setGeometry(500, 260, 180, 25);
-    signallist->setGeometry(10, 295, 670, 100);
-    pushButton1->setGeometry(580, 445, 100, 25);
   }
 
   utc_to_date_time(mainwindow->edfheaderlist[row]->utc_starttime, &date_time);
@@ -430,33 +529,64 @@ void UI_EDFhdrwindow::show_params(int row)
   horizontallabels += "Transducer";
   signallist->setHorizontalHeaderLabels(horizontallabels);
 
+  QLabel *ql;
+
+  int margin=3;
+
   for(i=0; i<signal_cnt; i++)
   {
     signallist->setRowHeight(i, 25);
-    signallist->setCellWidget(i, 0, new QLabel(mainwindow->edfheaderlist[row]->edfparam[i].label));
+    ql = new QLabel(mainwindow->edfheaderlist[row]->edfparam[i].label);
+    ql->setMargin(margin);
+    signallist->setCellWidget(i, 0, ql);
     convert_to_metric_suffix(str,
                              (double)mainwindow->edfheaderlist[row]->edfparam[i].smp_per_record / mainwindow->edfheaderlist[row]->data_record_duration,
                              3);
     strcat(str, "Hz");
     remove_trailing_zeros(str);
-    signallist->setCellWidget(i, 1, new QLabel(str));
+    ql = new QLabel(str);
+    ql->setMargin(margin);
+    signallist->setCellWidget(i, 1, ql);
     snprintf(str, 512, "%+f", mainwindow->edfheaderlist[row]->edfparam[i].phys_max);
     remove_trailing_zeros(str);
-    signallist->setCellWidget(i, 2, new QLabel(str));
+    ql = new QLabel(str);
+    ql->setMargin(margin);
+    signallist->setCellWidget(i, 2, ql);
     snprintf(str, 512, "%+f", mainwindow->edfheaderlist[row]->edfparam[i].phys_min);
     remove_trailing_zeros(str);
-    signallist->setCellWidget(i, 3, new QLabel(str));
-    signallist->setCellWidget(i, 4, new QLabel(mainwindow->edfheaderlist[row]->edfparam[i].physdimension));
+    ql = new QLabel(str);
+    ql->setMargin(margin);
+    signallist->setCellWidget(i, 3, ql);
+    ql = new QLabel(mainwindow->edfheaderlist[row]->edfparam[i].physdimension);
+    ql->setMargin(margin);
+    signallist->setCellWidget(i, 4, ql);
     snprintf(str, 512, "%+i", mainwindow->edfheaderlist[row]->edfparam[i].dig_max);
-    signallist->setCellWidget(i, 5, new QLabel(str));
+    ql = new QLabel(str);
+    ql->setMargin(margin);
+    signallist->setCellWidget(i, 5, ql);
     snprintf(str, 512, "%+i", mainwindow->edfheaderlist[row]->edfparam[i].dig_min);
-    signallist->setCellWidget(i, 6, new QLabel(str));
+    ql = new QLabel(str);
+    ql->setMargin(margin);
+    signallist->setCellWidget(i, 6, ql);
     snprintf(str, 512, "%i", mainwindow->edfheaderlist[row]->edfparam[i].smp_per_record);
-    signallist->setCellWidget(i, 7, new QLabel(str));
-    signallist->setCellWidget(i, 8, new QLabel(mainwindow->edfheaderlist[row]->edfparam[i].prefilter));
-    signallist->setCellWidget(i, 9, new QLabel(mainwindow->edfheaderlist[row]->edfparam[i].transducer));
+    ql = new QLabel(str);
+    ql->setMargin(margin);
+    signallist->setCellWidget(i, 7, ql);
+    ql = new QLabel(mainwindow->edfheaderlist[row]->edfparam[i].prefilter);
+    ql->setMargin(margin);
+    signallist->setCellWidget(i, 8, ql);
+    ql = new QLabel(mainwindow->edfheaderlist[row]->edfparam[i].transducer);
+    ql->setMargin(margin);
+    signallist->setCellWidget(i, 9, ql);
   }
 }
+
+
+
+
+
+
+
 
 
 

@@ -37,6 +37,7 @@
 #include <QApplication>
 #include <QObject>
 #include <QDialog>
+#include <QTabWidget>
 #include <QTableWidget>
 #include <QListWidget>
 #include <QListWidgetItem>
@@ -44,6 +45,8 @@
 #include <QPushButton>
 #include <QString>
 #include <QStringList>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 
 #include "global.h"
 #include "mainwindow.h"
@@ -68,6 +71,33 @@ public:
 private:
 
 QDialog      *EDFhdrDialog;
+
+QVBoxLayout    *generalVBoxLayout1,
+               *signalsVBoxLayout,
+               *mainVBoxLayout1;
+
+QHBoxLayout    *generalHBoxLayout1,
+               *generalHBoxLayout2,
+               *generalHBoxLayout3,
+               *generalHBoxLayout4,
+               *generalHBoxLayout5,
+               *generalHBoxLayout6,
+               *generalHBoxLayout7,
+               *generalHBoxLayout8,
+               *generalHBoxLayout9,
+               *generalHBoxLayout10,
+               *generalHBoxLayout11,
+               *generalHBoxLayout12,
+               *generalHBoxLayout13,
+               *generalHBoxLayout14,
+               *generalHBoxLayout15,
+               *signalsHBoxLayout1,
+               *mainHBoxLayout1;
+
+QTabWidget   *tabholder;
+
+QWidget      *tab1,
+             *tab2;
 
 QListWidget  *filelist;
 
@@ -106,8 +136,6 @@ SpecialButton *label1a,
               *label21a;
 
 QPushButton  *pushButton1;
-
-int edfplus_layout;
 
 
 private slots:
