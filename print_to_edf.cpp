@@ -1031,6 +1031,8 @@ void print_screen_to_edf(UI_Mainwindow *mainwindow)
             dig_value = dig_value * signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue * 32768.0;
           }
 
+          dig_value *= signalcomp[i]->polarity;
+
           if((smpls_written[i]>=signalcomp[i]->sample_start)&&(smpls_written[i]<signalcomp[i]->sample_stop))
           {
             wr_var.one_signed = dig_value;
