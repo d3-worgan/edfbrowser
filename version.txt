@@ -14,6 +14,8 @@
 
  - Added a Mortara ECG XML to EDF converter.
 
+ - Print to EDF/BDF: check polarity of the signals.
+
 
 
  version 1.62      January 7, 2018
