@@ -267,6 +267,8 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_start)
       {
         dig_value = run_ecg_filter(dig_value, signalcomp->ecg_filter);
       }
+
+      dig_value *= signalcomp->polarity;
     }
 
     processed_samples_buf[s] = (dig_value * bitvalue);

@@ -14,7 +14,7 @@
 
  - Added a Mortara ECG XML to EDF converter.
 
- - Print to EDF/BDF: check polarity of the signals.
+ - Print to EDF/BDF & Export Filtered Signals: check polarity of the signals.
 
 
 
