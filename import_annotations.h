@@ -124,7 +124,9 @@ QLabel         *SeparatorLabel,
                *DCEventSignalLabel,
                *DCEventBitTimeLabel,
                *DCEventTriggerLevelLabel,
-               *SampleTimeLabel;
+               *SampleTimeLabel,
+               *importStandardLabel,
+               *importAuxLabel;
 
 QLineEdit      *SeparatorLineEdit,
                *DescriptionLineEdit;
@@ -143,6 +145,7 @@ QComboBox      *RelativeTimeComboBox,
 
 QVBoxLayout    *asciiSettingsVBoxLayout,
                *DCEventVBoxLayout,
+               *mitwfdbVBoxLayout1,
                *mainLayout;
 
 QHBoxLayout    *asciiSettingsHBoxLayout1,
@@ -156,13 +159,17 @@ QHBoxLayout    *asciiSettingsHBoxLayout1,
                *DCEventHBoxLayout2,
                *DCEventHBoxLayout3,
                *mitwfdbHBoxLayout1,
+               *mitwfdbHBoxLayout2,
+               *mitwfdbHBoxLayout3,
                *horLayout;
 
 QRadioButton   *DescriptionColumnRadioButton,
                *UseManualDescriptionRadioButton;
 
 QCheckBox      *IgnoreConsecutiveCheckBox,
-               *DurationCheckBox;
+               *DurationCheckBox,
+               *importStandardCheckBox,
+               *importAuxCheckBox;
 
 QPushButton    *CloseButton,
                *ImportButton,

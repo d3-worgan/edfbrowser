@@ -336,12 +336,49 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
     SampleTimeSpinbox->setEnabled(false);
   }
 
+  importStandardLabel  = new QLabel(ImportAnnotsDialog);
+  importStandardLabel->setText("Import Standard Annotations:");
+  importStandardLabel->setMinimumSize(130, 25);
+
+  importStandardCheckBox = new QCheckBox;
+  importStandardCheckBox->setMinimumSize(30, 30);
+  importStandardCheckBox->setTristate(false);
+  importStandardCheckBox->setCheckState(Qt::Checked);
+
+  importAuxLabel  = new QLabel(ImportAnnotsDialog);
+  importAuxLabel->setText("Import Auxiliary Info:");
+  importAuxLabel->setMinimumSize(130, 25);
+
+  importAuxCheckBox = new QCheckBox;
+  importAuxCheckBox->setMinimumSize(30, 30);
+  importAuxCheckBox->setTristate(false);
+  importAuxCheckBox->setCheckState(Qt::Checked);
+
   mitwfdbHBoxLayout1 = new QHBoxLayout;
   mitwfdbHBoxLayout1->addWidget(SampleTimeLabel);
   mitwfdbHBoxLayout1->addWidget(SampleTimeSpinbox);
   mitwfdbHBoxLayout1->addStretch(2);
 
-  tab[tab_index_array[MITWFDB_FORMAT]]->setLayout(mitwfdbHBoxLayout1);
+  mitwfdbHBoxLayout2 = new QHBoxLayout;
+  mitwfdbHBoxLayout2->addWidget(importStandardLabel);
+  mitwfdbHBoxLayout2->addWidget(importStandardCheckBox);
+  mitwfdbHBoxLayout2->addStretch(2);
+
+  mitwfdbHBoxLayout3 = new QHBoxLayout;
+  mitwfdbHBoxLayout3->addWidget(importAuxLabel);
+  mitwfdbHBoxLayout3->addWidget(importAuxCheckBox);
+  mitwfdbHBoxLayout3->addStretch(2);
+
+  mitwfdbVBoxLayout1 = new QVBoxLayout;
+  mitwfdbVBoxLayout1->addStretch(100);
+  mitwfdbVBoxLayout1->addLayout(mitwfdbHBoxLayout1);
+  mitwfdbVBoxLayout1->addStretch(30);
+  mitwfdbVBoxLayout1->addLayout(mitwfdbHBoxLayout2);
+  mitwfdbVBoxLayout1->addStretch(30);
+  mitwfdbVBoxLayout1->addLayout(mitwfdbHBoxLayout3);
+  mitwfdbVBoxLayout1->addStretch(100);
+
+  tab[tab_index_array[MITWFDB_FORMAT]]->setLayout(mitwfdbVBoxLayout1);
 
   tabholder->addTab(tab[tab_index_array[ASCIICSV_FORMAT]], "ASCII / CSV");
   tabholder->addTab(tab[tab_index_array[DCEVENT_FORMAT]],  "DC-event (8-bit serial code)");
@@ -431,8 +468,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
     IgnoreConsecutiveCheckBox->setCheckState(Qt::Unchecked);
   }
 
-  if((mainwindow->import_annotations_var->format == EDFPLUS_FORMAT) ||
-     (mainwindow->import_annotations_var->format == MITWFDB_FORMAT))
+  if(mainwindow->import_annotations_var->format == EDFPLUS_FORMAT)
   {
     IgnoreConsecutiveCheckBox->setEnabled(false);
   }
@@ -485,12 +521,14 @@ void UI_ImportAnnotationswindow::descriptionRadioButtonClicked(bool)
 
 void UI_ImportAnnotationswindow::TabChanged(int index)
 {
-  if((index == tab_index_array[XML_FORMAT]) || (index == tab_index_array[DCEVENT_FORMAT]))
+  if((index == tab_index_array[XML_FORMAT]) ||
+     (index == tab_index_array[DCEVENT_FORMAT]) ||
+     (index == tab_index_array[MITWFDB_FORMAT]))
   {
     IgnoreConsecutiveCheckBox->setEnabled(true);
   }
 
-  if((index == tab_index_array[EDFPLUS_FORMAT]) || (index == tab_index_array[MITWFDB_FORMAT]))
+  if(index == tab_index_array[EDFPLUS_FORMAT])
   {
     IgnoreConsecutiveCheckBox->setEnabled(false);
   }
@@ -642,11 +680,23 @@ void UI_ImportAnnotationswindow::ImportButtonClicked()
 
 int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
 {
-  int annot_code, tc=0, skip, total_annots=0;
+  int len,
+      annot_code,
+      tc=0,
+      skip,
+      total_annots=0,
+      ignore_consecutive=0,
+      import_std_annots=1,
+      import_aux_info=1,
+      last_std_code=-99;
 
-  long long bytes_read, filesize, sampletime;
+  long long bytes_read,
+            filesize,
+            sampletime;
 
-  char path[MAX_PATH_LENGTH];
+  char path[MAX_PATH_LENGTH],
+       last_description_aux[256]={""},
+       aux_str[256]={""};
 
   unsigned char a_buf[128];
 
@@ -663,6 +713,35 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
     );
     messagewindow.exec();
     return 1;
+  }
+
+  if(IgnoreConsecutiveCheckBox->checkState() == Qt::Checked)
+  {
+    ignore_consecutive = 1;
+  }
+  else
+  {
+    ignore_consecutive = 0;
+  }
+
+  mainwindow->import_annotations_var->ignoreconsecutive = ignore_consecutive;
+
+  if(importStandardCheckBox->checkState() == Qt::Checked)
+  {
+    import_std_annots = 1;
+  }
+  else
+  {
+    import_std_annots = 0;
+  }
+
+  if(importAuxCheckBox->checkState() == Qt::Checked)
+  {
+    import_aux_info = 1;
+  }
+  else
+  {
+    import_aux_info = 0;
   }
 
   sampletime = TIME_DIMENSION / SampleTimeSpinbox->value();
@@ -721,7 +800,7 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
 
     annot_code = a_buf[1] >> 2;
 
-    if(annot_code == 59)
+    if(annot_code == 59)  /* SKIP */
     {
       if(fread(a_buf, 4, 1, inputfile) != 1)
       {
@@ -732,11 +811,48 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
 
       tc += *((unsigned short *)(a_buf + 2));
     }
-    else if(annot_code == 63)
+    else if(annot_code == 63)  /* AUX */
       {
         skip = *((unsigned short *)a_buf) & 0x3ff;
 
+        len = skip;
+        if(len > 255)  len = 255;
+
         if(skip % 2) skip++;
+
+        skip -= len;
+
+        if(fread(aux_str, len, 1, inputfile) != 1)
+        {
+          break;
+        }
+
+        aux_str[len] = 0;
+
+        if(len && import_aux_info)
+        {
+          if((!ignore_consecutive) || (strcmp(aux_str, last_description_aux)))
+          {
+            memset(&annotation, 0, sizeof(struct annotationblock));
+            annotation.onset = (long long)tc * sampletime;
+            strncpy(annotation.annotation, aux_str, MAX_ANNOTATION_LEN);
+
+            annotation.annotation[MAX_ANNOTATION_LEN] = 0;
+
+            if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
+            {
+              progress.reset();
+              QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
+              messagewindow.exec();
+              fclose(inputfile);
+              return 1;
+            }
+
+            total_annots++;
+
+            strcpy(last_description_aux, aux_str);
+          }
+        }
       }
       else if((annot_code >= 0) && (annot_code <= ACMAX))
         {
@@ -744,29 +860,37 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
 
 #pragma GCC diagnostic warning "-Wstrict-aliasing"
 
-          memset(&annotation, 0, sizeof(struct annotationblock));
-          annotation.onset = (long long)tc * sampletime;
-          if(annot_code < 42)
+          if(import_std_annots)
           {
-            strncpy(annotation.annotation, annotdescrlist[annot_code], MAX_ANNOTATION_LEN);
-          }
-          else
-          {
-            strncpy(annotation.annotation, "user-defined", MAX_ANNOTATION_LEN);
-          }
+            if((!ignore_consecutive) || (annot_code != last_std_code))
+            {
+              memset(&annotation, 0, sizeof(struct annotationblock));
+              annotation.onset = (long long)tc * sampletime;
+              if(annot_code < 42)
+              {
+                strncpy(annotation.annotation, annotdescrlist[annot_code], MAX_ANNOTATION_LEN);
+              }
+              else
+              {
+                strncpy(annotation.annotation, "user-defined", MAX_ANNOTATION_LEN);
+              }
 
-          annotation.annotation[MAX_ANNOTATION_LEN] = 0;
+              annotation.annotation[MAX_ANNOTATION_LEN] = 0;
 
-          if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
-          {
-            progress.reset();
-            QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
-            messagewindow.exec();
-            fclose(inputfile);
-            return 1;
+              if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
+              {
+                progress.reset();
+                QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
+                messagewindow.exec();
+                fclose(inputfile);
+                return 1;
+              }
+
+              total_annots++;
+
+              last_std_code = annot_code;
+            }
           }
-
-          total_annots++;
         }
 
     if(skip)
