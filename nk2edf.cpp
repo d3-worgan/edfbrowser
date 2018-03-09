@@ -1444,13 +1444,12 @@ int UI_NK2EDFwindow::read_21e_file(char *e21filepath)
       flag_eleclines=0,
       idx;
 
-  char *electrode_name=NULL,
+  char *electrode_name,
        electrode_name_buffer[ELECTRODE_NAME_MAXLEN],
-       scratchpad[64]={""},
-       *charpntr=NULL,
-       *saveptr=NULL;
+       scratchpad[64],
+       *charpntr;
 
-  FILE *inputfile=NULL;
+  FILE *inputfile;
 
 
   remove_extension_from_filename(e21filepath);
@@ -1490,11 +1489,11 @@ int UI_NK2EDFwindow::read_21e_file(char *e21filepath)
 
     if(flag_eleclines)
     {
-      if(strtok_r(electrode_name_buffer, "=", &saveptr) != NULL)
+      if(strtok(electrode_name_buffer, "=") != NULL)
       {
         idx = atoi(electrode_name_buffer);
 
-        electrode_name = strtok_r(NULL, "=", &saveptr);
+        electrode_name = strtok(NULL, "=");
 
         if(electrode_name != NULL)
         {

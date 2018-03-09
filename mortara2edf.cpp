@@ -125,7 +125,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
   if(strcmp(xml_hdl->elementname[xml_hdl->level], "ECG"))
   {
     textEdit1->append("Error, can not find root element \"ECG\"\n");
-    goto OUT;
+    goto OUT_EXIT;
   }
 
   for(i=0; i<(MORTARA_MAX_CHNS + 1); i++)
@@ -143,13 +143,13 @@ void UI_MortaraEDFwindow::SelectFileButton()
   if(chan_cnt < 1)
   {
     textEdit1->append("Error, can not find element \"CHANNEL\"\n");
-    goto OUT;
+    goto OUT_EXIT;
   }
 
   if(chan_cnt > MORTARA_MAX_CHNS)
   {
     textEdit1->append("Error, too many channels\n");
-    goto OUT;
+    goto OUT_EXIT;
   }
 
 ////////////////////////////////// GET THE LEAD PARAMETERS ////////////////////////
@@ -161,7 +161,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
     {
       sprintf(scratchpad, "Error, can not find element \"CHANNEL\" number %i\n", i + 1);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
 
     len = xml_get_attribute_of_element(xml_hdl, "OFFSET", scratchpad, 4096);
@@ -176,7 +176,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
     {
       sprintf(scratchpad, "Error, value of attribute \"OFFSET\" in channel number %i is %i\n", i + 1, chan_offset[i]);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
     if(i)
     {
@@ -184,7 +184,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
       {
         sprintf(scratchpad, "Error, value of attribute \"OFFSET\" in channel number %i is not equal to other channels\n", i + 1);
         textEdit1->append(scratchpad);
-        goto OUT;
+        goto OUT_EXIT;
       }
     }
 
@@ -193,7 +193,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
     {
       sprintf(scratchpad, "Error, can not find attribute \"BITS\" in channel number %i\n", i + 1);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
     chan_bits[i] = atoi(scratchpad);
 //     if((chan_bits[i] != 8) &&
@@ -203,7 +203,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
     {
       sprintf(scratchpad, "Error, value of attribute \"BITS\" in channel number %i is %i\n", i + 1, chan_offset[i]);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
     if(i)
     {
@@ -211,7 +211,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
       {
         sprintf(scratchpad, "Error, value of attribute \"BITS\" in channel number %i is not equal to other channels\n", i + 1);
         textEdit1->append(scratchpad);
-        goto OUT;
+        goto OUT_EXIT;
       }
     }
 
@@ -220,14 +220,14 @@ void UI_MortaraEDFwindow::SelectFileButton()
     {
       sprintf(scratchpad, "Error, can not find attribute \"FORMAT\" in channel number %i\n", i + 1);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
     chan_format[i][16] = 0;
     if(strcmp(chan_format[i], "SIGNED"))
     {
       sprintf(scratchpad, "Error, value of attribute \"FORMAT\" in channel number %i is %s\n", i + 1, chan_format[i]);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
 
     len = xml_get_attribute_of_element(xml_hdl, "UNITS_PER_MV", scratchpad, 4096);
@@ -235,14 +235,14 @@ void UI_MortaraEDFwindow::SelectFileButton()
     {
       sprintf(scratchpad, "Error, can not find attribute \"UNITS_PER_MV\" in channel number %i\n", i + 1);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
     chan_units_per_mv[i] = atoi(scratchpad);
     if(chan_units_per_mv[i] < 1)
     {
       sprintf(scratchpad, "Error, value of attribute \"UNITS_PER_MV\" in channel number %i is %i\n", i + 1, chan_units_per_mv[i]);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
 
     len = xml_get_attribute_of_element(xml_hdl, "DURATION", scratchpad, 4096);
@@ -250,14 +250,14 @@ void UI_MortaraEDFwindow::SelectFileButton()
     {
       sprintf(scratchpad, "Error, can not find attribute \"DURATION\" in channel number %i\n", i + 1);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
     chan_duration[i] = atoi(scratchpad);
     if(chan_duration[i] < 1)
     {
       sprintf(scratchpad, "Error, value of attribute \"DURATION\" in channel number %i is %i\n", i + 1, chan_duration[i]);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
     if(i)
     {
@@ -265,7 +265,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
       {
         sprintf(scratchpad, "Error, value of attribute \"DURATION\" in channel number %i is not equal to other channels\n", i + 1);
         textEdit1->append(scratchpad);
-        goto OUT;
+        goto OUT_EXIT;
       }
     }
 
@@ -274,14 +274,14 @@ void UI_MortaraEDFwindow::SelectFileButton()
     {
       sprintf(scratchpad, "Error, can not find attribute \"SAMPLE_FREQ\" in channel number %i\n", i + 1);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
     chan_sample_freq[i] = atoi(scratchpad);
     if(chan_sample_freq[i] < 1)
     {
       sprintf(scratchpad, "Error, value of attribute \"SAMPLE_FREQ\" in channel number %i is %i\n", i + 1, chan_sample_freq[i]);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
     if(i)
     {
@@ -289,7 +289,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
       {
         sprintf(scratchpad, "Error, value of attribute \"SAMPLE_FREQ\" in channel number %i is not equal to other channels\n", i + 1);
         textEdit1->append(scratchpad);
-        goto OUT;
+        goto OUT_EXIT;
       }
     }
 
@@ -298,7 +298,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
     {
       sprintf(scratchpad, "Error, can not find attribute \"NAME\" in channel number %i\n", i + 1);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
     chan_name[i][16] = 0;
 
@@ -307,14 +307,14 @@ void UI_MortaraEDFwindow::SelectFileButton()
     {
       sprintf(scratchpad, "Error, can not find attribute \"ENCODING\" in channel number %i\n", i + 1);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
     scratchpad[32] = 0;
     if(strcmp(scratchpad, "BASE64"))
     {
       sprintf(scratchpad, "Error, value of attribute \"ENCODING\" in channel number %i is %s\n", i + 1, scratchpad);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
 
     xml_go_up(xml_hdl);
@@ -345,7 +345,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
     {
       sprintf(scratchpad, "Error, can not find element \"CHANNEL\" number %i\n", i + 1);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
 
     buf_len = xml_get_attribute_of_element(xml_hdl, "DATA", NULL, 10 * 1000 * 1000);
@@ -353,7 +353,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
     {
       sprintf(scratchpad, "Error, can not find attribute \"DATA\" in channel number %i\n", i + 1);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
 
     buf_len++;
@@ -361,20 +361,20 @@ void UI_MortaraEDFwindow::SelectFileButton()
     if(chan_data_in[i] == NULL)
     {
       textEdit1->append("malloc() error for channel data in\n");
-      goto OUT;
+      goto OUT_EXIT;
     }
     chan_data_out[i] = (char *)malloc(buf_len);
     if(chan_data_out[i] == NULL)
     {
       textEdit1->append("malloc() error for channel data out\n");
-      goto OUT;
+      goto OUT_EXIT;
     }
     len = xml_get_attribute_of_element(xml_hdl, "DATA", chan_data_in[i], buf_len);
     if(len < 1)
     {
       sprintf(scratchpad, "Error, can not load channel data in channel number %i\n", i + 1);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
 
     chan_decoded_len[i] = base64_dec(chan_data_in[i], chan_data_out[i], buf_len);
@@ -382,14 +382,14 @@ void UI_MortaraEDFwindow::SelectFileButton()
     {
       sprintf(scratchpad, "Error, can not decode data in channel number %i\n", i + 1);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
 
     if(chan_decoded_len[i] < 100)
     {
       sprintf(scratchpad, "Error, not enough samples in channel number %i\n", i + 1);
       textEdit1->append(scratchpad);
-      goto OUT;
+      goto OUT_EXIT;
     }
 
     if(i)
@@ -398,7 +398,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
       {
         sprintf(scratchpad, "Error, number of samples in channel number %i is not equal to other channels\n", i + 1);
         textEdit1->append(scratchpad);
-        goto OUT;
+        goto OUT_EXIT;
       }
     }
 
@@ -411,7 +411,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
     if(len < 19)
     {
       textEdit1->append("Error, can not find attribute \"ACQUISITION_TIME_XML\"\n");
-      goto OUT;
+      goto OUT_EXIT;
     }
     start_date_time[4] = 0;
     start_date_time[7] = 0;
@@ -447,7 +447,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
     if(err)
     {
       textEdit1->append("Error, malformed attribute \"ACQUISITION_TIME\"\n");
-      goto OUT;
+      goto OUT_EXIT;
     }
 
 /////////////////////////////////////// GET SUBJECT ///////////////////////////////
@@ -537,7 +537,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
 
   if(!strcmp(path, ""))
   {
-    goto OUT;
+    goto OUT_EXIT;
   }
 
   get_directory_from_path(recent_savedir, path, MAX_PATH_LENGTH);
@@ -546,7 +546,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
   if(edf_hdl < 0)
   {
     textEdit1->append("Error, can not open EDF file for writing\n");
-    goto OUT;
+    goto OUT_EXIT;
   }
 
   for(i=0; i<chan_cnt; i++)
@@ -554,7 +554,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
     if(edf_set_samplefrequency(edf_hdl, i, chan_sf_block))
     {
       textEdit1->append("Error, edf_set_samplefrequency()\n");
-      goto OUT;
+      goto OUT_EXIT;
     }
   }
 
@@ -565,19 +565,19 @@ void UI_MortaraEDFwindow::SelectFileButton()
       if(edf_set_physical_maximum(edf_hdl, i, 32767000.0 / chan_units_per_mv[i]))
       {
         textEdit1->append("Error, edf_set_physical_maximum()\n");
-        goto OUT;
+        goto OUT_EXIT;
       }
 
       if(edf_set_physical_minimum(edf_hdl, i, -32768000.0 / chan_units_per_mv[i]))
       {
         textEdit1->append("Error, edf_set_physical_minimum()\n");
-        goto OUT;
+        goto OUT_EXIT;
       }
 
       if(edf_set_physical_dimension(edf_hdl, i, "uV"))
       {
         textEdit1->append("Error, edf_set_physical_dimension()\n");
-        goto OUT;
+        goto OUT_EXIT;
       }
     }
     else
@@ -585,38 +585,38 @@ void UI_MortaraEDFwindow::SelectFileButton()
       if(edf_set_physical_maximum(edf_hdl, i, 32767.0 / chan_units_per_mv[i]))
       {
         textEdit1->append("Error, edf_set_physical_maximum()\n");
-        goto OUT;
+        goto OUT_EXIT;
       }
 
       if(edf_set_physical_minimum(edf_hdl, i, -32768.0 / chan_units_per_mv[i]))
       {
         textEdit1->append("Error, edf_set_physical_minimum()\n");
-        goto OUT;
+        goto OUT_EXIT;
       }
 
       if(edf_set_physical_dimension(edf_hdl, i, "mV"))
       {
         textEdit1->append("Error, edf_set_physical_dimension()\n");
-        goto OUT;
+        goto OUT_EXIT;
       }
     }
 
     if(edf_set_digital_maximum(edf_hdl, i, 32767))
     {
       textEdit1->append("Error, edf_set_digital_maximum()\n");
-      goto OUT;
+      goto OUT_EXIT;
     }
 
     if(edf_set_digital_minimum(edf_hdl, i, -32768))
     {
       textEdit1->append("Error, edf_set_digital_minimum()\n");
-      goto OUT;
+      goto OUT_EXIT;
     }
 
     if(edf_set_label(edf_hdl, i, chan_name[i]))
     {
       textEdit1->append("Error, edf_set_label()\n");
-      goto OUT;
+      goto OUT_EXIT;
     }
   }
 
@@ -624,7 +624,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
                            atoi(start_date_time + 11), atoi(start_date_time + 14), atoi(start_date_time + 17)))
   {
     textEdit1->append("Error, edf_set_startdatetime()\n");
-    goto OUT;
+    goto OUT_EXIT;
   }
 
   if(strlen(subject_name))
@@ -632,7 +632,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
     if(edf_set_patientname(edf_hdl, subject_name))
     {
       textEdit1->append("Error, edf_set_patientname()\n");
-      goto OUT;
+      goto OUT_EXIT;
     }
   }
 
@@ -641,7 +641,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
     if(edf_set_gender(edf_hdl, subject_gender))
     {
       textEdit1->append("Error, edf_set_gender()\n");
-      goto OUT;
+      goto OUT_EXIT;
     }
   }
 
@@ -650,7 +650,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
     if(edf_set_equipment(edf_hdl, device_name))
     {
       textEdit1->append("Error, edf_set_equipment()\n");
-      goto OUT;
+      goto OUT_EXIT;
     }
   }
 
@@ -659,7 +659,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
     if(edf_set_number_of_annotation_signals(edf_hdl, 2))
     {
       textEdit1->append("Error: edf_set_number_of_annotation_signals()\n");
-      goto OUT;
+      goto OUT_EXIT;
     }
   }
   else
@@ -667,7 +667,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
     if(edf_set_datarecord_duration(edf_hdl, 100000 / chan_sf_div))
     {
       textEdit1->append("Error: edf_set_datarecord_duration()\n");
-      goto OUT;
+      goto OUT_EXIT;
     }
   }
 
@@ -682,14 +682,14 @@ void UI_MortaraEDFwindow::SelectFileButton()
       if(edfwrite_digital_short_samples(edf_hdl, ((signed short *)(chan_data_out[i])) + (j * chan_sf_block)))
       {
         textEdit1->append("Error, edfwrite_digital_short_samples()\n");
-        goto OUT;
+        goto OUT_EXIT;
       }
     }
   }
 
   textEdit1->append("Done\n");
 
-OUT:
+OUT_EXIT:
 
   if(edf_hdl >= 0)  edfclose_file(edf_hdl);
 

@@ -1,5 +1,5 @@
 
- version 1.63      to be defined
+ version 1.63      March 10, 2018
  --------------
 
  - Fixed a bug in the mit2edf converter.
