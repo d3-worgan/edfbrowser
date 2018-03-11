@@ -146,7 +146,7 @@ void UI_Mainwindow::start_stop_video()
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Unable to start VLC mediaplayer.\n"
                                                               "Check your installation of VLC.\n"
-                                                              "Also, check if VLC is present in the PATH evironment variable.");
+                                                              "Also, check if VLC is present in the PATH environment variable.");
     messagewindow.exec();
     return;
   }
