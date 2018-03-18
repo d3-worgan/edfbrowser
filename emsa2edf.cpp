@@ -108,7 +108,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
 
   char path[MAX_PATH_LENGTH],
        scratchpad[256],
-       *buf,
+       *buf=NULL,
        date[9],
        time[9],
        month[4],
@@ -127,6 +127,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
          char str[4];
        } var;
 
+  logbuf = NULL;
 
   pushButton1->setEnabled(false);
 
@@ -769,12 +770,12 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   for(i=0; i<channels; i++)
   {
     len = get_string(scratchpad, inputfile, 1034 + (i * 512), 16);
-    for (j=len; j<16; j++)
+    for(j=len; j<16; j++)
     {
       scratchpad[j] = ' ';
     }
     latin1_to_ascii(scratchpad, 16);
-    scratchpad[len] = 0;
+    scratchpad[16] = 0;
     fseeko(inputfile, (long long)(1025 + (i * 512)), SEEK_SET);
     if((fgetc(inputfile)=='E')&&(len<13))
     {
