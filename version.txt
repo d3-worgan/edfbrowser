@@ -1,4 +1,13 @@
 
+ version 1.63      to be defined
+ --------------
+
+ - EMSA to EDF converter: fixed a bug that could cause a crash due to invalid free-ing of memory.
+   Fixed a bug that could cause to write an invalid character into the EDF header when a signallabel
+   name is shorter than 16 bytes.
+
+
+
  version 1.63      March 10, 2018
  --------------
 
