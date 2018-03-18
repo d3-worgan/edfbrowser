@@ -5,6 +5,8 @@
 #include <QPixmap>
 #include <QSplashScreen>
 #include <QTimer>
+#include <QStyle>
+#include <QStyleFactory>
 
 #include "mainwindow.h"
 
@@ -30,6 +32,13 @@ int main(int argc, char *argv[])
   t1.start(3000);
 
   qApp->processEvents();
+
+#if QT_VERSION >= 0x050000
+#ifdef Q_OS_LINUX
+  qApp->setStyle(QStyleFactory::create("Fusion"));
+#endif
+#endif
+  qApp->setStyleSheet("QLabel, QMessageBox { messagebox-text-interaction-flags: 5; }");
 
   class UI_Mainwindow MainWindow;
 
