@@ -42,6 +42,8 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QLabel>
+#include <QFrame>
+#include <QStyle>
 #include <QPushButton>
 #include <QString>
 #include <QStringList>
@@ -51,7 +53,6 @@
 #include "global.h"
 #include "mainwindow.h"
 #include "utc_date_time.h"
-#include "special_button.h"
 #include "utils.h"
 
 
@@ -117,23 +118,22 @@ QLabel       *label1,
              *label4,
              *label5,
              *label20,
-             *label21;
-
-SpecialButton *label1a,
-              *label2a,
-              *label6a,
-              *label7a,
-              *label8a,
-              *label9a,
-              *label10a,
-              *label11a,
-              *label12a,
-              *label13a,
-              *label3a,
-              *label4a,
-              *label5a,
-              *label20a,
-              *label21a;
+             *label21,
+             *label1a,
+             *label2a,
+             *label6a,
+             *label7a,
+             *label8a,
+             *label9a,
+             *label10a,
+             *label11a,
+             *label12a,
+             *label13a,
+             *label3a,
+             *label4a,
+             *label5a,
+             *label20a,
+             *label21a;
 
 QPushButton  *pushButton1;
 

@@ -63,50 +63,60 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
   label1->setMaximumSize(130, 25);
   label1->setText("Subject");
 
-  label1a = new SpecialButton(EDFhdrDialog);
+  label1a = new QLabel(EDFhdrDialog);
   label1a->setMinimumSize(580, 25);
   label1a->setMaximumSize(580, 25);
-  label1a->setColor(Qt::white);
+  label1a->setTextInteractionFlags(Qt::TextSelectableByMouse);
+  label1a->setStyleSheet("QLabel { background-color : white; color : black; }");
+  label1a->setFrameStyle(QFrame::Box);
 
   label2 = new QLabel(EDFhdrDialog);
   label2->setMinimumSize(130, 25);
   label2->setMaximumSize(130, 25);
   label2->setText("Recording");
 
-  label2a = new SpecialButton(EDFhdrDialog);
+  label2a = new QLabel(EDFhdrDialog);
   label2a->setMinimumSize(580, 25);
   label2a->setMaximumSize(580, 25);
-  label2a->setColor(Qt::white);
+  label2a->setTextInteractionFlags(Qt::TextSelectableByMouse);
+  label2a->setStyleSheet("QLabel { background-color : white; color : black; }");
+  label2a->setFrameStyle(QFrame::Box);
 
   label3 = new QLabel(EDFhdrDialog);
   label3->setMinimumSize(130, 25);
   label3->setMaximumSize(130, 25);
   label3->setText("Start");
 
-  label3a = new SpecialButton(EDFhdrDialog);
+  label3a = new QLabel(EDFhdrDialog);
   label3a->setMinimumSize(580, 25);
   label3a->setMaximumSize(580, 25);
-  label3a->setColor(Qt::white);
+  label3a->setTextInteractionFlags(Qt::TextSelectableByMouse);
+  label3a->setStyleSheet("QLabel { background-color : white; color : black; }");
+  label3a->setFrameStyle(QFrame::Box);
 
   label4 = new QLabel(EDFhdrDialog);
   label4->setMinimumSize(130, 25);
   label4->setMaximumSize(130, 25);
   label4->setText("Duration");
 
-  label4a = new SpecialButton(EDFhdrDialog);
+  label4a = new QLabel(EDFhdrDialog);
   label4a->setMinimumSize(580, 25);
   label4a->setMaximumSize(580, 25);
-  label4a->setColor(Qt::white);
+  label4a->setTextInteractionFlags(Qt::TextSelectableByMouse);
+  label4a->setStyleSheet("QLabel { background-color : white; color : black; }");
+  label4a->setFrameStyle(QFrame::Box);
 
   label5 = new QLabel(EDFhdrDialog);
   label5->setMinimumSize(130, 25);
   label5->setMaximumSize(130, 25);
   label5->setText("Reserved");
 
-  label5a = new SpecialButton(EDFhdrDialog);
+  label5a = new QLabel(EDFhdrDialog);
   label5a->setMinimumSize(580, 25);
   label5a->setMaximumSize(580, 25);
-  label5a->setColor(Qt::white);
+  label5a->setTextInteractionFlags(Qt::TextSelectableByMouse);
+  label5a->setStyleSheet("QLabel { background-color : white; color : black; }");
+  label5a->setFrameStyle(QFrame::Box);
 
   label6 = new QLabel(EDFhdrDialog);
   label6->setMinimumSize(130, 25);
@@ -114,11 +124,13 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
   label6->setText("Birthdate");
   label6->setVisible(false);
 
-  label6a = new SpecialButton(EDFhdrDialog);
+  label6a = new QLabel(EDFhdrDialog);
   label6a->setMinimumSize(580, 25);
   label6a->setMaximumSize(580, 25);
-  label6a->setColor(Qt::white);
+  label6a->setTextInteractionFlags(Qt::TextSelectableByMouse);
   label6a->setVisible(false);
+  label6a->setStyleSheet("QLabel { background-color : white; color : black; }");
+  label6a->setFrameStyle(QFrame::Box);
 
   label7 = new QLabel(EDFhdrDialog);
   label7->setMinimumSize(130, 25);
@@ -126,11 +138,13 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
   label7->setText("Subject name");
   label7->setVisible(false);
 
-  label7a = new SpecialButton(EDFhdrDialog);
+  label7a = new QLabel(EDFhdrDialog);
   label7a->setMinimumSize(580, 25);
   label7a->setMaximumSize(580, 25);
-  label7a->setColor(Qt::white);
+  label7a->setTextInteractionFlags(Qt::TextSelectableByMouse);
   label7a->setVisible(false);
+  label7a->setStyleSheet("QLabel { background-color : white; color : black; }");
+  label7a->setFrameStyle(QFrame::Box);
 
   label8 = new QLabel(EDFhdrDialog);
   label8->setMinimumSize(130, 25);
@@ -138,11 +152,13 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
   label8->setText("Additional info");
   label8->setVisible(false);
 
-  label8a = new SpecialButton(EDFhdrDialog);
+  label8a = new QLabel(EDFhdrDialog);
   label8a->setMinimumSize(580, 25);
   label8a->setMaximumSize(580, 25);
-  label8a->setColor(Qt::white);
+  label8a->setTextInteractionFlags(Qt::TextSelectableByMouse);
   label8a->setVisible(false);
+  label8a->setStyleSheet("QLabel { background-color : white; color : black; }");
+  label8a->setFrameStyle(QFrame::Box);
 
   label9 = new QLabel(EDFhdrDialog);
   label9->setMinimumSize(130, 25);
@@ -150,11 +166,13 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
   label9->setText("Startdate");
   label9->setVisible(false);
 
-  label9a = new SpecialButton(EDFhdrDialog);
+  label9a = new QLabel(EDFhdrDialog);
   label9a->setMinimumSize(580, 25);
   label9a->setMaximumSize(580, 25);
-  label9a->setColor(Qt::white);
+  label9a->setTextInteractionFlags(Qt::TextSelectableByMouse);
   label9a->setVisible(false);
+  label9a->setStyleSheet("QLabel { background-color : white; color : black; }");
+  label9a->setFrameStyle(QFrame::Box);
 
   label10 = new QLabel(EDFhdrDialog);
   label10->setMinimumSize(130, 25);
@@ -162,11 +180,13 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
   label10->setText("Administr. code");
   label10->setVisible(false);
 
-  label10a = new SpecialButton(EDFhdrDialog);
+  label10a = new QLabel(EDFhdrDialog);
   label10a->setMinimumSize(580, 25);
   label10a->setMaximumSize(580, 25);
-  label10a->setColor(Qt::white);
+  label10a->setTextInteractionFlags(Qt::TextSelectableByMouse);
   label10a->setVisible(false);
+  label10a->setStyleSheet("QLabel { background-color : white; color : black; }");
+  label10a->setFrameStyle(QFrame::Box);
 
   label11 = new QLabel(EDFhdrDialog);
   label11->setMinimumSize(130, 25);
@@ -174,11 +194,13 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
   label11->setText("Technician");
   label11->setVisible(false);
 
-  label11a = new SpecialButton(EDFhdrDialog);
+  label11a = new QLabel(EDFhdrDialog);
   label11a->setMinimumSize(580, 25);
   label11a->setMaximumSize(580, 25);
-  label11a->setColor(Qt::white);
+  label11a->setTextInteractionFlags(Qt::TextSelectableByMouse);
   label11a->setVisible(false);
+  label11a->setStyleSheet("QLabel { background-color : white; color : black; }");
+  label11a->setFrameStyle(QFrame::Box);
 
   label12 = new QLabel(EDFhdrDialog);
   label12->setMinimumSize(130, 25);
@@ -186,11 +208,13 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
   label12->setText("Device");
   label12->setVisible(false);
 
-  label12a = new SpecialButton(EDFhdrDialog);
+  label12a = new QLabel(EDFhdrDialog);
   label12a->setMinimumSize(580, 25);
   label12a->setMaximumSize(580, 25);
-  label12a->setColor(Qt::white);
+  label12a->setTextInteractionFlags(Qt::TextSelectableByMouse);
   label12a->setVisible(false);
+  label12a->setStyleSheet("QLabel { background-color : white; color : black; }");
+  label12a->setFrameStyle(QFrame::Box);
 
   label13 = new QLabel(EDFhdrDialog);
   label13->setMinimumSize(130, 25);
@@ -198,31 +222,37 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
   label13->setText("Additional info");
   label13->setVisible(false);
 
-  label13a = new SpecialButton(EDFhdrDialog);
+  label13a = new QLabel(EDFhdrDialog);
   label13a->setMinimumSize(580, 25);
   label13a->setMaximumSize(580, 25);
-  label13a->setColor(Qt::white);
+  label13a->setTextInteractionFlags(Qt::TextSelectableByMouse);
   label13a->setVisible(false);
+  label13a->setStyleSheet("QLabel { background-color : white; color : black; }");
+  label13a->setFrameStyle(QFrame::Box);
 
   label20 = new QLabel(EDFhdrDialog);
   label20->setMinimumSize(130, 25);
   label20->setMaximumSize(130, 25);
   label20->setText("Datarecord duration");
 
-  label20a = new SpecialButton(EDFhdrDialog);
+  label20a = new QLabel(EDFhdrDialog);
   label20a->setMinimumSize(580, 25);
   label20a->setMaximumSize(580, 25);
-  label20a->setColor(Qt::white);
+  label20a->setTextInteractionFlags(Qt::TextSelectableByMouse);
+  label20a->setStyleSheet("QLabel { background-color : white; color : black; }");
+  label20a->setFrameStyle(QFrame::Box);
 
   label21 = new QLabel(EDFhdrDialog);
   label21->setMinimumSize(130, 25);
   label21->setMaximumSize(130, 25);
   label21->setText("Version");
 
-  label21a = new SpecialButton(EDFhdrDialog);
+  label21a = new QLabel(EDFhdrDialog);
   label21a->setMinimumSize(580, 25);
   label21a->setMaximumSize(580, 25);
-  label21a->setColor(Qt::white);
+  label21a->setTextInteractionFlags(Qt::TextSelectableByMouse);
+  label21a->setStyleSheet("QLabel { background-color : white; color : black; }");
+  label21a->setFrameStyle(QFrame::Box);
 
   signallist = new QTableWidget(EDFhdrDialog);
   signallist->setMinimumSize(670, 100);
@@ -538,6 +568,7 @@ void UI_EDFhdrwindow::show_params(int row)
     signallist->setRowHeight(i, 25);
     ql = new QLabel(mainwindow->edfheaderlist[row]->edfparam[i].label);
     ql->setMargin(margin);
+    ql->setTextInteractionFlags(Qt::TextSelectableByMouse);
     signallist->setCellWidget(i, 0, ql);
     convert_to_metric_suffix(str,
                              (double)mainwindow->edfheaderlist[row]->edfparam[i].smp_per_record / mainwindow->edfheaderlist[row]->data_record_duration,
@@ -546,37 +577,46 @@ void UI_EDFhdrwindow::show_params(int row)
     remove_trailing_zeros(str);
     ql = new QLabel(str);
     ql->setMargin(margin);
+    ql->setTextInteractionFlags(Qt::TextSelectableByMouse);
     signallist->setCellWidget(i, 1, ql);
     snprintf(str, 512, "%+f", mainwindow->edfheaderlist[row]->edfparam[i].phys_max);
     remove_trailing_zeros(str);
     ql = new QLabel(str);
     ql->setMargin(margin);
+    ql->setTextInteractionFlags(Qt::TextSelectableByMouse);
     signallist->setCellWidget(i, 2, ql);
     snprintf(str, 512, "%+f", mainwindow->edfheaderlist[row]->edfparam[i].phys_min);
     remove_trailing_zeros(str);
     ql = new QLabel(str);
     ql->setMargin(margin);
+    ql->setTextInteractionFlags(Qt::TextSelectableByMouse);
     signallist->setCellWidget(i, 3, ql);
     ql = new QLabel(mainwindow->edfheaderlist[row]->edfparam[i].physdimension);
     ql->setMargin(margin);
+    ql->setTextInteractionFlags(Qt::TextSelectableByMouse);
     signallist->setCellWidget(i, 4, ql);
     snprintf(str, 512, "%+i", mainwindow->edfheaderlist[row]->edfparam[i].dig_max);
     ql = new QLabel(str);
     ql->setMargin(margin);
+    ql->setTextInteractionFlags(Qt::TextSelectableByMouse);
     signallist->setCellWidget(i, 5, ql);
     snprintf(str, 512, "%+i", mainwindow->edfheaderlist[row]->edfparam[i].dig_min);
     ql = new QLabel(str);
     ql->setMargin(margin);
+    ql->setTextInteractionFlags(Qt::TextSelectableByMouse);
     signallist->setCellWidget(i, 6, ql);
     snprintf(str, 512, "%i", mainwindow->edfheaderlist[row]->edfparam[i].smp_per_record);
     ql = new QLabel(str);
     ql->setMargin(margin);
+    ql->setTextInteractionFlags(Qt::TextSelectableByMouse);
     signallist->setCellWidget(i, 7, ql);
     ql = new QLabel(mainwindow->edfheaderlist[row]->edfparam[i].prefilter);
     ql->setMargin(margin);
+    ql->setTextInteractionFlags(Qt::TextSelectableByMouse);
     signallist->setCellWidget(i, 8, ql);
     ql = new QLabel(mainwindow->edfheaderlist[row]->edfparam[i].transducer);
     ql->setMargin(margin);
+    ql->setTextInteractionFlags(Qt::TextSelectableByMouse);
     signallist->setCellWidget(i, 9, ql);
   }
 }
