@@ -310,20 +310,11 @@ UI_ZScoreWindow::~UI_ZScoreWindow()
     zscore_dialog->close();
   }
 
-  if(zscore_epoch_buf != NULL)
-  {
-    free(zscore_epoch_buf);
-  }
+  free(zscore_epoch_buf);
 
-  if(zscore_page_buf != NULL)
-  {
-    free(zscore_page_buf);
-  }
+  free(zscore_page_buf);
 
-  if(zscore_sleepstage_buf != NULL)
-  {
-    free(zscore_sleepstage_buf);
-  }
+  free(zscore_sleepstage_buf);
 
   zscoredialog[zscore_dialognumber] = NULL;
 }
@@ -454,9 +445,9 @@ void UI_ZScoreWindow::startButtonClicked()
       power_pos_cnt,
       progress_steps;
 
-  double *buf,
-         *fft_inputbuf,
-         *fft_outputbuf,
+  double *buf=NULL,
+         *fft_inputbuf=NULL,
+         *fft_outputbuf=NULL,
          samplefreq,
          freqstep,
          power_delta,
@@ -467,9 +458,9 @@ void UI_ZScoreWindow::startButtonClicked()
          power_neg,
          power_pos;
 
-  struct edfhdrblock *hdr;
+  struct edfhdrblock *hdr=NULL;
 
-  struct signalcompblock *signalcomp;
+  struct signalcompblock *signalcomp=NULL;
 
 
   crossoverfreq = crossoverSpinbox->value();
@@ -511,7 +502,7 @@ void UI_ZScoreWindow::startButtonClicked()
   epochs = (hdr->datarecords * (long long)smp_per_record) / (long long)smpls_in_epoch;
 
   samplefreq = (double)smp_per_record / ((double)hdr->long_data_record_duration / TIME_DIMENSION);
-  if(samplefreq < 99.9999999)
+  if(dblcmp(samplefreq, 100.0) < 0)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Samplefrequency of the selected signal must be at least 100 Hz.");
     messagewindow.exec();
@@ -522,7 +513,7 @@ void UI_ZScoreWindow::startButtonClicked()
   fft_outputbufsize = dftblocksize / 2;
 
   freqstep = samplefreq / (double)dftblocksize;
-  if(freqstep > 1.0001)
+  if(dblcmp(freqstep, 1.0) > 0)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Frequency bin of FFT is more than 1 Hz.");
     messagewindow.exec();
