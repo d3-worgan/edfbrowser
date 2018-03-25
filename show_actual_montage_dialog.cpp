@@ -67,6 +67,7 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
   tree->setEditTriggers(QAbstractItemView::NoEditTriggers);
   tree->setSortingEnabled(false);
   tree->setDragDropMode(QAbstractItemView::NoDragDrop);
+  tree->setAlternatingRowColors(true);
 
   CloseButton = new QPushButton;
   CloseButton->setFixedSize(100, 25);
@@ -170,6 +171,8 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
     signalItem->appendRow(new QStandardItem(txtbuf));
 
     filterItem = new QStandardItem("Filters");
+
+    filterItem->setIcon(QIcon(":/images/filter_lowpass_small.png"));
 
     signalItem->appendRow(filterItem);
 

@@ -14,5 +14,6 @@
     <file>images/go-first-symbolic-rtl.symbolic.png</file>
     <file>images/zoom-in-symbolic.symbolic.png</file>
     <file>images/zoom-out-symbolic.symbolic.png</file>
+    <file>images/filter_lowpass_small.png</file>
 </qresource>
 </RCC>

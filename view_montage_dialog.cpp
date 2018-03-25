@@ -63,6 +63,7 @@ UI_ViewMontagewindow::UI_ViewMontagewindow(QWidget *w_parent)
   tree->setSortingEnabled(false);
   tree->setDragDropMode(QAbstractItemView::NoDragDrop);
   tree->setModel(t_model);
+  tree->setAlternatingRowColors(true);
 
   SelectButton = new QPushButton;
   SelectButton->setFixedSize(100, 25);
@@ -455,6 +456,8 @@ void UI_ViewMontagewindow::SelectButtonClicked()
     signalItem->appendRow(new QStandardItem(composition_txt));
 
     filterItem = new QStandardItem("Filters");
+
+    filterItem->setIcon(QIcon(":/images/filter_lowpass_small.png"));
 
     signalItem->appendRow(filterItem);
 

@@ -53,6 +53,7 @@ UI_ExportFilteredSignalsWindow::UI_ExportFilteredSignalsWindow(QWidget *w_parent
   tree->setEditTriggers(QAbstractItemView::NoEditTriggers);
   tree->setSortingEnabled(false);
   tree->setDragDropMode(QAbstractItemView::NoDragDrop);
+  tree->setAlternatingRowColors(true);
 
   t_model = new QStandardItemModel(this);
 
@@ -1270,6 +1271,8 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
     parentItem->appendRow(signalItem);
 
     filterItem = new QStandardItem("Filters");
+
+    filterItem->setIcon(QIcon(":/images/filter_lowpass_small.png"));
 
     signalItem->appendRow(filterItem);
 
