@@ -593,10 +593,7 @@ void UI_FreqSpectrumWindow::run()
           unsigned char four[4];
         } var;
 
-  if(buf1 != NULL)
-  {
-    free(buf1);
-  }
+  free(buf1);
   buf1 = (double *)malloc(sizeof(double) * signalcomp->samples_on_screen);
   if(buf1 == NULL)
   {
@@ -766,10 +763,7 @@ void UI_FreqSpectrumWindow::run()
 
   steps = fft_outputbufsize;
 
-  if(buf2 != NULL)
-  {
-    free(buf2);
-  }
+  free(buf2);
   buf2 = (double *)calloc(1, sizeof(double) * fft_outputbufsize);
   if(buf2 == NULL)
   {
@@ -779,10 +773,7 @@ void UI_FreqSpectrumWindow::run()
     return;
   }
 
-  if(buf3 != NULL)
-  {
-    free(buf3);
-  }
+  free(buf3);
   buf3 = (double *)malloc(sizeof(double) * fft_outputbufsize);
   if(buf3 == NULL)
   {
@@ -794,10 +785,7 @@ void UI_FreqSpectrumWindow::run()
     return;
   }
 
-  if(buf4 != NULL)
-  {
-    free(buf4);
-  }
+  free(buf4);
   buf4 = (double *)malloc(sizeof(double) * fft_outputbufsize);
   if(buf4 == NULL)
   {
@@ -811,10 +799,7 @@ void UI_FreqSpectrumWindow::run()
     return;
   }
 
-  if(buf5 != NULL)
-  {
-    free(buf5);
-  }
+  free(buf5);
   buf5 = (double *)malloc(sizeof(double) * fft_outputbufsize);
   if(buf5 == NULL)
   {
@@ -993,13 +978,10 @@ void UI_FreqSpectrumWindow::run()
   printf("\n power1 is %f\n power2 is %f\n\n", power1, power2);
 #endif
 
-  if(buf1 != NULL)
-  {
-    free(buf1);
-
-    buf1 = NULL;
-  }
+  free(buf1);
+  buf1 = NULL;
 }
+
 
 void UI_FreqSpectrumWindow::update_curve()
 {
@@ -1123,25 +1105,14 @@ UI_FreqSpectrumWindow::~UI_FreqSpectrumWindow()
     SpectrumDialog->close();
   }
 
-  if(buf2 != NULL)
-  {
-    free(buf2);
-  }
-
-  if(buf3 != NULL)
-  {
-    free(buf3);
-  }
-
-  if(buf4 != NULL)
-  {
-    free(buf4);
-  }
-
-  if(buf5 != NULL)
-  {
-    free(buf5);
-  }
+  free(buf2);
+  free(buf3);
+  free(buf4);
+  free(buf5);
+  buf2 = NULL;
+  buf3 = NULL;
+  buf4 = NULL;
+  buf5 = NULL;
 
   spectrumdialog[spectrumdialognumber] = NULL;
 

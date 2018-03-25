@@ -729,35 +729,16 @@ void UI_SpectrumDockWindow::clear()
 
   viewbuf = NULL;
 
-  if(buf1 != NULL)
-  {
-    free(buf1);
-    buf1 = NULL;
-  }
-
-  if(buf2 != NULL)
-  {
-    free(buf2);
-    buf2 = NULL;
-  }
-
-  if(buf3 != NULL)
-  {
-    free(buf3);
-    buf3 = NULL;
-  }
-
-  if(buf4 != NULL)
-  {
-    free(buf4);
-    buf4 = NULL;
-  }
-
-  if(buf5 != NULL)
-  {
-    free(buf5);
-    buf5 = NULL;
-  }
+  free(buf1);
+  buf1 = NULL;
+  free(buf2);
+  buf2 = NULL;
+  free(buf3);
+  buf3 = NULL;
+  free(buf4);
+  buf4 = NULL;
+  free(buf5);
+  buf5 = NULL;
 
   if(spectrum_color != NULL)
   {
@@ -845,10 +826,7 @@ void UI_SpectrumDockWindow::update_curve()
     return;
   }
 
-  if(buf1 != NULL)
-  {
-    free(buf1);
-  }
+  free(buf1);
   buf1 = (double *)malloc(sizeof(double) * signalcomp->samples_on_screen);
   if(buf1 == NULL)
   {
@@ -1020,10 +998,7 @@ void UI_SpectrumDockWindow::update_curve()
 
   steps = fft_outputbufsize;
 
-  if(buf2 != NULL)
-  {
-    free(buf2);
-  }
+  free(buf2);
   buf2 = (double *)calloc(1, sizeof(double) * fft_outputbufsize);
   if(buf2 == NULL)
   {
@@ -1034,10 +1009,7 @@ void UI_SpectrumDockWindow::update_curve()
     return;
   }
 
-  if(buf3 != NULL)
-  {
-    free(buf3);
-  }
+  free(buf3);
   buf3 = (double *)malloc(sizeof(double) * fft_outputbufsize);
   if(buf3 == NULL)
   {
@@ -1050,10 +1022,7 @@ void UI_SpectrumDockWindow::update_curve()
     return;
   }
 
-  if(buf4 != NULL)
-  {
-    free(buf4);
-  }
+  free(buf4);
   buf4 = (double *)malloc(sizeof(double) * fft_outputbufsize);
   if(buf4 == NULL)
   {
@@ -1068,10 +1037,7 @@ void UI_SpectrumDockWindow::update_curve()
     return;
   }
 
-  if(buf5 != NULL)
-  {
-    free(buf5);
-  }
+  free(buf5);
   buf5 = (double *)malloc(sizeof(double) * fft_outputbufsize);
   if(buf5 == NULL)
   {
@@ -1436,29 +1402,14 @@ void UI_SpectrumDockWindow::update_curve()
 
 UI_SpectrumDockWindow::~UI_SpectrumDockWindow()
 {
-  if(buf2 != NULL)
-  {
-    free(buf2);
-    buf2 = NULL;
-  }
-
-  if(buf3 != NULL)
-  {
-    free(buf3);
-    buf3 = NULL;
-  }
-
-  if(buf4 != NULL)
-  {
-    free(buf4);
-    buf4 = NULL;
-  }
-
-  if(buf5 != NULL)
-  {
-    free(buf5);
-    buf5 = NULL;
-  }
+  free(buf2);
+  buf2 = NULL;
+  free(buf3);
+  buf3 = NULL;
+  free(buf4);
+  buf4 = NULL;
+  free(buf5);
+  buf5 = NULL;
 
   delete SpectrumDialog;
 }
