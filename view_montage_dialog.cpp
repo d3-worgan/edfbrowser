@@ -132,6 +132,8 @@ void UI_ViewMontagewindow::SelectButtonClicked()
 
   struct xml_handle *xml_hdl;
 
+  QPixmap pxm(16, 16);
+
 
   strcpy(mtg_path, QFileDialog::getOpenFileName(0, "Choose a montage", QString::fromLocal8Bit(mtg_dir), "Montage files (*.mtg *.MTG)").toLocal8Bit().data());
 
@@ -418,40 +420,59 @@ void UI_ViewMontagewindow::SelectButtonClicked()
     switch(color)
     {
       case Qt::white       : strcat(composition_txt, "white");
+                             pxm.fill(Qt::white);
                              break;
       case Qt::black       : strcat(composition_txt, "black");
+                             pxm.fill(Qt::black);
                              break;
       case Qt::red         : strcat(composition_txt, "red");
+                             pxm.fill(Qt::red);
                              break;
       case Qt::darkRed     : strcat(composition_txt, "dark red");
+                             pxm.fill(Qt::darkRed);
                              break;
       case Qt::green       : strcat(composition_txt, "green");
+                             pxm.fill(Qt::green);
                              break;
       case Qt::darkGreen   : strcat(composition_txt, "dark green");
+                             pxm.fill(Qt::darkGreen);
                              break;
       case Qt::blue        : strcat(composition_txt, "blue");
+                             pxm.fill(Qt::blue);
                              break;
       case Qt::darkBlue    : strcat(composition_txt, "dark blue");
+                             pxm.fill(Qt::darkBlue);
                              break;
       case Qt::cyan        : strcat(composition_txt, "cyan");
+                             pxm.fill(Qt::cyan);
                              break;
       case Qt::darkCyan    : strcat(composition_txt, "dark cyan");
+                             pxm.fill(Qt::darkCyan);
                              break;
       case Qt::magenta     : strcat(composition_txt, "magenta");
+                             pxm.fill(Qt::magenta);
                              break;
       case Qt::darkMagenta : strcat(composition_txt, "dark magenta");
+                             pxm.fill(Qt::darkMagenta);
                              break;
       case Qt::yellow      : strcat(composition_txt, "yellow");
+                             pxm.fill(Qt::yellow);
                              break;
       case Qt::darkYellow  : strcat(composition_txt, "dark yellow");
+                             pxm.fill(Qt::darkYellow);
                              break;
       case Qt::gray        : strcat(composition_txt, "gray");
+                             pxm.fill(Qt::gray);
                              break;
       case Qt::darkGray    : strcat(composition_txt, "dark gray");
+                             pxm.fill(Qt::darkGray);
                              break;
       case Qt::lightGray   : strcat(composition_txt, "light gray");
+                             pxm.fill(Qt::lightGray);
                              break;
     }
+
+    signalItem->setIcon(QIcon(pxm));
 
     signalItem->appendRow(new QStandardItem(composition_txt));
 

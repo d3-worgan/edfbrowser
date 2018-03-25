@@ -47,6 +47,9 @@
 #include <QStandardItem>
 #include <QMessageBox>
 #include <QString>
+#include <QPixmap>
+#include <QIcon>
+#include <QColor>
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -1238,6 +1238,8 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
                 *signalItem,
                 *filterItem;
 
+  QPixmap pxm(16, 16);
+
   t_model->clear();
 
   parentItem = t_model->invisibleRootItem();
@@ -1266,7 +1268,45 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
       strcat(txtbuf, "   ");
     }
 
-    signalItem = new QStandardItem(txtbuf);
+    switch(mainwindow->signalcomp[i]->color)
+    {
+      case Qt::white       : pxm.fill(Qt::white);
+                             break;
+      case Qt::black       : pxm.fill(Qt::black);
+                             break;
+      case Qt::red         : pxm.fill(Qt::red);
+                             break;
+      case Qt::darkRed     : pxm.fill(Qt::darkRed);
+                             break;
+      case Qt::green       : pxm.fill(Qt::green);
+                             break;
+      case Qt::darkGreen   : pxm.fill(Qt::darkGreen);
+                             break;
+      case Qt::blue        : pxm.fill(Qt::blue);
+                             break;
+      case Qt::darkBlue    : pxm.fill(Qt::darkBlue);
+                             break;
+      case Qt::cyan        : pxm.fill(Qt::cyan);
+                             break;
+      case Qt::darkCyan    : pxm.fill(Qt::darkCyan);
+                             break;
+      case Qt::magenta     : pxm.fill(Qt::magenta);
+                             break;
+      case Qt::darkMagenta : pxm.fill(Qt::darkMagenta);
+                             break;
+      case Qt::yellow      : pxm.fill(Qt::yellow);
+                             break;
+      case Qt::darkYellow  : pxm.fill(Qt::darkYellow);
+                             break;
+      case Qt::gray        : pxm.fill(Qt::gray);
+                             break;
+      case Qt::darkGray    : pxm.fill(Qt::darkGray);
+                             break;
+      case Qt::lightGray   : pxm.fill(Qt::lightGray);
+                             break;
+    }
+
+    signalItem = new QStandardItem(QIcon(pxm), txtbuf);
 
     parentItem->appendRow(signalItem);
 

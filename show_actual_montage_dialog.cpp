@@ -49,6 +49,7 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
                 *signalItem,
                 *filterItem;
 
+  QPixmap pxm(16, 16);
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
@@ -133,40 +134,59 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
     switch(mainwindow->signalcomp[i]->color)
     {
       case Qt::white       : strcat(txtbuf, "white");
+                             pxm.fill(Qt::white);
                              break;
       case Qt::black       : strcat(txtbuf, "black");
+                             pxm.fill(Qt::black);
                              break;
       case Qt::red         : strcat(txtbuf, "red");
+                             pxm.fill(Qt::red);
                              break;
       case Qt::darkRed     : strcat(txtbuf, "dark red");
+                             pxm.fill(Qt::darkRed);
                              break;
       case Qt::green       : strcat(txtbuf, "green");
+                             pxm.fill(Qt::green);
                              break;
       case Qt::darkGreen   : strcat(txtbuf, "dark green");
+                             pxm.fill(Qt::darkGreen);
                              break;
       case Qt::blue        : strcat(txtbuf, "blue");
+                             pxm.fill(Qt::blue);
                              break;
       case Qt::darkBlue    : strcat(txtbuf, "dark blue");
+                             pxm.fill(Qt::darkBlue);
                              break;
       case Qt::cyan        : strcat(txtbuf, "cyan");
+                             pxm.fill(Qt::cyan);
                              break;
       case Qt::darkCyan    : strcat(txtbuf, "dark cyan");
+                             pxm.fill(Qt::darkCyan);
                              break;
       case Qt::magenta     : strcat(txtbuf, "magenta");
+                             pxm.fill(Qt::magenta);
                              break;
       case Qt::darkMagenta : strcat(txtbuf, "dark magenta");
+                             pxm.fill(Qt::darkMagenta);
                              break;
       case Qt::yellow      : strcat(txtbuf, "yellow");
+                             pxm.fill(Qt::yellow);
                              break;
       case Qt::darkYellow  : strcat(txtbuf, "dark yellow");
+                             pxm.fill(Qt::darkYellow);
                              break;
       case Qt::gray        : strcat(txtbuf, "gray");
+                             pxm.fill(Qt::gray);
                              break;
       case Qt::darkGray    : strcat(txtbuf, "dark gray");
+                             pxm.fill(Qt::darkGray);
                              break;
       case Qt::lightGray   : strcat(txtbuf, "light gray");
+                             pxm.fill(Qt::lightGray);
                              break;
     }
+
+    signalItem->setIcon(QIcon(pxm));
 
     signalItem->appendRow(new QStandardItem(txtbuf));
 

@@ -42,6 +42,9 @@
 #include <QTreeView>
 #include <QStandardItemModel>
 #include <QStandardItem>
+#include <QPixmap>
+#include <QIcon>
+#include <QColor>
 
 #include <stdio.h>
 #include <stdlib.h>
