@@ -6,6 +6,8 @@
    Fixed a bug that could cause to write an invalid character into the EDF header when a signallabel
    name is shorter than 16 bytes.
 
+ - Export filtered signals: include Z-ratio filter.
+
 
 
  version 1.63      March 10, 2018
