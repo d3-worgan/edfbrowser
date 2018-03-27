@@ -62,7 +62,7 @@ struct zratio_filter_settings * create_zratio_filter(int smp_per_record, long lo
   }
 
   settings->samplefreq = (double)smp_per_record / ((double)long_data_record_duration / TIME_DIMENSION);
-  if(settings->samplefreq < 99.9999999)
+  if(dblcmp(settings->samplefreq, 100.0) < 0)
   {
     free(settings);
     return NULL;
@@ -71,7 +71,7 @@ struct zratio_filter_settings * create_zratio_filter(int smp_per_record, long lo
   settings->fft_outputbufsize = settings->dftblocksize / 2;
 
   settings->freqstep = settings->samplefreq / (double)settings->dftblocksize;
-  if(settings->freqstep > 1.0001)
+  if(dblcmp(settings->freqstep, 1.0) > 0)
   {
     free(settings);
     return NULL;
@@ -178,13 +178,13 @@ double run_zratio_filter(double new_sample, struct zratio_filter_settings *setti
       power_total += settings->fft_outputbuf[i];
     }
 
-    if(power_total <= 0.0)
+    if(dblcmp(power_total, 0.0) > 0)
     {
-      settings->zratio_value = 0.0;
+      settings->zratio_value = ((power_delta + power_theta) - (power_alpha + power_beta)) / power_total;
     }
     else
     {
-      settings->zratio_value = ((power_delta + power_theta) - (power_alpha + power_beta)) / power_total;
+      settings->zratio_value = 0.0;
     }
   }
 

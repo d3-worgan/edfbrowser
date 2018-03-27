@@ -383,7 +383,7 @@ void UI_ZScoreWindow::addTraceButtonClicked()
   strcpy(signalcomp->physdimension, "");
   signalcomp->polarity = -1;
 
-  if(signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue < 0.0)
+  if(dblcmp(signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue, 0.0) < 0)
   {
     for(i=0; i<signalcomp->num_of_signals; i++)
     {

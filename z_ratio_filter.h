@@ -41,6 +41,7 @@
 #include <string.h>
 
 #include "global.h"
+#include "utils.h"
 
 #include "third_party/kiss_fft/kiss_fftr.h"
 
