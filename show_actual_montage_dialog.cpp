@@ -49,8 +49,6 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
                 *signalItem,
                 *filterItem;
 
-  QPixmap pxm(16, 16);
-
   mainwindow = (UI_Mainwindow *)w_parent;
 
   ShowMontageDialog = new QDialog;
@@ -134,59 +132,57 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
     switch(mainwindow->signalcomp[i]->color)
     {
       case Qt::white       : strcat(txtbuf, "white");
-                             pxm.fill(Qt::white);
+                             signalItem->setIcon(QIcon(":/images/white_icon_16x16"));
                              break;
       case Qt::black       : strcat(txtbuf, "black");
-                             pxm.fill(Qt::black);
+                             signalItem->setIcon(QIcon(":/images/black_icon_16x16"));
                              break;
       case Qt::red         : strcat(txtbuf, "red");
-                             pxm.fill(Qt::red);
+                             signalItem->setIcon(QIcon(":/images/red_icon_16x16"));
                              break;
       case Qt::darkRed     : strcat(txtbuf, "dark red");
-                             pxm.fill(Qt::darkRed);
+                             signalItem->setIcon(QIcon(":/images/darkred_icon_16x16"));
                              break;
       case Qt::green       : strcat(txtbuf, "green");
-                             pxm.fill(Qt::green);
+                             signalItem->setIcon(QIcon(":/images/green_icon_16x16"));
                              break;
       case Qt::darkGreen   : strcat(txtbuf, "dark green");
-                             pxm.fill(Qt::darkGreen);
+                             signalItem->setIcon(QIcon(":/images/darkgreen_icon_16x16"));
                              break;
       case Qt::blue        : strcat(txtbuf, "blue");
-                             pxm.fill(Qt::blue);
+                             signalItem->setIcon(QIcon(":/images/blue_icon_16x16"));
                              break;
       case Qt::darkBlue    : strcat(txtbuf, "dark blue");
-                             pxm.fill(Qt::darkBlue);
+                             signalItem->setIcon(QIcon(":/images/darkblue_icon_16x16"));
                              break;
       case Qt::cyan        : strcat(txtbuf, "cyan");
-                             pxm.fill(Qt::cyan);
+                             signalItem->setIcon(QIcon(":/images/cyan_icon_16x16"));
                              break;
       case Qt::darkCyan    : strcat(txtbuf, "dark cyan");
-                             pxm.fill(Qt::darkCyan);
+                             signalItem->setIcon(QIcon(":/images/darkcyan_icon_16x16"));
                              break;
       case Qt::magenta     : strcat(txtbuf, "magenta");
-                             pxm.fill(Qt::magenta);
+                             signalItem->setIcon(QIcon(":/images/magenta_icon_16x16"));
                              break;
       case Qt::darkMagenta : strcat(txtbuf, "dark magenta");
-                             pxm.fill(Qt::darkMagenta);
+                             signalItem->setIcon(QIcon(":/images/darkmagenta_icon_16x16"));
                              break;
       case Qt::yellow      : strcat(txtbuf, "yellow");
-                             pxm.fill(Qt::yellow);
+                             signalItem->setIcon(QIcon(":/images/yellow_icon_16x16"));
                              break;
       case Qt::darkYellow  : strcat(txtbuf, "dark yellow");
-                             pxm.fill(Qt::darkYellow);
+                             signalItem->setIcon(QIcon(":/images/darkyellow_icon_16x16"));
                              break;
       case Qt::gray        : strcat(txtbuf, "gray");
-                             pxm.fill(Qt::gray);
+                             signalItem->setIcon(QIcon(":/images/gray_icon_16x16"));
                              break;
       case Qt::darkGray    : strcat(txtbuf, "dark gray");
-                             pxm.fill(Qt::darkGray);
+                             signalItem->setIcon(QIcon(":/images/darkgray_icon_16x16"));
                              break;
       case Qt::lightGray   : strcat(txtbuf, "light gray");
-                             pxm.fill(Qt::lightGray);
+                             signalItem->setIcon(QIcon(":/images/lightgray_icon_16x16"));
                              break;
     }
-
-    signalItem->setIcon(QIcon(pxm));
 
     signalItem->appendRow(new QStandardItem(txtbuf));
 

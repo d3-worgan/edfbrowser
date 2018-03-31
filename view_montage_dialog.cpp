@@ -132,8 +132,6 @@ void UI_ViewMontagewindow::SelectButtonClicked()
 
   struct xml_handle *xml_hdl;
 
-  QPixmap pxm(16, 16);
-
 
   strcpy(mtg_path, QFileDialog::getOpenFileName(0, "Choose a montage", QString::fromLocal8Bit(mtg_dir), "Montage files (*.mtg *.MTG)").toLocal8Bit().data());
 
@@ -420,59 +418,57 @@ void UI_ViewMontagewindow::SelectButtonClicked()
     switch(color)
     {
       case Qt::white       : strcat(composition_txt, "white");
-                             pxm.fill(Qt::white);
+                             signalItem->setIcon(QIcon(":/images/white_icon_16x16"));
                              break;
       case Qt::black       : strcat(composition_txt, "black");
-                             pxm.fill(Qt::black);
+                             signalItem->setIcon(QIcon(":/images/black_icon_16x16"));
                              break;
       case Qt::red         : strcat(composition_txt, "red");
-                             pxm.fill(Qt::red);
+                             signalItem->setIcon(QIcon(":/images/red_icon_16x16"));
                              break;
       case Qt::darkRed     : strcat(composition_txt, "dark red");
-                             pxm.fill(Qt::darkRed);
+                             signalItem->setIcon(QIcon(":/images/darkred_icon_16x16"));
                              break;
       case Qt::green       : strcat(composition_txt, "green");
-                             pxm.fill(Qt::green);
+                             signalItem->setIcon(QIcon(":/images/green_icon_16x16"));
                              break;
       case Qt::darkGreen   : strcat(composition_txt, "dark green");
-                             pxm.fill(Qt::darkGreen);
+                             signalItem->setIcon(QIcon(":/images/darkgreen_icon_16x16"));
                              break;
       case Qt::blue        : strcat(composition_txt, "blue");
-                             pxm.fill(Qt::blue);
+                             signalItem->setIcon(QIcon(":/images/blue_icon_16x16"));
                              break;
       case Qt::darkBlue    : strcat(composition_txt, "dark blue");
-                             pxm.fill(Qt::darkBlue);
+                             signalItem->setIcon(QIcon(":/images/darkblue_icon_16x16"));
                              break;
       case Qt::cyan        : strcat(composition_txt, "cyan");
-                             pxm.fill(Qt::cyan);
+                             signalItem->setIcon(QIcon(":/images/cyan_icon_16x16"));
                              break;
       case Qt::darkCyan    : strcat(composition_txt, "dark cyan");
-                             pxm.fill(Qt::darkCyan);
+                             signalItem->setIcon(QIcon(":/images/darkcyan_icon_16x16"));
                              break;
       case Qt::magenta     : strcat(composition_txt, "magenta");
-                             pxm.fill(Qt::magenta);
+                             signalItem->setIcon(QIcon(":/images/magenta_icon_16x16"));
                              break;
       case Qt::darkMagenta : strcat(composition_txt, "dark magenta");
-                             pxm.fill(Qt::darkMagenta);
+                             signalItem->setIcon(QIcon(":/images/darkmagenta_icon_16x16"));
                              break;
       case Qt::yellow      : strcat(composition_txt, "yellow");
-                             pxm.fill(Qt::yellow);
+                             signalItem->setIcon(QIcon(":/images/yellow_icon_16x16"));
                              break;
       case Qt::darkYellow  : strcat(composition_txt, "dark yellow");
-                             pxm.fill(Qt::darkYellow);
+                             signalItem->setIcon(QIcon(":/images/darkyellow_icon_16x16"));
                              break;
       case Qt::gray        : strcat(composition_txt, "gray");
-                             pxm.fill(Qt::gray);
+                             signalItem->setIcon(QIcon(":/images/gray_icon_16x16"));
                              break;
       case Qt::darkGray    : strcat(composition_txt, "dark gray");
-                             pxm.fill(Qt::darkGray);
+                             signalItem->setIcon(QIcon(":/images/darkgray_icon_16x16"));
                              break;
       case Qt::lightGray   : strcat(composition_txt, "light gray");
-                             pxm.fill(Qt::lightGray);
+                             signalItem->setIcon(QIcon(":/images/lightgray_icon_16x16"));
                              break;
     }
-
-    signalItem->setIcon(QIcon(pxm));
 
     signalItem->appendRow(new QStandardItem(composition_txt));
 

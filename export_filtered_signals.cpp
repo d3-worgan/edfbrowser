@@ -1238,8 +1238,6 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
                 *signalItem,
                 *filterItem;
 
-  QPixmap pxm(16, 16);
-
   t_model->clear();
 
   parentItem = t_model->invisibleRootItem();
@@ -1268,45 +1266,45 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
       strcat(txtbuf, "   ");
     }
 
+    signalItem = new QStandardItem(txtbuf);
+
     switch(mainwindow->signalcomp[i]->color)
     {
-      case Qt::white       : pxm.fill(Qt::white);
+      case Qt::white       : signalItem->setIcon(QIcon(":/images/white_icon_16x16"));
                              break;
-      case Qt::black       : pxm.fill(Qt::black);
+      case Qt::black       : signalItem->setIcon(QIcon(":/images/black_icon_16x16"));
                              break;
-      case Qt::red         : pxm.fill(Qt::red);
+      case Qt::red         : signalItem->setIcon(QIcon(":/images/red_icon_16x16"));
                              break;
-      case Qt::darkRed     : pxm.fill(Qt::darkRed);
+      case Qt::darkRed     : signalItem->setIcon(QIcon(":/images/darkred_icon_16x16"));
                              break;
-      case Qt::green       : pxm.fill(Qt::green);
+      case Qt::green       : signalItem->setIcon(QIcon(":/images/green_icon_16x16"));
                              break;
-      case Qt::darkGreen   : pxm.fill(Qt::darkGreen);
+      case Qt::darkGreen   : signalItem->setIcon(QIcon(":/images/darkgreen_icon_16x16"));
                              break;
-      case Qt::blue        : pxm.fill(Qt::blue);
+      case Qt::blue        : signalItem->setIcon(QIcon(":/images/blue_icon_16x16"));
                              break;
-      case Qt::darkBlue    : pxm.fill(Qt::darkBlue);
+      case Qt::darkBlue    : signalItem->setIcon(QIcon(":/images/darkblue_icon_16x16"));
                              break;
-      case Qt::cyan        : pxm.fill(Qt::cyan);
+      case Qt::cyan        : signalItem->setIcon(QIcon(":/images/cyan_icon_16x16"));
                              break;
-      case Qt::darkCyan    : pxm.fill(Qt::darkCyan);
+      case Qt::darkCyan    : signalItem->setIcon(QIcon(":/images/darkcyan_icon_16x16"));
                              break;
-      case Qt::magenta     : pxm.fill(Qt::magenta);
+      case Qt::magenta     : signalItem->setIcon(QIcon(":/images/magenta_icon_16x16"));
                              break;
-      case Qt::darkMagenta : pxm.fill(Qt::darkMagenta);
+      case Qt::darkMagenta : signalItem->setIcon(QIcon(":/images/darkmagenta_icon_16x16"));
                              break;
-      case Qt::yellow      : pxm.fill(Qt::yellow);
+      case Qt::yellow      : signalItem->setIcon(QIcon(":/images/yellow_icon_16x16"));
                              break;
-      case Qt::darkYellow  : pxm.fill(Qt::darkYellow);
+      case Qt::darkYellow  : signalItem->setIcon(QIcon(":/images/darkyellow_icon_16x16"));
                              break;
-      case Qt::gray        : pxm.fill(Qt::gray);
+      case Qt::gray        : signalItem->setIcon(QIcon(":/images/gray_icon_16x16"));
                              break;
-      case Qt::darkGray    : pxm.fill(Qt::darkGray);
+      case Qt::darkGray    : signalItem->setIcon(QIcon(":/images/darkgray_icon_16x16"));
                              break;
-      case Qt::lightGray   : pxm.fill(Qt::lightGray);
+      case Qt::lightGray   : signalItem->setIcon(QIcon(":/images/lightgray_icon_16x16"));
                              break;
     }
-
-    signalItem = new QStandardItem(QIcon(pxm), txtbuf);
 
     parentItem->appendRow(signalItem);
 
