@@ -130,6 +130,7 @@ HEADERS += plif_ecg_subtract_filter.h
 HEADERS += plif_ecg_subtract_filter_dialog.h
 HEADERS += annotlist_filter_dialog.h
 HEADERS += export_filtered_signals.h
+HEADERS += fft_wrap.h
 
 HEADERS += third_party/fidlib/fidlib.h
 HEADERS += third_party/fidlib/fidmkf.h
@@ -225,6 +226,7 @@ SOURCES += plif_ecg_subtract_filter.c
 SOURCES += plif_ecg_subtract_filter_dialog.cpp
 SOURCES += annotlist_filter_dialog.cpp
 SOURCES += export_filtered_signals.cpp
+SOURCES += fft_wrap.c
 
 SOURCES += third_party/fidlib/fidlib.c
 
