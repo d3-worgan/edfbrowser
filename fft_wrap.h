@@ -58,7 +58,7 @@ struct fft_wrap_settings_struct{
 
 
 struct fft_wrap_settings_struct * fft_wrap_create(double *, int, int);
-void fft_wrap_rerun(struct fft_wrap_settings_struct *);
+void fft_wrap_run(struct fft_wrap_settings_struct *);
 void free_fft_wrap(struct fft_wrap_settings_struct *);
 
 

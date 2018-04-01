@@ -29,9 +29,6 @@
 #include "fft_wrap.h"
 
 
-static void fft_wrap_internal_run(struct fft_wrap_settings_struct *);
-
-
 struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int dft_size)
 {
   struct fft_wrap_settings_struct *st;
@@ -80,14 +77,14 @@ struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int
   }
   st->cfg = kiss_fftr_alloc(st->dft_sz, 0, NULL, NULL);
 
-  fft_wrap_internal_run(st);
-
   return st;
 }
 
 
-void fft_wrap_rerun(struct fft_wrap_settings_struct *st)
+void fft_wrap_run(struct fft_wrap_settings_struct *st)
 {
+  int i, j;
+
   if(st == NULL)  return;
   if(st->sz_in < 2)  return;
   if(st->dft_sz < 2) return;
@@ -95,14 +92,6 @@ void fft_wrap_rerun(struct fft_wrap_settings_struct *st)
   if(st->buf_in == NULL)  return;
   if(st->buf_out == NULL)  return;
   if(st->kiss_fftbuf == NULL)  return;
-
-  fft_wrap_internal_run(st);
-}
-
-
-static void fft_wrap_internal_run(struct fft_wrap_settings_struct *st)
-{
-  int i, j;
 
   kiss_fftr(st->cfg, st->buf_in, st->kiss_fftbuf);
 
