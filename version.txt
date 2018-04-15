@@ -8,7 +8,9 @@
 
  - Export filtered signals: include Z-ratio filter.
 
- - Spectrum Analyzer: add the possibility to change the DFT block size on the fly.
+ - Spectrum Analyzer: added the possibility to change the DFT block size on the fly.
+
+ - Spectrum Analyzer: added the possibility to apply a Hamming or Blackman window.
 
 
 

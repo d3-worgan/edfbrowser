@@ -50,14 +50,16 @@ struct fft_wrap_settings_struct{
   int sz_out;
   int blocks;
   int smpls_left;
+  int wndw_type;
   double *buf_in;
+  double *buf_wndw;
   double *buf_out;
   kiss_fftr_cfg cfg;
   kiss_fft_cpx *kiss_fftbuf;
 };
 
 
-struct fft_wrap_settings_struct * fft_wrap_create(double *, int, int);
+struct fft_wrap_settings_struct * fft_wrap_create(double *, int, int, int);
 void fft_wrap_run(struct fft_wrap_settings_struct *);
 void free_fft_wrap(struct fft_wrap_settings_struct *);
 

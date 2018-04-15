@@ -72,6 +72,8 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   dftblocksize = mainwindow->maxdftblocksize;
 
+  window_type = 0;
+
   for(i=strlen(signalcomp->edfhdr->filename); i>0; i--)
   {
        if((signalcomp->edfhdr->filename[i-1]=='/')||(signalcomp->edfhdr->filename[i-1]=='\\'))  break;
@@ -134,7 +136,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   SpectrumDialog = new QDialog();
   SpectrumDialog->setAttribute(Qt::WA_DeleteOnClose, true);
-  SpectrumDialog->setMinimumSize(650, 480);
+  SpectrumDialog->setMinimumSize(650, 530);
   SpectrumDialog->setSizeGripEnabled(true);
   SpectrumDialog->setModal(false);
   SpectrumDialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
@@ -249,6 +251,13 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
     BWCheckBox->setCheckState(Qt::Unchecked);
   }
 
+  windowBox = new QComboBox;
+  windowBox->setMinimumSize(70, 25);
+  windowBox->addItem("Rectangular");
+  windowBox->addItem("Hamming");
+  windowBox->addItem("Blackman");
+  windowBox->setCurrentIndex(window_type);
+
   dftsz_label = new QLabel;
   dftsz_label->setText("Blocksize:");
   dftsz_label->setMinimumSize(100, 25);
@@ -280,6 +289,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   vlayout2->addWidget(sqrtCheckBox);
   vlayout2->addWidget(VlogCheckBox);
   vlayout2->addWidget(BWCheckBox);
+  vlayout2->addWidget(windowBox);
   vlayout2->addWidget(dftsz_label);
   vlayout2->addWidget(dftsz_spinbox);
 
@@ -339,29 +349,52 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 #endif
   t1->start(10);
 
-  QObject::connect(t1,                SIGNAL(timeout()),              this, SLOT(update_curve()));
-  QObject::connect(amplitudeSlider,   SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
-  QObject::connect(log_minslider,     SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
-  QObject::connect(spanSlider,        SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
-  QObject::connect(centerSlider,      SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
-  QObject::connect(sqrtCheckBox,      SIGNAL(stateChanged(int)),      this, SLOT(sliderMoved(int)));
-  QObject::connect(VlogCheckBox,      SIGNAL(stateChanged(int)),      this, SLOT(sliderMoved(int)));
-  QObject::connect(BWCheckBox,        SIGNAL(stateChanged(int)),      this, SLOT(sliderMoved(int)));
-  QObject::connect(SpectrumDialog,    SIGNAL(destroyed(QObject *)),   this, SLOT(SpectrumDialogDestroyed(QObject *)));
-  QObject::connect(curve1,            SIGNAL(extra_button_clicked()), this, SLOT(print_to_txt()));
-  QObject::connect(flywheel1,         SIGNAL(dialMoved(int)),         this, SLOT(update_flywheel(int)));
-  QObject::connect(this,              SIGNAL(finished()),             this, SLOT(thr_finished_func()));
-  QObject::connect(dftsz_spinbox,     SIGNAL(valueChanged(int)),      this, SLOT(dftsz_value_changed(int)));
+  QObject::connect(t1,              SIGNAL(timeout()),                this, SLOT(update_curve()));
+  QObject::connect(amplitudeSlider, SIGNAL(valueChanged(int)),        this, SLOT(sliderMoved(int)));
+  QObject::connect(log_minslider,   SIGNAL(valueChanged(int)),        this, SLOT(sliderMoved(int)));
+  QObject::connect(spanSlider,      SIGNAL(valueChanged(int)),        this, SLOT(sliderMoved(int)));
+  QObject::connect(centerSlider,    SIGNAL(valueChanged(int)),        this, SLOT(sliderMoved(int)));
+  QObject::connect(sqrtCheckBox,    SIGNAL(stateChanged(int)),        this, SLOT(sliderMoved(int)));
+  QObject::connect(VlogCheckBox,    SIGNAL(stateChanged(int)),        this, SLOT(sliderMoved(int)));
+  QObject::connect(BWCheckBox,      SIGNAL(stateChanged(int)),        this, SLOT(sliderMoved(int)));
+  QObject::connect(SpectrumDialog,  SIGNAL(destroyed(QObject *)),     this, SLOT(SpectrumDialogDestroyed(QObject *)));
+  QObject::connect(curve1,          SIGNAL(extra_button_clicked()),   this, SLOT(print_to_txt()));
+  QObject::connect(flywheel1,       SIGNAL(dialMoved(int)),           this, SLOT(update_flywheel(int)));
+  QObject::connect(this,            SIGNAL(finished()),               this, SLOT(thr_finished_func()));
+  QObject::connect(dftsz_spinbox,   SIGNAL(valueChanged(int)),        this, SLOT(dftsz_value_changed(int)));
+  QObject::connect(windowBox,       SIGNAL(currentIndexChanged(int)), this, SLOT(windowBox_changed(int)));
 
   SpectrumDialog->show();
 
-  SpectrumDialog->resize(650, 480);
+  SpectrumDialog->resize(650, 530);
+}
+
+
+void UI_FreqSpectrumWindow::windowBox_changed(int idx)
+{
+  if(busy)  return;
+
+  if(window_type == idx)  return;
+
+  window_type = idx;
+
+  busy = 1;
+
+  malloc_err = 0;
+
+  curve1->setUpdatesEnabled(false);
+
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+  start();
 }
 
 
 void UI_FreqSpectrumWindow::dftsz_value_changed(int new_val)
 {
   if(busy)  return;
+
+  if(dftblocksize == new_val)  return;
 
   dftblocksize = new_val;
 
@@ -777,7 +810,7 @@ void UI_FreqSpectrumWindow::run()
   }
 
   free_fft_wrap(fft_data);
-  fft_data = fft_wrap_create(buf1, fft_inputbufsize, dftblocksize);
+  fft_data = fft_wrap_create(buf1, fft_inputbufsize, dftblocksize, window_type);
   if(fft_data == NULL)
   {
     malloc_err = 1;

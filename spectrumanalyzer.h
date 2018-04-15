@@ -46,6 +46,7 @@
 #include <QMessageBox>
 #include <QThread>
 #include <QSpinBox>
+#include <QComboBox>
 
 #include <stdio.h>
 #include <string.h>
@@ -117,10 +118,13 @@ private:
 
   QSpinBox *dftsz_spinbox;
 
+  QComboBox *windowBox;
+
   UI_Flywheel *flywheel1;
 
   int samples,
       dftblocksize,
+      window_type,
       spectrumdialog_is_destroyed,
       class_is_deleted,
       spectrumdialognumber,
@@ -162,6 +166,7 @@ void print_to_txt();
 void update_flywheel(int);
 void thr_finished_func();
 void dftsz_value_changed(int);
+void windowBox_changed(int);
 
 };
 
