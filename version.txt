@@ -8,6 +8,8 @@
 
  - Export filtered signals: include Z-ratio filter.
 
+ - Spectrum Analyzer: add the possibility to change the DFT block size on the fly.
+
 
 
  version 1.63      March 10, 2018
