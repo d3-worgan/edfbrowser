@@ -45,6 +45,7 @@
 #include <QStringList>
 #include <QMessageBox>
 #include <QThread>
+#include <QSpinBox>
 
 #include <stdio.h>
 #include <string.h>
@@ -61,7 +62,7 @@
 
 #include "third_party/fidlib/fidlib.h"
 
-#include "third_party/kiss_fft/kiss_fftr.h"
+#include "fft_wrap.h"
 
 
 
@@ -107,18 +108,19 @@ private:
 
   QLabel *spanLabel,
          *centerLabel,
-         *amplitudeLabel;
+         *amplitudeLabel,
+         *dftsz_label;
 
   QCheckBox *sqrtCheckBox,
             *VlogCheckBox,
             *BWCheckBox;
 
+  QSpinBox *dftsz_spinbox;
+
   UI_Flywheel *flywheel1;
 
   int samples,
-      steps,
       dftblocksize,
-      dftblocks,
       spectrumdialog_is_destroyed,
       class_is_deleted,
       spectrumdialognumber,
@@ -147,6 +149,8 @@ private:
 
   UI_FreqSpectrumWindow **spectrumdialog;
 
+  struct fft_wrap_settings_struct *fft_data;
+
   void run();
 
 private slots:
@@ -157,6 +161,7 @@ void SpectrumDialogDestroyed(QObject *);
 void print_to_txt();
 void update_flywheel(int);
 void thr_finished_func();
+void dftsz_value_changed(int);
 
 };
 

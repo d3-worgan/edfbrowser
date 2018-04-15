@@ -44,6 +44,8 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   long long l_temp;
 
+  fft_data = NULL;
+
   buf1 = NULL;
   buf2 = NULL;
   buf3 = NULL;
@@ -67,6 +69,8 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   viewbuf = view_buf;
 
   signalcomp = signal_comp;
+
+  dftblocksize = mainwindow->maxdftblocksize;
 
   for(i=strlen(signalcomp->edfhdr->filename); i>0; i--)
   {
@@ -202,7 +206,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   amplitudeLabel = new QLabel;
   amplitudeLabel->setText("Amplitude");
-  amplitudeLabel->setMinimumSize(100, 15);
+  amplitudeLabel->setMinimumSize(100, 25);
   amplitudeLabel->setAlignment(Qt::AlignHCenter);
 
   sqrtCheckBox = new QCheckBox("Amplitude");
@@ -245,6 +249,17 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
     BWCheckBox->setCheckState(Qt::Unchecked);
   }
 
+  dftsz_label = new QLabel;
+  dftsz_label->setText("Blocksize:");
+  dftsz_label->setMinimumSize(100, 25);
+
+  dftsz_spinbox = new QSpinBox;
+  dftsz_spinbox->setMinimumSize(70, 25);
+  dftsz_spinbox->setMinimum(10);
+  dftsz_spinbox->setMaximum(16777216);  // (2^24)
+  dftsz_spinbox->setSingleStep(2);
+  dftsz_spinbox->setValue(dftblocksize);
+
   vlayout3 = new QVBoxLayout;
   vlayout3->addStretch(100);
   vlayout3->addWidget(flywheel1, 100);
@@ -265,6 +280,8 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   vlayout2->addWidget(sqrtCheckBox);
   vlayout2->addWidget(VlogCheckBox);
   vlayout2->addWidget(BWCheckBox);
+  vlayout2->addWidget(dftsz_label);
+  vlayout2->addWidget(dftsz_spinbox);
 
   spanSlider = new QSlider;
   spanSlider->setOrientation(Qt::Horizontal);
@@ -275,7 +292,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   spanLabel = new QLabel;
   spanLabel->setText("Span");
-  spanLabel->setMinimumSize(110, 15);
+  spanLabel->setMinimumSize(110, 25);
   spanLabel->setAlignment(Qt::AlignHCenter);
 
   centerSlider = new QSlider;
@@ -287,7 +304,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   centerLabel = new QLabel;
   centerLabel->setText("Center");
-  centerLabel->setMinimumSize(110, 15);
+  centerLabel->setMinimumSize(110, 25);
   centerLabel->setAlignment(Qt::AlignHCenter);
 
   hlayout1 = new QHBoxLayout;
@@ -334,8 +351,29 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   QObject::connect(curve1,            SIGNAL(extra_button_clicked()), this, SLOT(print_to_txt()));
   QObject::connect(flywheel1,         SIGNAL(dialMoved(int)),         this, SLOT(update_flywheel(int)));
   QObject::connect(this,              SIGNAL(finished()),             this, SLOT(thr_finished_func()));
+  QObject::connect(dftsz_spinbox,     SIGNAL(valueChanged(int)),      this, SLOT(dftsz_value_changed(int)));
 
   SpectrumDialog->show();
+
+  SpectrumDialog->resize(650, 480);
+}
+
+
+void UI_FreqSpectrumWindow::dftsz_value_changed(int new_val)
+{
+  if(busy)  return;
+
+  dftblocksize = new_val;
+
+  busy = 1;
+
+  malloc_err = 0;
+
+  curve1->setUpdatesEnabled(false);
+
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+  start();
 }
 
 
@@ -404,15 +442,15 @@ void UI_FreqSpectrumWindow::print_to_txt()
   {
     fprintf(outputfile, "Signal: %s\n", signalcomp->signallabel);
   }
-  sprintf(str, "FFT blocksize: %i\n", mainwindow->maxdftblocksize);
+  sprintf(str, "FFT blocksize: %i\n", fft_data->dft_sz);
   sprintf(str + strlen(str), "FFT resolution: %f Hz\n", freqstep);
   sprintf(str + strlen(str), "Data Samples: %i\n", samples);
-  sprintf(str + strlen(str), "Power Samples: %i\n", steps);
+  sprintf(str + strlen(str), "Power Samples: %i\n", fft_data->sz_out);
   sprintf(str + strlen(str), "Samplefrequency: %f Hz\n", (double)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record / ((double)signalcomp->edfhdr->long_data_record_duration / TIME_DIMENSION));
   remove_trailing_zeros(str);
   fprintf(outputfile, "%s", str);
 
-  for(i=0; i<steps; i++)
+  for(i=0; i<fft_data->sz_out; i++)
   {
     fprintf(outputfile, "%.16f\t%.16f\n", freqstep * i, buf2[i]);
   }
@@ -510,9 +548,9 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
     mainwindow->spectrum_bw = 0;
   }
 
-  spanstep = (long long)spanSlider->value() * (long long)steps / 1000LL;
+  spanstep = (long long)spanSlider->value() * (long long)fft_data->sz_out / 1000LL;
 
-  startstep = (long long)centerSlider->value() * ((long long)steps - spanstep) / 1000LL;
+  startstep = (long long)centerSlider->value() * ((long long)fft_data->sz_out - spanstep) / 1000LL;
 
   stopstep = startstep + spanstep;
 
@@ -539,9 +577,9 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
     }
   }
 
-  max_freq = ((double)samplefreq / 2.0) * stopstep / steps;
+  max_freq = ((double)samplefreq / 2.0) * stopstep / fft_data->sz_out;
 
-  start_freq = ((double)samplefreq / 2.0) * startstep / steps;
+  start_freq = ((double)samplefreq / 2.0) * startstep / fft_data->sz_out;
 
 //   printf("steps: %i\n"
 //          "startstep: %lli\n"
@@ -550,7 +588,7 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
 //          "samplefreq: %f\n"
 //          "max_freq: %f\n"
 //          "start_freq: %f\n",
-//          steps,
+//          fft_data->sz_out,
 //          startstep,
 //          stopstep,
 //          spanstep,
@@ -577,8 +615,7 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
 void UI_FreqSpectrumWindow::run()
 {
   int i, j, k,
-      samplesleft,
-      fft_outputbufsize;
+      fft_inputbufsize;
 
   long long s, s2;
 
@@ -593,8 +630,10 @@ void UI_FreqSpectrumWindow::run()
           unsigned char four[4];
         } var;
 
+  fft_inputbufsize = signalcomp->samples_on_screen;
+
   free(buf1);
-  buf1 = (double *)malloc(sizeof(double) * signalcomp->samples_on_screen);
+  buf1 = (double *)malloc(sizeof(double) * fft_inputbufsize);
   if(buf1 == NULL)
   {
     malloc_err = 1;
@@ -727,20 +766,7 @@ void UI_FreqSpectrumWindow::run()
 
   samplefreq = (double)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record / ((double)signalcomp->edfhdr->long_data_record_duration / TIME_DIMENSION);
 
-  dftblocksize = mainwindow->maxdftblocksize;
-
-  if(dftblocksize & 1)
-  {
-    dftblocksize--;
-  }
-
-  dftblocks = 1;
-
-  if(dftblocksize < samples)
-  {
-    dftblocks = samples / dftblocksize;
-  }
-  else
+  if(dftblocksize > samples)
   {
     dftblocksize = samples;
   }
@@ -750,22 +776,9 @@ void UI_FreqSpectrumWindow::run()
     dftblocksize--;
   }
 
-  samplesleft = samples % dftblocksize;
-
-  if(samplesleft & 1)
-  {
-    samplesleft--;
-  }
-
-  freqstep = samplefreq / (double)dftblocksize;
-
-  fft_outputbufsize = dftblocksize / 2;
-
-  steps = fft_outputbufsize;
-
-  free(buf2);
-  buf2 = (double *)calloc(1, sizeof(double) * fft_outputbufsize);
-  if(buf2 == NULL)
+  free_fft_wrap(fft_data);
+  fft_data = fft_wrap_create(buf1, fft_inputbufsize, dftblocksize);
+  if(fft_data == NULL)
   {
     malloc_err = 1;
     free(buf1);
@@ -773,8 +786,22 @@ void UI_FreqSpectrumWindow::run()
     return;
   }
 
+  freqstep = samplefreq / (double)fft_data->dft_sz;
+
+  free(buf2);
+  buf2 = (double *)calloc(1, sizeof(double) * fft_data->sz_out);
+  if(buf2 == NULL)
+  {
+    malloc_err = 1;
+    free(buf1);
+    buf1 = NULL;
+    free_fft_wrap(fft_data);
+    fft_data = NULL;
+    return;
+  }
+
   free(buf3);
-  buf3 = (double *)malloc(sizeof(double) * fft_outputbufsize);
+  buf3 = (double *)malloc(sizeof(double) * fft_data->sz_out);
   if(buf3 == NULL)
   {
     malloc_err = 1;
@@ -782,11 +809,13 @@ void UI_FreqSpectrumWindow::run()
     free(buf2);
     buf1 = NULL;
     buf2 = NULL;
+    free_fft_wrap(fft_data);
+    fft_data = NULL;
     return;
   }
 
   free(buf4);
-  buf4 = (double *)malloc(sizeof(double) * fft_outputbufsize);
+  buf4 = (double *)malloc(sizeof(double) * fft_data->sz_out);
   if(buf4 == NULL)
   {
     malloc_err = 1;
@@ -796,11 +825,13 @@ void UI_FreqSpectrumWindow::run()
     buf1 = NULL;
     buf2 = NULL;
     buf3 = NULL;
+    free_fft_wrap(fft_data);
+    fft_data = NULL;
     return;
   }
 
   free(buf5);
-  buf5 = (double *)malloc(sizeof(double) * fft_outputbufsize);
+  buf5 = (double *)malloc(sizeof(double) * fft_data->sz_out);
   if(buf5 == NULL)
   {
     malloc_err = 1;
@@ -812,6 +843,8 @@ void UI_FreqSpectrumWindow::run()
     buf2 = NULL;
     buf3 = NULL;
     buf4 = NULL;
+    free_fft_wrap(fft_data);
+    fft_data = NULL;
     return;
   }
 
@@ -823,7 +856,7 @@ void UI_FreqSpectrumWindow::run()
   minvalue_sqrt_vlog = 0.0;
 
 #ifdef CHECK_POWERSPECTRUM
-  printf("samples is %i   dftblocksize is %i   dftblocks is %i    samplesleft is %i   fft_outputbufsize is %i    steps is %i\n", samples, dftblocksize, dftblocks, samplesleft, fft_outputbufsize, steps);
+  printf("samples is %i   dftblocksize is %i   dftblocks is %i    samplesleft is %i   fft_outputbufsize is %i\n", samples, dftblocksize, fft_data->blocks, fft_data->smpls_left, fft_data->sz_out);
 
   double power1=0.0, power2=0.0;
 
@@ -833,74 +866,20 @@ void UI_FreqSpectrumWindow::run()
   }
 #endif
 
-  kiss_fftr_cfg cfg;
-
-  kiss_fft_cpx *kiss_fftbuf;
-
-  kiss_fftbuf = (kiss_fft_cpx *)malloc((fft_outputbufsize + 1) * sizeof(kiss_fft_cpx));
-  if(kiss_fftbuf == NULL)
-  {
-    malloc_err = 1;
-    free(buf1);
-    free(buf2);
-    free(buf3);
-    free(buf4);
-    free(buf5);
-    buf1 = NULL;
-    buf2 = NULL;
-    buf3 = NULL;
-    buf4 = NULL;
-    buf5 = NULL;
-    return;
-  }
-
-  cfg = kiss_fftr_alloc(dftblocksize, 0, NULL, NULL);
-
-  for(j=0; j<dftblocks; j++)
-  {
-    kiss_fftr(cfg, buf1 + (j * dftblocksize), kiss_fftbuf);
-
-    for(i=0; i<fft_outputbufsize; i++)
-    {
-      buf2[i] += (((kiss_fftbuf[i].r * kiss_fftbuf[i].r) + (kiss_fftbuf[i].i * kiss_fftbuf[i].i)) / fft_outputbufsize);
-    }
-  }
-
-  if(samplesleft)
-  {
-    kiss_fftr(cfg, buf1 + (((j-1) * dftblocksize) + samplesleft), kiss_fftbuf);
-
-    for(i=0; i<fft_outputbufsize; i++)
-    {
-      buf2[i] += (((kiss_fftbuf[i].r * kiss_fftbuf[i].r) + (kiss_fftbuf[i].i * kiss_fftbuf[i].i)) / fft_outputbufsize);
-
-      buf2[i] /= (dftblocks + 1);
-    }
-  }
-  else
-  {
-    for(i=0; i<fft_outputbufsize; i++)
-    {
-      buf2[i] /= dftblocks;
-    }
-  }
+  fft_wrap_run(fft_data);
 
   if(signalcomp->ecg_filter == NULL)
   {
-    buf2[0] /= 2.0;  // DC!
+    fft_data->buf_out[0] /= 2.0;  // DC!
   }
   else
   {
-    buf2[0] = 0.0;  // Remove DC because heart rate is always a positive value
+    fft_data->buf_out[0] = 0.0;  // Remove DC because heart rate is always a positive value
   }
 
-  free(cfg);
-
-  free(kiss_fftbuf);
-
-  for(i=0; i<fft_outputbufsize; i++)
+  for(i=0; i<fft_data->sz_out; i++)
   {
-    buf2[i] /= samplefreq;
+    buf2[i] = fft_data->buf_out[i] / samplefreq;
 
 #ifdef CHECK_POWERSPECTRUM
     power2 += buf2[i];
@@ -966,20 +945,12 @@ void UI_FreqSpectrumWindow::run()
   if(minvalue_sqrt_vlog < SPECT_LOG_MINIMUM_LOG)
     minvalue_sqrt_vlog = SPECT_LOG_MINIMUM_LOG;
 
-  if(samplesleft)
-  {
-    dftblocks++;
-  }
-
 #ifdef CHECK_POWERSPECTRUM
   power1 /= samples;
   power2 *= freqstep;
 
   printf("\n power1 is %f\n power2 is %f\n\n", power1, power2);
 #endif
-
-  free(buf1);
-  buf1 = NULL;
 }
 
 
@@ -1056,7 +1027,7 @@ void UI_FreqSpectrumWindow::thr_finished_func()
   strcpy(str, "FFT resolution: ");
   convert_to_metric_suffix(str + strlen(str), freqstep, 3);
   remove_trailing_zeros(str);
-  sprintf(str + strlen(str), "Hz   %i blocks of %i samples", dftblocks, dftblocksize);
+  sprintf(str + strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks, fft_data->dft_sz);
 
   curve1->setUpperLabel1(str);
 
@@ -1105,14 +1076,19 @@ UI_FreqSpectrumWindow::~UI_FreqSpectrumWindow()
     SpectrumDialog->close();
   }
 
+  free(buf1);
   free(buf2);
   free(buf3);
   free(buf4);
   free(buf5);
+  buf1 = NULL;
   buf2 = NULL;
   buf3 = NULL;
   buf4 = NULL;
   buf5 = NULL;
+
+  free_fft_wrap(fft_data);
+  fft_data = NULL;
 
   spectrumdialog[spectrumdialognumber] = NULL;
 
