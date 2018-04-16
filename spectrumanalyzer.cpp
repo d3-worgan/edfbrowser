@@ -647,8 +647,10 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
 
 void UI_FreqSpectrumWindow::run()
 {
-  int i, j, k,
-      fft_inputbufsize;
+  int i, j, k;
+
+  static int first_run=1,
+             fft_inputbufsize=0;
 
   long long s, s2;
 
@@ -663,151 +665,156 @@ void UI_FreqSpectrumWindow::run()
           unsigned char four[4];
         } var;
 
-  fft_inputbufsize = signalcomp->samples_on_screen;
-
-  free(buf1);
-  buf1 = (double *)malloc(sizeof(double) * fft_inputbufsize);
-  if(buf1 == NULL)
+  if(first_run)
   {
-    malloc_err = 1;
-    return;
-  }
+    first_run = 0;
 
-  samples = 0;
+    fft_inputbufsize = samples;
 
-  for(s=signalcomp->sample_start; s<signalcomp->samples_on_screen; s++)
-  {
-    if(s>signalcomp->sample_stop)  break;
-
-    dig_value = 0.0;
-    s2 = s + signalcomp->sample_timeoffset - signalcomp->sample_start;
-
-    for(j=0; j<signalcomp->num_of_signals; j++)
+    free(buf1);
+    buf1 = (double *)malloc(sizeof(double) * fft_inputbufsize + 16);
+    if(buf1 == NULL)
     {
-      if(signalcomp->edfhdr->bdf)
+      malloc_err = 1;
+      return;
+    }
+
+    samples = 0;
+
+    for(s=signalcomp->sample_start; s<signalcomp->samples_on_screen; s++)
+    {
+      if(s>signalcomp->sample_stop)  break;
+
+      dig_value = 0.0;
+      s2 = s + signalcomp->sample_timeoffset - signalcomp->sample_start;
+
+      for(j=0; j<signalcomp->num_of_signals; j++)
       {
-        var.two[0] = *((unsigned short *)(
-          viewbuf
-          + signalcomp->viewbufoffset
-          + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
-          + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
-          + ((s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record) * 3)));
-
-        var.four[2] = *((unsigned char *)(
-          viewbuf
-          + signalcomp->viewbufoffset
-          + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
-          + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
-          + ((s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record) * 3)
-          + 2));
-
-        if(var.four[2]&0x80)
+        if(signalcomp->edfhdr->bdf)
         {
-          var.four[3] = 0xff;
+          var.two[0] = *((unsigned short *)(
+            viewbuf
+            + signalcomp->viewbufoffset
+            + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
+            + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
+            + ((s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record) * 3)));
+
+          var.four[2] = *((unsigned char *)(
+            viewbuf
+            + signalcomp->viewbufoffset
+            + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
+            + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
+            + ((s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record) * 3)
+            + 2));
+
+          if(var.four[2]&0x80)
+          {
+            var.four[3] = 0xff;
+          }
+          else
+          {
+            var.four[3] = 0x00;
+          }
+
+          f_tmp = var.one_signed;
         }
-        else
+
+        if(signalcomp->edfhdr->edf)
         {
-          var.four[3] = 0x00;
+          f_tmp = *(((short *)(
+            viewbuf
+            + signalcomp->viewbufoffset
+            + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
+            + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset))
+            + (s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record));
         }
 
-        f_tmp = var.one_signed;
+        f_tmp += signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].offset;
+        f_tmp *= signalcomp->factor[j];
+
+        dig_value += f_tmp;
       }
 
-      if(signalcomp->edfhdr->edf)
+      if(signalcomp->spike_filter)
       {
-        f_tmp = *(((short *)(
-          viewbuf
-          + signalcomp->viewbufoffset
-          + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
-          + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset))
-          + (s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record));
-      }
-
-      f_tmp += signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].offset;
-      f_tmp *= signalcomp->factor[j];
-
-      dig_value += f_tmp;
-    }
-
-    if(signalcomp->spike_filter)
-    {
-      if(s==signalcomp->sample_start)
-      {
-        spike_filter_restore_buf(signalcomp->spike_filter);
-      }
-
-      dig_value = run_spike_filter(dig_value, signalcomp->spike_filter);
-    }
-
-    for(k=0; k<signalcomp->filter_cnt; k++)
-    {
-      dig_value = first_order_filter(dig_value, signalcomp->filter[k]);
-    }
-
-    for(k=0; k<signalcomp->ravg_filter_cnt; k++)
-    {
-      if(s==signalcomp->sample_start)
-      {
-        ravg_filter_restore_buf(signalcomp->ravg_filter[k]);
-      }
-
-      dig_value = run_ravg_filter(dig_value, signalcomp->ravg_filter[k]);
-    }
-
-    for(k=0; k<signalcomp->fidfilter_cnt; k++)
-    {
-      if(s==signalcomp->sample_start)
-      {
-        memcpy(signalcomp->fidbuf[k], signalcomp->fidbuf2[k], fid_run_bufsize(signalcomp->fid_run[k]));
-      }
-
-      dig_value = signalcomp->fidfuncp[k](signalcomp->fidbuf[k], dig_value);
-    }
-
-    if(signalcomp->plif_ecg_filter)
-    {
-      if(s==signalcomp->sample_start)
-      {
-        if(mainwindow->edfheaderlist[signalcomp->filenum]->viewtime<=0)
+        if(s==signalcomp->sample_start)
         {
-          plif_reset_subtract_filter(signalcomp->plif_ecg_filter, 0);
+          spike_filter_restore_buf(signalcomp->spike_filter);
         }
-        else
-        {
-          plif_subtract_filter_state_copy(signalcomp->plif_ecg_filter, signalcomp->plif_ecg_filter_sav);
-        }
+
+        dig_value = run_spike_filter(dig_value, signalcomp->spike_filter);
       }
 
-      dig_value = plif_run_subtract_filter(dig_value, signalcomp->plif_ecg_filter);
-    }
-
-    if(signalcomp->ecg_filter != NULL)
-    {
-      if(s==signalcomp->sample_start)
+      for(k=0; k<signalcomp->filter_cnt; k++)
       {
-        ecg_filter_restore_buf(signalcomp->ecg_filter);
+        dig_value = first_order_filter(dig_value, signalcomp->filter[k]);
       }
 
-      dig_value = run_ecg_filter(dig_value, signalcomp->ecg_filter);
+      for(k=0; k<signalcomp->ravg_filter_cnt; k++)
+      {
+        if(s==signalcomp->sample_start)
+        {
+          ravg_filter_restore_buf(signalcomp->ravg_filter[k]);
+        }
+
+        dig_value = run_ravg_filter(dig_value, signalcomp->ravg_filter[k]);
+      }
+
+      for(k=0; k<signalcomp->fidfilter_cnt; k++)
+      {
+        if(s==signalcomp->sample_start)
+        {
+          memcpy(signalcomp->fidbuf[k], signalcomp->fidbuf2[k], fid_run_bufsize(signalcomp->fid_run[k]));
+        }
+
+        dig_value = signalcomp->fidfuncp[k](signalcomp->fidbuf[k], dig_value);
+      }
+
+      if(signalcomp->plif_ecg_filter)
+      {
+        if(s==signalcomp->sample_start)
+        {
+          if(mainwindow->edfheaderlist[signalcomp->filenum]->viewtime<=0)
+          {
+            plif_reset_subtract_filter(signalcomp->plif_ecg_filter, 0);
+          }
+          else
+          {
+            plif_subtract_filter_state_copy(signalcomp->plif_ecg_filter, signalcomp->plif_ecg_filter_sav);
+          }
+        }
+
+        dig_value = plif_run_subtract_filter(dig_value, signalcomp->plif_ecg_filter);
+      }
+
+      if(signalcomp->ecg_filter != NULL)
+      {
+        if(s==signalcomp->sample_start)
+        {
+          ecg_filter_restore_buf(signalcomp->ecg_filter);
+        }
+
+        dig_value = run_ecg_filter(dig_value, signalcomp->ecg_filter);
+      }
+
+      if(s>=signalcomp->sample_start)
+      {
+        buf1[samples++] = dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue;
+      }
     }
 
-    if(s>=signalcomp->sample_start)
+    samplefreq = (double)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record / ((double)signalcomp->edfhdr->long_data_record_duration / TIME_DIMENSION);
+
+    if(dftblocksize > samples)
     {
-      buf1[samples++] = dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue;
+      dftblocksize = samples;
     }
-  }
 
-  samplefreq = (double)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record / ((double)signalcomp->edfhdr->long_data_record_duration / TIME_DIMENSION);
-
-  if(dftblocksize > samples)
-  {
-    dftblocksize = samples;
-  }
-
-  if(dftblocksize & 1)
-  {
-    dftblocksize--;
-  }
+    if(dftblocksize & 1)
+    {
+      dftblocksize--;
+    }
+  }  // end of first_run
 
   free_fft_wrap(fft_data);
   fft_data = fft_wrap_create(buf1, fft_inputbufsize, dftblocksize, window_type);
@@ -1021,6 +1028,8 @@ void UI_FreqSpectrumWindow::update_curve()
 
     return;
   }
+
+  dftsz_spinbox->setMaximum(samples);
 
   busy = 1;
 
