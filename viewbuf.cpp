@@ -40,7 +40,7 @@ void UI_Mainwindow::setup_viewbuf()
       dif;
 
   double pre_time=0.0,
-         d_temp,
+         d_temp=0.0,
          dig_value;
 
   long long l_temp,
@@ -366,12 +366,12 @@ void UI_Mainwindow::setup_viewbuf()
               var.four[3] = 0x00;
             }
 
-            temp = var.one_signed;
+            d_temp = var.one_signed;
           }
 
           if(signalcomp[i]->edfhdr->edf)
           {
-            temp = *(((short *)(
+            d_temp = *(((short *)(
             viewbuf
             + signalcomp[i]->viewbufoffset
             + (signalcomp[i]->edfhdr->recordsize * (s / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[k]].smp_per_record))
@@ -379,10 +379,10 @@ void UI_Mainwindow::setup_viewbuf()
             + (s % signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[k]].smp_per_record));
           }
 
-          temp += signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[k]].offset;
-          temp *= signalcomp[i]->factor[k];
+          d_temp += signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[k]].offset;
+          d_temp *= signalcomp[i]->factor[k];
 
-          dig_value += temp;
+          dig_value += d_temp;
         }
 
         if(signalcomp[i]->spike_filter)
