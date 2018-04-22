@@ -39,11 +39,15 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 {
   char str[1024];
 
+  fft_data = NULL;
+
   buf1 = NULL;
   buf2 = NULL;
   buf3 = NULL;
   buf4 = NULL;
   buf5 = NULL;
+
+  buf1_sz = 0;
 
   busy = 0;
 
@@ -66,6 +70,10 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   flywheel_value = 1050;
 
   init_maxvalue = 1;
+
+  dftblocksize = mainwindow->maxdftblocksize;
+
+  window_type = 0;
 
   if(mainwindow->spectrumdock_sqrt)
   {
@@ -199,6 +207,24 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
     colorBarButton->setCheckState(Qt::Unchecked);
   }
 
+  windowBox = new QComboBox;
+  windowBox->setMinimumSize(70, 25);
+  windowBox->addItem("Rectangular");
+  windowBox->addItem("Hamming");
+  windowBox->addItem("Blackman");
+  windowBox->setCurrentIndex(window_type);
+
+  dftsz_label = new QLabel;
+  dftsz_label->setText("Blocksize:");
+  dftsz_label->setMinimumSize(100, 25);
+
+  dftsz_spinbox = new QSpinBox;
+  dftsz_spinbox->setMinimumSize(70, 25);
+  dftsz_spinbox->setMinimum(10);
+  dftsz_spinbox->setMaximum(16777216);  // (2^24)
+  dftsz_spinbox->setSingleStep(2);
+  dftsz_spinbox->setValue(dftblocksize);
+
   vlayout3 = new QVBoxLayout;
   vlayout3->addStretch(100);
   vlayout3->addWidget(flywheel1, 100);
@@ -212,7 +238,7 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   hlayout4->addWidget(log_minslider, 300);
 
   vlayout2 = new QVBoxLayout;
-  vlayout2->setSpacing(10);
+  vlayout2->setSpacing(5);
   vlayout2->addStretch(100);
   vlayout2->addWidget(amplitudeLabel, 0, Qt::AlignHCenter);
   vlayout2->addLayout(hlayout4, 200);
@@ -220,6 +246,9 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   vlayout2->addWidget(sqrtButton);
   vlayout2->addWidget(vlogButton);
   vlayout2->addWidget(colorBarButton);
+  vlayout2->addWidget(windowBox);
+  vlayout2->addWidget(dftsz_label);
+  vlayout2->addWidget(dftsz_spinbox);
 
   spanSlider = new QSlider;
   spanSlider->setOrientation(Qt::Horizontal);
@@ -291,6 +320,32 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   QObject::connect(curve1,          SIGNAL(dashBoardClicked()),      this, SLOT(setdashboard()));
   QObject::connect(flywheel1,       SIGNAL(dialMoved(int)),          this, SLOT(update_flywheel(int)));
   QObject::connect(dock,            SIGNAL(visibilityChanged(bool)), this, SLOT(open_close_dock(bool)));
+  QObject::connect(dftsz_spinbox,   SIGNAL(valueChanged(int)),        this, SLOT(dftsz_value_changed(int)));
+  QObject::connect(windowBox,       SIGNAL(currentIndexChanged(int)), this, SLOT(windowBox_changed(int)));
+}
+
+
+void UI_SpectrumDockWindow::windowBox_changed(int idx)
+{
+  if(busy)  return;
+
+  if(window_type == idx)  return;
+
+  window_type = idx;
+
+  update_curve();
+}
+
+
+void UI_SpectrumDockWindow::dftsz_value_changed(int new_val)
+{
+  if(busy)  return;
+
+  if(dftblocksize == new_val)  return;
+
+  dftblocksize = new_val;
+
+  update_curve();
 }
 
 
@@ -398,6 +453,7 @@ void UI_SpectrumDockWindow::setdashboard()
     dashboard = 1;
     hlayout1->addWidget(curve1, 100);
     dock->setWidget(SpectrumDialog);
+    dock->setMinimumHeight(300);
   }
 }
 
@@ -411,6 +467,8 @@ void UI_SpectrumDockWindow::print_to_txt()
 
   FILE *outputfile;
 
+
+  if(fft_data == NULL)  return;
 
   path[0] = 0;
   if(mainwindow->recent_savedir[0]!=0)
@@ -442,15 +500,15 @@ void UI_SpectrumDockWindow::print_to_txt()
   remove_trailing_zeros(str);
   fprintf(outputfile, "%s", str);
   fprintf(outputfile, "Signal: %s\n", signalcomp->signallabel);
-  sprintf(str, "FFT blocksize: %i\n", mainwindow->maxdftblocksize);
+  sprintf(str, "FFT blocksize: %i\n", fft_data->dft_sz);
   sprintf(str + strlen(str), "FFT resolution: %f Hz\n", freqstep);
-  sprintf(str + strlen(str), "Data Samples: %i\n", samples);
-  sprintf(str + strlen(str), "Power Samples: %i\n", steps);
+  sprintf(str + strlen(str), "Data Samples: %i\n", fft_data->sz_in);
+  sprintf(str + strlen(str), "Power Samples: %i\n", fft_data->sz_out);
   sprintf(str + strlen(str), "Samplefrequency: %f Hz\n", (double)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record / ((double)signalcomp->edfhdr->long_data_record_duration / TIME_DIMENSION));
   remove_trailing_zeros(str);
   fprintf(outputfile, "%s", str);
 
-  for(i=0; i<steps; i++)
+  for(i=0; i<fft_data->sz_out; i++)
   {
     fprintf(outputfile, "%.16f\t%.16f\n", freqstep * i, buf2[i]);
   }
@@ -577,6 +635,7 @@ void UI_SpectrumDockWindow::sliderMoved(int)
 
   char str[1024];
 
+  if(fft_data == NULL)  return;
 
   spanstep = (long long)spanSlider->value() * (long long)steps / 1000LL;
 
@@ -731,6 +790,7 @@ void UI_SpectrumDockWindow::clear()
 
   free(buf1);
   buf1 = NULL;
+  buf1_sz = 0;
   free(buf2);
   buf2 = NULL;
   free(buf3);
@@ -739,6 +799,9 @@ void UI_SpectrumDockWindow::clear()
   buf4 = NULL;
   free(buf5);
   buf5 = NULL;
+
+  free_fft_wrap(fft_data);
+  fft_data = NULL;
 
   if(spectrum_color != NULL)
   {
@@ -757,10 +820,8 @@ void UI_SpectrumDockWindow::clear()
 void UI_SpectrumDockWindow::update_curve()
 {
   int i, j, k, n,
-      dftblocksize,
-      dftblocks,
-      samplesleft,
-      fft_outputbufsize;
+      fft_inputbufsize=0;
+//      fft_outputbufsize;
 
   long long s, s2;
 
@@ -823,18 +884,29 @@ void UI_SpectrumDockWindow::update_curve()
 
     curve1->clear();
 
+    busy = 0;
+
     return;
   }
 
-  free(buf1);
-  buf1 = (double *)malloc(sizeof(double) * signalcomp->samples_on_screen);
-  if(buf1 == NULL)
+  dftsz_spinbox->setMaximum(samples);
+
+  if(buf1_sz != signalcomp->samples_on_screen + 32)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.\n"
-                                  "Decrease the timescale and try again.");
-    messagewindow.exec();
-    return;
+    free(buf1);
+    buf1 = (double *)malloc((sizeof(double) * signalcomp->samples_on_screen) + 32);
+    if(buf1 == NULL)
+    {
+      buf1_sz = 0;
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.\n"
+                                    "Decrease the timescale and try again.");
+      messagewindow.exec();
+      busy = 0;
+      return;
+    }
   }
+
+  buf1_sz = signalcomp->samples_on_screen + 32;
 
   samples = 0;
 
@@ -960,24 +1032,28 @@ void UI_SpectrumDockWindow::update_curve()
     }
   }
 
+  if(samples > buf1_sz)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Internal error (12345).");
+    messagewindow.exec();
+    busy = 0;
+    return;
+  }
+
+  fft_inputbufsize = samples;
+
+  dftsz_spinbox->setMaximum(fft_inputbufsize);
+
   samplefreq = (double)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record / ((double)signalcomp->edfhdr->long_data_record_duration / TIME_DIMENSION);
 
-  dftblocksize = mainwindow->maxdftblocksize;
-
   if(dftblocksize & 1)
   {
     dftblocksize--;
   }
 
-  dftblocks = 1;
-
-  if(dftblocksize < samples)
+  if(dftblocksize > fft_inputbufsize)
   {
-    dftblocks = samples / dftblocksize;
-  }
-  else
-  {
-    dftblocksize = samples;
+    dftblocksize = fft_inputbufsize;
   }
 
   if(dftblocksize & 1)
@@ -985,65 +1061,81 @@ void UI_SpectrumDockWindow::update_curve()
     dftblocksize--;
   }
 
-  samplesleft = samples % dftblocksize;
-
-  if(samplesleft & 1)
+  free_fft_wrap(fft_data);
+  fft_data = fft_wrap_create(buf1, fft_inputbufsize, dftblocksize, window_type);
+  if(fft_data == NULL)
   {
-    samplesleft--;
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
+    messagewindow.exec();
+    busy = 0;
+    return;
   }
 
-  freqstep = samplefreq / (double)dftblocksize;
+  freqstep = samplefreq / (double)fft_data->dft_sz;
 
-  fft_outputbufsize = dftblocksize / 2;
-
-  steps = fft_outputbufsize;
+  steps = fft_data->sz_out;
 
   free(buf2);
-  buf2 = (double *)calloc(1, sizeof(double) * fft_outputbufsize);
+  buf2 = (double *)calloc(1, sizeof(double) * fft_data->sz_out);
   if(buf2 == NULL)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
     messagewindow.exec();
+    free_fft_wrap(fft_data);
+    fft_data = NULL;
     free(buf1);
     buf1 = NULL;
+    buf1_sz = 0;
+    busy = 0;
     return;
   }
 
   free(buf3);
-  buf3 = (double *)malloc(sizeof(double) * fft_outputbufsize);
+  buf3 = (double *)malloc(sizeof(double) * fft_data->sz_out);
   if(buf3 == NULL)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
     messagewindow.exec();
+    free_fft_wrap(fft_data);
+    fft_data = NULL;
     free(buf1);
     free(buf2);
     buf1 = NULL;
+    buf1_sz = 0;
     buf2 = NULL;
+    busy = 0;
     return;
   }
 
   free(buf4);
-  buf4 = (double *)malloc(sizeof(double) * fft_outputbufsize);
+  buf4 = (double *)malloc(sizeof(double) * fft_data->sz_out);
   if(buf4 == NULL)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
     messagewindow.exec();
+    free_fft_wrap(fft_data);
+    fft_data = NULL;
     free(buf1);
+    buf1_sz = 0;
     free(buf2);
     free(buf3);
     buf1 = NULL;
     buf2 = NULL;
     buf3 = NULL;
+    busy = 0;
     return;
   }
 
   free(buf5);
-  buf5 = (double *)malloc(sizeof(double) * fft_outputbufsize);
+  buf5 = (double *)malloc(sizeof(double) * fft_data->sz_out);
   if(buf5 == NULL)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
     messagewindow.exec();
+    free_fft_wrap(fft_data);
+    fft_data = NULL;
     free(buf1);
+    buf1_sz = 0;
     free(buf2);
     free(buf3);
     free(buf4);
@@ -1051,6 +1143,7 @@ void UI_SpectrumDockWindow::update_curve()
     buf2 = NULL;
     buf3 = NULL;
     buf4 = NULL;
+    busy = 0;
     return;
   }
 
@@ -1074,75 +1167,20 @@ void UI_SpectrumDockWindow::update_curve()
     minvalue_sqrt_vlog = settings.minvalue_sqrt_vlog;
   }
 
-  kiss_fftr_cfg cfg;
-
-  kiss_fft_cpx *kiss_fftbuf;
-
-  kiss_fftbuf = (kiss_fft_cpx *)malloc((fft_outputbufsize + 1) * sizeof(kiss_fft_cpx));
-  if(kiss_fftbuf == NULL)
-  {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
-    messagewindow.exec();
-    free(buf1);
-    free(buf2);
-    free(buf3);
-    free(buf4);
-    free(buf5);
-    buf1 = NULL;
-    buf2 = NULL;
-    buf3 = NULL;
-    buf4 = NULL;
-    buf5 = NULL;
-    return;
-  }
-
-  cfg = kiss_fftr_alloc(dftblocksize, 0, NULL, NULL);
-
-  for(j=0; j<dftblocks; j++)
-  {
-    kiss_fftr(cfg, buf1 + (j * dftblocksize), kiss_fftbuf);
-
-    for(i=0; i<fft_outputbufsize; i++)
-    {
-      buf2[i] += (((kiss_fftbuf[i].r * kiss_fftbuf[i].r) + (kiss_fftbuf[i].i * kiss_fftbuf[i].i)) / fft_outputbufsize);
-    }
-  }
-
-  if(samplesleft)
-  {
-    kiss_fftr(cfg, buf1 + (((j-1) * dftblocksize) + samplesleft), kiss_fftbuf);
-
-    for(i=0; i<fft_outputbufsize; i++)
-    {
-      buf2[i] += (((kiss_fftbuf[i].r * kiss_fftbuf[i].r) + (kiss_fftbuf[i].i * kiss_fftbuf[i].i)) / fft_outputbufsize);
-
-      buf2[i] /= (dftblocks + 1);
-    }
-  }
-  else
-  {
-    for(i=0; i<fft_outputbufsize; i++)
-    {
-      buf2[i] /= dftblocks;
-    }
-  }
+  fft_wrap_run(fft_data);
 
   if(signalcomp->ecg_filter == NULL)
   {
-    buf2[0] /= 2.0;  // DC!
+    fft_data->buf_out[0] /= 2.0;  // DC!
   }
   else
   {
-    buf2[0] = 0.0;  // Remove DC because heart rate is always a positive value
+    fft_data->buf_out[0] = 0.0;  // Remove DC because heart rate is always a positive value
   }
 
-  free(cfg);
-
-  free(kiss_fftbuf);
-
-  for(i=0; i<fft_outputbufsize; i++)
+  for(i=0; i<fft_data->sz_out; i++)
   {
-    buf2[i] /= samplefreq;
+    buf2[i] = fft_data->buf_out[i] / samplefreq;
 
     buf3[i] = sqrt(buf2[i] * freqstep);
 
@@ -1210,15 +1248,10 @@ void UI_SpectrumDockWindow::update_curve()
       minvalue_sqrt_vlog = SPECT_LOG_MINIMUM_LOG;
   }
 
-  if(samplesleft)
-  {
-    dftblocks++;
-  }
-
   if(buf1 != NULL)
   {
     free(buf1);
-
+    buf1_sz = 0;
     buf1 = NULL;
   }
 
@@ -1227,7 +1260,7 @@ void UI_SpectrumDockWindow::update_curve()
   strcpy(str, "FFT resolution: ");
   convert_to_metric_suffix(str + strlen(str), freqstep, 3);
   remove_trailing_zeros(str);
-  sprintf(str + strlen(str), "Hz   %i blocks of %i samples", dftblocks, dftblocksize);
+  sprintf(str + strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks, fft_data->dft_sz);
   curve1->setUpperLabel1(str);
 
   curve1->setUpperLabel2(signallabel);
@@ -1402,6 +1435,8 @@ void UI_SpectrumDockWindow::update_curve()
 
 UI_SpectrumDockWindow::~UI_SpectrumDockWindow()
 {
+  free(buf1);
+  buf1 = NULL;
   free(buf2);
   buf2 = NULL;
   free(buf3);
@@ -1410,6 +1445,9 @@ UI_SpectrumDockWindow::~UI_SpectrumDockWindow()
   buf4 = NULL;
   free(buf5);
   buf5 = NULL;
+
+  free_fft_wrap(fft_data);
+  fft_data = NULL;
 
   delete SpectrumDialog;
 }

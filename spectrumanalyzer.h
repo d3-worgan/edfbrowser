@@ -60,10 +60,9 @@
 #include "spike_filter.h"
 #include "ravg_filter.h"
 #include "flywheel.h"
+#include "fft_wrap.h"
 
 #include "third_party/fidlib/fidlib.h"
-
-#include "fft_wrap.h"
 
 
 

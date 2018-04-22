@@ -46,6 +46,8 @@
 #include <QString>
 #include <QStringList>
 #include <QMessageBox>
+#include <QSpinBox>
+#include <QComboBox>
 
 #include <stdio.h>
 #include <string.h>
@@ -59,10 +61,9 @@
 #include "spike_filter.h"
 #include "ravg_filter.h"
 #include "flywheel.h"
+#include "fft_wrap.h"
 
 #include "third_party/fidlib/fidlib.h"
-
-#include "third_party/kiss_fft/kiss_fftr.h"
 
 
 
@@ -140,15 +141,23 @@ private:
 
   QLabel *spanLabel,
          *centerLabel,
-         *amplitudeLabel;
+         *amplitudeLabel,
+         *dftsz_label;
 
   QCheckBox *sqrtButton,
             *vlogButton,
             *colorBarButton;
 
+  QSpinBox *dftsz_spinbox;
+
+  QComboBox *windowBox;
+
   UI_Flywheel *flywheel1;
 
   int samples,
+      buf1_sz,
+      dftblocksize,
+      window_type,
       steps,
       spectrumdock_sqrt,
       spectrumdock_vlog,
@@ -178,6 +187,8 @@ private:
        signallabel[512],
        physdimension[9];
 
+  struct fft_wrap_settings_struct *fft_data;
+
   struct spectrumdocksettings settings;
 
 
@@ -192,6 +203,8 @@ void colorBarButtonClicked(bool);
 void print_to_txt();
 void setdashboard();
 void update_flywheel(int);
+void dftsz_value_changed(int);
+void windowBox_changed(int);
 
 void open_close_dock(bool);
 };

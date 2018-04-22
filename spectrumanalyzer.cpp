@@ -437,6 +437,7 @@ void UI_FreqSpectrumWindow::print_to_txt()
 
   FILE *outputfile;
 
+  if(fft_data == NULL)  return;
 
   path[0] = 0;
   if(mainwindow->recent_savedir[0]!=0)
@@ -477,7 +478,7 @@ void UI_FreqSpectrumWindow::print_to_txt()
   }
   sprintf(str, "FFT blocksize: %i\n", fft_data->dft_sz);
   sprintf(str + strlen(str), "FFT resolution: %f Hz\n", freqstep);
-  sprintf(str + strlen(str), "Data Samples: %i\n", samples);
+  sprintf(str + strlen(str), "Data Samples: %i\n", fft_data->sz_in);
   sprintf(str + strlen(str), "Power Samples: %i\n", fft_data->sz_out);
   sprintf(str + strlen(str), "Samplefrequency: %f Hz\n", (double)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record / ((double)signalcomp->edfhdr->long_data_record_duration / TIME_DIMENSION));
   remove_trailing_zeros(str);
@@ -801,6 +802,12 @@ void UI_FreqSpectrumWindow::run()
       {
         buf1[samples++] = dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue;
       }
+    }
+
+    if(samples > fft_inputbufsize)
+    {
+      malloc_err = 1;
+      return;
     }
 
     samplefreq = (double)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record / ((double)signalcomp->edfhdr->long_data_record_duration / TIME_DIMENSION);

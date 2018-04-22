@@ -1061,12 +1061,12 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
 
   if(upperlabel1[0] != 0)
   {
-    painter->drawText(curve_w / 2 - (150 * p_factor), 10 * p_factor, 300 * p_factor, 16 * p_factor, Qt::AlignCenter | Qt::TextSingleLine, upperlabel1);
+    painter->drawText(curve_w / 2 - (200 * p_factor), 10 * p_factor, 400 * p_factor, 16 * p_factor, Qt::AlignCenter | Qt::TextSingleLine, upperlabel1);
   }
 
   if(upperlabel2[0] != 0)
   {
-    painter->drawText(curve_w / 2 - (150 * p_factor), 30 * p_factor, 300 * p_factor, 16 * p_factor, Qt::AlignCenter | Qt::TextSingleLine, upperlabel2);
+    painter->drawText(curve_w / 2 - (200 * p_factor), 30 * p_factor, 400 * p_factor, 16 * p_factor, Qt::AlignCenter | Qt::TextSingleLine, upperlabel2);
   }
 
   if(lowerlabel[0] != 0)
@@ -1625,7 +1625,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
   if(upperlabel1[0] != 0)
   {
-    painter->drawText(curve_w / 2 - 150, 20, 300, 16, Qt::AlignCenter | Qt::TextSingleLine, upperlabel1);
+    painter->drawText(curve_w / 2 - 200, 20, 400, 16, Qt::AlignCenter | Qt::TextSingleLine, upperlabel1);
   }
 
   if(lowerlabel[0] != 0)
