@@ -127,7 +127,10 @@ private:
       spectrumdialog_is_destroyed,
       class_is_deleted,
       spectrumdialognumber,
-      flywheel_value;
+      flywheel_value,
+      first_run,
+      fft_inputbufsize;
+
 
   volatile int busy,
                malloc_err;

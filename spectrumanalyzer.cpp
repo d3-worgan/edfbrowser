@@ -54,6 +54,10 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   busy = 0;
 
+  first_run = 1;
+
+  fft_inputbufsize = 0;
+
   spectrumdialog_is_destroyed = 0;
 
   class_is_deleted = 0;
@@ -650,9 +654,6 @@ void UI_FreqSpectrumWindow::run()
 {
   int i, j, k;
 
-  static int first_run=1,
-             fft_inputbufsize=0;
-
   long long s, s2;
 
   double dig_value=0.0,
@@ -806,7 +807,7 @@ void UI_FreqSpectrumWindow::run()
 
     if(samples > fft_inputbufsize)
     {
-      malloc_err = 1;
+      malloc_err = 2;
       return;
     }
 
@@ -827,7 +828,10 @@ void UI_FreqSpectrumWindow::run()
   fft_data = fft_wrap_create(buf1, fft_inputbufsize, dftblocksize, window_type);
   if(fft_data == NULL)
   {
-    malloc_err = 1;
+//     printf("buf1: %p   fft_inputbufsize: %i   dftblocksize: %i   window_type: %i\n",
+//            buf1, fft_inputbufsize, dftblocksize, window_type);
+
+    malloc_err = 3;
     free(buf1);
     buf1 = NULL;
     return;
@@ -839,7 +843,7 @@ void UI_FreqSpectrumWindow::run()
   buf2 = (double *)calloc(1, sizeof(double) * fft_data->sz_out);
   if(buf2 == NULL)
   {
-    malloc_err = 1;
+    malloc_err = 4;
     free(buf1);
     buf1 = NULL;
     free_fft_wrap(fft_data);
@@ -851,7 +855,7 @@ void UI_FreqSpectrumWindow::run()
   buf3 = (double *)malloc(sizeof(double) * fft_data->sz_out);
   if(buf3 == NULL)
   {
-    malloc_err = 1;
+    malloc_err = 5;
     free(buf1);
     free(buf2);
     buf1 = NULL;
@@ -865,7 +869,7 @@ void UI_FreqSpectrumWindow::run()
   buf4 = (double *)malloc(sizeof(double) * fft_data->sz_out);
   if(buf4 == NULL)
   {
-    malloc_err = 1;
+    malloc_err = 6;
     free(buf1);
     free(buf2);
     free(buf3);
@@ -881,7 +885,7 @@ void UI_FreqSpectrumWindow::run()
   buf5 = (double *)malloc(sizeof(double) * fft_data->sz_out);
   if(buf5 == NULL)
   {
-    malloc_err = 1;
+    malloc_err = 7;
     free(buf1);
     free(buf2);
     free(buf3);
@@ -1052,7 +1056,7 @@ void UI_FreqSpectrumWindow::update_curve()
 
 void UI_FreqSpectrumWindow::thr_finished_func()
 {
-  char str[1024];
+  char str[4096];
 
   if(spectrumdialog_is_destroyed)
   {
@@ -1063,7 +1067,11 @@ void UI_FreqSpectrumWindow::thr_finished_func()
   {
     QApplication::restoreOverrideCursor();
 
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
+    sprintf(str,
+            "The system was not able to provide enough resources (memory) to perform the requested action. (%i)",
+            malloc_err);
+
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
     messagewindow.exec();
 
     curve1->clear();
