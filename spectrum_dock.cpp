@@ -446,14 +446,15 @@ void UI_SpectrumDockWindow::setdashboard()
   if(dashboard)
   {
     dashboard = 0;
+    hlayout1->removeWidget(curve1);
     dock->setWidget(curve1);
+    dock->setMinimumHeight(300);
   }
   else
   {
     dashboard = 1;
     hlayout1->addWidget(curve1, 100);
     dock->setWidget(SpectrumDialog);
-    dock->setMinimumHeight(300);
   }
 }
 
