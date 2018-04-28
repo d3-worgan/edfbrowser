@@ -69,7 +69,7 @@ struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int
   st->buf_in = buf;
   if(st->wndw_type)
   {
-    st->buf_wndw = (double *)malloc(sizeof(double) * (st->sz_in + 2));
+    st->buf_wndw = (double *)malloc(sizeof(double) * (st->dft_sz + 2));
     if(st->buf_wndw == NULL)
     {
       free(st);
@@ -115,11 +115,11 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
 
     if(st->wndw_type == 1)
     {
-      hamming_window_func(st->buf_in, st->buf_wndw, st->sz_in);
+      hamming_window_func(st->buf_in, st->buf_wndw, st->dft_sz);
     }
     else if(st->wndw_type == 2)
       {
-        blackman_window_func(st->buf_in, st->buf_wndw, st->sz_in);
+        blackman_window_func(st->buf_in, st->buf_wndw, st->dft_sz);
       }
       else
       {
@@ -140,7 +140,23 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
 
   for(j=1; j<st->blocks; j++)
   {
-    kiss_fftr(st->cfg, st->buf_in + (j * st->dft_sz), st->kiss_fftbuf);
+    if(st->wndw_type == 1)
+    {
+      hamming_window_func(st->buf_in + (j * st->dft_sz), st->buf_wndw, st->dft_sz);
+    }
+    else if(st->wndw_type == 2)
+      {
+        blackman_window_func(st->buf_in + (j * st->dft_sz), st->buf_wndw, st->dft_sz);
+      }
+
+    if(st->wndw_type)
+    {
+      kiss_fftr(st->cfg, st->buf_wndw, st->kiss_fftbuf);
+    }
+    else
+    {
+      kiss_fftr(st->cfg, st->buf_in + (j * st->dft_sz), st->kiss_fftbuf);
+    }
 
     for(i=0; i<st->sz_out; i++)
     {
@@ -150,7 +166,23 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
 
   if(st->smpls_left)
   {
-    kiss_fftr(st->cfg, st->buf_in + ((j-1) * st->dft_sz) + st->smpls_left, st->kiss_fftbuf);
+    if(st->wndw_type == 1)
+    {
+      hamming_window_func(st->buf_in + ((j-1) * st->dft_sz) + st->smpls_left, st->buf_wndw, st->dft_sz);
+    }
+    else if(st->wndw_type == 2)
+      {
+        blackman_window_func(st->buf_in + ((j-1) * st->dft_sz) + st->smpls_left, st->buf_wndw, st->dft_sz);
+      }
+
+    if(st->wndw_type)
+    {
+      kiss_fftr(st->cfg, st->buf_wndw, st->kiss_fftbuf);
+    }
+    else
+    {
+      kiss_fftr(st->cfg, st->buf_in + ((j-1) * st->dft_sz) + st->smpls_left, st->kiss_fftbuf);
+    }
 
     for(i=0; i<st->sz_out; i++)
     {
