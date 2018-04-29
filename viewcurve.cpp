@@ -2019,6 +2019,17 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
           remove_trailing_zeros(string);
 
+          if((annot->duration[0]) && (mainwindow->annotations_show_duration))
+          {
+            strcat(string, " Duration: ");
+
+            strcat(string, annot->duration);
+
+            remove_trailing_zeros(string);
+
+            strcat(string, " sec");
+          }
+
           if(printing)
           {
             painter->drawText(marker_x + (5  * printsize_x_factor), h - (25  * printsize_y_factor), string);

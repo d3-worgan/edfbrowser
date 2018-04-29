@@ -83,6 +83,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   annotations_onset_relative = 1;
 
+  annotations_show_duration = 1;
+
   auto_reload_mtg = 1;
 
   read_biosemi_status_signal = 1;

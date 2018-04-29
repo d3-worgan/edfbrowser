@@ -197,6 +197,7 @@ public:
       show_baselines,
       annotations_edited,
       annotations_onset_relative,
+      annotations_show_duration,
       exit_in_progress,
       maxdftblocksize,
       dpix,

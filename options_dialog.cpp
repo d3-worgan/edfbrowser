@@ -188,20 +188,36 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   AnnotMkrButton->setGeometry(240, 320, 60, 15);
   AnnotMkrButton->setColor(mainwindow->maincurve->annot_marker_color);
 
+  label12_2 = new QLabel(tab1);
+  label12_2->setGeometry(20, 345, 200, 25);
+  label12_2->setText("Show duration at marker");
+
+  checkbox2_1 = new QCheckBox(tab1);
+  checkbox2_1->setGeometry(200, 348, 20, 20);
+  checkbox2_1->setTristate(false);
+  if(mainwindow->annotations_show_duration)
+  {
+    checkbox2_1->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox2_1->setCheckState(Qt::Unchecked);
+  }
+
   label12_1 = new QLabel(tab1);
-  label12_1->setGeometry(20, 345, 200, 25);
+  label12_1->setGeometry(20, 375, 200, 25);
   label12_1->setText("Annotation duration background");
 
   AnnotDurationButton = new SpecialButton(tab1);
-  AnnotDurationButton->setGeometry(240, 350, 60, 15);
+  AnnotDurationButton->setGeometry(240, 380, 60, 15);
   AnnotDurationButton->setColor(mainwindow->maincurve->annot_duration_color);
 
   label11 = new QLabel(tab1);
-  label11->setGeometry(20, 375, 200, 25);
+  label11->setGeometry(20, 405, 200, 25);
   label11->setText("Print in grayscale");
 
   checkbox1 = new QCheckBox(tab1);
-  checkbox1->setGeometry(200, 378, 20, 20);
+  checkbox1->setGeometry(200, 408, 20, 20);
   checkbox1->setTristate(false);
   if(mainwindow->maincurve->blackwhite_printing)
   {
@@ -213,11 +229,11 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   }
 
   label13 = new QLabel(tab1);
-  label13->setGeometry(20, 405, 200, 25);
+  label13->setGeometry(20, 435, 200, 25);
   label13->setText("Clip signals to pane");
 
   checkbox4 = new QCheckBox(tab1);
-  checkbox4->setGeometry(200, 408, 20, 20);
+  checkbox4->setGeometry(200, 438, 20, 20);
   checkbox4->setTristate(false);
   if(mainwindow->clip_to_pane)
   {
@@ -265,6 +281,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   QObject::connect(AnnotDurationButton,     SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotDurationButtonClicked(SpecialButton *)));
   QObject::connect(checkbox1,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox1Clicked(int)));
   QObject::connect(checkbox2,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox2Clicked(int)));
+  QObject::connect(checkbox2_1,             SIGNAL(stateChanged(int)),        this, SLOT(checkbox2_1Clicked(int)));
   QObject::connect(checkbox3,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox3Clicked(int)));
   QObject::connect(checkbox4,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox4Clicked(int)));
   QObject::connect(saveColorSchemaButton,   SIGNAL(clicked()),                this, SLOT(saveColorSchemaButtonClicked()));
@@ -1081,6 +1098,22 @@ void UI_OptionsDialog::checkbox2Clicked(int state)
   if(state==Qt::Unchecked)
   {
     mainwindow->show_annot_markers = 0;
+  }
+
+  mainwindow->maincurve->update();
+}
+
+
+void UI_OptionsDialog::checkbox2_1Clicked(int state)
+{
+  if(state==Qt::Checked)
+  {
+    mainwindow->annotations_show_duration = 1;
+  }
+
+  if(state==Qt::Unchecked)
+  {
+    mainwindow->annotations_show_duration = 0;
   }
 
   mainwindow->maincurve->update();
