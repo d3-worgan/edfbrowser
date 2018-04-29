@@ -12,6 +12,9 @@
 
  - Spectrum Analyzer: added the possibility to apply a Hamming or Blackman window.
 
+ - Annotations markers now show also the duration of the event (if present).
+   This can be switched off in the settings control panel.
+
 
 
  version 1.63      March 10, 2018
