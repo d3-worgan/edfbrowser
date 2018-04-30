@@ -47,13 +47,14 @@ sudo make install
 
 
 
-How to compile (step by step)
-=============================
+How to compile
+==============
 
 - Install Git, the GCC compiler and the Qt4 development package:
   Linux Mint 18: sudo apt-get install git-core libqt4-dev libqt4-core g++
   openSuse Leap 42.2: sudo zypper in git-core libqt4-devel
   Fedora 25: sudo dnf install git-core qt-devel gcc-c++
+  Ubuntu 18.04: sudo apt-get install g++ make git-core qtbase5-dev-tools qtbase5-dev qt5-default
 
 - Download the source code:
   mkdir EDFbrowser_git
@@ -65,6 +66,7 @@ How to compile (step by step)
   Linux Mint 18: qmake
   openSuse Leap 42.2: qmake
   Fedora 25: qmake-qt4
+  Ubuntu: qmake
 
 - Compile the source code and install it:
   make -j16
