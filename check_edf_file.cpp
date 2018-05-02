@@ -778,7 +778,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
 
     if(is_number(scratchpad))
     {
-      sprintf(txt_string, "Error, physical minimum field of signal %i is invalid: \"%s\".",
+      sprintf(txt_string, "Error, physical minimum field of signal %i is invalid: \"%s\".\n"
+                          "You can try to fix it with the header editor, check the manual for the procedure.",
              i + 1,
              scratchpad);
       free(edf_hdr);
@@ -813,7 +814,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
 
     if(is_number(scratchpad))
     {
-      sprintf(txt_string, "Error, physical maximum field of signal %i is invalid: \"%s\".",
+      sprintf(txt_string, "Error, physical maximum field of signal %i is invalid: \"%s\".\n"
+                          "You can try to fix it with the header editor, check the manual for the procedure.",
              i + 1,
              scratchpad);
       free(edf_hdr);
