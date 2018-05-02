@@ -15,6 +15,9 @@
  - Annotations markers now show also the duration of the event (if present).
    This can be switched off in the settings control panel.
 
+ - Header editor: in case the physical maximum or minimum fields contains a comma as a decimal separator,
+   replace the comma with a dot.
+
 
 
  version 1.63      March 10, 2018

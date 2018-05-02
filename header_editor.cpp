@@ -900,7 +900,7 @@ void UI_headerEditorWindow::read_header()
 
 void UI_headerEditorWindow::save_hdr()
 {
-  int i, j, p, len, hassign, digmin=0, digmax=0, dig_ok;
+  int i, j, p, len, hassign, digmin=0, digmax=0, dig_ok, dots, commas;
 
   char scratchpad[256],
        scratchpad2[256],
@@ -1447,6 +1447,25 @@ void UI_headerEditorWindow::save_hdr()
         }
       }
       scratchpad[8] = 0;
+
+      for(p=0, dots=0, commas=0; p<8; p++)
+      {
+        if(scratchpad[p] == ',')  commas++;
+        if(scratchpad[p] == '.')  dots++;
+      }
+
+      if((commas == 1) && (dots == 0))
+      {
+        for(p=0; p<8; p++)
+        {
+          if(scratchpad[p] == ',')
+          {
+            scratchpad[p] = '.';
+            break;
+          }
+        }
+      }
+
       fseeko(file, (long long)(256 + (edfsignals * 104) + (i * 8)), SEEK_SET);
       fprintf(file, "%s", scratchpad);
 
@@ -1463,6 +1482,25 @@ void UI_headerEditorWindow::save_hdr()
         }
       }
       scratchpad2[8] = 0;
+
+      for(p=0, dots=0, commas=0; p<8; p++)
+      {
+        if(scratchpad2[p] == ',')  commas++;
+        if(scratchpad2[p] == '.')  dots++;
+      }
+
+      if((commas == 1) && (dots == 0))
+      {
+        for(p=0; p<8; p++)
+        {
+          if(scratchpad2[p] == ',')
+          {
+            scratchpad2[p] = '.';
+            break;
+          }
+        }
+      }
+
       fseeko(file, (long long)(256 + (edfsignals * 112) + (i * 8)), SEEK_SET);
       fprintf(file, "%s", scratchpad2);
 
