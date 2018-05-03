@@ -516,7 +516,7 @@ void UI_AveragerWindow::process_avg(struct signalcompblock *signalcomp)
 
   for(s=signalcomp->sample_start; s<signalcomp->samples_on_screen; s++)
   {
-    if(s>signalcomp->sample_stop)  break;
+    if(s>=signalcomp->sample_stop)  break;
 
     dig_value = 0.0;
     s2 = s + signalcomp->sample_timeoffset - signalcomp->sample_start;
