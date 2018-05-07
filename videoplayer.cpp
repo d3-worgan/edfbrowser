@@ -266,6 +266,10 @@ void UI_Mainwindow::start_stop_video()
 
   msgbox.close();
 
+  playback_realtime_Act->setText("[pause]");
+
+  playback_realtime_Act->setIcon(QIcon(":/images/media-playback-pause-symbolic.symbolic.png"));
+
   video_player->status = VIDEO_STATUS_STARTUP_1;
 
   video_player->poll_timer = 100;
@@ -493,6 +497,10 @@ void UI_Mainwindow::video_player_toggle_pause()
 
     video_pause_act->setToolTip("Play video");
 
+    playback_realtime_Act->setText("[play]");
+
+    playback_realtime_Act->setIcon(QIcon(":/images/media-playback-start-symbolic.symbolic.png"));
+
     video_player->cntdwn_timer = 5000;
   }
   else
@@ -502,6 +510,10 @@ void UI_Mainwindow::video_player_toggle_pause()
     video_pause_act->setText("Pause");
 
     video_pause_act->setToolTip("Pause video");
+
+    playback_realtime_Act->setText("[pause]");
+
+    playback_realtime_Act->setIcon(QIcon(":/images/media-playback-pause-symbolic.symbolic.png"));
   }
 }
 
@@ -515,6 +527,10 @@ void UI_Mainwindow::stop_video_generic(int stop_reason)
   if(video_player->status == VIDEO_STATUS_STOPPED)  return;
 
   video_player->status = VIDEO_STATUS_STOPPED;
+
+  playback_realtime_Act->setText("[play]");
+
+  playback_realtime_Act->setIcon(QIcon(":/images/media-playback-start-symbolic.symbolic.png"));
 
   disconnect(video_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(video_process_error(QProcess::ProcessError)));
 

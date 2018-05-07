@@ -1117,8 +1117,10 @@ void UI_Mainwindow::playback_realtime()
     return;
   }
 
-  if(video_player->status == VIDEO_STATUS_PLAYING)
+  if((video_player->status == VIDEO_STATUS_PLAYING) || (video_player->status == VIDEO_STATUS_PAUSED))
   {
+    video_player_toggle_pause();
+
     return;
   }
 
