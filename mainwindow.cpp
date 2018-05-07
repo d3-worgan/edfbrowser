@@ -1295,7 +1295,7 @@ void UI_Mainwindow::show_annotations()
 
 void UI_Mainwindow::annotation_editor()
 {
-  stop_video_generic();
+  stop_video_generic(0);
 
   stop_playback_realtime();
 
@@ -1976,7 +1976,7 @@ void UI_Mainwindow::remove_all_signals()
 {
   int i;
 
-  stop_video_generic();
+  stop_video_generic(0);
 
   stop_playback_realtime();
 
@@ -2075,7 +2075,7 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
 
   delete action;
 
-  stop_video_generic();
+  stop_video_generic(0);
 
   stop_playback_realtime();
 

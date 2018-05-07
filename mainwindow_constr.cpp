@@ -309,10 +309,8 @@ UI_Mainwindow::UI_Mainwindow()
   filemenu->addSeparator();
   filemenu->addAction("Open stream",  this, SLOT(open_stream()), QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_O));
   filemenu->addSeparator();
-#ifdef Q_OS_LINUX
   filemenu->addAction(video_act);
   filemenu->addSeparator();
-#endif
   filemenu->addAction("Playback file", this, SLOT(playback_realtime()), QKeySequence("Ctrl+Space"));
   filemenu->addSeparator();
   filemenu->addAction(save_act);
@@ -861,10 +859,8 @@ UI_Mainwindow::UI_Mainwindow()
   slidertoolbar = new QToolBar("Video Playback");
   slidertoolbar->setFloatable(false);
   slidertoolbar->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
-#ifdef Q_OS_LINUX
   slidertoolbar->addAction(video_stop_act);
   slidertoolbar->addAction(video_pause_act);
-#endif
   slidertoolbar->addWidget(positionslider);
   addToolBar(Qt::BottomToolBarArea, slidertoolbar);
   QObject::connect(positionslider, SIGNAL(valueChanged(int)), this, SLOT(slider_moved(int)));

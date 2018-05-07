@@ -31,6 +31,7 @@
 
 #include <QtGlobal>
 #include <QApplication>
+#include <QEventLoop>
 #include <QMainWindow>
 #include <QMenuBar>
 #include <QMenu>
@@ -39,6 +40,7 @@
 #include <QSlider>
 #include <QStyle>
 #include <QCloseEvent>
+#include <QDialog>
 
 #if QT_VERSION < 0x050000
   #include <QPlastiqueStyle>
@@ -88,11 +90,14 @@
 #include <QProcess>
 #include <QProcessEnvironment>
 #include <QVariant>
+#include <QTcpSocket>
+#include <QHostAddress>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+#include <time.h>
 
 #include "global.h"
 #include "viewcurve.h"
@@ -447,6 +452,8 @@ private:
 
   QProcess *video_process;
 
+  QTcpSocket *vlc_sock;
+
   int cmdlineargument,
       cmdlineoption,
       oldwindowheight;
@@ -458,8 +465,8 @@ private:
   void read_general_settings();
   void write_settings();
   long long check_edf_file_datarecords(struct edfhdrblock *);
-  inline void mpr_write(const char *);
-  inline int mpr_read(char *, int);
+  void mpr_write(const char *);
+  int mpr_read(char *, int);
 
 public slots:
   void remove_all_signals();
@@ -560,7 +567,7 @@ private slots:
   void import_annotations();
   void open_stream();
   void start_stop_video();
-  void stop_video_generic();
+  void stop_video_generic(int);
   void live_stream_timer_func();
   void video_poll_timer_func();
   void playback_realtime_timer_func();

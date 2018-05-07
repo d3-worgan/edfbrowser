@@ -1,5 +1,5 @@
 
- version 1.63      to be defined
+ version 1.64      to be defined
  --------------
 
  - EMSA to EDF converter: fixed a bug that could cause a crash due to invalid free-ing of memory.
@@ -17,6 +17,10 @@
 
  - Header editor: in case the physical maximum or minimum fields contains a comma as a decimal separator,
    replace the comma with a dot.
+
+ - Update the videoplayer to work with VLC version 3
+
+ - Enable the videoplayer on windows
 
 
 

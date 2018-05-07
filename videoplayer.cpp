@@ -36,14 +36,20 @@
 #endif
 
 
-// Next parts of code are tested with VLC media player 2.1.2 and later with 2.1.5 Rincewind on Linux.
-// On windows it's disabled because the console interface of VLC on windows is broken.
-// Once they (videolan.org) has fixed this, we can test it and hopefully enable it on windows too.
+/* Tested with VLC 3.0.2 Vetinari */
 void UI_Mainwindow::start_stop_video()
 {
+  int err, port;
+
+  char str[4096]={""};
+
+  QEventLoop evlp;
+
+  QMessageBox msgbox(QMessageBox::Critical, "Error", "text", QMessageBox::Close);
+
   if(video_player->status != VIDEO_STATUS_STOPPED)
   {
-    stop_video_generic();
+    stop_video_generic(0);
 
     return;
   }
@@ -55,29 +61,29 @@ void UI_Mainwindow::start_stop_video()
 
   if(live_stream_active)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open a video during a live stream.");
-    messagewindow.exec();
+    msgbox.setText("Can not open a video during a live stream.");
+    msgbox.exec();
     return;
   }
 
   if(video_player->status != VIDEO_STATUS_STOPPED)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "There is already a video running.");
-    messagewindow.exec();
+    msgbox.setText("There is already a video running.");
+    msgbox.exec();
     return;
   }
 
   if(signalcomps < 1)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Put some signals on the screen first.");
-    messagewindow.exec();
+    msgbox.setText("Put some signals on the screen first.");
+    msgbox.exec();
     return;
   }
 
   if(annot_editor_active)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Close the annotation editor first.");
-    messagewindow.exec();
+    msgbox.setText("Close the annotation editor first.");
+    msgbox.exec();
     return;
   }
 
@@ -96,11 +102,13 @@ void UI_Mainwindow::start_stop_video()
 
   if(video_player->utc_starttime < 0LL)
   {
-    QMessageBox messagewindow(QMessageBox::Warning, "Warning", "Unable to get startdate and starttime from video filename.\n"
-                                                              " \nAssume video starttime equals EDF/BDF starttime?\n ");
-    messagewindow.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-    messagewindow.setDefaultButton(QMessageBox::Yes);
-    if(messagewindow.exec() == QMessageBox::Cancel)  return;
+    msgbox.setIcon(QMessageBox::Warning);
+    msgbox.setWindowTitle("Warning");
+    msgbox.setText(" \nCannot find startdate and starttime in video filename.\n"
+                   " \nAssume video starttime equals EDF/BDF starttime?\n ");
+    msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+    msgbox.setDefaultButton(QMessageBox::Yes);
+    if(msgbox.exec() == QMessageBox::Cancel)  return;
 
     video_player->utc_starttime = edfheaderlist[sel_viewtime]->utc_starttime;
   }
@@ -111,49 +119,152 @@ void UI_Mainwindow::start_stop_video()
 
   video_player->starttime_diff = (int)(edfheaderlist[sel_viewtime]->utc_starttime - video_player->utc_starttime);
 
+  msgbox.setIcon(QMessageBox::Critical);
+  msgbox.setWindowTitle("Error");
+  msgbox.setStandardButtons(QMessageBox::Close);
+
   if((edfheaderlist[sel_viewtime]->utc_starttime + edfheaderlist[sel_viewtime]->recording_len_sec) < video_player->utc_starttime)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The video registration and the EDF/BDF registration do not overlap (in time)!");
-    messagewindow.exec();
+    msgbox.setText("The video registration and the EDF/BDF registration do not overlap (in time)");
+    msgbox.exec();
     return;
   }
 
   if((video_player->utc_starttime + 259200LL) < edfheaderlist[sel_viewtime]->utc_starttime)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The video registration and the EDF/BDF registration do not overlap (in time)!");
-    messagewindow.exec();
+    msgbox.setText("The video registration and the EDF/BDF registration do not overlap (in time)");
+    msgbox.exec();
     return;
   }
 
-  video_process = new QProcess(this);
+  port = (time(NULL) % 1000) + 3000;
 
-#ifdef Q_OS_WIN32
-  QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+  sprintf(str, "localhost:%i", port);
 
-  env.insert("PATH", env.value("PATH") + ";C:\\Program Files\\VideoLAN\\VLC");
-
-  video_process->setProcessEnvironment(env);
-#endif
+  video_process = new QProcess(0);
 
   connect(video_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(video_process_error(QProcess::ProcessError)));
 
+// #ifdef Q_OS_WIN32
+//   QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+//
+//   env.insert("PATH", env.value("PATH") + ";C:\\Program Files\\VideoLAN\\VLC");
+//
+//   video_process->setProcessEnvironment(env);
+// #endif
+
+//  "C:\Program Files\VideoLAN\\VLC\vlc.exe" -I rc --rc-host localhost:3000 --rc-quiet --video-on-top --width 150 --height 150
+//    add C:\Users\K6TT\Documents\testfiles\rift.mp4
+
+// clear: returned 0 (no error)
+// add C:\Users\K6TT\Documents\testfiles\rift.mp4
+// Trying to add C:\Users\K6TT\Documents\testfiles\rift.mp4 to playlist.
+// add: returned 0 (no error)
+// zoom 0.5
+// status change: ( new input: file:///C:/Users/K6TT/Documents/testfiles/rift.mp4 )
+// status change: ( play state: 3 )
+// Unknown command `zoom'. Type `help' for help.
+// vzoom 0.25
+// vzoom: returned 0 (no error)
+// get_time
+// 45
+
+// vlc -I rc --rc-host localhost:3000 --video-on-top --width 150 --height 150
+
   QStringList arguments;
-  arguments << "--video-on-top" << "-I" << "rc";
+
+#ifdef Q_OS_WIN32
+  for(int i=0; ; i++)
+  {
+    if(videopath[i] == 0)  break;
+
+    if(videopath[i] == '/')  videopath[i] = '\\';
+  }
+
+  arguments << "-I" << "rc" << "--rc-host" << str << "--rc-quiet" << "--video-on-top" << "--width" << "150" << "--height" << "150";
+
+  video_process->start("C:\\Program Files\\VideoLAN\\VLC\\vlc.exe", arguments);
+
+  if(video_process->waitForStarted(5000) == false)
+  {
+    msgbox.setText("  \n Cannot start VLC mediaplayer. \n"
+                   "  \n Check if VLC is installed in C:\\Program Files\\VideoLAN\\VLC\\ \n" );
+    msgbox.exec();
+    return;
+  }
+#else
+  arguments << "-I" << "rc" << "--rc-host" << str << "--video-on-top" << "--width" << "150" << "--height" << "150";
 
   video_process->start("vlc", arguments);
 
   if(video_process->waitForStarted(5000) == false)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Unable to start VLC mediaplayer.\n"
-                                                              "Check your installation of VLC.\n"
-                                                              "Also, check if VLC is present in the PATH environment variable.");
-    messagewindow.exec();
+    msgbox.setText("  \n Cannot start VLC mediaplayer. \n  "
+                   "  \n Check your installation of VLC. \n  ");
+    msgbox.exec();
+    return;
+  }
+#endif
+
+  msgbox.setIcon(QMessageBox::NoIcon);
+  msgbox.setWindowTitle("Starting");
+  msgbox.setStandardButtons(QMessageBox::Abort);
+  msgbox.setText("   \n Starting VLC, please wait ... \n   ");
+  msgbox.show();
+
+  connect(&msgbox, SIGNAL(finished(int)), &evlp, SLOT(quit()));
+  QTimer::singleShot(2000, &evlp, SLOT(quit()));
+  evlp.exec();
+
+  msgbox.setText("   \n Opening socket to VLC, please wait ... \n   ");
+
+  vlc_sock = new QTcpSocket;
+
+  vlc_sock->connectToHost(QHostAddress("127.0.0.1"), port);
+
+  if(vlc_sock->waitForConnected(5000) == false)
+  {
+    err = vlc_sock->error();
+
+    sprintf(str, "   \n Cannot connect to VLC mediaplayer via localhost loopback port (error %i) \n   ", err);
+
+    msgbox.setIcon(QMessageBox::Critical);
+    msgbox.setWindowTitle("Error");
+    msgbox.setStandardButtons(QMessageBox::Close);
+    msgbox.setText(str);
+
+    evlp.exec();
+
+    msgbox.setText(" \n Closing VLC, please wait... \n   ");
+
+    if(vlc_sock->state())
+    {
+      vlc_sock->disconnectFromHost();
+      vlc_sock->waitForDisconnected(5000);
+
+      QTimer::singleShot(500, &evlp, SLOT(quit()));
+      evlp.exec();
+    }
+
+    video_process->kill();
+
+    QTimer::singleShot(500, &evlp, SLOT(quit()));
+    evlp.exec();
+
+    delete video_process;
+
+    delete vlc_sock;
+
+    msgbox.close();
+
     return;
   }
 
 #ifdef DEBUG_VIDEOPLAYER
   debug_vpr = fopen("debug_vpr.txt", "wb");
 #endif
+
+  msgbox.close();
 
   video_player->status = VIDEO_STATUS_STARTUP_1;
 
@@ -169,7 +280,9 @@ void UI_Mainwindow::start_stop_video()
 
 void UI_Mainwindow::video_poll_timer_func()
 {
-  int i, err, len, vpos=0;
+  int i, p, err, len, vpos=0;
+
+  static int repeat=0;
 
   char buf[4096];
 
@@ -182,44 +295,43 @@ void UI_Mainwindow::video_poll_timer_func()
 
   if(video_player->cntdwn_timer <= 0)
   {
-    stop_video_generic();
+    stop_video_generic(2);
 
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Videoplayer: time-out.");
-    messagewindow.exec();
     return;
   }
 
+#ifdef DEBUG_VIDEOPLAYER
+    fprintf(debug_vpr, "edfbr_status: %i\n", video_player->status);
+#endif
+
   len = mpr_read(buf, 4095);
-  if(len < 1)
+
+  if((len < 1) && (video_player->status == VIDEO_STATUS_PLAYING))
   {
     video_poll_timer->start(video_player->poll_timer);
 
     return;
   }
 
-  if(video_player->status == VIDEO_STATUS_STARTUP_1)
-  {
-    if(!strncmp(buf, "Command Line Interface initialized.", 35))
-    {
-      video_player->status = VIDEO_STATUS_STARTUP_2;
-    }
-  }
-
   if(video_player->status < VIDEO_STATUS_PLAYING)
   {
-    if(!strncmp(buf, "> ", 2))
+    if(video_player->status == VIDEO_STATUS_STARTUP_1)
     {
-      if(video_player->status == VIDEO_STATUS_STARTUP_2)
+      while(mpr_read(buf, 4095) > 0) ;
+
+      mpr_write("clear\n");
+
+      video_player->status = VIDEO_STATUS_STARTUP_2;
+
+      repeat = 3;
+    }
+    else if(video_player->status == VIDEO_STATUS_STARTUP_2)
       {
-        mpr_write("clear\n");
-
-        video_process->waitForBytesWritten(1000);
-
-        video_player->status = VIDEO_STATUS_STARTUP_3;
-
-        video_player->cntdwn_timer = 5000;
-      }
-      else if(video_player->status == VIDEO_STATUS_STARTUP_3)
+        if(repeat)
+        {
+          repeat--;
+        }
+        else
         {
           strcpy(buf, "add ");
 
@@ -229,27 +341,40 @@ void UI_Mainwindow::video_poll_timer_func()
 
           mpr_write(buf);
 
-          video_process->waitForBytesWritten(1000);
+          video_player->status = VIDEO_STATUS_STARTUP_3;
 
-          video_player->status = VIDEO_STATUS_STARTUP_4;
-
-          video_player->cntdwn_timer = 5000;
+          repeat = 5;
+        }
+      }
+      else if(video_player->status == VIDEO_STATUS_STARTUP_3)
+        {
+          if(repeat)
+          {
+            repeat--;
+          }
+          else
+          {
+            video_player->status = VIDEO_STATUS_STARTUP_4;
+          }
         }
         else if(video_player->status == VIDEO_STATUS_STARTUP_4)
           {
-            mpr_write("volume 255\n");
+            mpr_write("vzoom 0.25\n");
 
-            video_process->waitForBytesWritten(1000);
-
-            video_player->status = VIDEO_STATUS_PLAYING;
-
-            video_pause_act->setText("Pause");
-
-            video_pause_act->setToolTip("Pause video");
-
-            video_player->cntdwn_timer = 5000;
+            video_player->status = VIDEO_STATUS_STARTUP_5;
           }
-    }
+          else if(video_player->status == VIDEO_STATUS_STARTUP_5)
+            {
+              mpr_write("volume 255\n");
+
+              video_player->status = VIDEO_STATUS_PLAYING;
+
+              video_pause_act->setText("Pause");
+
+              video_pause_act->setToolTip("Pause video");
+            }
+
+    video_player->cntdwn_timer = 5000;
 
     video_poll_timer->start(video_player->poll_timer);
 
@@ -260,61 +385,55 @@ void UI_Mainwindow::video_poll_timer_func()
   {
     if(!strncmp(buf, "> ", 2))
     {
-      if((len > 4) && (buf[len-1] == '\n'))
+      p = 2;
+    }
+    else
+    {
+      p = 0;
+    }
+
+    if((len > (p + 2)) && (buf[len-1] == '\n'))
+    {
+      err = 0;
+
+      for(i=p; i<(len-1); i++)
       {
-        err = 0;
+        if((buf[i] < '0') || (buf[i] > '9'))
 
-        for(i=2; i<(len-1); i++)
-        {
-          if((buf[i] < '0') || (buf[i] > '9'))
+        err = 1;
 
-          err = 1;
-
-          break;
-        }
-
-        if(!err)
-        {
-          vpos = atoi(buf + 2);
-
-          if(video_player->fpos != vpos)
-          {
-            jump_to_time_millisec(video_player->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime + (vpos * 1000LL));
-
-            video_player->fpos = vpos;
-
-            video_player->stop_det_counter = 0;
-          }
-
-          video_player->cntdwn_timer = 5000;
-        }
+        break;
       }
-      else if(buf[2] == '\r')
+
+      if(!err)
       {
-        video_player->stop_det_counter += video_player->poll_timer;
+        vpos = atoi(buf + p);
 
-        if(video_player->stop_det_counter > 1500)
+        if(video_player->fpos != vpos)
         {
-          stop_video_generic();
+          jump_to_time_millisec(video_player->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime + (vpos * 1000LL));
 
-          QMessageBox messagewindow(QMessageBox::NoIcon, "Stopped", "  \nVideo has reached the end       \n");
-          messagewindow.exec();
+          video_player->fpos = vpos;
 
-          return;
+          video_player->stop_det_counter = 0;
         }
+
+        video_player->cntdwn_timer = 5000;
+      }
+    }
+    else if(buf[p] == '\r')
+    {
+      video_player->stop_det_counter += video_player->poll_timer;
+
+      if(video_player->stop_det_counter > 1500)
+      {
+        stop_video_generic(1);
+
+        return;
       }
     }
 
     mpr_write("get_time\n");
-
-    video_process->waitForBytesWritten(1000);
-  }
-
-  if(!strncmp(buf, "( state stopped )", 17))
-  {
-    stop_video_generic();
-
-    return;
   }
 
   video_poll_timer->start(video_player->poll_timer);
@@ -334,8 +453,6 @@ void UI_Mainwindow::video_player_seek(int sec)
   sprintf(str, "seek %i\n", sec);
 
   mpr_write(str);
-
-  video_process->waitForBytesWritten(1000);
 
   video_player->cntdwn_timer = 5000;
 }
@@ -378,8 +495,10 @@ void UI_Mainwindow::video_player_toggle_pause()
 }
 
 
-void UI_Mainwindow::stop_video_generic()
+void UI_Mainwindow::stop_video_generic(int stop_reason)
 {
+  QEventLoop evlp;
+
   video_poll_timer->stop();
 
   if(video_player->status == VIDEO_STATUS_STOPPED)  return;
@@ -388,17 +507,52 @@ void UI_Mainwindow::stop_video_generic()
 
   disconnect(video_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(video_process_error(QProcess::ProcessError)));
 
-  mpr_write("quit\n");
+  QMessageBox msgbox(QMessageBox::NoIcon, "Wait", " \n Closing VLC, please wait ... \n  ");
+  if(stop_reason == 1)
+  {
+    msgbox.setText(" \n Video has finished \n  \n Closing VLC, please wait ... \n  ");
+  }
+  if(stop_reason == 2)
+  {
+    msgbox.setText(" \n VLC timeout error \n  \n Closing VLC, please wait ... \n  ");
+  }
+  msgbox.show();
 
-  video_process->waitForFinished(1000);
+#ifdef Q_OS_WIN32
+  mpr_write("quit\n");
+#else
+  mpr_write("shutdown\n");
+#endif
+
+  QObject::connect(&msgbox, SIGNAL(finished(int)), &evlp, SLOT(quit()));
+  QTimer::singleShot(2000, &evlp, SLOT(quit()));
+  evlp.exec();
+
+  video_process->waitForFinished(3000);
+
+  QTimer::singleShot(500, &evlp, SLOT(quit()));
+  evlp.exec();
 
   video_process->kill();
 
+  QTimer::singleShot(500, &evlp, SLOT(quit()));
+  evlp.exec();
+
   delete video_process;
+
+  if(vlc_sock->state())
+  {
+    vlc_sock->disconnectFromHost();
+    vlc_sock->waitForDisconnected(5000);
+  }
+
+  delete vlc_sock;
 
   video_act->setText("Start video");
 
   video_pause_act->setText("Play");
+
+  msgbox.close();
 
 #ifdef DEBUG_VIDEOPLAYER
   fclose(debug_vpr);
@@ -412,7 +566,7 @@ void UI_Mainwindow::video_process_error(QProcess::ProcessError err)
 
   if(video_player->status == VIDEO_STATUS_STOPPED)  return;
 
-  stop_video_generic();
+  stop_video_generic(0);
 
   strcpy(str, "The process that runs the mediaplayer reported an error:\n");
 
@@ -446,27 +600,29 @@ void UI_Mainwindow::video_process_error(QProcess::ProcessError err)
     strcat(str, "\nUnknown error.");
   }
 
-  QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
-  messagewindow.exec();
+  QMessageBox msgbox(QMessageBox::Critical, "Error", str);
+  msgbox.exec();
 }
 
 
-inline void UI_Mainwindow::mpr_write(const char *cmd_str)
+void UI_Mainwindow::mpr_write(const char *cmd_str)
 {
 #ifdef DEBUG_VIDEOPLAYER
   fprintf(debug_vpr, "edfbr: %s", cmd_str);
 #endif
 
-  video_process->write(cmd_str);
+  vlc_sock->write(cmd_str);
+
+  vlc_sock->waitForBytesWritten(200);
 }
 
 
-inline int UI_Mainwindow::mpr_read(char *buf, int sz)
+int UI_Mainwindow::mpr_read(char *buf, int sz)
 {
 #ifdef DEBUG_VIDEOPLAYER
   int n;
 
-  n = video_process->readLine(buf, sz);
+  n = vlc_sock->readLine(buf, sz);
 
   if(n > 0)
   {
@@ -482,7 +638,7 @@ inline int UI_Mainwindow::mpr_read(char *buf, int sz)
 
   return n;
 #else
-  return video_process->readLine(buf, sz);
+  return vlc_sock->readLine(buf, sz);
 #endif
 }
 
