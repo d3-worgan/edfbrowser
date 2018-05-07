@@ -181,7 +181,7 @@ void UI_Mainwindow::start_stop_video()
     if(videopath[i] == '/')  videopath[i] = '\\';
   }
 
-  arguments << "-I" << "rc" << "--rc-host" << str << "--rc-quiet" << "--video-on-top" << "--width" << "150" << "--height" << "150";
+  arguments << "-I" << "rc" << "--rc-host" << str << "--rc-quiet" << "--video-on-top" << "--width" << "150" << "--height" << "150" << "--ignore-config";
 
   video_process->start("C:\\Program Files\\VideoLAN\\VLC\\vlc.exe", arguments);
 
@@ -193,13 +193,13 @@ void UI_Mainwindow::start_stop_video()
     return;
   }
 #else
-  arguments << "-I" << "rc" << "--rc-host" << str << "--video-on-top" << "--width" << "150" << "--height" << "150";
+  arguments << "-I" << "rc" << "--rc-host" << str << "--video-on-top" << "--width" << "150" << "--height" << "150" << "--ignore-config";
 
   video_process->start("vlc", arguments);
 
   if(video_process->waitForStarted(5000) == false)
   {
-    msgbox.setText("  \n Cannot start VLC mediaplayer. \n  "
+    msgbox.setText("  \n Cannot start the video player. \n  "
                    "  \n Check your installation of VLC. \n  ");
     msgbox.exec();
     return;
@@ -209,14 +209,14 @@ void UI_Mainwindow::start_stop_video()
   msgbox.setIcon(QMessageBox::NoIcon);
   msgbox.setWindowTitle("Starting");
   msgbox.setStandardButtons(QMessageBox::Abort);
-  msgbox.setText("   \n Starting VLC, please wait ... \n   ");
+  msgbox.setText("   \n Starting video, please wait ... \n   ");
   msgbox.show();
 
   connect(&msgbox, SIGNAL(finished(int)), &evlp, SLOT(quit()));
   QTimer::singleShot(2000, &evlp, SLOT(quit()));
   evlp.exec();
 
-  msgbox.setText("   \n Opening socket to VLC, please wait ... \n   ");
+  msgbox.setText("   \n Opening a socket to the video player, please wait ... \n   ");
 
   vlc_sock = new QTcpSocket;
 
@@ -226,7 +226,7 @@ void UI_Mainwindow::start_stop_video()
   {
     err = vlc_sock->error();
 
-    sprintf(str, "   \n Cannot connect to VLC mediaplayer via localhost loopback port (error %i) \n   ", err);
+    sprintf(str, "   \n Cannot connect to the video player via localhost loopback port (error %i) \n   ", err);
 
     msgbox.setIcon(QMessageBox::Critical);
     msgbox.setWindowTitle("Error");
@@ -235,7 +235,7 @@ void UI_Mainwindow::start_stop_video()
 
     evlp.exec();
 
-    msgbox.setText(" \n Closing VLC, please wait... \n   ");
+    msgbox.setText(" \n Closing the video player, please wait... \n   ");
 
     if(vlc_sock->state())
     {
@@ -534,14 +534,14 @@ void UI_Mainwindow::stop_video_generic(int stop_reason)
 
   disconnect(video_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(video_process_error(QProcess::ProcessError)));
 
-  QMessageBox msgbox(QMessageBox::NoIcon, "Wait", " \n Closing VLC, please wait ... \n  ");
+  QMessageBox msgbox(QMessageBox::NoIcon, "Wait", " \n Closing video, please wait ... \n  ");
   if(stop_reason == 1)
   {
-    msgbox.setText(" \n Video has finished \n  \n Closing VLC, please wait ... \n  ");
+    msgbox.setText(" \n Video has finished \n  \n Closing the video player, please wait ... \n  ");
   }
   if(stop_reason == 2)
   {
-    msgbox.setText(" \n VLC timeout error \n  \n Closing VLC, please wait ... \n  ");
+    msgbox.setText(" \n Video timeout error \n  \n Closing the video player, please wait ... \n  ");
   }
   msgbox.show();
 
