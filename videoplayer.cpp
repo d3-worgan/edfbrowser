@@ -354,14 +354,25 @@ void UI_Mainwindow::video_poll_timer_func()
           }
           else
           {
+            mpr_write("vzoom 0.25\n");
+
             video_player->status = VIDEO_STATUS_STARTUP_4;
+
+            repeat = 5;
           }
         }
         else if(video_player->status == VIDEO_STATUS_STARTUP_4)
           {
-            mpr_write("vzoom 0.25\n");
+            if(repeat)
+            {
+              repeat--;
+            }
+            else
+            {
+              mpr_write("vzoom 0.25\n");
 
-            video_player->status = VIDEO_STATUS_STARTUP_5;
+              video_player->status = VIDEO_STATUS_STARTUP_5;
+            }
           }
           else if(video_player->status == VIDEO_STATUS_STARTUP_5)
             {
