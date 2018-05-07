@@ -426,7 +426,7 @@ void UI_Mainwindow::video_poll_timer_func()
 
         if(video_player->fpos != vpos)
         {
-          jump_to_time_millisec(video_player->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime + (vpos * 1000LL));
+          jump_to_time_millisec(video_player->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime + (vpos * 1000LL) - (pagetime / 20000));
 
           video_player->fpos = vpos;
 
