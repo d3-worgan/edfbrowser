@@ -383,10 +383,6 @@ void UI_Mainwindow::video_poll_timer_func()
               mpr_write("volume 255\n");
 
               video_player->status = VIDEO_STATUS_PLAYING;
-
-              video_pause_act->setText("Pause");
-
-              video_pause_act->setToolTip("Pause video");
             }
 
     video_player->cntdwn_timer = 5000;
@@ -493,10 +489,6 @@ void UI_Mainwindow::video_player_toggle_pause()
   {
     video_player->status = VIDEO_STATUS_PAUSED;
 
-    video_pause_act->setText("Play");
-
-    video_pause_act->setToolTip("Play video");
-
     playback_realtime_Act->setText("[play]");
 
     playback_realtime_Act->setIcon(QIcon(":/images/media-playback-start-symbolic.symbolic.png"));
@@ -506,10 +498,6 @@ void UI_Mainwindow::video_player_toggle_pause()
   else
   {
     video_player->status = VIDEO_STATUS_PLAYING;
-
-    video_pause_act->setText("Pause");
-
-    video_pause_act->setToolTip("Pause video");
 
     playback_realtime_Act->setText("[pause]");
 
@@ -576,8 +564,6 @@ void UI_Mainwindow::stop_video_generic(int stop_reason)
   delete vlc_sock;
 
   video_act->setText("Start video");
-
-  video_pause_act->setText("Play");
 
   msgbox.close();
 

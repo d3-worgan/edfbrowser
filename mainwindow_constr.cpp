@@ -785,7 +785,7 @@ UI_Mainwindow::UI_Mainwindow()
   navtoolbar = new QToolBar("Navigation Bar");
   navtoolbar->setFloatable(false);
   navtoolbar->setAllowedAreas(Qt::AllToolBarAreas);
-  addToolBar(Qt::TopToolBarArea, navtoolbar);
+  addToolBar(Qt::BottomToolBarArea, navtoolbar);
   navtoolbar->setEnabled(true);
 
   former_page_Act = new QAction(QIcon(":/images/go-first-symbolic.symbolic.png"), "<<", this);
@@ -799,6 +799,10 @@ UI_Mainwindow::UI_Mainwindow()
   shift_page_left_Act->setShortcut(QKeySequence::MoveToPreviousChar);
   connect(shift_page_left_Act, SIGNAL(triggered()), this, SLOT(shift_page_left()));
   navtoolbar->addAction(shift_page_left_Act);
+
+  stop_playback_realtime_Act = new QAction(QIcon(":/images/media-playback-stop-symbolic.symbolic.png"), "[stop]", this);
+  connect(stop_playback_realtime_Act, SIGNAL(triggered()), this, SLOT(stop_playback()));
+  navtoolbar->addAction(stop_playback_realtime_Act);
 
   playback_realtime_Act = new QAction(QIcon(":/images/media-playback-start-symbolic.symbolic.png"), "[play]", this);
   connect(playback_realtime_Act, SIGNAL(triggered()), this, SLOT(playback_realtime()));
@@ -848,24 +852,16 @@ UI_Mainwindow::UI_Mainwindow()
   positionslider->setSingleStep(10000);
   positionslider->setPageStep(100000);
 
-  video_pause_act = new QAction("Play", this);
-  connect(video_pause_act, SIGNAL(triggered()), this, SLOT(video_player_toggle_pause()));
-  video_pause_act->setToolTip("Play video");
-
-  video_stop_act = new QAction("Stop", this);
-  connect(video_stop_act, SIGNAL(triggered()), this, SLOT(start_stop_video()));
-  video_stop_act->setToolTip("Stop video");
-
   slidertoolbar = new QToolBar("Video Playback");
   slidertoolbar->setFloatable(false);
   slidertoolbar->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
-  slidertoolbar->addAction(video_stop_act);
-  slidertoolbar->addAction(video_pause_act);
   slidertoolbar->addWidget(positionslider);
   addToolBar(Qt::BottomToolBarArea, slidertoolbar);
   QObject::connect(positionslider, SIGNAL(valueChanged(int)), this, SLOT(slider_moved(int)));
   slidertoolbar->setEnabled(false);
   positionslider->blockSignals(true);
+
+  insertToolBarBreak(navtoolbar);
 
   files_open = 0;
   signalcomps = 0;

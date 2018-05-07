@@ -1105,6 +1105,24 @@ void UI_Mainwindow::shift_page_right()
 }
 
 
+void UI_Mainwindow::stop_playback()
+{
+  if(playback_realtime_active)
+  {
+    playback_realtime_timer->stop();
+
+    playback_realtime_active = 0;
+  }
+  else
+  {
+    if((video_player->status == VIDEO_STATUS_PLAYING) || (video_player->status == VIDEO_STATUS_PAUSED))
+    {
+      start_stop_video();
+    }
+  }
+}
+
+
 void UI_Mainwindow::playback_realtime()
 {
   if(!signalcomps)
@@ -1117,6 +1135,15 @@ void UI_Mainwindow::playback_realtime()
     return;
   }
 
+  if(playback_realtime_active)
+  {
+    playback_realtime_timer->stop();
+
+    playback_realtime_active = 0;
+
+    return;
+  }
+
   if((video_player->status == VIDEO_STATUS_PLAYING) || (video_player->status == VIDEO_STATUS_PAUSED))
   {
     video_player_toggle_pause();
@@ -1124,34 +1151,22 @@ void UI_Mainwindow::playback_realtime()
     return;
   }
 
-  if(playback_realtime_active)
-  {
-    stop_playback_realtime();
-  }
-  else
+  QMessageBox msgBox;
+  msgBox.setText(" \n Do you want to playback also a video?\n ");
+  msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+  msgBox.setDefaultButton(QMessageBox::Yes);
+  if(msgBox.exec() == QMessageBox::No)
   {
     playback_realtime_time->start();
 
     playback_realtime_timer->start();
 
-    playback_realtime_Act->setText("[stop]");
-
-    playback_realtime_Act->setIcon(QIcon(":/images/media-playback-stop-symbolic.symbolic.png"));
-
     playback_realtime_active = 1;
   }
-}
-
-
-void UI_Mainwindow::stop_playback_realtime()
-{
-  playback_realtime_timer->stop();
-
-  playback_realtime_Act->setText("[play]");
-
-  playback_realtime_Act->setIcon(QIcon(":/images/media-playback-start-symbolic.symbolic.png"));
-
-  playback_realtime_active = 0;
+  else
+  {
+    start_stop_video();
+  }
 }
 
 
@@ -1299,7 +1314,7 @@ void UI_Mainwindow::annotation_editor()
 {
   stop_video_generic(0);
 
-  stop_playback_realtime();
+  stop_playback();
 
   if(!files_open)  return;
 
@@ -1980,7 +1995,7 @@ void UI_Mainwindow::remove_all_signals()
 
   stop_video_generic(0);
 
-  stop_playback_realtime();
+  stop_playback();
 
   for(i=0; i<MAXSPECTRUMDOCKS; i++)
   {
@@ -2079,7 +2094,7 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
 
   stop_video_generic(0);
 
-  stop_playback_realtime();
+  stop_playback();
 
   for(j=0; j<signalcomps; )
   {

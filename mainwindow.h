@@ -318,9 +318,7 @@ public:
   QAction      *save_act,
                *load_predefined_mtg_act[MAXPREDEFINEDMONTAGES],
                *Escape_act,
-               *video_act,
-               *video_pause_act,
-               *video_stop_act;
+               *video_act;
 
   QActionGroup *timelock_act_group,
                *sel_viewtime_act_group;
@@ -358,6 +356,7 @@ private:
            *shift_page_left_Act,
            *shift_page_right_Act,
            *playback_realtime_Act,
+           *stop_playback_realtime_Act,
            *next_page_Act,
            *shift_page_up_Act,
            *shift_page_down_Act,
@@ -497,6 +496,7 @@ private slots:
   void shift_page_left();
   void shift_page_right();
   void playback_realtime();
+  void stop_playback();
   void next_page();
   void shift_page_up();
   void shift_page_down();
@@ -571,7 +571,6 @@ private slots:
   void live_stream_timer_func();
   void video_poll_timer_func();
   void playback_realtime_timer_func();
-  void stop_playback_realtime();
   void organize_signals();
   void Escape_fun();
   void export_ecg_rr_interval_to_ascii();
