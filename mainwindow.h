@@ -423,6 +423,8 @@ private:
            *amp_minus,
            *zoomback_Act,
            *zoomforward_Act,
+           *slower_Act,
+           *faster_Act,
            *recent_file[MAX_RECENTFILES],
            *offset_timesync_act,
            *absolut_timesync_act,

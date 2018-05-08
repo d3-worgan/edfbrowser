@@ -32,5 +32,7 @@
     <file>images/darkmagenta_icon_16x16.png</file>
     <file>images/green_icon_16x16.png</file>
     <file>images/white_icon_16x16.png</file>
+    <file>images/media-seek-forward.png</file>
+    <file>images/media-seek-backward.png</file>
 </qresource>
 </RCC>

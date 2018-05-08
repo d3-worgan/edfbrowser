@@ -819,6 +819,20 @@ UI_Mainwindow::UI_Mainwindow()
   connect(next_page_Act, SIGNAL(triggered()), this, SLOT(next_page()));
   navtoolbar->addAction(next_page_Act);
 
+  slower_Act = new QAction(QIcon(":/images/media-seek-backward.png"), "<<", this);
+  slower_Act->setToolTip("Slower");
+//  slower_Act->setShortcut(QKeySequence::MoveToNextPage);
+//  connect(slower_Act, SIGNAL(triggered()), this, SLOT(next_page()));
+  navtoolbar->addAction(slower_Act);
+  slower_Act->setVisible(false);
+
+  faster_Act = new QAction(QIcon(":/images/media-seek-forward.png"), ">>", this);
+  faster_Act->setToolTip("Faster");
+//  faster_Act->setShortcut(QKeySequence::MoveToNextPage);
+//  connect(faster_Act, SIGNAL(triggered()), this, SLOT(next_page()));
+  navtoolbar->addAction(faster_Act);
+  faster_Act->setVisible(false);
+
   shift_page_up_Act = new QAction(QIcon(":/images/go-up-symbolic.symbolic.png"), "^", this);
   shift_page_up_Act->setToolTip("Shift Up");
   shift_page_up_Act->setShortcut(QKeySequence::MoveToPreviousLine);

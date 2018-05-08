@@ -388,6 +388,10 @@ void UI_Mainwindow::video_poll_timer_func()
               mpr_write("volume 255\n");
 
               video_player->status = VIDEO_STATUS_PLAYING;
+
+              faster_Act->setVisible(true);
+
+              slower_Act->setVisible(true);
             }
 
     video_player->cntdwn_timer = 5000;
@@ -514,6 +518,11 @@ void UI_Mainwindow::video_player_toggle_pause()
 void UI_Mainwindow::stop_video_generic(int stop_reason)
 {
   QEventLoop evlp;
+
+
+  faster_Act->setVisible(false);
+
+  slower_Act->setVisible(false);
 
   video_poll_timer->stop();
 
