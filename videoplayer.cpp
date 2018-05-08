@@ -256,6 +256,8 @@ void UI_Mainwindow::start_stop_video()
 
     delete vlc_sock;
 
+    vlc_sock = NULL;
+
     msgbox.close();
 
     return;
@@ -627,6 +629,8 @@ void UI_Mainwindow::stop_video_generic(int stop_reason)
 
   delete vlc_sock;
 
+  vlc_sock = NULL;
+
   video_act->setText("Start video");
 
   msgbox.close();
@@ -688,6 +692,11 @@ void UI_Mainwindow::mpr_write(const char *cmd_str)
   fprintf(debug_vpr, "edfbr: %s", cmd_str);
 #endif
 
+  if(vlc_sock == NULL)
+  {
+    return;
+  }
+
   vlc_sock->write(cmd_str);
 
   vlc_sock->waitForBytesWritten(200);
@@ -696,6 +705,11 @@ void UI_Mainwindow::mpr_write(const char *cmd_str)
 
 int UI_Mainwindow::mpr_read(char *buf, int sz)
 {
+  if(vlc_sock == NULL)
+  {
+    return 0;
+  }
+
 #ifdef DEBUG_VIDEOPLAYER
   int n;
 

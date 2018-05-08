@@ -223,6 +223,8 @@ UI_Mainwindow::UI_Mainwindow()
   annot_filter->hide_other = 1;
   annot_filter->hide_in_list_only = 1;
 
+  vlc_sock = NULL;
+
   read_general_settings();
 
   maincurve = new ViewCurve(this);
