@@ -3492,7 +3492,7 @@ void UI_Mainwindow::show_kb_shortcuts()
 
    "\nCtrl+Space\t\tToggle Playback or Pause\n"
 #ifdef Q_OS_LINUX
-   "Ctrl+Shift+V\t\tPlayback with video"
+   "Ctrl+Shift+V\t\tToggle Playback with video"
 #endif
   );
 
