@@ -583,6 +583,8 @@ private slots:
   void convert_biox_to_edf();
   void video_process_error(QProcess::ProcessError);
   void export_filtered_signals();
+  void video_player_faster();
+  void video_player_slower();
 //  void search_pattern();
 
 protected:

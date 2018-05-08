@@ -822,14 +822,14 @@ UI_Mainwindow::UI_Mainwindow()
   slower_Act = new QAction(QIcon(":/images/media-seek-backward.png"), "<<", this);
   slower_Act->setToolTip("Slower");
 //  slower_Act->setShortcut(QKeySequence::MoveToNextPage);
-//  connect(slower_Act, SIGNAL(triggered()), this, SLOT(next_page()));
+  connect(slower_Act, SIGNAL(triggered()), this, SLOT(video_player_slower()));
   navtoolbar->addAction(slower_Act);
   slower_Act->setVisible(false);
 
   faster_Act = new QAction(QIcon(":/images/media-seek-forward.png"), ">>", this);
   faster_Act->setToolTip("Faster");
 //  faster_Act->setShortcut(QKeySequence::MoveToNextPage);
-//  connect(faster_Act, SIGNAL(triggered()), this, SLOT(next_page()));
+  connect(faster_Act, SIGNAL(triggered()), this, SLOT(video_player_faster()));
   navtoolbar->addAction(faster_Act);
   faster_Act->setVisible(false);
 

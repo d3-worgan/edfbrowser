@@ -277,6 +277,8 @@ void UI_Mainwindow::start_stop_video()
 
   video_player->cntdwn_timer = 5000;
 
+  video_player->speed = 1;
+
   video_poll_timer->start(video_player->poll_timer);
 
   video_act->setText("Stop video");
@@ -457,6 +459,54 @@ void UI_Mainwindow::video_poll_timer_func()
   }
 
   video_poll_timer->start(video_player->poll_timer);
+}
+
+
+void UI_Mainwindow::video_player_faster()
+{
+  char str[512];
+
+  if(video_player->status != VIDEO_STATUS_PLAYING)
+  {
+    return;
+  }
+
+  if(video_player->speed >= 4)
+  {
+    video_player->speed = 4;
+
+    return;
+  }
+
+  video_player->speed *= 2;
+
+  sprintf(str, "rate %i\n", video_player->speed);
+
+  mpr_write(str);
+}
+
+
+void UI_Mainwindow::video_player_slower()
+{
+  char str[512];
+
+  if(video_player->status != VIDEO_STATUS_PLAYING)
+  {
+    return;
+  }
+
+  if(video_player->speed <= 1)
+  {
+    video_player->speed = 1;
+
+    return;
+  }
+
+  video_player->speed /= 2;
+
+  sprintf(str, "rate %i\n", video_player->speed);
+
+  mpr_write(str);
 }
 
 

@@ -287,6 +287,7 @@ struct video_player_struct{
         int starttime_diff;
         int stop_det_counter;
         int fpos;
+        int speed;
        };
 
 struct annot_filter_struct{
