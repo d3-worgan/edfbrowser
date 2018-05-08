@@ -195,7 +195,7 @@ void UI_Mainwindow::open_stream()
 //     shift_page_down_Act->setEnabled(false);
     printmenu->setEnabled(false);
     recent_filesmenu->setEnabled(false);
-    playback_realtime_Act->setEnabled(false);
+    playback_file_Act->setEnabled(false);
 
     live_stream_timer->start(live_stream_update_interval);
   }
@@ -1123,7 +1123,7 @@ void UI_Mainwindow::stop_playback()
 }
 
 
-void UI_Mainwindow::playback_realtime()
+void UI_Mainwindow::playback_file()
 {
   if(!signalcomps)
   {
@@ -1151,22 +1151,11 @@ void UI_Mainwindow::playback_realtime()
     return;
   }
 
-  QMessageBox msgBox;
-  msgBox.setText(" \n Do you want to playback also a video?\n ");
-  msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-  msgBox.setDefaultButton(QMessageBox::Yes);
-  if(msgBox.exec() == QMessageBox::No)
-  {
-    playback_realtime_time->start();
+  playback_realtime_time->start();
 
-    playback_realtime_timer->start();
+  playback_realtime_timer->start();
 
-    playback_realtime_active = 1;
-  }
-  else
-  {
-    start_stop_video();
-  }
+  playback_realtime_active = 1;
 }
 
 
@@ -2315,7 +2304,7 @@ void UI_Mainwindow::close_all_files()
   shift_page_down_Act->setEnabled(true);
   printmenu->setEnabled(true);
   recent_filesmenu->setEnabled(true);
-  playback_realtime_Act->setEnabled(true);
+  playback_file_Act->setEnabled(true);
 
   if(annotations_edited)
   {
@@ -3501,7 +3490,7 @@ void UI_Mainwindow::show_kb_shortcuts()
    "Ctrl+Mousewheel\tzoom in or out\n"
    "Keep middle mousebutton pressed to drag horizontally\n"
 
-   "\nCtrl+Space\t\tToggle Playback\n"
+   "\nCtrl+Space\t\tToggle Playback or Pause\n"
 #ifdef Q_OS_LINUX
    "Ctrl+Shift+V\t\tPlayback with video"
 #endif

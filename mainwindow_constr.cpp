@@ -311,7 +311,7 @@ UI_Mainwindow::UI_Mainwindow()
   filemenu->addSeparator();
   filemenu->addAction(video_act);
   filemenu->addSeparator();
-  filemenu->addAction("Playback file", this, SLOT(playback_realtime()), QKeySequence("Ctrl+Space"));
+  filemenu->addAction("Playback file", this, SLOT(playback_file()), QKeySequence("Ctrl+Space"));
   filemenu->addSeparator();
   filemenu->addAction(save_act);
   filemenu->addMenu(recent_filesmenu);
@@ -786,7 +786,6 @@ UI_Mainwindow::UI_Mainwindow()
   navtoolbar->setFloatable(false);
   navtoolbar->setAllowedAreas(Qt::AllToolBarAreas);
   addToolBar(Qt::BottomToolBarArea, navtoolbar);
-  navtoolbar->setEnabled(true);
 
   former_page_Act = new QAction(QIcon(":/images/go-first-symbolic.symbolic.png"), "<<", this);
   former_page_Act->setToolTip("Former Page");
@@ -804,9 +803,9 @@ UI_Mainwindow::UI_Mainwindow()
   connect(stop_playback_realtime_Act, SIGNAL(triggered()), this, SLOT(stop_playback()));
   navtoolbar->addAction(stop_playback_realtime_Act);
 
-  playback_realtime_Act = new QAction(QIcon(":/images/media-playback-start-symbolic.symbolic.png"), "[play]", this);
-  connect(playback_realtime_Act, SIGNAL(triggered()), this, SLOT(playback_realtime()));
-  navtoolbar->addAction(playback_realtime_Act);
+  playback_file_Act = new QAction(QIcon(":/images/media-playback-start-symbolic.symbolic.png"), "[play]", this);
+  connect(playback_file_Act, SIGNAL(triggered()), this, SLOT(playback_file()));
+  navtoolbar->addAction(playback_file_Act);
 
   shift_page_right_Act = new QAction(QIcon(":/images/go-next-symbolic.symbolic.png"), ">", this);
   shift_page_right_Act->setToolTip("Shift Right");
@@ -852,7 +851,7 @@ UI_Mainwindow::UI_Mainwindow()
   positionslider->setSingleStep(10000);
   positionslider->setPageStep(100000);
 
-  slidertoolbar = new QToolBar("Video Playback");
+  slidertoolbar = new QToolBar("Position Slider");
   slidertoolbar->setFloatable(false);
   slidertoolbar->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
   slidertoolbar->addWidget(positionslider);
@@ -861,7 +860,7 @@ UI_Mainwindow::UI_Mainwindow()
   slidertoolbar->setEnabled(false);
   positionslider->blockSignals(true);
 
-  insertToolBarBreak(navtoolbar);
+  insertToolBarBreak(slidertoolbar);
 
   files_open = 0;
   signalcomps = 0;

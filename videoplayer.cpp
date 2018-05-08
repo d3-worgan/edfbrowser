@@ -36,7 +36,6 @@
 #endif
 
 
-/* Tested with VLC 3.0.2 Vetinari */
 void UI_Mainwindow::start_stop_video()
 {
   int err, port;
@@ -56,7 +55,9 @@ void UI_Mainwindow::start_stop_video()
 
   if(playback_realtime_active)
   {
-    return;
+    playback_realtime_timer->stop();
+
+    playback_realtime_active = 0;
   }
 
   if(live_stream_active)
@@ -154,14 +155,14 @@ void UI_Mainwindow::start_stop_video()
 // #endif
 
 //  "C:\Program Files\VideoLAN\\VLC\vlc.exe" -I rc --rc-host localhost:3000 --rc-quiet --video-on-top --width 150 --height 150
-//    add C:\Users\K6TT\Documents\testfiles\rift.mp4
+//    add C:\Users\K3TT\Documents\testfiles\rift.mp4
 
 // clear: returned 0 (no error)
-// add C:\Users\K6TT\Documents\testfiles\rift.mp4
-// Trying to add C:\Users\K6TT\Documents\testfiles\rift.mp4 to playlist.
+// add C:\Users\K3TT\Documents\testfiles\rift.mp4
+// Trying to add C:\Users\K3TT\Documents\testfiles\rift.mp4 to playlist.
 // add: returned 0 (no error)
 // zoom 0.5
-// status change: ( new input: file:///C:/Users/K6TT/Documents/testfiles/rift.mp4 )
+// status change: ( new input: file:///C:/Users/K3TT/Documents/testfiles/rift.mp4 )
 // status change: ( play state: 3 )
 // Unknown command `zoom'. Type `help' for help.
 // vzoom 0.25
@@ -266,9 +267,9 @@ void UI_Mainwindow::start_stop_video()
 
   msgbox.close();
 
-  playback_realtime_Act->setText("[pause]");
+  playback_file_Act->setText("[pause]");
 
-  playback_realtime_Act->setIcon(QIcon(":/images/media-playback-pause-symbolic.symbolic.png"));
+  playback_file_Act->setIcon(QIcon(":/images/media-playback-pause-symbolic.symbolic.png"));
 
   video_player->status = VIDEO_STATUS_STARTUP_1;
 
@@ -279,6 +280,10 @@ void UI_Mainwindow::start_stop_video()
   video_poll_timer->start(video_player->poll_timer);
 
   video_act->setText("Stop video");
+
+  navtoolbar->setVisible(true);
+
+  slidertoolbar->setVisible(true);
 }
 
 
@@ -489,9 +494,9 @@ void UI_Mainwindow::video_player_toggle_pause()
   {
     video_player->status = VIDEO_STATUS_PAUSED;
 
-    playback_realtime_Act->setText("[play]");
+    playback_file_Act->setText("[play]");
 
-    playback_realtime_Act->setIcon(QIcon(":/images/media-playback-start-symbolic.symbolic.png"));
+    playback_file_Act->setIcon(QIcon(":/images/media-playback-start-symbolic.symbolic.png"));
 
     video_player->cntdwn_timer = 5000;
   }
@@ -499,9 +504,9 @@ void UI_Mainwindow::video_player_toggle_pause()
   {
     video_player->status = VIDEO_STATUS_PLAYING;
 
-    playback_realtime_Act->setText("[pause]");
+    playback_file_Act->setText("[pause]");
 
-    playback_realtime_Act->setIcon(QIcon(":/images/media-playback-pause-symbolic.symbolic.png"));
+    playback_file_Act->setIcon(QIcon(":/images/media-playback-pause-symbolic.symbolic.png"));
   }
 }
 
@@ -516,9 +521,9 @@ void UI_Mainwindow::stop_video_generic(int stop_reason)
 
   video_player->status = VIDEO_STATUS_STOPPED;
 
-  playback_realtime_Act->setText("[play]");
+  playback_file_Act->setText("[play]");
 
-  playback_realtime_Act->setIcon(QIcon(":/images/media-playback-start-symbolic.symbolic.png"));
+  playback_file_Act->setIcon(QIcon(":/images/media-playback-start-symbolic.symbolic.png"));
 
   disconnect(video_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(video_process_error(QProcess::ProcessError)));
 

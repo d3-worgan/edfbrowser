@@ -355,7 +355,7 @@ private:
   QAction  *former_page_Act,
            *shift_page_left_Act,
            *shift_page_right_Act,
-           *playback_realtime_Act,
+           *playback_file_Act,
            *stop_playback_realtime_Act,
            *next_page_Act,
            *shift_page_up_Act,
@@ -495,7 +495,7 @@ private slots:
   void former_page();
   void shift_page_left();
   void shift_page_right();
-  void playback_realtime();
+  void playback_file();
   void stop_playback();
   void next_page();
   void shift_page_up();
