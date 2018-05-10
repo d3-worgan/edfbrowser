@@ -729,6 +729,18 @@ void UI_Mainwindow::jump_to_start()
 
   if(!files_open)  return;
 
+  if(video_player->status == VIDEO_STATUS_PLAYING)
+  {
+    video_player_seek((int)((pagetime / 2LL) / TIME_DIMENSION));
+
+    return;
+  }
+
+  if(video_player->status == VIDEO_STATUS_PAUSED)
+  {
+    video_player_seek((int)((pagetime / 2LL) / TIME_DIMENSION));
+  }
+
   if(viewtime_sync==VIEWTIME_SYNCED_OFFSET)
   {
     for(i=0; i<files_open; i++)
@@ -1008,14 +1020,14 @@ void UI_Mainwindow::former_page()
 
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime - pagetime) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime - (pagetime / 2LL)) / TIME_DIMENSION));
 
     return;
   }
 
   if(video_player->status == VIDEO_STATUS_PAUSED)
   {
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime - pagetime) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime - (pagetime / 2LL)) / TIME_DIMENSION));
   }
 
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
@@ -1043,14 +1055,14 @@ void UI_Mainwindow::shift_page_left()
 
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime - (pagetime / 10)) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 2LL) - (pagetime / 10)) / TIME_DIMENSION));
 
     return;
   }
 
   if(video_player->status == VIDEO_STATUS_PAUSED)
   {
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime - (pagetime / 10)) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 2LL) - (pagetime / 10)) / TIME_DIMENSION));
   }
 
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
@@ -1078,14 +1090,14 @@ void UI_Mainwindow::shift_page_right()
 
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 10)) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 2LL) + (pagetime / 10)) / TIME_DIMENSION));
 
     return;
   }
 
   if(video_player->status == VIDEO_STATUS_PAUSED)
   {
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 10)) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 2LL) + (pagetime / 10)) / TIME_DIMENSION));
   }
 
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
@@ -1195,14 +1207,14 @@ void UI_Mainwindow::next_page()
 
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + pagetime) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + pagetime + (pagetime / 2LL)) / TIME_DIMENSION));
 
     return;
   }
 
   if(video_player->status == VIDEO_STATUS_PAUSED)
   {
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + pagetime) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + pagetime + (pagetime / 2LL)) / TIME_DIMENSION));
   }
 
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
