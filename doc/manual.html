@@ -115,14 +115,16 @@
 <h3><a name="Video"></a>Video</h3>
 
 <p>
-  Use the Filemenu or the buttons in the left down corner to start (or stop) a video. After the video has been started, you can use the slider<br>
-  on the bottom to change the file position or use page-up/page-down.<br><br>
+  In order for EDFbrowser to be able to start a video, the <a href="https://www.videolan.org/">VLC mediaplayer</a> must be installed on your system.<br>
+  On windows: make sure VLC is installed in: C:\Program Files\VideoLAN\VLC\ or C:\Program Files (x86)\VideoLAN\VLC\<br><br>
 
-  In order for EDFbrowser to be able to start a video, the VLC mediaplayer needs to be installed on your system.<br>
-  On windows: make sure VLC is installed in: C:\Program Files\VideoLAN\VLC\<br><br>
+  Open an EDF or BDF file and select/setup your montage as usual. Then press Ctrl-Shift-v (or go to File -> Start video)<br>
+  to select a video. After the video has started, you can use the slider on the bottom to change the file position or<br>
+  use page-up/page-down.<br><br>
 
   Also, the startdate and starttime needs to be set in the filename of the video (for synchronization).<br>
   The following text is copied from <a href="http://www.edfplus.info/specs/video.html">http://www.edfplus.info/specs/video.html</a> :<br><br>
+<i>
   Video filenames of the same patient must start with the same patient identification,<br>
   followed by the start-date and -time of the video, as follows:<br>
   NL_012348168_03-MAY-2013_14h45m49.013s_Video.ogv<br>
@@ -135,8 +137,13 @@
   (for example in 06h37m12s). The addition _Video is not obligatory and neither do we standardize any video format such as ogv.<br>
   So, a perfectly OK video filename would also be:<br>
   NL_012348168_03-MAY-2013_14h45m49.013s.mpeg<br><br>
+</i>
+  Note: EDFbrowser will ignore the part of the filename directly before the startdate and directly after the starttime.<br><br>
 
-  You can resize the video window by dragging the lower right corner with the mouse.<br>
+  If the filename of the video does not contain the startdate and starttime, you can still continue to use the video but<br>
+  in that case EDFbrowser will assume that the starttime of the video coincides with the starttime of the EDF file.<br><br>
+
+  You can resize the video window by dragging the bottom-right corner with the mouse.<br>
   All other operations like stop, pause, etc. must be done by using the videoplayer controls (buttons) in EDFbrowser.<br>
   Do not use the control interface of VLC, it will interfere with EDFbrowser.
 </p>
