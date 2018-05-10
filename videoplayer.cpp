@@ -188,10 +188,17 @@ void UI_Mainwindow::start_stop_video()
 
   if(video_process->waitForStarted(5000) == false)
   {
-    msgbox.setText("  \n Cannot start VLC mediaplayer. \n"
-                   "  \n Check if VLC is installed in C:\\Program Files\\VideoLAN\\VLC\\ \n" );
-    msgbox.exec();
-    return;
+    video_process->start("C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe", arguments);
+
+    if(video_process->waitForStarted(5000) == false)
+    {
+      msgbox.setText("  \n Cannot start VLC mediaplayer. \n"
+                     "  \n Check if VLC is installed in C:\\Program Files\\VideoLAN\\VLC\\ \n "
+                     "  or\n "
+                     "  \n C:\\Program Files (x86)\\VideoLAN\\VLC\\\n ");
+      msgbox.exec();
+      return;
+    }
   }
 #else
   arguments << "-I" << "rc" << "--rc-host" << str << "--video-on-top" << "--width" << "150" << "--height" << "150" << "--ignore-config";
