@@ -451,6 +451,18 @@ void UI_Mainwindow::video_poll_timer_func()
 
         video_player->cntdwn_timer = 5000;
       }
+      else
+      {
+        for(i=0; i<(len-11); i++)
+        {
+          if(!strncmp(buf + i, "stop state:", 11))
+          {
+            stop_video_generic(1);
+
+            return;
+          }
+        }
+      }
     }
     else if(buf[p] == '\r')
     {
