@@ -38,7 +38,7 @@
 
 void UI_Mainwindow::start_stop_video()
 {
-  int err, port;
+  int i, err, port;
 
   char str[4096]={""};
 
@@ -146,33 +146,17 @@ void UI_Mainwindow::start_stop_video()
 
   connect(video_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(video_process_error(QProcess::ProcessError)));
 
-// #ifdef Q_OS_WIN32
-//   QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-//
-//   env.insert("PATH", env.value("PATH") + ";C:\\Program Files\\VideoLAN\\VLC");
-//
-//   video_process->setProcessEnvironment(env);
-// #endif
-
-//  "C:\Program Files\VideoLAN\\VLC\vlc.exe" -I rc --rc-host localhost:3000 --rc-quiet --video-on-top --width 150 --height 150
-//    add C:\Users\K3TT\Documents\testfiles\rift.mp4
-
-// clear: returned 0 (no error)
-// add C:\Users\K3TT\Documents\testfiles\rift.mp4
-// Trying to add C:\Users\K3TT\Documents\testfiles\rift.mp4 to playlist.
-// add: returned 0 (no error)
-// zoom 0.5
-// status change: ( new input: file:///C:/Users/K3TT/Documents/testfiles/rift.mp4 )
-// status change: ( play state: 3 )
-// Unknown command `zoom'. Type `help' for help.
-// vzoom 0.25
-// vzoom: returned 0 (no error)
-// get_time
-// 45
-
-// vlc -I rc --rc-host localhost:3000 --video-on-top --width 150 --height 150
-
   QStringList arguments;
+
+  vlc_sock = new QTcpSocket;
+  vlc_sock->setSocketOption(QAbstractSocket::LowDelayOption, QVariant(1));
+  vlc_sock->setSocketOption(QAbstractSocket::KeepAliveOption, QVariant(1));
+
+  msgbox.setIcon(QMessageBox::NoIcon);
+  msgbox.setWindowTitle("Starting");
+  msgbox.setStandardButtons(QMessageBox::Abort);
+  msgbox.setText("   \n Starting video player, please wait ... \n   ");
+  msgbox.show();
 
 #ifdef Q_OS_WIN32
   for(int i=0; ; i++)
@@ -192,11 +176,15 @@ void UI_Mainwindow::start_stop_video()
 
     if(video_process->waitForStarted(5000) == false)
     {
+      msgbox.setWindowTitle("Error");
       msgbox.setText("  \n Cannot start VLC mediaplayer. \n"
                      "  \n Check if VLC is installed in C:\\Program Files\\VideoLAN\\VLC\\ \n "
                      "  or\n "
                      "  \n C:\\Program Files (x86)\\VideoLAN\\VLC\\\n ");
+      msgbox.setStandardButtons(QMessageBox::Close);
       msgbox.exec();
+      delete vlc_sock;
+      vlc_sock = NULL;
       return;
     }
   }
@@ -207,45 +195,47 @@ void UI_Mainwindow::start_stop_video()
 
   if(video_process->waitForStarted(5000) == false)
   {
+    msgbox.setWindowTitle("Error");
     msgbox.setText("  \n Cannot start the video player. \n  "
                    "  \n Check your installation of VLC. \n  ");
+    msgbox.setStandardButtons(QMessageBox::Close);
     msgbox.exec();
+    delete vlc_sock;
+    vlc_sock = NULL;
     return;
   }
 #endif
 
-  msgbox.setIcon(QMessageBox::NoIcon);
-  msgbox.setWindowTitle("Starting");
-  msgbox.setStandardButtons(QMessageBox::Abort);
-  msgbox.setText("   \n Starting video, please wait ... \n   ");
-  msgbox.show();
-
-  connect(&msgbox, SIGNAL(finished(int)), &evlp, SLOT(quit()));
-  QTimer::singleShot(2000, &evlp, SLOT(quit()));
-  evlp.exec();
-
   msgbox.setText("   \n Opening a socket to the video player, please wait ... \n   ");
 
-  vlc_sock = new QTcpSocket;
+  for(i=0; i<3; i++)
+  {
+    QTimer::singleShot(3000, &evlp, SLOT(quit()));
+    evlp.exec();
 
-  vlc_sock->connectToHost(QHostAddress("127.0.0.1"), port);
+    vlc_sock->connectToHost(QHostAddress("127.0.0.1"), port);
 
-  if(vlc_sock->waitForConnected(5000) == false)
+    if(vlc_sock->waitForConnected(5000) == true)
+    {
+      break;
+    }
+  }
+
+  if(i == 3)
   {
     err = vlc_sock->error();
 
     sprintf(str, "   \n Cannot connect to the video player via localhost loopback port (error %i) \n   ", err);
 
-    msgbox.setIcon(QMessageBox::Critical);
     msgbox.setWindowTitle("Error");
     msgbox.setStandardButtons(QMessageBox::Close);
     msgbox.setText(str);
-
-    evlp.exec();
+    msgbox.exec();
 
     msgbox.setText(" \n Closing the video player, please wait... \n   ");
+    msgbox.show();
 
-    if(vlc_sock->state())
+    if(vlc_sock->state() != QAbstractSocket::UnconnectedState)
     {
       vlc_sock->disconnectFromHost();
       vlc_sock->waitForDisconnected(5000);
