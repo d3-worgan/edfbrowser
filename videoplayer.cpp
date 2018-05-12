@@ -180,12 +180,22 @@ void UI_Mainwindow::start_stop_video()
     if(video_process->waitForStarted(5000) == false)
     {
       video_process->start("C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe", arguments);
+
+      if(video_process->waitForStarted(5000) == false)
+      {
+        QTimer::singleShot(300, &evlp, SLOT(quit()));
+        evlp.exec();
+
+        delete video_process;
+        video_process = NULL;
+
+        continue;
+      }
     }
 #else
     arguments << "-I" << "rc" << "--rc-host" << str << "--video-on-top" << "--width" << "150" << "--height" << "150" << "--ignore-config";
 
     video_process->start("vlc", arguments);
-#endif
 
     if(video_process->waitForStarted(5000) == false)
     {
@@ -197,7 +207,7 @@ void UI_Mainwindow::start_stop_video()
 
       continue;
     }
-
+#endif
     msgbox.setText("   \n Opening a socket to the video player, please wait ... \n   ");
 
     for(sock_connect_retries=0; sock_connect_retries<3; sock_connect_retries++)
