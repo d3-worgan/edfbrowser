@@ -434,14 +434,14 @@ void UI_Mainwindow::slider_moved(int value)
 
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
-    video_player_seek((int)(new_viewtime / TIME_DIMENSION));
+    video_player_seek((int)((new_viewtime + (pagetime / 2LL)) / TIME_DIMENSION));
 
     return;
   }
 
   if(video_player->status == VIDEO_STATUS_PAUSED)
   {
-    video_player_seek((int)(new_viewtime / TIME_DIMENSION));
+    video_player_seek((int)((new_viewtime + (pagetime / 2LL)) / TIME_DIMENSION));
   }
 
   if(viewtime_sync==VIEWTIME_SYNCED_OFFSET)
