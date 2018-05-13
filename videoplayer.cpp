@@ -342,6 +342,8 @@ void UI_Mainwindow::start_stop_video()
   slidertoolbar->setVisible(true);
 
   connect(video_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(video_process_error(QProcess::ProcessError)));
+
+  connect(vlc_sock, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(vlc_sock_error(QAbstractSocket::SocketError)));
 }
 
 
@@ -652,7 +654,14 @@ void UI_Mainwindow::stop_video_generic(int stop_reason)
 
   playback_file_Act->setIcon(QIcon(":/images/media-playback-start-symbolic.symbolic.png"));
 
-  disconnect(video_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(video_process_error(QProcess::ProcessError)));
+  if(video_process == NULL)  return;
+
+  disconnect(video_process, 0, 0, 0);
+
+  if(vlc_sock != NULL)
+  {
+    disconnect(vlc_sock, 0, 0, 0);
+  }
 
   QMessageBox msgbox(QMessageBox::NoIcon, "Wait", " \n Closing video, please wait ... \n  ");
   if(stop_reason == 1)
@@ -687,15 +696,20 @@ void UI_Mainwindow::stop_video_generic(int stop_reason)
 
   delete video_process;
 
-  if(vlc_sock->state())
+  video_process = NULL;
+
+  if(vlc_sock != NULL)
   {
-    vlc_sock->disconnectFromHost();
-    vlc_sock->waitForDisconnected(5000);
+    if(vlc_sock->state())
+    {
+      vlc_sock->disconnectFromHost();
+      vlc_sock->waitForDisconnected(5000);
+    }
+
+    delete vlc_sock;
+
+    vlc_sock = NULL;
   }
-
-  delete vlc_sock;
-
-  vlc_sock = NULL;
 
   video_act->setText("Start video");
 
@@ -707,45 +721,44 @@ void UI_Mainwindow::stop_video_generic(int stop_reason)
 }
 
 
-void UI_Mainwindow::video_process_error(QProcess::ProcessError err)
+void UI_Mainwindow::vlc_sock_error(QAbstractSocket::SocketError)
 {
-  char str[1024];
+  char str[1024],
+       str2[2048];
 
   if(video_player->status == VIDEO_STATUS_STOPPED)  return;
 
+  strncpy(str2, vlc_sock->errorString().toLatin1().data(), 2047);
+
+  str2[2047] = 0;
+
   stop_video_generic(0);
 
-  strcpy(str, "The process that runs the mediaplayer reported an error:\n");
+  strcpy(str, " \n The socked that connects to the mediaplayer reported an error: \n \n ");
 
-  if(err == QProcess::FailedToStart)
-  {
-    strcat(str, "\nFailed to start.");
-  }
+  strcat(str, str2);
 
-  if(err == QProcess::Crashed)
-  {
-    strcat(str, "\nCrashed.");
-  }
+  QMessageBox msgbox(QMessageBox::Critical, "Error", str);
+  msgbox.exec();
+}
 
-  if(err == QProcess::Timedout)
-  {
-    strcat(str, "\nTimed out.");
-  }
 
-  if(err == QProcess::WriteError)
-  {
-    strcat(str, "\nWrite error.");
-  }
+void UI_Mainwindow::video_process_error(QProcess::ProcessError)
+{
+  char str[1024],
+       str2[2048];
 
-  if(err == QProcess::ReadError)
-  {
-    strcat(str, "\nRead error.");
-  }
+  if(video_player->status == VIDEO_STATUS_STOPPED)  return;
 
-  if(err == QProcess::UnknownError)
-  {
-    strcat(str, "\nUnknown error.");
-  }
+  strncpy(str2, video_process->errorString().toLatin1().data(), 2047);
+
+  str2[2047] = 0;
+
+  stop_video_generic(0);
+
+  strcpy(str, " \n The process that runs the mediaplayer reported an error: \n \n ");
+
+  strcat(str, str2);
 
   QMessageBox msgbox(QMessageBox::Critical, "Error", str);
   msgbox.exec();

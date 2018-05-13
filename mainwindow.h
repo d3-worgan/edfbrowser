@@ -582,6 +582,7 @@ private slots:
   void convert_mit_to_edf();
   void convert_biox_to_edf();
   void video_process_error(QProcess::ProcessError);
+  void vlc_sock_error(QAbstractSocket::SocketError);
   void export_filtered_signals();
   void video_player_faster();
   void video_player_slower();
