@@ -723,14 +723,14 @@ void UI_Mainwindow::stop_video_generic(int stop_reason)
 
 void UI_Mainwindow::vlc_sock_error(QAbstractSocket::SocketError)
 {
-  char str[1024],
-       str2[2048];
+  char str[2048],
+       str2[1024];
 
   if(video_player->status == VIDEO_STATUS_STOPPED)  return;
 
-  strncpy(str2, vlc_sock->errorString().toLatin1().data(), 2047);
+  strncpy(str2, vlc_sock->errorString().toLatin1().data(), 1023);
 
-  str2[2047] = 0;
+  str2[1023] = 0;
 
   stop_video_generic(0);
 
@@ -745,14 +745,14 @@ void UI_Mainwindow::vlc_sock_error(QAbstractSocket::SocketError)
 
 void UI_Mainwindow::video_process_error(QProcess::ProcessError)
 {
-  char str[1024],
-       str2[2048];
+  char str[2048],
+       str2[1024];
 
   if(video_player->status == VIDEO_STATUS_STOPPED)  return;
 
-  strncpy(str2, video_process->errorString().toLatin1().data(), 2047);
+  strncpy(str2, video_process->errorString().toLatin1().data(), 1023);
 
-  str2[2047] = 0;
+  str2[1023] = 0;
 
   stop_video_generic(0);
 
