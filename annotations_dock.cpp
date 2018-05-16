@@ -791,8 +791,6 @@ void UI_Annotationswindow::updateList(void)
 
   QString string;
 
-  QByteArray ba;
-
   struct annotationblock *annot;
 
   struct annotation_list *annot_list;
@@ -842,8 +840,7 @@ void UI_Annotationswindow::updateList(void)
 
     string = QString::fromUtf8(annot->annotation);
 
-    ba = string.toUtf8();
-    str_tmp = ba.data();
+    str_tmp = string.toUtf8().data();
 
     len = 0;
     for(i=0; ; i++)
