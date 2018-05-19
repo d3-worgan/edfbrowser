@@ -92,6 +92,7 @@
 #include <QVariant>
 #include <QTcpSocket>
 #include <QHostAddress>
+#include <QDir>
 
 #include <stdio.h>
 #include <stdlib.h>

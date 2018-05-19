@@ -38,9 +38,6 @@
 
 void UI_Mainwindow::start_stop_video()
 {
-#ifdef Q_OS_WIN32
-  int i;
-#endif
   int process_start_retries,
       sock_connect_retries,
       err,
@@ -52,6 +49,8 @@ void UI_Mainwindow::start_stop_video()
   QEventLoop evlp;
 
   QMessageBox msgbox(QMessageBox::Critical, "Error", "text", QMessageBox::Close);
+
+  QString qstr;
 
   if(video_player->status != VIDEO_STATUS_STOPPED)
   {
@@ -150,7 +149,7 @@ void UI_Mainwindow::start_stop_video()
   msgbox.setIcon(QMessageBox::NoIcon);
   msgbox.setWindowTitle("Starting");
   msgbox.setStandardButtons(QMessageBox::Abort);
-  msgbox.setText("   \n Starting video player, please wait ... \n   ");
+  msgbox.setText("   \n Starting the video player, please wait ... \n   ");
   msgbox.show();
 
   for(process_start_retries=0; process_start_retries<3; process_start_retries++)
@@ -166,12 +165,10 @@ void UI_Mainwindow::start_stop_video()
     video_process = new QProcess(0);
 
 #ifdef Q_OS_WIN32
-    for(int i=0; ; i++)
-    {
-      if(videopath[i] == 0)  break;
 
-      if(videopath[i] == '/')  videopath[i] = '\\';
-    }
+    qstr = QDir::toNativeSeparators(QString::fromLocal8Bit(videopath));
+
+    strcpy(videopath, qstr.toLocal8Bit().data());
 
     arguments << "-I" << "rc" << "--rc-host" << str << "--rc-quiet" << "--video-on-top" << "--width" << "150" << "--height" << "150" << "--ignore-config";
 
@@ -208,7 +205,7 @@ void UI_Mainwindow::start_stop_video()
       continue;
     }
 #endif
-    msgbox.setText("   \n Opening a socket to the video player, please wait ... \n   ");
+//    msgbox.setText("   \n Opening a socket to the video player, please wait ... \n   ");
 
     for(sock_connect_retries=0; sock_connect_retries<3; sock_connect_retries++)
     {
@@ -343,7 +340,7 @@ void UI_Mainwindow::start_stop_video()
 
   connect(video_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(video_process_error(QProcess::ProcessError)));
 
-  connect(vlc_sock, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(vlc_sock_error(QAbstractSocket::SocketError)));
+//  connect(vlc_sock, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(vlc_sock_error(QAbstractSocket::SocketError)));
 }
 
 
@@ -660,7 +657,7 @@ void UI_Mainwindow::stop_video_generic(int stop_reason)
 
   if(vlc_sock != NULL)
   {
-    disconnect(vlc_sock, 0, 0, 0);
+//    disconnect(vlc_sock, 0, 0, 0);
   }
 
   QMessageBox msgbox(QMessageBox::NoIcon, "Wait", " \n Closing video, please wait ... \n  ");
@@ -775,6 +772,8 @@ void UI_Mainwindow::mpr_write(const char *cmd_str)
   {
     return;
   }
+
+  if(vlc_sock->state() != QAbstractSocket::ConnectedState)  return;
 
   vlc_sock->write(cmd_str);
 
