@@ -22,6 +22,8 @@
 
  - Enable the videoplayer on windows
 
+ - Fixed a bug in the Z-ratio filter (Z-EEG).
+
 
 
  version 1.63      March 10, 2018
