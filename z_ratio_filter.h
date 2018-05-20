@@ -55,10 +55,11 @@ struct zratio_filter_settings{
   double samplefreq;
   int fft_outputbufsize;
   double freqstep;
-  double f1;
-  double f2;
-  double f3;
-  double f4;
+  int f0;
+  int f1;
+  int f2;
+  int f3;
+  int f4;
   double *fft_inputbuf;
   double *fft_outputbuf;
   kiss_fftr_cfg cfg;

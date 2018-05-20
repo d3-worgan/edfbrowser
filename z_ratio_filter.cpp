@@ -32,6 +32,7 @@
 
 
 #define ZRATIO_EPOCH_LEN 2
+#define ZRATIO_F0 0.5
 #define ZRATIO_F1 3.0
 #define ZRATIO_F3 12.0
 #define ZRATIO_F4 25.0
@@ -79,6 +80,11 @@ struct zratio_filter_settings * create_zratio_filter(int smp_per_record, long lo
 
   settings->f2 = settings->crossoverfreq / settings->freqstep;
 
+  settings->f0 = ZRATIO_F0 / settings->freqstep;
+  if(settings->f0 < 1)
+  {
+    settings->f0 = 1;
+  }
   settings->f1 = ZRATIO_F1 / settings->freqstep;
   settings->f3 = ZRATIO_F3 / settings->freqstep;
   settings->f4 = ZRATIO_F4 / settings->freqstep;
@@ -155,7 +161,7 @@ double run_zratio_filter(double new_sample, struct zratio_filter_settings *setti
     {
       settings->fft_outputbuf[i] = (((settings->kiss_fftbuf[i].r * settings->kiss_fftbuf[i].r) + (settings->kiss_fftbuf[i].i * settings->kiss_fftbuf[i].i)) / settings->fft_outputbufsize);
 
-      if((i > 0) && (i < settings->f1))
+      if((i >= settings->f0) && (i < settings->f1))
       {
         power_delta += settings->fft_outputbuf[i];
       }
@@ -174,9 +180,9 @@ double run_zratio_filter(double new_sample, struct zratio_filter_settings *setti
       {
         power_beta += settings->fft_outputbuf[i];
       }
-
-      power_total += settings->fft_outputbuf[i];
     }
+
+    power_total = power_delta + power_theta + power_alpha + power_beta;
 
     if(dblcmp(power_total, 0.0) > 0)
     {
