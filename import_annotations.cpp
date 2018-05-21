@@ -129,6 +129,14 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
     return;
   }
 
+  if(mainwindow->files_open > 1)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not import annotations when multiple files are opened.\n"
+                                                              "Make sure only one EDF/BDF is opened.");
+    messagewindow.exec();
+    return;
+  }
+
   ImportAnnotsDialog = new QDialog;
 
   ImportAnnotsDialog->setMinimumSize(520, 500);
