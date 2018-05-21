@@ -32,6 +32,7 @@
 
 
 #define ZSCORE_EPOCH_LEN 2
+#define ZSCORE_F0 0.5
 #define ZSCORE_F1 3.0
 #define ZSCORE_F3 12.0
 #define ZSCORE_F4 25.0
@@ -437,6 +438,7 @@ void UI_ZScoreWindow::startButtonClicked()
       smpls_in_inputbuf,
       smpls_copied,
       epochs,
+      f0,
       f1,
       f2,
       f3,
@@ -523,6 +525,11 @@ void UI_ZScoreWindow::startButtonClicked()
 
   f2 = crossoverfreq / freqstep;
 
+  f0 = ZSCORE_F0 / freqstep;
+  if(f0 < 1)
+  {
+    f0 = 1;
+  }
   f1 = ZSCORE_F1 / freqstep;
   f3 = ZSCORE_F3 / freqstep;
   f4 = ZSCORE_F4 / freqstep;
@@ -543,6 +550,7 @@ void UI_ZScoreWindow::startButtonClicked()
     messagewindow.exec();
     curve1->clear();
     free(fft_inputbuf);
+    fft_inputbuf = NULL;
     return;
   }
 
@@ -559,6 +567,8 @@ void UI_ZScoreWindow::startButtonClicked()
     curve1->clear();
     free(fft_inputbuf);
     free(fft_outputbuf);
+    fft_inputbuf = NULL;
+    fft_outputbuf = NULL;
     return;
   }
 
@@ -575,6 +585,8 @@ void UI_ZScoreWindow::startButtonClicked()
     curve1->clear();
     free(fft_inputbuf);
     free(fft_outputbuf);
+    fft_inputbuf = NULL;
+    fft_outputbuf = NULL;
     return;
   }
 
@@ -591,6 +603,8 @@ void UI_ZScoreWindow::startButtonClicked()
     curve1->clear();
     free(fft_inputbuf);
     free(fft_outputbuf);
+    fft_inputbuf = NULL;
+    fft_outputbuf = NULL;
     return;
   }
 
@@ -609,6 +623,8 @@ void UI_ZScoreWindow::startButtonClicked()
     curve1->clear();
     free(fft_inputbuf);
     free(fft_outputbuf);
+    fft_inputbuf = NULL;
+    fft_outputbuf = NULL;
     return;
   }
 
@@ -624,6 +640,8 @@ void UI_ZScoreWindow::startButtonClicked()
     curve1->clear();
     free(fft_inputbuf);
     free(fft_outputbuf);
+    fft_inputbuf = NULL;
+    fft_outputbuf = NULL;
     free(cfg);
     free(kiss_fftbuf);
     return;
@@ -652,6 +670,7 @@ void UI_ZScoreWindow::startButtonClicked()
 //        "samplefreq is %f\n"
 //        "fft_outputbufsize is %i\n"
 //        "freqstep is %f\n"
+//        "f0 is %i\n"
 //        "f1 is %i\n"
 //        "f2 is %i\n"
 //        "f3 is %i\n"
@@ -665,6 +684,7 @@ void UI_ZScoreWindow::startButtonClicked()
 //        samplefreq,
 //        fft_outputbufsize,
 //        freqstep,
+//        f0,
 //        f1,
 //        f2,
 //        f3,
@@ -720,6 +740,8 @@ void UI_ZScoreWindow::startButtonClicked()
       curve1->clear();
       free(fft_inputbuf);
       free(fft_outputbuf);
+      fft_inputbuf = NULL;
+      fft_outputbuf = NULL;
       free(cfg);
       free(kiss_fftbuf);
       return;
@@ -814,7 +836,7 @@ void UI_ZScoreWindow::startButtonClicked()
 //           printf("fft_outputbuf[%i] is %.14f\n", i, fft_outputbuf[i]);
 //         }
 
-        if((i > 0) && (i < f1))
+        if((i > f0) && (i < f1))
         {
           power_delta += fft_outputbuf[i];
         }
@@ -833,17 +855,17 @@ void UI_ZScoreWindow::startButtonClicked()
         {
           power_beta += fft_outputbuf[i];
         }
-
-        power_total += fft_outputbuf[i];
       }
 
-      if(power_total <= 0.0)
+      power_total = power_delta + power_theta + power_alpha + power_beta;
+
+      if(dblcmp(power_total, 0.0) > 0)
       {
-        zscore_epoch_buf[epoch_cntr++] = 0.0;
+        zscore_epoch_buf[epoch_cntr++] = ((power_delta + power_theta) - (power_alpha + power_beta)) / power_total;
       }
       else
       {
-        zscore_epoch_buf[epoch_cntr++] = ((power_delta + power_theta) - (power_alpha + power_beta)) / power_total;
+        zscore_epoch_buf[epoch_cntr++] = 0.0;
       }
 
 //       if(epoch_cntr < 3)
