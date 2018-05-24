@@ -458,7 +458,7 @@ void UI_Mainwindow::video_poll_timer_func()
     return;
   }
 
-  if(video_player->status == VIDEO_STATUS_PLAYING)
+  if((video_player->status == VIDEO_STATUS_PLAYING) || (video_player->status == VIDEO_STATUS_PAUSED))
   {
     if(!strncmp(buf, "> ", 2))
     {
