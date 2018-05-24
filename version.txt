@@ -24,6 +24,8 @@
 
  - Fixed a bug in the Z-ratio filter (Z-EEG).
 
+ -  Annotation editor: added a keyboard shortcut to the delete button.
+
 
 
  version 1.63      March 10, 2018

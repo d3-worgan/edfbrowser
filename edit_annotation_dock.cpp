@@ -94,6 +94,7 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(QWidget *w_parent)
   deletebutton = new QPushButton(annot_edit_dialog);
   deletebutton->setGeometry(840, 10, 100, 25);
   deletebutton->setText("Delete");
+  deletebutton->setShortcut(QKeySequence::Delete);
   deletebutton->setEnabled(false);
 
   createbutton = new QPushButton(annot_edit_dialog);
@@ -105,7 +106,6 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(QWidget *w_parent)
   QObject::connect(createbutton, SIGNAL(clicked()),               this, SLOT(createButtonClicked()));
   QObject::connect(dockedit,     SIGNAL(visibilityChanged(bool)), this, SLOT(open_close_dock(bool)));
 }
-
 
 
 void UI_AnnotationEditwindow::open_close_dock(bool visible)
