@@ -1537,7 +1537,14 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
             marker_x2 = (int)((((double)w) / mainwindow->pagetime) * annot->long_duration);
 
-            painter->fillRect(marker_x, 0, marker_x2, h, annot_duration_color);
+            if(mainwindow->annotations_duration_background_type == 0)
+            {
+              painter->fillRect(marker_x, 0, marker_x2, h, annot_duration_color);
+            }
+            else
+            {
+              painter->fillRect(marker_x, h - 92 + ((j % 3) * 30), marker_x2, 32, annot_duration_color);
+            }
           }
         }
       }

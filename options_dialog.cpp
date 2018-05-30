@@ -212,12 +212,28 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   AnnotDurationButton->setGeometry(240, 380, 60, 15);
   AnnotDurationButton->setColor(mainwindow->maincurve->annot_duration_color);
 
+  label12_3 = new QLabel(tab1);
+  label12_3->setGeometry(20, 405, 200, 25);
+  label12_3->setText("Show only at screen bottom");
+
+  checkbox2_2 = new QCheckBox(tab1);
+  checkbox2_2->setGeometry(200, 408, 20, 20);
+  checkbox2_2->setTristate(false);
+  if(mainwindow->annotations_duration_background_type)
+  {
+    checkbox2_2->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox2_2->setCheckState(Qt::Unchecked);
+  }
+
   label11 = new QLabel(tab1);
-  label11->setGeometry(20, 405, 200, 25);
+  label11->setGeometry(20, 435, 200, 25);
   label11->setText("Print in grayscale");
 
   checkbox1 = new QCheckBox(tab1);
-  checkbox1->setGeometry(200, 408, 20, 20);
+  checkbox1->setGeometry(200, 438, 20, 20);
   checkbox1->setTristate(false);
   if(mainwindow->maincurve->blackwhite_printing)
   {
@@ -229,11 +245,11 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   }
 
   label13 = new QLabel(tab1);
-  label13->setGeometry(20, 435, 200, 25);
+  label13->setGeometry(20, 465, 200, 25);
   label13->setText("Clip signals to pane");
 
   checkbox4 = new QCheckBox(tab1);
-  checkbox4->setGeometry(200, 438, 20, 20);
+  checkbox4->setGeometry(200, 468, 20, 20);
   checkbox4->setTristate(false);
   if(mainwindow->clip_to_pane)
   {
@@ -245,26 +261,26 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   }
 
   groupbox1 = new QGroupBox("Colorschema", tab1);
-  groupbox1->setGeometry(120, 490, 180, 195);
+  groupbox1->setGeometry(120, 520, 180, 195);
 
   colorSchema_Dark_Button = new QPushButton(tab1);
-  colorSchema_Dark_Button->setGeometry(150, 520, 120, 20);
+  colorSchema_Dark_Button->setGeometry(150, 550, 120, 20);
   colorSchema_Dark_Button->setText("\"Dark\"");
 
   colorSchema_NK_Button = new QPushButton(tab1);
-  colorSchema_NK_Button->setGeometry(150, 550, 120, 20);
+  colorSchema_NK_Button->setGeometry(150, 580, 120, 20);
   colorSchema_NK_Button->setText("\"NK\"");
 
   colorSchema_Blue_on_Gray_Button = new QPushButton(tab1);
-  colorSchema_Blue_on_Gray_Button->setGeometry(150, 580, 120, 20);
+  colorSchema_Blue_on_Gray_Button->setGeometry(150, 610, 120, 20);
   colorSchema_Blue_on_Gray_Button->setText("\"Blue on gray\"");
 
   saveColorSchemaButton = new QPushButton(tab1);
-  saveColorSchemaButton->setGeometry(150, 610, 120, 20);
+  saveColorSchemaButton->setGeometry(150, 640, 120, 20);
   saveColorSchemaButton->setText("Save");
 
   loadColorSchemaButton = new QPushButton(tab1);
-  loadColorSchemaButton->setGeometry(150, 640, 120, 20);
+  loadColorSchemaButton->setGeometry(150, 670, 120, 20);
   loadColorSchemaButton->setText("Load");
 
   QObject::connect(BgColorButton,           SIGNAL(clicked(SpecialButton *)), this, SLOT(BgColorButtonClicked(SpecialButton *)));
@@ -282,6 +298,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   QObject::connect(checkbox1,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox1Clicked(int)));
   QObject::connect(checkbox2,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox2Clicked(int)));
   QObject::connect(checkbox2_1,             SIGNAL(stateChanged(int)),        this, SLOT(checkbox2_1Clicked(int)));
+  QObject::connect(checkbox2_2,             SIGNAL(stateChanged(int)),        this, SLOT(checkbox2_2Clicked(int)));
   QObject::connect(checkbox3,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox3Clicked(int)));
   QObject::connect(checkbox4,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox4Clicked(int)));
   QObject::connect(saveColorSchemaButton,   SIGNAL(clicked()),                this, SLOT(saveColorSchemaButtonClicked()));
@@ -1114,6 +1131,22 @@ void UI_OptionsDialog::checkbox2_1Clicked(int state)
   if(state==Qt::Unchecked)
   {
     mainwindow->annotations_show_duration = 0;
+  }
+
+  mainwindow->maincurve->update();
+}
+
+
+void UI_OptionsDialog::checkbox2_2Clicked(int state)
+{
+  if(state==Qt::Checked)
+  {
+    mainwindow->annotations_duration_background_type = 1;
+  }
+
+  if(state==Qt::Unchecked)
+  {
+    mainwindow->annotations_duration_background_type = 0;
   }
 
   mainwindow->maincurve->update();

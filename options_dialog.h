@@ -145,6 +145,7 @@ QLabel         *label1,
                *label12,
                *label12_1,
                *label12_2,
+               *label12_3,
                *label13,
                *label4_1,
                *label4_2,
@@ -191,7 +192,8 @@ QCheckBox      *checkbox1,
                *checkbox4_4,
                *checkbox4_5,
                *checkbox4_6,
-               *checkbox2_1;
+               *checkbox2_1,
+               *checkbox2_2;
 
 QTableWidget   *colorBarTable;
 
@@ -222,6 +224,7 @@ void AnnotDurationButtonClicked(SpecialButton *);
 void checkbox1Clicked(int);
 void checkbox2Clicked(int);
 void checkbox2_1Clicked(int);
+void checkbox2_2Clicked(int);
 void checkbox3Clicked(int);
 void checkbox4Clicked(int);
 void checkbox3_1Clicked(int);

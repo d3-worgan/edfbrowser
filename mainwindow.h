@@ -204,6 +204,7 @@ public:
       annotations_edited,
       annotations_onset_relative,
       annotations_show_duration,
+      annotations_duration_background_type,
       exit_in_progress,
       maxdftblocksize,
       dpix,

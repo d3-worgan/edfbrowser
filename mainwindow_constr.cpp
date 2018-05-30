@@ -85,6 +85,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   annotations_show_duration = 1;
 
+  annotations_duration_background_type = 0;
+
   auto_reload_mtg = 1;
 
   read_biosemi_status_signal = 1;

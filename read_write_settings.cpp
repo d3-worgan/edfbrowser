@@ -231,6 +231,18 @@ void UI_Mainwindow::read_color_settings()
     xml_go_up(xml_hdl);
   }
 
+  if(!xml_goto_nth_element_inside(xml_hdl, "annotations_duration_background_type", 0))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+    annotations_duration_background_type = atoi(result);
+
+    xml_go_up(xml_hdl);
+  }
+
   if(xml_goto_nth_element_inside(xml_hdl, "show_baselines", 0))
   {
     xml_close(xml_hdl);
@@ -1941,6 +1953,9 @@ void UI_Mainwindow::write_settings()
 
     fprintf(cfgfile, "      <show_annot_duration>%i</show_annot_duration>\n",
                     annotations_show_duration);
+
+    fprintf(cfgfile, "      <annotations_duration_background_type>%i</annotations_duration_background_type>\n",
+                    annotations_duration_background_type);
 
     fprintf(cfgfile, "      <show_baselines>%i</show_baselines>\n",
                     show_baselines);
