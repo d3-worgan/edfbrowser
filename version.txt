@@ -1,5 +1,5 @@
 
- version 1.64      to be defined
+ version 1.64      June 2, 2018
  --------------
 
  - EMSA to EDF converter: fixed a bug that could cause a crash due to invalid free-ing of memory.
@@ -24,7 +24,7 @@
 
  - Fixed a bug in the Z-ratio filter (Z-EEG).
 
- -  Annotation editor: added a keyboard shortcut to the delete button.
+ - Annotation editor: added a keyboard shortcut for the delete button.
 
 
 
