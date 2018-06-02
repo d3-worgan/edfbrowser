@@ -417,7 +417,7 @@
   The Power Spectral Density of the corresponding signal will be shown (uV)<sup>2</sup>/FFT-resolution.<br>
   The amount of datasamples used to perform the FFT equals the data which is<br>
   shown on the screen. Increasing or decreasing the FFT blocksize affects the FFT resolution.<br>
-  The FFT blocksize can be set in Settings menu.<br>
+  The default FFT blocksize can be set in Settings menu.<br>
   So, if the samplefrequency of the selected signal is 256Hz, the timescale is set to 10 seconds and<br>
   the FFT-blocksize is 512, the number of FFT's performed is (10 seconds x 256 Hz) / 512 = 5.<br>
   The output of the five FFT's are averaged.<br>
@@ -495,7 +495,7 @@
  - Dynamic powerline interference subtraction from biosignals<br>
    Ivaylo I. Christov<br>
 <br>
-  The subtraction method extracts the powerline interference noise during a<br>
+  The subtraction method extracts the powerline interference noise (50/60Hz and harmonics) during a<br>
   a linear region between two consecutive QRS complexes and stores it in a buffer.<br>
   The reference noise from the buffer is used to subtract it from the signal outside<br>
   the linear region i.e. during the QRS complex.<br>
@@ -503,7 +503,7 @@
   integer multiple of the powerline frequency.<br>
   In case they are synchronized, this method will remove also the harmonics of the<br>
   powerline frequency. In that case extra notch-filters for the harmonics are<br>
-  not necessary. The advantage of this method is that it will not cause ringing<br>
+  not necessary. The advantage of this method is that it will not cause ringing or other distortion<br>
   in the waveform of the QRS complex (like notch-filters do).<br>
 <br>
   The following rules apply:<br>
@@ -513,7 +513,7 @@
 <br>
   Note: Good results will be achieved when the accuracy of the recording sampleclock is &lt=100ppm.<br>
   A nearly perfect result will achieved when the recording sampleclock is synchronized with the<br>
-  powerlinefrequency in hardware (e.g. using a PLL).
+  powerlinefrequency in hardware (e.g. using a Phase Locked Loop).
 </p>
 
 <p><br></p>
@@ -1092,7 +1092,7 @@
 <br>
   - the data in the ASCII-file must be presented in their physical dimension (i.e. uV, bpm, mmHg, etc.)<br>
   - the data in the ASCII-file must be organised in columns and rows<br>
-  - a row must contain values from different signals/channels aquired at the same sampletime<br>
+  - a row must contain values from different signals/channels acquired at the same sampletime<br>
   - a column must represent a continuous sampled signal/channel<br>
   - all signals/channels must have the same samplefrequency<br>
   - the timeinterval between two consecutive samples of the same signal/channel must have a stable value (fixed samplerate)<br>
@@ -1120,17 +1120,17 @@
 <br>
   - label (name of the signal/channel i.e. FP1, SaO2, Heartrate, etc.)<br>
   - physical maximum (the maximum physical value that can occur, i.e. the maximum inputlevel<br>
-  of the aquisition equipment. A common value in EEG applications is 3000 uV)<br>
-  physical minimum will be equal to physical maximum. for example, if you enter 3000, the<br>
+  of the acquisition equipment. A common value in EEG applications is 3000 uV)<br>
+  Physical minimum will be equal to physical maximum. For example, if you enter 3000, the<br>
   range will be from +3000 to -3000<br>
-  - physical dimension (i.e. uV, %, mmHg, bpm)<br>
+  - physical dimension (units, e.g. uV, mV, %, mmHg, bpm)<br>
   - multiplier is normally 1.0. Some programs exports their ascii-data expressed in Volts while<br>
   the signal is in the microVolt range. By changing the multiplier you can add gain to the signal before converting.<br>
   For example, if the ascii-data is expressed in Volts and the signal is in the microVolt range (EEG),<br>
   set the physical maximum to 3000, set the physical dimension to "uV" and set the multiplier to 1000000.<br>
 <br>
-  It is possible to exclude columns, by unchecking the corresponding row in the signals-table,<br>
-  this can be useful when a column contains a time/datestamp or when you don't want to include<br>
+  It is possible to exclude columns, by unchecking the corresponding row in the signals-table.<br>
+  This can be useful when a column contains a time/datestamp or when you don't want to include<br>
   a particular signal in the EDF/BDF-file.<br>
 <br>
   Click on the startbutton to start the conversion.<br>
@@ -1138,7 +1138,7 @@
   Click on the loadbutton to load parameters from a template.<br>
 <br>
   Note: It is important to enter the right value in the "physical maximum" field.<br>
-  If you to choose this value too small, the top of the signal will be cut off.<br>
+  If you to choose this value too small, the top of the signal will clip at the peaks.<br>
   If you choose this value too big, small values of the signal will not be visible<br>
   and the signal will look coarse.<br>
   The ideal value for the "physical maximum" is just above (or equal to) the maximum value that can occur,<br>
@@ -1619,23 +1619,24 @@
 <h3><a name="Annotation_editor">Annotation editor</a></h3>
 
 <p>
-  The annotation editor can be used to add, remove or edit annotations.<br>
+  The annotation editor can be used to create, edit or delete annotations.<br>
   Start the editor via menu -&gt; Window -&gt; Annotation editor.<br>
   To create a new annotation, write the text of the annotation in the description window and set<br>
   the onset time. You can set the duration time as well. If the duration time is unknown or not<br>
-  applicable, set it to the value -1. Now click on the create button.<br><br>
+  applicable, set it to -1. Now click on the create button.<br><br>
 
   Instead of manually entering the onset time, you can use a <a href="#Crosshairs">crosshair</a>.<br>
   Drag and drop the crosshair and the onset time will be automatically adjusted.<br>
-  You can use a second <a href="#Crosshairs">crosshair</a> to adjust the duration time.<br><br>
+  You can use a second <a href="#Crosshairs">crosshair</a> to adjust the duration of the event.<br><br>
 
   To modify an existent annotation, click on the annotation in the annotation window.<br>
-  Adjust the text and or time, manually or drag and drop the annotation marker.<br><br>
+  Adjust the text and/or time, manually or drag and drop the annotation marker with the mouse.<br><br>
 
   To delete an annotation, click on the annotation in the annotation window and click<br>
-  on the delete button.<br><br>
+  on the delete button (or hit Del on your keyboard.<br>
+  Pay attention, there's no undo.<br><br>
 
-  When you are finished editing annotations, save the file in menu -&gt; File -&gt; Save.<br>
+  When you have finished editing annotations, save the file in menu -&gt; File -&gt; Save.<br>
   Your file will not be altered, instead a copy of your file with the edited annotations<br>
   will be made.<br><br>
 
