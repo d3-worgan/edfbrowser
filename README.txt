@@ -13,7 +13,7 @@ The GCC compiler on Linux or Mingw-w64 on windows. <http://mingw-w64.sourceforge
 
 http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/4.8.2/threads-posix/dwarf/i686-4.8.2-release-posix-dwarf-rt_v3-rev3.7z/download
 
-Please, do not use any microsoft tools or compilers. Don't waste your time, it's not going to work!
+Do not use microsoft tools or compilers.
 
 
 
@@ -69,7 +69,7 @@ How to compile
   Ubuntu: qmake
 
 - Compile the source code and install it:
-  make -j16
+  make -j8
   sudo make install
 
 Now you can run the program by typing: edfbrowser
