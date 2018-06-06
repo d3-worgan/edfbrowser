@@ -60,7 +60,7 @@ How to compile
   mkdir EDFbrowser_git
   cd EDFbrowser_git
   git init
-  git pull https://github.com/Teuniz/EDFbrowser
+  git pull https://gitlab.com/Teuniz/EDFbrowser
 
 - Create the makefile:
   Linux Mint 18: qmake
