@@ -96,7 +96,7 @@ void UI_Mainwindow::start_stop_video()
 
   strcpy(videopath, QFileDialog::getOpenFileName(this, "Select video", QString::fromLocal8Bit(recent_opendir),
                                                  "Video files (*.ogv *.OGV *.ogg *.OGG *.mkv *.MKV *.avi *.AVI"
-                                                 " *.mp4 *.MP4 *.mpeg *.MPEG *.mpg *.MPG *.wmv *.WMV)").toLocal8Bit().data());
+                                                 " *.mp4 *.MP4 *.mov *.mpeg *.MPEG *.mpg *.MPG *.wmv *.WMV)").toLocal8Bit().data());
 
   if(!strcmp(videopath, ""))
   {
@@ -192,7 +192,11 @@ void UI_Mainwindow::start_stop_video()
 #else
     arguments << "-I" << "rc" << "--rc-host" << str << "--video-on-top" << "--width" << "150" << "--height" << "150" << "--ignore-config";
 
-    video_process->start("vlc", arguments);
+    #ifdef Q_OS_MAC
+      video_process->start("/Applications/VLC.app/Contents/MacOS/VLC", arguments);
+    #else
+      video_process->start("vlc", arguments);
+    #endif
 
     if(video_process->waitForStarted(5000) == false)
     {
