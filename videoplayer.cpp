@@ -94,9 +94,8 @@ void UI_Mainwindow::start_stop_video()
     return;
   }
 
-  strcpy(videopath, QFileDialog::getOpenFileName(this, "Select video", QString::fromLocal8Bit(recent_opendir),
-                                                 "Video files (*.ogv *.OGV *.ogg *.OGG *.mkv *.MKV *.avi *.AVI"
-                                                 " *.mp4 *.MP4 *.mov *.mpeg *.MPEG *.mpg *.MPG *.wmv *.WMV)").toLocal8Bit().data());
+  strcpy(videopath, QFileDialog::getOpenFileName(this, "Select media file", QString::fromLocal8Bit(recent_opendir),
+                                                 "Video and audio files (*)").toLocal8Bit().data());
 
   if(!strcmp(videopath, ""))
   {
@@ -307,6 +306,10 @@ void UI_Mainwindow::start_stop_video()
                    "  \n Check if VLC is installed in C:\\Program Files\\VideoLAN\\VLC\\ \n "
                    "  or\n "
                    "  \n C:\\Program Files (x86)\\VideoLAN\\VLC\\\n ");
+#endif
+#ifdef Q_OS_MAC
+    msgbox.setText("  \n Cannot start the video player. \n  "
+                   "  \n Check if your VLC is installed in the /Applications/. \n  ");
 #else
     msgbox.setText("  \n Cannot start the video player. \n  "
                    "  \n Check your installation of VLC. \n  ");
