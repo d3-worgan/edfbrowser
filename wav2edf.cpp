@@ -640,7 +640,7 @@ unsigned int fmt_chunk_offset,
       {
         for(j=0; j<edfsignals; j++)
         {
-          var.two[0] = *((unsigned short *)(readbuf + (i * edfsignals) + (j * 3)));
+          var.two[0] = *((unsigned short *)(readbuf + (i * edfsignals * 3) + (j * 3)));
 
           var.four[2] = *((unsigned char *)(readbuf + (i * edfsignals * 3) + (j * 3) + 2));
 
