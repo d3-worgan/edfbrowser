@@ -4,6 +4,8 @@
 
  - WAV to EDF/BDF converter: fixed a bug that caused a wrong conversion in case of 24-bit wave files.
 
+ - Videoplayer: make it work on MAC OS
+
 
 
  version 1.64      June 2, 2018
