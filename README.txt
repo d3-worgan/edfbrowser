@@ -146,34 +146,4 @@ strip -s edfbrowser
 upx edfbrowser
 
 
-Requirements on macOS
-=====================
 
-Development tools from Apple. To get them, run
-
-xcode-select --install
-
-QT >= 5.9.x
-One of the ways to get QT on macOS is to install it via homebrew:
-
-brew install qt
-
-Note: after installing, qmake will likely not be in your $PATH, so you need to invoke it using its full path.
-
-Build on macOS
-==============
-
-In the directory where you extracted sourcefile or cloned git repo, first run qmake, then make:
-
-/usr/local/Cellar/qt/<your.qt.version>/bin/qmake
-make
-
-You can also build it in a dedicated subdirectory:
-
-mkdir build
-cd build
-/usr/local/Cellar/qt/<your.qt.version>/bin/qmake .. //note the double dot at the end
-make //make as usual
-
-
-This will create the app bundle in the current directory, which you can then move to /Applications/ if desired.
