@@ -6,6 +6,8 @@
 
  - Videoplayer: make it work on MAC OS
 
+ - EDFlib: Fixed a bug that could cause not to write the obligatory space between the subfields of patient name and patient additional.
+
 
 
  version 1.64      June 2, 2018

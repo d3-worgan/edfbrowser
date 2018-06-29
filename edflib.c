@@ -5275,13 +5275,22 @@ static int edflib_write_edf_header(struct edfhdrblock *hdr)
         str[i] = '_';
       }
     }
-    p += fprintf(file, "%s ", str);
+    p += fprintf(file, "%s", str);
   }
   else
   {
     fputc('X', file);
 
     p++;
+  }
+
+  if(rest)
+  {
+    fputc(' ', file);
+
+    p++;
+
+    rest--;
   }
 
   len = strlen(hdr->plus_patient_additional);
@@ -5364,11 +5373,20 @@ static int edflib_write_edf_header(struct edfhdrblock *hdr)
         str[i] = '_';
       }
     }
-    p += fprintf(file, "%s ", str);
+    p += fprintf(file, "%s", str);
   }
   else
   {
-    p += fprintf(file, "X ");
+    p += fprintf(file, "X");
+  }
+
+  if(rest)
+  {
+    fputc(' ', file);
+
+    p++;
+
+    rest--;
   }
 
   len = strlen(hdr->plus_technician);
@@ -5393,11 +5411,20 @@ static int edflib_write_edf_header(struct edfhdrblock *hdr)
         str[i] = '_';
       }
     }
-    p += fprintf(file, "%s ", str);
+    p += fprintf(file, "%s", str);
   }
   else
   {
-    p += fprintf(file, "X ");
+    p += fprintf(file, "X");
+  }
+
+  if(rest)
+  {
+    fputc(' ', file);
+
+    p++;
+
+    rest--;
   }
 
   len = strlen(hdr->plus_equipment);
@@ -5422,11 +5449,20 @@ static int edflib_write_edf_header(struct edfhdrblock *hdr)
         str[i] = '_';
       }
     }
-    p += fprintf(file, "%s ", str);
+    p += fprintf(file, "%s", str);
   }
   else
   {
-    p += fprintf(file, "X ");
+    p += fprintf(file, "X");
+  }
+
+  if(rest)
+  {
+    fputc(' ', file);
+
+    p++;
+
+    rest--;
   }
 
   len = strlen(hdr->plus_recording_additional);
