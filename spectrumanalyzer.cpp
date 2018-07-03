@@ -1040,9 +1040,9 @@ void UI_FreqSpectrumWindow::update_curve()
     return;
   }
 
-  dftsz_spinbox->setMaximum(samples);
-
   busy = 1;
+
+  dftsz_spinbox->setMaximum(samples);
 
   malloc_err = 0;
 

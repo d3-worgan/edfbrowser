@@ -10,6 +10,8 @@
 
  - Annotations: fixed a bug that caused a wrong background color rendering for the duration of an annotation.
 
+ - Spectrumanalyzer: solved a bug that could cause the mouse cursor to show a "waiting" cursor forever.
+
 
 
  version 1.64      June 2, 2018
