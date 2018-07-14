@@ -39,7 +39,7 @@
 #include "edflib.h"
 
 
-#define EDFLIB_VERSION 113
+#define EDFLIB_VERSION 114
 #define EDFLIB_MAXFILES 64
 
 

@@ -1388,7 +1388,7 @@ void UI_Mainwindow::open_new_file()
 
   struct edfhdrblock *edfhdr=NULL;
 
-  if(edflib_version() != 113)  return;
+  if(edflib_version() != 114)  return;
 
   if(annot_editor_active && files_open)
   {
