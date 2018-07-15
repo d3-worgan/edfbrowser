@@ -1429,7 +1429,7 @@ void ViewCurve::print_to_image(int w_img, int h_img)
 
 void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, int print_linewidth)
 {
-  int i, j, x_pix=0,
+  int i, j, x_pix=0, x_tmp,
       signalcomps,
       baseline,
       m_pagetime,
@@ -1537,13 +1537,30 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
             marker_x2 = (int)((((double)w) / mainwindow->pagetime) * annot->long_duration);
 
-            if(mainwindow->annotations_duration_background_type == 0)
+            if(marker_x < 0)
             {
-              painter->fillRect(marker_x, 0, marker_x2, h, annot_duration_color);
+              marker_x2 += marker_x;
+
+              marker_x = 0;
             }
-            else
+
+            if((marker_x + marker_x2) > w)
             {
-              painter->fillRect(marker_x, h - 92 + ((j % 3) * 30), marker_x2, 32, annot_duration_color);
+              x_tmp = marker_x + marker_x2 - w;
+
+              marker_x2 -= x_tmp;
+            }
+
+            if((marker_x < w) && (marker_x2 > 0))
+            {
+              if(mainwindow->annotations_duration_background_type == 0)
+              {
+                painter->fillRect(marker_x, 0, marker_x2, h, annot_duration_color);
+              }
+              else
+              {
+                painter->fillRect(marker_x, h - 92 + ((j % 3) * 30), marker_x2, 32, annot_duration_color);
+              }
             }
           }
         }
