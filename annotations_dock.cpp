@@ -778,11 +778,9 @@ void UI_Annotationswindow::hide_editdock(bool visible)
 
 void UI_Annotationswindow::updateList(void)
 {
-  char str[MAX_ANNOTATION_LEN + 32],
-       *str_tmp;
+  char str[MAX_ANNOTATION_LEN + 32];
 
-  int i, j,
-      len,
+  int j,
       sz,
       jump=0,
       modified=0;
@@ -838,20 +836,6 @@ void UI_Annotationswindow::updateList(void)
       continue;
     }
 
-    string = QString::fromUtf8(annot->annotation);
-
-    str_tmp = string.toUtf8().data();
-
-    len = 0;
-    for(i=0; ; i++)
-    {
-      if(str_tmp[i]==0)  break;
-
-      if(((((unsigned char *)str_tmp)[i])&224)==192)  len++;
-    }
-
-    for(i=0; i<len; i++)  string.append(' ');
-
     if(relative)
     {
       if((annot->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) < 0LL)
@@ -883,6 +867,8 @@ void UI_Annotationswindow::updateList(void)
     str[MAX_ANNOTATION_LEN + 31] = 0;
 
     remove_trailing_zeros(str);
+
+    string = QString::fromUtf8(annot->annotation);
 
     if(string.size() < 20)
     {
