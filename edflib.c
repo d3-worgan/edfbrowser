@@ -7028,7 +7028,7 @@ static int edflib_sprint_number_nonlocalized(char *str, double nr)
 
 static double edflib_atof_nonlocalized(const char *str)
 {
-  int i=0, dot_pos=-1, decimals=0, sign=1;
+  int i=0, j, dot_pos=-1, decimals=0, sign=1, exp_pos=-1, exp_sign=1, exp_val=0;
 
   double value, value2=0.0;
 
@@ -7054,6 +7054,13 @@ static double edflib_atof_nonlocalized(const char *str)
   {
     if(str[i] == 0)
     {
+      break;
+    }
+
+    if((str[i] == 'e') || (str[i] == 'E'))
+    {
+      exp_pos = i;
+
       break;
     }
 
@@ -7095,9 +7102,50 @@ static double edflib_atof_nonlocalized(const char *str)
     }
 
     value2 /= i;
+
+    value += value2;
   }
 
-  return value + value2;
+  if(exp_pos > 0)
+  {
+    i = exp_pos + 1;
+
+    if(str[i])
+    {
+      if(str[i] == '+')
+      {
+        i++;
+      }
+      else if(str[i] == '-')
+        {
+          exp_sign = -1;
+
+          i++;
+        }
+
+      if(str[i])
+      {
+        exp_val = edflib_atoi_nonlocalized(str + i);
+
+        if(exp_val > 0)
+        {
+          for(j=0; j<exp_val; j++)
+          {
+            if(exp_sign > 0)
+            {
+              value *= 10;
+            }
+            else
+            {
+              value /= 10;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return value;
 }
 
 
