@@ -91,6 +91,8 @@ struct {
         int adc_zero[MAXSIGNALS];
         int init_val[MAXSIGNALS];
         char label[MAXSIGNALS][17];
+        int unit_multiplier[MAXSIGNALS];
+        char unit[MAXSIGNALS][9];
       } mit_hdr;
 
 

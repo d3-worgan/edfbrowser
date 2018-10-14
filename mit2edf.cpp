@@ -102,7 +102,7 @@ static char annotdescrlist[42][48]=
   "waveform end", "R-on-T premature ventricular contraction"};
 
 
-#define ANNOT_EXT_CNT   8
+#define ANNOT_EXT_CNT   (9)
 
 
 static char annotextlist[ANNOT_EXT_CNT][16]=
@@ -114,7 +114,8 @@ static char annotextlist[ANNOT_EXT_CNT][16]=
     ".atr",
     ".apn",
     ".st",
-    ".pwave"
+    ".pwave",
+    ".marker"
   };
 
 
@@ -173,7 +174,8 @@ void UI_MIT2EDFwindow::SelectFileButton()
        scratchpad[4096],
        *charpntr;
 
-  unsigned char a_buf[128];
+  unsigned char a_buf[128],
+                ch_tmp;
 
   long long filesize;
 
@@ -344,6 +346,12 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
     mit_hdr.init_val[j] = 0;
 
+    mit_hdr.baseline[j] = 0;
+
+    mit_hdr.unit_multiplier[j] = 1;  /* default 1 milliVolt */
+
+    strcpy(mit_hdr.unit[j], "mV");
+
     sprintf(mit_hdr.label[j], "chan. %i", j + 1);
 
     charpntr = fgets(scratchpad, 4095, header_inputfile);
@@ -437,10 +445,12 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
     p = ++i;
 
-    for(; i<len; i++)
+    for(ch_tmp=0; i<len; i++)
     {
-      if(charpntr[i] == ' ')
+      if((charpntr[i] == ' ') || (charpntr[i] == '(') || (charpntr[i] == '/'))
       {
+        ch_tmp = charpntr[i];
+
         charpntr[i] = 0;
 
         break;
@@ -458,6 +468,67 @@ void UI_MIT2EDFwindow::SelectFileButton()
     }
 
     p = ++i;
+
+    if(ch_tmp == '(')
+    {
+      for(; i<len; i++)
+      {
+        if(charpntr[i] == ')')
+        {
+          charpntr[i] = 0;
+
+          break;
+        }
+      }
+
+      if(i == len)
+      {
+        textEdit1->append("Can not read header file. (error 18)\n");
+        fclose(header_inputfile);
+        pushButton1->setEnabled(true);
+        return;
+      }
+
+      p++;
+
+      mit_hdr.baseline[j] = atoi(charpntr + p);
+
+      p = ++i;
+    }
+
+    if((ch_tmp == '/') || (charpntr[i] == '/'))
+    {
+      for(; i<len; i++)
+      {
+        if(charpntr[i] == ' ')
+        {
+          charpntr[i] = 0;
+
+          break;
+        }
+      }
+
+      if(i == len)
+      {
+        textEdit1->append("Can not read header file. (error 19)\n");
+        fclose(header_inputfile);
+        pushButton1->setEnabled(true);
+        return;
+      }
+
+      p++;
+
+      strncpy(mit_hdr.unit[j], charpntr + p, 8);
+      mit_hdr.unit[j][8] = 0;
+
+      p = ++i;
+    }
+//     else
+//     {
+//       strcpy(mit_hdr.unit[j], "uV");
+//
+//       mit_hdr.unit_multiplier[j] = 1000;
+//     }
 
     for(; i<len; i++)
     {
@@ -703,7 +774,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
   for(i=0; i<mit_hdr.chns; i++)
   {
-    if(edf_set_physical_dimension(hdl, i, "uV"))
+    if(edf_set_physical_dimension(hdl, i, mit_hdr.unit[i]))
     {
       textEdit1->append("Error: edf_set_physical_dimension()\n");
       fclose(data_inputfile);
@@ -712,7 +783,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
       return;
     }
 
-    if(edf_set_physical_maximum(hdl, i, (double)((32767 - mit_hdr.adc_zero[i]) * 1000) / mit_hdr.adc_gain[i]))
+    if(edf_set_physical_maximum(hdl, i, (double)((32767 - mit_hdr.adc_zero[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]))
     {
       textEdit1->append("Error: edf_set_physical_maximum()\n");
       fclose(data_inputfile);
@@ -721,7 +792,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
       return;
     }
 
-    if(edf_set_physical_minimum(hdl, i, (double)((-32768 - mit_hdr.adc_zero[i]) * 1000) / mit_hdr.adc_gain[i]))
+    if(edf_set_physical_minimum(hdl, i, (double)((-32768 - mit_hdr.adc_zero[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]))
     {
       textEdit1->append("Error: edf_set_physical_minimum()\n");
       fclose(data_inputfile);
