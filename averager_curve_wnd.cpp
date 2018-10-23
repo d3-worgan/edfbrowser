@@ -238,7 +238,7 @@ void UI_AverageCurveWindow::export_edf(void)
       smpls_left;
 
   char path[MAX_PATH_LENGTH],
-       str[512];
+       str[1024];
 
   double *buf,
          frequency,
