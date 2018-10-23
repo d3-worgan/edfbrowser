@@ -113,7 +113,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
        phys_max[MAX_SIGNALS][9],
        patientname[81],
        recording[81],
-       datetime[17];
+       datetime[128];
 
 
   double sensitivity[MAX_SIGNALS],
