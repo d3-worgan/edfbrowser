@@ -215,8 +215,9 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   amplitudeLabel->setMinimumSize(100, 25);
   amplitudeLabel->setAlignment(Qt::AlignHCenter);
 
-  sqrtCheckBox = new QCheckBox("Amplitude");
-  sqrtCheckBox->setMinimumSize(70, 25);
+  sqrtCheckBox = new QCheckBox("Ampli-\ntude");
+  sqrtCheckBox->setMinimumSize(60, 30);
+  sqrtCheckBox->setMaximumSize(60, 30);
   sqrtCheckBox->setTristate(false);
   if(mainwindow->spectrum_sqrt)
   {
@@ -228,7 +229,8 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   }
 
   VlogCheckBox = new QCheckBox("Log");
-  VlogCheckBox->setMinimumSize(70, 25);
+  VlogCheckBox->setMinimumSize(60, 25);
+  VlogCheckBox->setMaximumSize(60, 25);
   VlogCheckBox->setTristate(false);
   if(mainwindow->spectrum_vlog)
   {
@@ -244,7 +246,8 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   }
 
   BWCheckBox = new QCheckBox("B/W");
-  BWCheckBox->setMinimumSize(70, 25);
+  BWCheckBox->setMinimumSize(60, 25);
+  BWCheckBox->setMaximumSize(60, 25);
   BWCheckBox->setTristate(false);
   if(mainwindow->spectrum_bw == 1)
   {
