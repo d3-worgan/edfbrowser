@@ -40,7 +40,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 {
   int i;
 
-  char str[1024];
+  char str[2048];
 
   long long l_temp;
 
@@ -146,11 +146,11 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   SpectrumDialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
   if(mainwindow->spectrum_sqrt)
   {
-    snprintf(str, 1024, "Amplitude Spectrum %s", signallabel);
+    snprintf(str, 2048, "Amplitude Spectrum %s", signallabel);
   }
   else
   {
-    snprintf(str, 1024, "Power Spectral Density %s", signallabel);
+    snprintf(str, 2048, "Power Spectral Density %s", signallabel);
   }
   SpectrumDialog->setWindowTitle(str);
   SpectrumDialog->setWindowIcon(QIcon(":/images/edf.png"));
@@ -506,7 +506,7 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
   double max_freq,
          start_freq;
 
-  char str[1024];
+  char str[2048];
 
 
   if(VlogCheckBox->checkState() == Qt::Checked)

@@ -745,7 +745,8 @@ void UI_ExportFilteredSignalsWindow::StartExport()
 
   for(i=0; i<new_edfsignals; i++)
   {
-    snprintf(scratchpad, 16, "%s", signalcomp[i]->signallabel);
+    strcpy(scratchpad, signalcomp[i]->signallabel);
+    scratchpad[16] = 0;
     strcat(scratchpad, "                ");
     scratchpad[16] = 0;
     fprintf(outputfile, "%s", scratchpad);
