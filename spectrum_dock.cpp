@@ -537,7 +537,7 @@ void UI_SpectrumDockWindow::colorBarButtonClicked(bool value)
 
 void UI_SpectrumDockWindow::sqrtButtonClicked(bool value)
 {
-  char str[600];
+  char str[2048];
 
   if(value == false)
   {
@@ -701,7 +701,7 @@ void UI_SpectrumDockWindow::sliderMoved(int)
 
 void UI_SpectrumDockWindow::init(int signal_num)
 {
-  char str[600];
+  char str[2048];
 
   init_maxvalue = 1;
 
@@ -826,7 +826,7 @@ void UI_SpectrumDockWindow::update_curve()
 
   long long s, s2;
 
-  char str[512];
+  char str[1024];
 
   double dig_value=0.0,
          f_tmp=0.0;
@@ -1353,11 +1353,11 @@ void UI_SpectrumDockWindow::update_curve()
 
   if(mainwindow->spectrumdock_sqrt)
   {
-    snprintf(str, 512, "Amplitude Spectrum %s", signallabel);
+    snprintf(str, 1024, "Amplitude Spectrum %s", signallabel);
   }
   else
   {
-    snprintf(str, 512, "Power Spectrum %s", signallabel);
+    snprintf(str, 1024, "Power Spectrum %s", signallabel);
   }
 
   dock->setWindowTitle(str);

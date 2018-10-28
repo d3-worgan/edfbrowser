@@ -150,7 +150,7 @@ private:
          *buf5;
 
   char *viewbuf,
-       signallabel[512],
+       signallabel[1024],
        physdimension[9];
 
   UI_FreqSpectrumWindow **spectrumdialog;

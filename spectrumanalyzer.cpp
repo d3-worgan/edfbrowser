@@ -87,7 +87,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   {
     if(signalcomp->alias[0] != 0)
     {
-      snprintf(signallabel, 512, "   %s   %i:%02i:%02i.%04i   %s", signalcomp->alias,
+      snprintf(signallabel, 1024, "   %s   %i:%02i:%02i.%04i   %s", signalcomp->alias,
                 (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION)/ 3600LL),
                 (int)(((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 3600LL) / 60LL),
                 (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 60LL),
@@ -96,7 +96,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
     }
     else
     {
-      snprintf(signallabel, 512, "   %s   %i:%02i:%02i.%04i   %s", signalcomp->signallabel,
+      snprintf(signallabel, 1024, "   %s   %i:%02i:%02i.%04i   %s", signalcomp->signallabel,
                 (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION)/ 3600LL),
                 (int)(((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 3600LL) / 60LL),
                 (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 60LL),
@@ -116,7 +116,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
     if(signalcomp->alias[0] != 0)
     {
-      snprintf(signallabel, 512, "   %s   -%i:%02i:%02i.%04i   %s", signalcomp->alias,
+      snprintf(signallabel, 1024, "   %s   -%i:%02i:%02i.%04i   %s", signalcomp->alias,
               (int)((l_temp / TIME_DIMENSION)/ 3600LL),
               (int)(((l_temp / TIME_DIMENSION) % 3600LL) / 60LL),
               (int)((l_temp / TIME_DIMENSION) % 60LL),
@@ -125,7 +125,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
     }
     else
     {
-      snprintf(signallabel, 512, "   %s   -%i:%02i:%02i.%04i   %s", signalcomp->signallabel,
+      snprintf(signallabel, 1024, "   %s   -%i:%02i:%02i.%04i   %s", signalcomp->signallabel,
               (int)((l_temp / TIME_DIMENSION)/ 3600LL),
               (int)(((l_temp / TIME_DIMENSION) % 3600LL) / 60LL),
               (int)((l_temp / TIME_DIMENSION) % 60LL),
@@ -146,11 +146,11 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   SpectrumDialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
   if(mainwindow->spectrum_sqrt)
   {
-    snprintf(str, 512, "Amplitude Spectrum %s", signallabel);
+    snprintf(str, 1024, "Amplitude Spectrum %s", signallabel);
   }
   else
   {
-    snprintf(str, 512, "Power Spectral Density %s", signallabel);
+    snprintf(str, 1024, "Power Spectral Density %s", signallabel);
   }
   SpectrumDialog->setWindowTitle(str);
   SpectrumDialog->setWindowIcon(QIcon(":/images/edf.png"));
