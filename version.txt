@@ -9,6 +9,7 @@
  - Annotationfilter: added an option in the settings menu to filter only the annotation list
    or also the annotation markers in the signal window.
 
+ - Add dynamic ECG statistic info (heart rate variability) in statusbar when activated.
 
 
 
