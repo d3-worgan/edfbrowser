@@ -1,4 +1,17 @@
 
+ version 1.66      to be defined
+ --------------
+
+ - Increase maximum number of signals from 512 to 640.
+
+ - Improvements for the MIT2EDF converter.
+
+ - Annotationfilter: added an option in the settings menu to filter only the annotation list
+   or also the annotation markers in the signal window.
+
+
+
+
  version 1.65      July 17, 2018
  --------------
 
