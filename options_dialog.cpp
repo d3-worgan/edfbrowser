@@ -228,12 +228,29 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
     checkbox2_2->setCheckState(Qt::Unchecked);
   }
 
+  label14 = new QLabel(tab1);
+  label14->setGeometry(20, 435, 200, 25);
+  label14->setText("Annotations: filter list only");
+
+  checkbox5 = new QCheckBox(tab1);
+  checkbox5->setGeometry(200, 438, 20, 20);
+  checkbox5->setTristate(false);
+  checkbox5->setToolTip("Annotation filter affects the annotationlist only, not the annotation markers in the signal window");
+  if(mainwindow->annot_filter->hide_in_list_only)
+  {
+    checkbox5->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox5->setCheckState(Qt::Unchecked);
+  }
+
   label11 = new QLabel(tab1);
-  label11->setGeometry(20, 435, 200, 25);
+  label11->setGeometry(20, 465, 200, 25);
   label11->setText("Print in grayscale");
 
   checkbox1 = new QCheckBox(tab1);
-  checkbox1->setGeometry(200, 438, 20, 20);
+  checkbox1->setGeometry(200, 468, 20, 20);
   checkbox1->setTristate(false);
   if(mainwindow->maincurve->blackwhite_printing)
   {
@@ -245,11 +262,11 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   }
 
   label13 = new QLabel(tab1);
-  label13->setGeometry(20, 465, 200, 25);
+  label13->setGeometry(20, 495, 200, 25);
   label13->setText("Clip signals to pane");
 
   checkbox4 = new QCheckBox(tab1);
-  checkbox4->setGeometry(200, 468, 20, 20);
+  checkbox4->setGeometry(200, 498, 20, 20);
   checkbox4->setTristate(false);
   if(mainwindow->clip_to_pane)
   {
@@ -261,26 +278,26 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   }
 
   groupbox1 = new QGroupBox("Colorschema", tab1);
-  groupbox1->setGeometry(120, 520, 180, 195);
+  groupbox1->setGeometry(120, 540, 180, 195);
 
   colorSchema_Dark_Button = new QPushButton(tab1);
-  colorSchema_Dark_Button->setGeometry(150, 550, 120, 20);
+  colorSchema_Dark_Button->setGeometry(150, 570, 120, 20);
   colorSchema_Dark_Button->setText("\"Dark\"");
 
   colorSchema_NK_Button = new QPushButton(tab1);
-  colorSchema_NK_Button->setGeometry(150, 580, 120, 20);
+  colorSchema_NK_Button->setGeometry(150, 600, 120, 20);
   colorSchema_NK_Button->setText("\"NK\"");
 
   colorSchema_Blue_on_Gray_Button = new QPushButton(tab1);
-  colorSchema_Blue_on_Gray_Button->setGeometry(150, 610, 120, 20);
+  colorSchema_Blue_on_Gray_Button->setGeometry(150, 630, 120, 20);
   colorSchema_Blue_on_Gray_Button->setText("\"Blue on gray\"");
 
   saveColorSchemaButton = new QPushButton(tab1);
-  saveColorSchemaButton->setGeometry(150, 640, 120, 20);
+  saveColorSchemaButton->setGeometry(150, 660, 120, 20);
   saveColorSchemaButton->setText("Save");
 
   loadColorSchemaButton = new QPushButton(tab1);
-  loadColorSchemaButton->setGeometry(150, 670, 120, 20);
+  loadColorSchemaButton->setGeometry(150, 690, 120, 20);
   loadColorSchemaButton->setText("Load");
 
   QObject::connect(BgColorButton,           SIGNAL(clicked(SpecialButton *)), this, SLOT(BgColorButtonClicked(SpecialButton *)));
@@ -301,6 +318,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   QObject::connect(checkbox2_2,             SIGNAL(stateChanged(int)),        this, SLOT(checkbox2_2Clicked(int)));
   QObject::connect(checkbox3,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox3Clicked(int)));
   QObject::connect(checkbox4,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox4Clicked(int)));
+  QObject::connect(checkbox5,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox5Clicked(int)));
   QObject::connect(saveColorSchemaButton,   SIGNAL(clicked()),                this, SLOT(saveColorSchemaButtonClicked()));
   QObject::connect(loadColorSchemaButton,   SIGNAL(clicked()),                this, SLOT(loadColorSchemaButtonClicked()));
   QObject::connect(colorSchema_Blue_on_Gray_Button, SIGNAL(clicked()),        this, SLOT(loadColorSchema_blue_gray()));
@@ -1182,6 +1200,20 @@ void UI_OptionsDialog::checkbox4Clicked(int state)
   }
 
   mainwindow->maincurve->update();
+}
+
+
+void UI_OptionsDialog::checkbox5Clicked(int state)
+{
+  if(state==Qt::Checked)
+  {
+    mainwindow->annot_filter->hide_in_list_only = 1;
+  }
+
+  if(state==Qt::Unchecked)
+  {
+    mainwindow->annot_filter->hide_in_list_only = 0;
+  }
 }
 
 

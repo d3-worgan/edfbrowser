@@ -62,6 +62,7 @@
 #include <QDesktopWidget>
 #include <QFileDialog>
 #include <QGroupBox>
+#include <QToolTip>
 
 #include "global.h"
 #include "mainwindow.h"
@@ -147,6 +148,7 @@ QLabel         *label1,
                *label12_2,
                *label12_3,
                *label13,
+               *label14,
                *label4_1,
                *label4_2,
                *label4_3,
@@ -186,6 +188,7 @@ QCheckBox      *checkbox1,
                *checkbox3,
                *checkbox3_1,
                *checkbox4,
+               *checkbox5,
                *checkbox4_1,
                *checkbox4_2,
                *checkbox4_3,
@@ -227,6 +230,7 @@ void checkbox2_1Clicked(int);
 void checkbox2_2Clicked(int);
 void checkbox3Clicked(int);
 void checkbox4Clicked(int);
+void checkbox5Clicked(int);
 void checkbox3_1Clicked(int);
 void checkbox4_1Clicked(int);
 void checkbox4_2Clicked(int);

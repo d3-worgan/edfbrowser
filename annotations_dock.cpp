@@ -389,6 +389,15 @@ void UI_Annotationswindow::filter_edited(const QString text)
       {
         annot->hided_in_list = 1;
 
+        if(mainwindow->annot_filter->hide_in_list_only)
+        {
+          annot->hided = 0;
+        }
+        else
+        {
+          annot->hided = 1;
+        }
+
         n = strlen(annot->annotation) - len + 1;
 
         for(j=0; j<n; j++)
@@ -416,6 +425,8 @@ void UI_Annotationswindow::filter_edited(const QString text)
       {
         annot->hided_in_list = 0;
 
+        annot->hided = 0;
+
         n = strlen(annot->annotation) - len + 1;
 
         for(j=0; j<n; j++)
@@ -424,7 +435,10 @@ void UI_Annotationswindow::filter_edited(const QString text)
           {
             annot->hided_in_list = 1;
 
-            annot->hided = 1;
+            if(!mainwindow->annot_filter->hide_in_list_only)
+            {
+              annot->hided = 1;
+            }
 
             break;
           }
