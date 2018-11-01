@@ -2079,6 +2079,10 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
     return;
   }
 
+  toolbar_stats.active = 0;
+
+  nav_toolbar_label->setText("");
+
   strcpy(f_path, action->text().toLocal8Bit().data());
 
   for(file_n=0; file_n<files_open; file_n++)
@@ -2301,6 +2305,8 @@ void UI_Mainwindow::close_all_files()
       button_nr=0;
 
 
+  toolbar_stats.active = 0;
+  nav_toolbar_label->setText("");
   live_stream_active = 0;
   live_stream_timer->stop();
   toolsmenu->setEnabled(true);

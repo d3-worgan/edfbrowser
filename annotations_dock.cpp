@@ -182,7 +182,7 @@ void UI_Annotationswindow::show_stats(bool)
 
   annot = edfplus_annotation_get_item_visible_only(annot_list, list->currentRow());
 
-  UI_StatisticWindow stats_wndw(NULL, 0LL, annot_list, annot);
+  UI_StatisticWindow stats_wndw(NULL, 0LL, mainwindow, annot_list, annot);
 }
 
 

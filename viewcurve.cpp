@@ -1442,12 +1442,14 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
   char *viewbuf,
        string[600],
        str2[32],
-       str3[128];
+       str3[128],
+       str4[1024]="";
 
   long long time_ppixel,
             ll_elapsed_time,
             l_time,
-            l_tmp;
+            l_tmp,
+            l_tmp2=0;
 
   struct signalcompblock **signalcomp;
 
@@ -1962,7 +1964,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     }
   }
 
-  if(mainwindow->show_annot_markers)
+  if(mainwindow->show_annot_markers || mainwindow->toolbar_stats.active)
   {
     annot_marker_pen->setColor(annot_marker_color);
 
@@ -1981,6 +1983,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
       annot_list_sz = edfplus_annotation_size(annot_list);
 
+      if((mainwindow->toolbar_stats.active) && (mainwindow->toolbar_stats.annot_list == annot_list))
+      {
+        mainwindow->toolbar_stats.sz = 0;
+      }
+
       for(j=0; j<annot_list_sz; j++)
       {
         annot = edfplus_annotation_get_item(annot_list, j);
@@ -1994,102 +2001,162 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             break;
           }
 
-          l_tmp -= mainwindow->edfheaderlist[i]->viewtime;
-
-          marker_x = (int)((((double)w) / mainwindow->pagetime) * l_tmp);
-
-          painter->drawLine(marker_x, 0, marker_x, h);
-
-          l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
-
-          if(mainwindow->annotations_onset_relative)
+          if(mainwindow->show_annot_markers)
           {
-            if(l_tmp < 0LL)
+            l_tmp -= mainwindow->edfheaderlist[i]->viewtime;
+
+            marker_x = (int)((((double)w) / mainwindow->pagetime) * l_tmp);
+
+            painter->drawLine(marker_x, 0, marker_x, h);
+
+            l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
+
+            if(mainwindow->annotations_onset_relative)
             {
-              snprintf(string, (MAX_ANNOTATION_LEN + 32) / 2, "-%i:%02i:%02i.%04i",
-                      (int)(((-(l_tmp)) / TIME_DIMENSION)/ 3600LL),
-                      (int)((((-(l_tmp)) / TIME_DIMENSION) % 3600LL) / 60LL),
-                      (int)(((-(l_tmp)) / TIME_DIMENSION) % 60LL),
-                      (int)((((-(l_tmp)) % TIME_DIMENSION) / 1000LL)));
+              if(l_tmp < 0LL)
+              {
+                snprintf(string, (MAX_ANNOTATION_LEN + 32) / 2, "-%i:%02i:%02i.%04i",
+                        (int)(((-(l_tmp)) / TIME_DIMENSION)/ 3600LL),
+                        (int)((((-(l_tmp)) / TIME_DIMENSION) % 3600LL) / 60LL),
+                        (int)(((-(l_tmp)) / TIME_DIMENSION) % 60LL),
+                        (int)((((-(l_tmp)) % TIME_DIMENSION) / 1000LL)));
+              }
+              else
+              {
+                snprintf(string, (MAX_ANNOTATION_LEN + 32) / 2, "%i:%02i:%02i.%04i",
+                        (int)((l_tmp / TIME_DIMENSION)/ 3600LL),
+                        (int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
+                        (int)((l_tmp / TIME_DIMENSION) % 60LL),
+                        (int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
+              }
             }
             else
             {
-              snprintf(string, (MAX_ANNOTATION_LEN + 32) / 2, "%i:%02i:%02i.%04i",
-                      (int)((l_tmp / TIME_DIMENSION)/ 3600LL),
-                      (int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
-                      (int)((l_tmp / TIME_DIMENSION) % 60LL),
-                      (int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
+              if(mainwindow->viewtime_indicator_type == 2)
+              {
+                utc_to_date_time((annot->onset / TIME_DIMENSION) + mainwindow->edfheaderlist[i]->utc_starttime, &date_time_str);
+
+                snprintf(string, 32, "%2i-%s ", date_time_str.day, date_time_str.month_str);
+              }
+              else
+              {
+                string[0] = 0;
+              }
+
+              snprintf(string + strlen(string), MAX_ANNOTATION_LEN + 32, "%i:%02i:%02i.%04i",
+                      (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_DIMENSION)/ 3600) % 24),
+                      (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_DIMENSION) % 3600) / 60),
+                      (int)(((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_DIMENSION) % 60),
+                      (int)(((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) % TIME_DIMENSION) / 1000LL));
             }
-          }
-          else
-          {
-            if(mainwindow->viewtime_indicator_type == 2)
-            {
-              utc_to_date_time((annot->onset / TIME_DIMENSION) + mainwindow->edfheaderlist[i]->utc_starttime, &date_time_str);
-
-              snprintf(string, 32, "%2i-%s ", date_time_str.day, date_time_str.month_str);
-            }
-            else
-            {
-              string[0] = 0;
-            }
-
-            snprintf(string + strlen(string), MAX_ANNOTATION_LEN + 32, "%i:%02i:%02i.%04i",
-                    (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_DIMENSION)/ 3600) % 24),
-                    (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_DIMENSION) % 3600) / 60),
-                    (int)(((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_DIMENSION) % 60),
-                    (int)(((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) % TIME_DIMENSION) / 1000LL));
-          }
-
-          remove_trailing_zeros(string);
-
-          if((annot->duration[0]) && (mainwindow->annotations_show_duration))
-          {
-            strcat(string, " Duration: ");
-
-            strcat(string, annot->duration);
 
             remove_trailing_zeros(string);
 
-            strcat(string, " sec");
-          }
-
-          if(printing)
-          {
-            painter->drawText(marker_x + (5  * printsize_x_factor), h - (25  * printsize_y_factor), string);
-          }
-          else
-          {
-            painter->drawText(marker_x + 5, h - 65 + ((j % 3) * 30), string);
-          }
-
-          strncpy(string, annot->annotation, 20);
-
-          string[20] = 0;
-
-          if(printing)
-          {
-            painter->drawText(marker_x + (5  * printsize_x_factor), h - (40  * printsize_y_factor), QString::fromUtf8(string));
-          }
-          else
-          {
-            painter->drawText(marker_x + 5, h - 80 + ((j % 3) * 30), QString::fromUtf8(string));
-          }
-
-          if(!annot_marker_moving)
-          {
-            if(active_markers->count<MAX_ACTIVE_ANNOT_MARKERS)
+            if((annot->duration[0]) && (mainwindow->annotations_show_duration))
             {
-              annot->x_pos = marker_x;
+              strcat(string, " Duration: ");
 
-              active_markers->list[active_markers->count] = annot;
+              strcat(string, annot->duration);
 
-              active_markers->count++;
+              remove_trailing_zeros(string);
+
+              strcat(string, " sec");
+            }
+
+            if(printing)
+            {
+              painter->drawText(marker_x + (5  * printsize_x_factor), h - (25  * printsize_y_factor), string);
+            }
+            else
+            {
+              painter->drawText(marker_x + 5, h - 65 + ((j % 3) * 30), string);
+            }
+
+            strncpy(string, annot->annotation, 20);
+
+            string[20] = 0;
+
+            if(printing)
+            {
+              painter->drawText(marker_x + (5  * printsize_x_factor), h - (40  * printsize_y_factor), QString::fromUtf8(string));
+            }
+            else
+            {
+              painter->drawText(marker_x + 5, h - 80 + ((j % 3) * 30), QString::fromUtf8(string));
+            }
+
+            if(!annot_marker_moving)
+            {
+              if(active_markers->count<MAX_ACTIVE_ANNOT_MARKERS)
+              {
+                annot->x_pos = marker_x;
+
+                active_markers->list[active_markers->count] = annot;
+
+                active_markers->count++;
+              }
+            }
+          }
+
+          if((mainwindow->toolbar_stats.active) && (mainwindow->toolbar_stats.annot_list == annot_list))
+          {
+            if((!strcmp(annot->annotation, mainwindow->toolbar_stats.annot_label)) && (mainwindow->toolbar_stats.sz < STATISTICS_IVAL_LIST_SZ))
+            {
+              if(mainwindow->toolbar_stats.sz > 0)
+              {
+                mainwindow->toolbar_stats.ival[mainwindow->toolbar_stats.sz - 1] = ((double)(annot->onset - l_tmp2)) / (double)TIME_DIMENSION;
+              }
+
+              l_tmp2 = annot->onset;
+
+              mainwindow->toolbar_stats.sz++;
             }
           }
         }
       }
     }
+
+    if(mainwindow->toolbar_stats.sz)  mainwindow->toolbar_stats.sz--;
+  }
+
+  struct ecg_hr_statistics_struct hr_stats;
+
+  if((mainwindow->toolbar_stats.active) && (mainwindow->toolbar_stats.sz > 2))
+  {
+    if(ecg_get_hr_statistics(mainwindow->toolbar_stats.ival, mainwindow->toolbar_stats.sz, &hr_stats))
+    {
+      mainwindow->nav_toolbar_label->setText("Error");
+    }
+    else
+    {
+      sprintf(str4, "  "
+              "Beats: %i  "
+              "Mean RR: %.1fms  "
+              "SDNN RR: %.1fms  "
+              "RMSSD RR: %.1fms  "
+              "Mean HR: %.1fbpm  "
+              "SDNN HR: %.1fbpm  "
+              "NN20: %i  "
+              "pNN20: %.1f%%  "
+              "NN50:  %i  "
+              "pNN50: %.1f%%  ",
+              hr_stats.beat_cnt,
+              hr_stats.mean_rr,
+              hr_stats.sdnn_rr,
+              hr_stats.rmssd_rr,
+              hr_stats.mean_hr,
+              hr_stats.sdnn_hr,
+              hr_stats.NN20,
+              hr_stats.pNN20,
+              hr_stats.NN50,
+              hr_stats.pNN50);
+
+      mainwindow->nav_toolbar_label->setText(str4);
+    }
+  }
+  else
+  {
+    mainwindow->nav_toolbar_label->setText("");
   }
 
   if((viewbuf==NULL)||(graphicBuf==NULL)||(screensamples==NULL))
@@ -3735,7 +3802,7 @@ void ViewCurve::StatisticsButton()
 
   sidemenu->close();
 
-  UI_StatisticWindow show_stats_window(mainwindow->signalcomp[signal_nr], mainwindow->pagetime);
+  UI_StatisticWindow show_stats_window(mainwindow->signalcomp[signal_nr], mainwindow->pagetime, mainwindow);
 }
 
 

@@ -50,11 +50,14 @@
 #include <string.h>
 
 #include "global.h"
+#include "mainwindow.h"
 #include "ecg_filter.h"
 #include "signalcurve.h"
 #include "edf_annot_list.h"
+#include "ecg_statistics.h"
 
 
+class UI_Mainwindow;
 
 
 class UI_StatisticWindow : public QObject
@@ -65,8 +68,12 @@ public:
 
 UI_StatisticWindow(struct signalcompblock *,
                    long long,
+                   QWidget *,
                    struct annotation_list *annot_list=NULL,
                    struct annotationblock *annot=NULL);
+
+UI_Mainwindow *mainwindow;
+
 
 private:
 
@@ -94,6 +101,8 @@ int beat_cnt,
     max_val,
     start_ruler,
     end_ruler;
+
+struct ecg_hr_statistics_struct hr_stat;
 
 
 private slots:

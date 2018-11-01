@@ -117,6 +117,11 @@ UI_Mainwindow::UI_Mainwindow()
 
   linear_interpol = 0;
 
+  toolbar_stats.sz = 0;
+  toolbar_stats.active = 0;
+  toolbar_stats.annot_label[0] = 0;
+  toolbar_stats.annot_list = NULL;
+
   recent_montagedir[0] = 0;
   recent_savedir[0] = 0;
   recent_opendir[0] = 0;
@@ -858,6 +863,9 @@ UI_Mainwindow::UI_Mainwindow()
   zoomforward_Act->setShortcut(Qt::Key_Insert);
   connect(zoomforward_Act, SIGNAL(triggered()), this, SLOT(forward()));
   navtoolbar->addAction(zoomforward_Act);
+
+  nav_toolbar_label = new QLabel;
+  navtoolbar->addWidget(nav_toolbar_label);
 
   Escape_act = new QAction(this);
   Escape_act->setShortcut(Qt::Key_Escape);

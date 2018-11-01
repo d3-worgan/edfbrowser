@@ -35,38 +35,44 @@
 #define STAT_JOB_SRC_ECG    1
 #define STAT_JOB_SRC_ANNOT  2
 
-#define BEAT_IVAL_SIZE   262144
+/* 200 bpm x 60 min. x 24 hours x 2 days */
+#define BEAT_IVAL_LIST_SZ   (576000)
 
 
 
 
 UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
                                        long long pagetime,
+                                       QWidget *w_parent,
                                        struct annotation_list *annot_list,
                                        struct annotationblock *annot)
 {
+  mainwindow = (UI_Mainwindow *)w_parent;
+
   int i,
       tmp,
-      NN20,
-      pNN20,
-      NN50,
-      pNN50,
-      job_src=0;
+//       NN20,
+//       pNN20,
+//       NN50,
+//       pNN50,
+      job_src=0,
+      err;
 
   char stat_str[2048]={""};
 
-  double d_tmp,
-         average_bpm,
-         average_rr,
-         sdnn_bpm,
-         sdnn_rr,
-         *buf_bpm,
-         rmssd_rr,
-         *beat_interval_list=NULL;
+  double *beat_interval_list=NULL;
+
+//   double d_tmp,
+//          average_bpm,
+//          average_rr,
+//          sdnn_bpm,
+//          sdnn_rr,
+//          *buf_bpm=NULL,
+//          rmssd_rr;
 
   long long l_tmp=0;
 
-  struct annotationblock *tmp_annot;
+  struct annotationblock *tmp_annot=NULL;
 
   StatDialog = new QDialog;
   StatDialog->setWindowTitle("Statistics");
@@ -90,7 +96,13 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
   {
     job_src = STAT_JOB_SRC_ANNOT;
 
-    beat_interval_list = (double *)malloc(sizeof(double) * BEAT_IVAL_SIZE);
+    beat_interval_list = (double *)malloc(sizeof(double) * BEAT_IVAL_LIST_SZ);
+    if(beat_interval_list == NULL)
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
+      messagewindow.exec();
+      return;
+    }
   }
 
   if((job_src == STAT_JOB_SRC_ECG) || (job_src == STAT_JOB_SRC_ANNOT))
@@ -262,7 +274,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
 
       int p_i=0, p_j=0;
 
-      for(i=0, beat_cnt=0; beat_cnt<BEAT_IVAL_SIZE; i++)
+      for(i=0, beat_cnt=0; beat_cnt<BEAT_IVAL_LIST_SZ; i++)
       {
         tmp_annot = edfplus_annotation_get_item_visible_only_cached(annot_list, i, &p_i, &p_j);
 
@@ -304,88 +316,120 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
     }
     else
     {
-      average_bpm = 0.0;
-      average_rr = 0.0;
-      sdnn_bpm = 0.0;
-      sdnn_rr = 0.0;
-      rmssd_rr = 0.0;
-      NN20 = 0;
-      NN50 = 0;
-
-      buf_bpm = (double *)malloc(sizeof(double) * beat_cnt);
-      if(buf_bpm == NULL)
+      err = ecg_get_hr_statistics(beat_interval_list, beat_cnt, &hr_stat);
+      if(err)
       {
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
+        sprintf(stat_str, "Error %i occurred at line %i in file %s.", err, __LINE__, __FILE__);
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", stat_str);
         messagewindow.exec();
         return;
       }
 
-      for(i=0; i<beat_cnt; i++)
-      {
-        buf_bpm[i] = 60.0 / beat_interval_list[i];
-
-        average_bpm += buf_bpm[i];
-        average_rr += beat_interval_list[i];
-
-        if(i < (beat_cnt - 1))
-        {
-          d_tmp = (beat_interval_list[i] - beat_interval_list[i + 1]) * 1000.0;
-
-          rmssd_rr += (d_tmp * d_tmp);
-
-          if(((beat_interval_list[i] - beat_interval_list[i + 1]) > 0.02 ) || ((beat_interval_list[i + 1] - beat_interval_list[i]) > 0.02 ))
-          {
-            NN20++;
-          }
-
-          if(((beat_interval_list[i] - beat_interval_list[i + 1]) > 0.05 ) || ((beat_interval_list[i + 1] - beat_interval_list[i]) > 0.05 ))
-          {
-            NN50++;
-          }
-        }
-      }
-
-      average_bpm /= beat_cnt;
-      average_rr /= beat_cnt;
-      rmssd_rr /= beat_cnt;
-      rmssd_rr = sqrt(rmssd_rr);
-
-      pNN20 = (NN20 * 100) / (beat_cnt - 1);
-      pNN50 = (NN50 * 100) / (beat_cnt - 1);
-
-      for(i=0; i<beat_cnt; i++)
-      {
-        sdnn_bpm += (buf_bpm[i] - average_bpm) * (buf_bpm[i] - average_bpm);
-        sdnn_rr += (beat_interval_list[i] - average_rr) * (beat_interval_list[i] - average_rr);
-      }
-
-      sdnn_bpm = sqrt(sdnn_bpm / beat_cnt);
-      sdnn_rr = sqrt(sdnn_rr / beat_cnt);
+//       average_bpm = 0.0;
+//       average_rr = 0.0;
+//       sdnn_bpm = 0.0;
+//       sdnn_rr = 0.0;
+//       rmssd_rr = 0.0;
+//       NN20 = 0;
+//       NN50 = 0;
+//
+//       buf_bpm = (double *)malloc(sizeof(double) * beat_cnt);
+//       if(buf_bpm == NULL)
+//       {
+//         QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
+//         messagewindow.exec();
+//         return;
+//       }
+//
+//       for(i=0; i<beat_cnt; i++)
+//       {
+//         buf_bpm[i] = 60.0 / beat_interval_list[i];
+//
+//         average_bpm += buf_bpm[i];
+//         average_rr += beat_interval_list[i];
+//
+//         if(i < (beat_cnt - 1))
+//         {
+//           d_tmp = (beat_interval_list[i] - beat_interval_list[i + 1]) * 1000.0;
+//
+//           rmssd_rr += (d_tmp * d_tmp);
+//
+//           if(((beat_interval_list[i] - beat_interval_list[i + 1]) > 0.02 ) || ((beat_interval_list[i + 1] - beat_interval_list[i]) > 0.02 ))
+//           {
+//             NN20++;
+//           }
+//
+//           if(((beat_interval_list[i] - beat_interval_list[i + 1]) > 0.05 ) || ((beat_interval_list[i + 1] - beat_interval_list[i]) > 0.05 ))
+//           {
+//             NN50++;
+//           }
+//         }
+//       }
+//
+//       average_bpm /= beat_cnt;
+//       average_rr /= beat_cnt;
+//       rmssd_rr /= beat_cnt;
+//       rmssd_rr = sqrt(rmssd_rr);
+//
+//       pNN20 = (NN20 * 100) / (beat_cnt - 1);
+//       pNN50 = (NN50 * 100) / (beat_cnt - 1);
+//
+//       for(i=0; i<beat_cnt; i++)
+//       {
+//         sdnn_bpm += (buf_bpm[i] - average_bpm) * (buf_bpm[i] - average_bpm);
+//         sdnn_rr += (beat_interval_list[i] - average_rr) * (beat_interval_list[i] - average_rr);
+//       }
+//
+//       sdnn_bpm = sqrt(sdnn_bpm / beat_cnt);
+//       sdnn_rr = sqrt(sdnn_rr / beat_cnt);
+//
+//       sprintf(stat_str,
+//               "Heart Rate\n\n"
+//               "Beats:    %3i\n\n"
+//               "Mean RR:  %3i ms\n\n"
+//               "SDNN RR:  %3i ms\n\n"
+//               "RMSSD RR: %3i ms\n\n"
+//               "Mean HR:  %3.3f bpm\n\n"
+//               "SDNN HR:  %3.3f bpm\n\n"
+//               "NN20:     %3i\n\n"
+//               "pNN20:    %3i %%\n\n"
+//               "NN50:     %3i\n\n"
+//               "pNN50:    %3i %%\n\n",
+//               beat_cnt,
+//               (int)(average_rr * 1000.0),
+//               (int)(sdnn_rr * 1000.0),
+//               (int)rmssd_rr,
+//               average_bpm,
+//               sdnn_bpm,
+//               NN20,
+//               pNN20,
+//               NN50,
+//               pNN50);
+//
+//       free(buf_bpm);
 
       sprintf(stat_str,
               "Heart Rate\n\n"
               "Beats:    %3i\n\n"
-              "Mean RR:  %3i ms\n\n"
-              "SDNN RR:  %3i ms\n\n"
-              "RMSSD RR: %3i ms\n\n"
-              "Mean HR:  %3.3f bpm\n\n"
-              "SDNN HR:  %3.3f bpm\n\n"
+              "Mean RR:  %3.1f ms\n\n"
+              "SDNN RR:  %3.1f ms\n\n"
+              "RMSSD RR: %3.1f ms\n\n"
+              "Mean HR:  %3.1f bpm\n\n"
+              "SDNN HR:  %3.1f bpm\n\n"
               "NN20:     %3i\n\n"
-              "pNN20:    %3i %%\n\n"
+              "pNN20:    %3.1f %%\n\n"
               "NN50:     %3i\n\n"
-              "pNN50:    %3i %%\n\n",
-              beat_cnt,
-              (int)(average_rr * 1000.0),
-              (int)(sdnn_rr * 1000.0),
-              (int)rmssd_rr,
-              average_bpm,
-              sdnn_bpm,
-              NN20,
-              pNN20,
-              NN50,
-              pNN50);
-
-      free(buf_bpm);
+              "pNN50:    %3.1f %%\n\n",
+              hr_stat.beat_cnt,
+              hr_stat.mean_rr,
+              hr_stat.sdnn_rr,
+              hr_stat.rmssd_rr,
+              hr_stat.mean_hr,
+              hr_stat.sdnn_hr,
+              hr_stat.NN20,
+              hr_stat.pNN20,
+              hr_stat.NN50,
+              hr_stat.pNN50);
 
       for(i=0; i<beat_cnt; i++)
       {
@@ -457,6 +501,14 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
   }
 
   Label1->setText(stat_str);
+
+  mainwindow->toolbar_stats.annot_list = annot_list;
+
+  strcpy(mainwindow->toolbar_stats.annot_label, annot->annotation);
+
+  mainwindow->toolbar_stats.sz = 0;
+
+  mainwindow->toolbar_stats.active = 1;
 
   StatDialog->exec();
 }

@@ -41,6 +41,7 @@
 #include <QStyle>
 #include <QCloseEvent>
 #include <QDialog>
+#include <QLabel>
 
 #if QT_VERSION < 0x050000
   #include <QPlastiqueStyle>
@@ -264,6 +265,14 @@ public:
           int zscore_error_detection;
         } z_score_var;
 
+  struct{
+          int sz;
+          int active;
+          double ival[STATISTICS_IVAL_LIST_SZ];
+          char annot_label[MAX_ANNOTATION_LEN + 1];
+          struct annotation_list *annot_list;
+        } toolbar_stats;
+
   struct raw2edf_var_struct raw2edf_var;
 
   struct edfhdrblock *edfheaderlist[MAXFILES];
@@ -324,6 +333,8 @@ public:
 
   QActionGroup *timelock_act_group,
                *sel_viewtime_act_group;
+
+  QLabel       *nav_toolbar_label;
 
 
 private:
