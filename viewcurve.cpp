@@ -1994,13 +1994,13 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
         l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
 
+        if(l_tmp > (mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
+        {
+          break;
+        }
+
         if((l_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) && (!annot->hided))
         {
-          if(l_tmp > (mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
-          {
-            break;
-          }
-
           if(mainwindow->show_annot_markers)
           {
             l_tmp -= mainwindow->edfheaderlist[i]->viewtime;
