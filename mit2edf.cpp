@@ -774,13 +774,17 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
   for(i=0; i<mit_hdr.chns; i++)
   {
-    if(edf_set_physical_dimension(hdl, i, mit_hdr.unit[i]))
+    if(!strcmp(mit_hdr.unit[i], "mV"))
     {
-      textEdit1->append("Error: edf_set_physical_dimension()\n");
-      fclose(data_inputfile);
-      edfclose_file(hdl);
-      pushButton1->setEnabled(true);
-      return;
+      if(((double)((32767 - mit_hdr.adc_zero[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]) <= 100)
+      {
+        if(((double)((-32768 - mit_hdr.adc_zero[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]) >= -100)
+        {
+          strcpy(mit_hdr.unit[i], "uV");
+
+          mit_hdr.unit_multiplier[i] *= 1000;
+        }
+      }
     }
 
     if(edf_set_physical_maximum(hdl, i, (double)((32767 - mit_hdr.adc_zero[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]))
@@ -795,6 +799,15 @@ void UI_MIT2EDFwindow::SelectFileButton()
     if(edf_set_physical_minimum(hdl, i, (double)((-32768 - mit_hdr.adc_zero[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]))
     {
       textEdit1->append("Error: edf_set_physical_minimum()\n");
+      fclose(data_inputfile);
+      edfclose_file(hdl);
+      pushButton1->setEnabled(true);
+      return;
+    }
+
+    if(edf_set_physical_dimension(hdl, i, mit_hdr.unit[i]))
+    {
+      textEdit1->append("Error: edf_set_physical_dimension()\n");
       fclose(data_inputfile);
       edfclose_file(hdl);
       pushButton1->setEnabled(true);
