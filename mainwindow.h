@@ -169,6 +169,7 @@
 #include "plif_ecg_subtract_filter.h"
 #include "plif_ecg_subtract_filter_dialog.h"
 #include "export_filtered_signals.h"
+#include "fir_filter_dialog.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -522,9 +523,11 @@ private slots:
   void check_edf_compatibility();
   void add_new_filter();
   void add_plif_ecg_filter();
+  void add_fir_filter();
   void add_spike_filter();
   void remove_all_filters();
   void remove_all_plif_ecg_filters();
+  void remove_all_fir_filters();
   void remove_all_spike_filters();
 //  void add_new_math_func();
 //  void remove_all_math_funcs();

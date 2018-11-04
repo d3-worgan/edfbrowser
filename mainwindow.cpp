@@ -903,6 +903,14 @@ void UI_Mainwindow::add_plif_ecg_filter()
 }
 
 
+void UI_Mainwindow::add_fir_filter()
+{
+  if(!files_open)  return;
+
+  UI_FIRFilterDialog firfilterdialog(this);
+}
+
+
 void UI_Mainwindow::add_spike_filter()
 {
   if(!files_open)  return;
@@ -1959,6 +1967,32 @@ void UI_Mainwindow::remove_all_plif_ecg_filters()
       plif_free_subtract_filter(signalcomp[i]->plif_ecg_filter_sav);
 
       signalcomp[i]->plif_ecg_filter_sav = NULL;
+
+      update_scr = 1;
+    }
+  }
+
+  if(update_scr)
+  {
+    setup_viewbuf();
+  }
+}
+
+
+void UI_Mainwindow::remove_all_fir_filters()
+{
+  int i,
+      update_scr=0;
+
+  if(!files_open)  return;
+
+  for(i=0; i<signalcomps; i++)
+  {
+    if(signalcomp[i]->fir_filter)
+    {
+      free_fir_filter(signalcomp[i]->fir_filter);
+
+      signalcomp[i]->fir_filter = NULL;
 
       update_scr = 1;
     }
