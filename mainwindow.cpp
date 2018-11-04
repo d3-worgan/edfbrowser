@@ -1899,6 +1899,13 @@ void UI_Mainwindow::remove_all_filters()
 
     signalcomp[i]->ravg_filter_cnt = 0;
 
+    if(signalcomp[i]->fir_filter != NULL)
+    {
+      free_fir_filter(signalcomp[i]->fir_filter);
+
+      signalcomp[i]->fir_filter = NULL;
+    }
+
     if(signalcomp[i]->ecg_filter != NULL)
     {
       free_ecg_filter(signalcomp[i]->ecg_filter);
@@ -2209,6 +2216,13 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
       }
 
       signalcomp[j]->ravg_filter_cnt = 0;
+
+      if(signalcomp[j]->fir_filter != NULL)
+      {
+        free_fir_filter(signalcomp[j]->fir_filter);
+
+        signalcomp[j]->fir_filter = NULL;
+      }
 
       if(signalcomp[j]->ecg_filter != NULL)
       {
@@ -3700,6 +3714,18 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
   {
     newsignalcomp->ravg_filter[i] = create_ravg_filter_copy(original_signalcomp->ravg_filter[i]);
     if(newsignalcomp->ravg_filter[i] == NULL)
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "malloc() error");
+      messagewindow.exec();
+      free(signalcomp);
+      return NULL;
+    }
+  }
+
+  if(original_signalcomp->fir_filter != NULL)
+  {
+    newsignalcomp->fir_filter = create_fir_filter_copy(original_signalcomp->fir_filter);
+    if(newsignalcomp->fir_filter == NULL)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "malloc() error");
       messagewindow.exec();

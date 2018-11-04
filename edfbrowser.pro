@@ -132,6 +132,7 @@ HEADERS += annotlist_filter_dialog.h
 HEADERS += export_filtered_signals.h
 HEADERS += fft_wrap.h
 HEADERS += ecg_statistics.h
+HEADERS += fir_filter.h
 
 HEADERS += third_party/fidlib/fidlib.h
 HEADERS += third_party/fidlib/fidmkf.h
@@ -229,6 +230,7 @@ SOURCES += annotlist_filter_dialog.cpp
 SOURCES += export_filtered_signals.cpp
 SOURCES += fft_wrap.c
 SOURCES += ecg_statistics.c
+SOURCES += fir_filter.c
 
 SOURCES += third_party/fidlib/fidlib.c
 

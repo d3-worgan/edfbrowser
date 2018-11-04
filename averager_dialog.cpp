@@ -603,6 +603,11 @@ void UI_AveragerWindow::process_avg(struct signalcompblock *signalcomp)
       dig_value = signalcomp->fidfuncp[k](signalcomp->fidbuf[k], dig_value);
     }
 
+    if(signalcomp->fir_filter != NULL)
+    {
+      dig_value = run_fir_filter(dig_value, signalcomp->fir_filter);
+    }
+
     if(signalcomp->plif_ecg_filter)
     {
       if(s==signalcomp->sample_start)

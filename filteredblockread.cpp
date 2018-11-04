@@ -258,6 +258,11 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_start)
         dig_value = signalcomp->fidfuncp[k](signalcomp->fidbuf[k], dig_value);
       }
 
+      if(signalcomp->fir_filter)
+      {
+        dig_value = run_fir_filter(dig_value, signalcomp->fir_filter);
+      }
+
       if(signalcomp->plif_ecg_filter)
       {
         dig_value = plif_run_subtract_filter(dig_value, signalcomp->plif_ecg_filter);

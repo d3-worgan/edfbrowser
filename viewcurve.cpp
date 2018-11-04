@@ -2761,6 +2761,11 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
           dig_value = signalcomp[i]->fidfuncp[k](signalcomp[i]->fidbuf[k], dig_value);
         }
 
+        if(signalcomp[i]->fir_filter != NULL)
+        {
+          dig_value = run_fir_filter(dig_value, signalcomp[i]->fir_filter);
+        }
+
         if(signalcomp[i]->plif_ecg_filter)
         {
           if(s==signalcomp[i]->sample_start)
@@ -3245,6 +3250,11 @@ void drawCurve_stage_1_thread::run()
         }
 
         dig_value = signalcomp->fidfuncp[k](signalcomp->fidbuf[k], dig_value);
+      }
+
+      if(signalcomp->fir_filter != NULL)
+      {
+        dig_value = run_fir_filter(dig_value, signalcomp->fir_filter);
       }
 
       if(signalcomp->plif_ecg_filter)
@@ -4061,6 +4071,13 @@ void ViewCurve::RemovefilterButton()
 
   mainwindow->signalcomp[signal_nr]->ravg_filter_cnt = 0;
 
+  if(mainwindow->signalcomp[signal_nr]->fir_filter != NULL)
+  {
+    free_fir_filter(mainwindow->signalcomp[signal_nr]->fir_filter);
+
+    mainwindow->signalcomp[signal_nr]->fir_filter = NULL;
+  }
+
   if(mainwindow->signalcomp[signal_nr]->ecg_filter != NULL)
   {
     free_ecg_filter(mainwindow->signalcomp[signal_nr]->ecg_filter);
@@ -4224,6 +4241,13 @@ void ViewCurve::RemovesignalButton()
   }
 
   mainwindow->signalcomp[signal_nr]->ravg_filter_cnt = 0;
+
+  if(mainwindow->signalcomp[signal_nr]->fir_filter != NULL)
+  {
+    free_fir_filter(mainwindow->signalcomp[signal_nr]->fir_filter);
+
+    mainwindow->signalcomp[signal_nr]->fir_filter = NULL;
+  }
 
   if(mainwindow->signalcomp[signal_nr]->ecg_filter != NULL)
   {

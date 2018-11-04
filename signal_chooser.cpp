@@ -444,6 +444,13 @@ void UI_SignalChooser::signalDelete()
 
     mainwindow->signalcomp[sigcomp_nr]->ravg_filter_cnt = 0;
 
+    if(mainwindow->signalcomp[sigcomp_nr]->fir_filter != NULL)
+    {
+      free_fir_filter(mainwindow->signalcomp[sigcomp_nr]->fir_filter);
+
+      mainwindow->signalcomp[sigcomp_nr]->fir_filter = NULL;
+    }
+
     if(mainwindow->signalcomp[sigcomp_nr]->ecg_filter != NULL)
     {
       free_ecg_filter(mainwindow->signalcomp[sigcomp_nr]->ecg_filter);
