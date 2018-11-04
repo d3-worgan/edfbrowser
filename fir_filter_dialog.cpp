@@ -59,7 +59,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(QWidget *w_parent)
   listlabel->setText("Select signals:");
 
   textEdit = new QTextEdit(firfilterdialog);
-  textEdit->setGeometry(20, 45, 160, 300);
+  textEdit->setGeometry(20, 45, 250, 300);
   textEdit->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   textEdit->setReadOnly(false);
   textEdit->setLineWrapMode(QTextEdit::NoWrap);
@@ -102,11 +102,19 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(QWidget *w_parent)
     item->setSelected(false);
   }
 
-  QObject::connect(ApplyButton,  SIGNAL(clicked()),              this,            SLOT(ApplyButtonClicked()));
-  QObject::connect(CancelButton, SIGNAL(clicked()),              firfilterdialog, SLOT(close()));
-  QObject::connect(list,         SIGNAL(itemSelectionChanged()), this,            SLOT(ApplyButtonClicked()));
+  QObject::connect(ApplyButton,  SIGNAL(clicked()),     this,            SLOT(ApplyButtonClicked()));
+  QObject::connect(CancelButton, SIGNAL(clicked()),     firfilterdialog, SLOT(close()));
+  QObject::connect(textEdit,     SIGNAL(textChanged()), this,            SLOT(check_text()));
 
   firfilterdialog->exec();
+}
+
+
+void UI_FIRFilterDialog::check_text()
+{
+  strncpy(textbuf, textEdit->toPlainText().toLatin1().data(), 100000);
+
+//  strtok_r_e(
 }
 
 

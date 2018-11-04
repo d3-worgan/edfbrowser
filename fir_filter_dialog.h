@@ -84,10 +84,12 @@ QTextEdit      *textEdit;
 QLabel         *listlabel,
                *varsLabel;
 
+char textbuf[100000];
 
 private slots:
 
 void ApplyButtonClicked();
+void check_text();
 
 };
 
