@@ -11,6 +11,8 @@
 
  - Add dynamic ECG statistic info (heart rate variability) in statusbar when activated.
 
+ - Added a customizable FIR filter.
+
 
 
  version 1.65      July 17, 2018

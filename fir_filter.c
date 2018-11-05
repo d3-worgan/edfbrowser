@@ -57,9 +57,20 @@ struct fir_filter_settings * create_fir_filter(double *vars, int sz)
     return NULL;
   }
 
+  settings->buf_sav = (double *)calloc(1, sizeof(double) * sz);
+  if(settings == NULL)
+  {
+    free(settings->buf);
+    free(settings->vars);
+    free(settings);
+    return NULL;
+  }
+
   settings->sz = sz;
 
   settings->idx = 0;
+
+  settings->idx_sav = 0;
 
   memcpy(settings->vars, vars, sizeof(double) * sz);
 
@@ -96,6 +107,7 @@ void free_fir_filter(struct fir_filter_settings *settings)
 
   free(settings->vars);
   free(settings->buf);
+  free(settings->buf_sav);
   free(settings);
 }
 
@@ -150,6 +162,33 @@ double fir_filter_tap(int idx, struct fir_filter_settings *settings)
 
   return settings->vars[idx];
 }
+
+
+void fir_filter_save_buf(struct fir_filter_settings *settings)
+{
+  int i;
+
+  for(i=0; i<settings->sz; i++)
+  {
+    settings->buf_sav[i] = settings->buf[i];
+  }
+
+  settings->idx_sav = settings->idx;
+}
+
+
+void fir_filter_restore_buf(struct fir_filter_settings *settings)
+{
+  int i;
+
+  for(i=0; i<settings->sz; i++)
+  {
+    settings->buf[i] = settings->buf_sav[i];
+  }
+
+  settings->idx = settings->idx_sav;
+}
+
 
 
 

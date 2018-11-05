@@ -472,6 +472,11 @@ void UI_Mainwindow::setup_viewbuf()
           memcpy(signalcomp[i]->fidbuf2[j], signalcomp[i]->fidbuf[j], fid_run_bufsize(signalcomp[i]->fid_run[j]));
         }
 
+        if(signalcomp[i]->fir_filter != NULL)
+        {
+          fir_filter_save_buf(signalcomp[i]->fir_filter);
+        }
+
         if(signalcomp[i]->plif_ecg_filter)
         {
           plif_subtract_filter_state_copy(signalcomp[i]->plif_ecg_filter_sav, signalcomp[i]->plif_ecg_filter);

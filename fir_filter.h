@@ -45,8 +45,10 @@ extern "C" {
 struct fir_filter_settings{
   double *vars;
   double *buf;
+  double *buf_sav;
   int sz;
   int idx;
+  int idx_sav;
 };
 
 
@@ -57,6 +59,8 @@ void reset_fir_filter(double, struct fir_filter_settings *);
 struct fir_filter_settings * create_fir_filter_copy(struct fir_filter_settings *);
 int fir_filter_size(struct fir_filter_settings *);
 double fir_filter_tap(int, struct fir_filter_settings *);
+void fir_filter_restore_buf(struct fir_filter_settings *);
+void fir_filter_save_buf(struct fir_filter_settings *);
 
 
 #ifdef __cplusplus

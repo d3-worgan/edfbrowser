@@ -2763,6 +2763,18 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
         if(signalcomp[i]->fir_filter != NULL)
         {
+          if(s==signalcomp[i]->sample_start)
+          {
+            if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime<=0)
+            {
+              reset_fir_filter(0, signalcomp[i]->fir_filter);
+            }
+            else
+            {
+              fir_filter_restore_buf(signalcomp[i]->fir_filter);
+            }
+          }
+
           dig_value = run_fir_filter(dig_value, signalcomp[i]->fir_filter);
         }
 
@@ -3254,6 +3266,18 @@ void drawCurve_stage_1_thread::run()
 
       if(signalcomp->fir_filter != NULL)
       {
+        if(s==signalcomp->sample_start)
+        {
+          if(mainwindow->edfheaderlist[signalcomp->filenum]->viewtime<=0)
+          {
+            reset_fir_filter(0, signalcomp->fir_filter);
+          }
+          else
+          {
+            fir_filter_restore_buf(signalcomp->fir_filter);
+          }
+        }
+
         dig_value = run_fir_filter(dig_value, signalcomp->fir_filter);
       }
 

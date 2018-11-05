@@ -1002,6 +1002,11 @@ void UI_SpectrumDockWindow::update_curve()
 
     if(signalcomp->fir_filter != NULL)
     {
+      if(s==signalcomp->sample_start)
+      {
+        fir_filter_restore_buf(signalcomp->fir_filter);
+      }
+
       dig_value = run_fir_filter(dig_value, signalcomp->fir_filter);
     }
 
