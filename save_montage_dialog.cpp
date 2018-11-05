@@ -84,7 +84,7 @@ UI_SaveMontagewindow::UI_SaveMontagewindow(QWidget *w_parent)
 
 void UI_SaveMontagewindow::SaveButtonClicked()
 {
-  int i, j, n;
+  int i, j, k, n;
 
   char mtg_path[MAX_PATH_LENGTH];
 
@@ -226,6 +226,22 @@ void UI_SaveMontagewindow::SaveButtonClicked()
         fprintf(mtgfile, "      <model>%i</model>\n", mainwindow->signalcomp[i]->fidfilter_model[j]);
 
         fprintf(mtgfile, "    </fidfilter>\n");
+      }
+
+      if(mainwindow->signalcomp[i]->fir_filter != NULL)
+      {
+        k = fir_filter_size(mainwindow->signalcomp[i]->fir_filter);
+
+        fprintf(mtgfile, "    <fir_filter>\n");
+
+        fprintf(mtgfile, "      <size>%i</size>\n", k);
+
+        for(j=0; j<k; j++)
+        {
+          fprintf(mtgfile, "      <tap>%.24f</tap>\n", fir_filter_tap(j, mainwindow->signalcomp[i]->fir_filter));
+        }
+
+        fprintf(mtgfile, "    </fir_filter>\n");
       }
 
       if(mainwindow->signalcomp[i]->plif_ecg_filter != NULL)

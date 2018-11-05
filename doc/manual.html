@@ -36,6 +36,7 @@
   <li><a href="#ECG_PLIF_filter">ECG powerline interference filter</a></li>
   <li><a href="#ECG_detection">ECG heartrate detection</a></li>
   <li><a href="#HR_statistics">Heart Rate statistics</a></li>
+  <li><a href="#Custom_fir_filter">Custom FIR filter</a></li>
   <li><a href="#Spike_filter">Spike filter</a></li>
   <li><a href="#Zoomfunction">Zoomfunction</a></li>
   <li><a href="#Floatingruler">Floating ruler</a></li>
@@ -565,6 +566,24 @@
   - pNN50, the proportion of NN50 divided by total number of RR's as a percentage.<br>
 <br>
   The data used for the statistics is derived from the timewindow that is visible on the screen.
+</p>
+
+<p><br></p>
+
+<p><a href="#Table_of_Contents">Table of Contents</a></p>
+
+<p><br><br></p>
+
+<h3><a name="Custom_fir_filter">Custom FIR filter</a></h3>
+
+<p>
+  The Custom FIR filter can be used to create your own customized FIR filter.<br>
+  Simply copy and paste a list of filter constants (so-called "taps") in the Taps list<br>
+  and select the signals which to apply.<br>
+  The decimal separator of the filter constants (if any), must be a dot. Comma's are not allowed.<br>
+  The maximum number of constants is limited to 1000.<br>
+  An easy way to create FIR filters is to use an online design tool like <a href="http://t-filter.engineerjs.com/">http://t-filter.engineerjs.com/</a><br>
+  It generates a list of filter taps in readable text which can be copy and pasted into EDFbrowser's Custom FIR filter dialog.
 </p>
 
 <p><br></p>

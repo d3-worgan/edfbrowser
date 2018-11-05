@@ -134,6 +134,26 @@ struct fir_filter_settings * create_fir_filter_copy(struct fir_filter_settings *
 }
 
 
+int fir_filter_size(struct fir_filter_settings *settings)
+{
+  if(settings == NULL)  return 0;
+
+  return settings->sz;
+}
+
+
+double fir_filter_tap(int idx, struct fir_filter_settings *settings)
+{
+  if(settings == NULL)  return 0;
+
+  if((idx < 0) || (idx >= settings->sz))  return 0;
+
+  return settings->vars[idx];
+}
+
+
+
+
 
 
 

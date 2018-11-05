@@ -92,7 +92,8 @@ UI_ViewMontagewindow::UI_ViewMontagewindow(QWidget *w_parent)
 
 void UI_ViewMontagewindow::SelectButtonClicked()
 {
-  int signalcomps_read=0,
+  int r,
+      signalcomps_read=0,
       signals_read,
       signal_cnt,
       filters_read,
@@ -112,11 +113,13 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       polarity=1,
       holdoff=100,
       plif_powerlinefrequency,
-      plif_linear_threshold;
+      plif_linear_threshold,
+      n_taps;
 
   char result[XML_STRBUFLEN],
        composition_txt[2048],
-       label[256];
+       label[256],
+       str2[2048];
 
   double frequency,
          frequency2,
@@ -124,11 +127,13 @@ void UI_ViewMontagewindow::SelectButtonClicked()
          ripple,
          timescale,
          d_tmp,
-         velocity;
+         velocity,
+         fir_vars[1000];
 
   QStandardItem *parentItem,
                 *signalItem,
-                *filterItem;
+                *filterItem,
+                *firfilterItem;
 
   struct xml_handle *xml_hdl;
 
@@ -907,6 +912,72 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       sprintf(composition_txt, "Powerline interference removal: %iHz  threshold: %iuV", plif_powerlinefrequency, plif_linear_threshold);
 
       filterItem->appendRow(new QStandardItem(composition_txt));
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(!xml_goto_nth_element_inside(xml_hdl, "fir_filter", 0))
+    {
+      if(xml_goto_nth_element_inside(xml_hdl, "size", 0))
+      {
+        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+      n_taps = atoi(result);
+      if((n_taps < 2) || (n_taps > 1000))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        return;
+      }
+
+      xml_go_up(xml_hdl);
+
+      for(r=0; r<n_taps; r++)
+      {
+        if(xml_goto_nth_element_inside(xml_hdl, "tap", r))
+        {
+          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+          messagewindow.exec();
+          xml_close(xml_hdl);
+          return;
+        }
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+          messagewindow.exec();
+          xml_close(xml_hdl);
+          return;
+        }
+        fir_vars[r] = atof(result);
+
+        xml_go_up(xml_hdl);
+      }
+
+      sprintf(str2, "Custom FIR filter with %i taps", n_taps);
+
+      firfilterItem = new QStandardItem(str2);
+
+      filterItem->appendRow(firfilterItem);
+
+      for(r=0; r<n_taps; r++)
+      {
+        sprintf(str2, " %.24f ", fir_vars[r]);
+
+        firfilterItem->appendRow(new QStandardItem(str2));
+      }
 
       xml_go_up(xml_hdl);
     }

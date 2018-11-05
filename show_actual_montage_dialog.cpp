@@ -34,10 +34,11 @@
 
 UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
 {
-  int i, j,
+  int i, j, k,
       type,
       model,
-      order;
+      order,
+      n_taps;
 
   char txtbuf[2048];
 
@@ -47,7 +48,8 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
 
   QStandardItem *parentItem,
                 *signalItem,
-                *filterItem;
+                *filterItem,
+                *firfilterItem;
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
@@ -331,6 +333,24 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
       remove_trailing_zeros(txtbuf);
 
       filterItem->appendRow(new QStandardItem(txtbuf));
+    }
+
+    if(mainwindow->signalcomp[i]->fir_filter != NULL)
+    {
+      n_taps = fir_filter_size(mainwindow->signalcomp[i]->fir_filter);
+
+      sprintf(txtbuf, "Custom FIR filter with %i taps", n_taps);
+
+      firfilterItem = new QStandardItem(txtbuf);
+
+      filterItem->appendRow(firfilterItem);
+
+      for(k=0; k<n_taps; k++)
+      {
+        sprintf(txtbuf, " %.24f ", fir_filter_tap(k, mainwindow->signalcomp[i]->fir_filter));
+
+        firfilterItem->appendRow(new QStandardItem(txtbuf));
+      }
     }
 
     if(mainwindow->signalcomp[i]->ecg_filter != NULL)

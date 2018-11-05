@@ -31,14 +31,17 @@
 
 
 
+
+
 UI_FIRFilterDialog::UI_FIRFilterDialog(QWidget *w_parent)
 {
-  int i, n, s;
+  int i, n;
 
   QListWidgetItem *item;
 
   QList<QListWidgetItem *> selectedlist;
 
+  n_taps = 0;
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
@@ -46,13 +49,13 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(QWidget *w_parent)
 
   firfilterdialog->setMinimumSize(620, 415);
   firfilterdialog->setMaximumSize(620, 415);
-  firfilterdialog->setWindowTitle("Add a FIR filter");
+  firfilterdialog->setWindowTitle("Add a Custom FIR filter");
   firfilterdialog->setModal(true);
   firfilterdialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   varsLabel = new QLabel(firfilterdialog);
   varsLabel->setGeometry(20, 20, 100, 25);
-  varsLabel->setText("Taps");
+  varsLabel->setText("Taps: 0");
 
   listlabel = new QLabel(firfilterdialog);
   listlabel->setGeometry(440, 20, 100, 25);
@@ -77,6 +80,10 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(QWidget *w_parent)
   ApplyButton->setGeometry(300, 370, 100, 25);
   ApplyButton->setText("&Apply");
 
+  helpButton = new QPushButton(firfilterdialog);
+  helpButton->setGeometry(150, 370, 100, 25);
+  helpButton->setText("Help");
+
   for(i=0; i<mainwindow->signalcomps; i++)
   {
     item = new QListWidgetItem;
@@ -97,14 +104,14 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(QWidget *w_parent)
   for(i=0; i<n; i++)
   {
     item = list->item(i);
-    s = item->data(Qt::UserRole).toInt();
 
-    item->setSelected(false);
+    item->setSelected(true);
   }
 
   QObject::connect(ApplyButton,  SIGNAL(clicked()),     this,            SLOT(ApplyButtonClicked()));
   QObject::connect(CancelButton, SIGNAL(clicked()),     firfilterdialog, SLOT(close()));
   QObject::connect(textEdit,     SIGNAL(textChanged()), this,            SLOT(check_text()));
+  QObject::connect(helpButton,   SIGNAL(clicked()),     this,            SLOT(helpbuttonpressed()));
 
   firfilterdialog->exec();
 }
@@ -112,9 +119,29 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(QWidget *w_parent)
 
 void UI_FIRFilterDialog::check_text()
 {
+  char *str,
+       str2[512];
+
+  n_taps = 0;
+
   strncpy(textbuf, textEdit->toPlainText().toLatin1().data(), 100000);
 
-//  strtok_r_e(
+  textbuf[99999] = 0;
+
+  str = strtok(textbuf, "\n");
+
+  while(str != NULL)
+  {
+    taps[n_taps++] = atof(str);
+
+    if(n_taps >= 1000)  break;
+
+    str = strtok(NULL, "\n");
+  }
+
+  snprintf(str2, 256, "Taps: %i", n_taps);
+
+  varsLabel->setText(str2);
 }
 
 
@@ -130,6 +157,13 @@ void UI_FIRFilterDialog::ApplyButtonClicked()
 
   n = selectedlist.size();
 
+  if(n_taps < 2)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Put at least two taps into the list.");
+    messagewindow.exec();
+    return;
+  }
+
   for(i=0; i<n; i++)
   {
     item = selectedlist.at(i);
@@ -142,7 +176,7 @@ void UI_FIRFilterDialog::ApplyButtonClicked()
       mainwindow->signalcomp[s]->fir_filter = NULL;
     }
 
-//    mainwindow->signalcomp[s]->fir_filter = create_fir_filter();
+    mainwindow->signalcomp[s]->fir_filter = create_fir_filter(taps, n_taps);
     if(mainwindow->signalcomp[s]->fir_filter == NULL)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while creating a FIR filter.");
@@ -152,6 +186,25 @@ void UI_FIRFilterDialog::ApplyButtonClicked()
 
   mainwindow->setup_viewbuf();
 }
+
+
+void UI_FIRFilterDialog::helpbuttonpressed()
+{
+#ifdef Q_OS_LINUX
+  QDesktopServices::openUrl(QUrl("file:///usr/share/doc/edfbrowser/manual.html#Custom_fir_filter"));
+#endif
+
+#ifdef Q_OS_WIN32
+  char p_path[MAX_PATH_LENGTH];
+
+  strcpy(p_path, "file:///");
+  strcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
+  strcat(p_path, "\\EDFbrowser\\manual.html#Custom_fir_filter");
+  QDesktopServices::openUrl(QUrl(p_path));
+#endif
+}
+
+
 
 
 

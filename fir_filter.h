@@ -55,6 +55,8 @@ double run_fir_filter(double, struct fir_filter_settings *);
 void free_fir_filter(struct fir_filter_settings *);
 void reset_fir_filter(double, struct fir_filter_settings *);
 struct fir_filter_settings * create_fir_filter_copy(struct fir_filter_settings *);
+int fir_filter_size(struct fir_filter_settings *);
+double fir_filter_tap(int, struct fir_filter_settings *);
 
 
 #ifdef __cplusplus

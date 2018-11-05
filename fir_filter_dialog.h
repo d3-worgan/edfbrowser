@@ -45,6 +45,8 @@
 #include <QMessageBox>
 #include <QVariant>
 #include <QTextEdit>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include <stdlib.h>
 #include <string.h>
@@ -75,7 +77,8 @@ private:
 QDialog        *firfilterdialog;
 
 QPushButton    *CancelButton,
-               *ApplyButton;
+               *ApplyButton,
+               *helpButton;
 
 QListWidget    *list;
 
@@ -84,12 +87,17 @@ QTextEdit      *textEdit;
 QLabel         *listlabel,
                *varsLabel;
 
+int n_taps;
+
+double taps[1000];
+
 char textbuf[100000];
 
 private slots:
 
 void ApplyButtonClicked();
 void check_text();
+void helpbuttonpressed();
 
 };
 

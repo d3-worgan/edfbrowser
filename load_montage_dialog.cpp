@@ -93,7 +93,7 @@ UI_LoadMontagewindow::UI_LoadMontagewindow(QWidget *w_parent, char *path)
 
 void UI_LoadMontagewindow::LoadButtonClicked()
 {
-  int i, k, n, p,
+  int i, k, n, p, r,
       tmp,
       skip,
       found,
@@ -115,7 +115,8 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       holdoff=100,
       plif_powerlinefrequency,
       not_compatibel,
-      sf;
+      sf,
+      n_taps;
 
   char result[XML_STRBUFLEN],
        scratchpad[2048],
@@ -129,7 +130,8 @@ void UI_LoadMontagewindow::LoadButtonClicked()
          frequency2=2.0,
          ripple=1.0,
          velocity=1.0,
-         dthreshold;
+         dthreshold,
+         fir_vars[1000];
 
 
   struct xml_handle *xml_hdl;
@@ -234,6 +236,13 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         free_spike_filter(mainwindow->signalcomp[k]->spike_filter);
 
         mainwindow->signalcomp[k]->spike_filter = NULL;
+      }
+
+      if(mainwindow->signalcomp[k]->fir_filter)
+      {
+        free_fir_filter(mainwindow->signalcomp[k]->fir_filter);
+
+        mainwindow->signalcomp[k]->fir_filter = NULL;
       }
 
       for(i=0; i<mainwindow->signalcomp[k]->filter_cnt; i++)
@@ -366,6 +375,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     newsignalcomp->plif_ecg_filter = NULL;
     newsignalcomp->plif_ecg_filter_sav = NULL;
     newsignalcomp->ecg_filter = NULL;
+    newsignalcomp->fir_filter = NULL;
     newsignalcomp->fidfilter_cnt = 0;
     newsignalcomp->hasruler = 0;
     newsignalcomp->polarity = 1;
@@ -1491,6 +1501,75 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         }
 
         newsignalcomp->plif_ecg_subtract_filter_plf = plif_powerlinefrequency / 60;
+      }
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(!xml_goto_nth_element_inside(xml_hdl, "fir_filter", 0))
+    {
+      if(xml_goto_nth_element_inside(xml_hdl, "size", 0))
+      {
+        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+        messagewindow.exec();
+        free(newsignalcomp);
+        xml_close(xml_hdl);
+        return;
+      }
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        free(newsignalcomp);
+        xml_close(xml_hdl);
+        return;
+      }
+      n_taps = atoi(result);
+      if((n_taps < 2) || (n_taps > 1000))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+        messagewindow.exec();
+        free(newsignalcomp);
+        xml_close(xml_hdl);
+        return;
+      }
+
+      xml_go_up(xml_hdl);
+
+      for(r=0; r<n_taps; r++)
+      {
+        if(xml_goto_nth_element_inside(xml_hdl, "tap", r))
+        {
+          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+          messagewindow.exec();
+          free(newsignalcomp);
+          xml_close(xml_hdl);
+          return;
+        }
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+          messagewindow.exec();
+          free(newsignalcomp);
+          xml_close(xml_hdl);
+          return;
+        }
+        fir_vars[r] = atof(result);
+
+        xml_go_up(xml_hdl);
+      }
+
+      newsignalcomp->fir_filter = create_fir_filter(fir_vars, n_taps);
+      if(newsignalcomp->fir_filter == NULL)
+      {
+        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+        messagewindow.exec();
+        free(newsignalcomp);
+        xml_close(xml_hdl);
+        return;
       }
 
       xml_go_up(xml_hdl);
