@@ -33,7 +33,7 @@
 
 
 
-UI_FIRFilterDialog::UI_FIRFilterDialog(QWidget *w_parent)
+UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget *w_parent)
 {
   int i, n;
 
@@ -44,6 +44,9 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(QWidget *w_parent)
   n_taps = 0;
 
   mainwindow = (UI_Mainwindow *)w_parent;
+
+  recent_opendir = recent_dir;
+  recent_savedir = save_dir;
 
   firfilterdialog = new QDialog;
 
@@ -76,12 +79,17 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(QWidget *w_parent)
   CancelButton->setGeometry(20, 370, 100, 25);
   CancelButton->setText("&Close");
 
+  fileButton = new QPushButton(firfilterdialog);
+  fileButton->setGeometry(160, 370, 100, 25);
+  fileButton->setText("&File");
+  fileButton->setToolTip("Load values from text file");
+
   ApplyButton = new QPushButton(firfilterdialog);
   ApplyButton->setGeometry(300, 370, 100, 25);
   ApplyButton->setText("&Apply");
 
   helpButton = new QPushButton(firfilterdialog);
-  helpButton->setGeometry(150, 370, 100, 25);
+  helpButton->setGeometry(440, 370, 100, 25);
   helpButton->setText("Help");
 
   for(i=0; i<mainwindow->signalcomps; i++)
@@ -112,6 +120,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(QWidget *w_parent)
   QObject::connect(CancelButton, SIGNAL(clicked()),     firfilterdialog, SLOT(close()));
   QObject::connect(textEdit,     SIGNAL(textChanged()), this,            SLOT(check_text()));
   QObject::connect(helpButton,   SIGNAL(clicked()),     this,            SLOT(helpbuttonpressed()));
+  QObject::connect(fileButton,   SIGNAL(clicked()),     this,            SLOT(filebuttonpressed()));
 
   firfilterdialog->exec();
 }
@@ -124,9 +133,9 @@ void UI_FIRFilterDialog::check_text()
 
   n_taps = 0;
 
-  strncpy(textbuf, textEdit->toPlainText().toLatin1().data(), 100000);
+  strncpy(textbuf, textEdit->toPlainText().toLatin1().data(), FIR_FILTER_MAX_BUFSZ);
 
-  textbuf[99999] = 0;
+  textbuf[FIR_FILTER_MAX_BUFSZ] = 0;
 
   str = strtok(textbuf, "\n");
 
@@ -134,7 +143,7 @@ void UI_FIRFilterDialog::check_text()
   {
     taps[n_taps++] = atof(str);
 
-    if(n_taps >= 1000)  break;
+    if(n_taps >= FIR_FILTER_MAX_TAPS)  break;
 
     str = strtok(NULL, "\n");
   }
@@ -185,6 +194,73 @@ void UI_FIRFilterDialog::ApplyButtonClicked()
   }
 
   mainwindow->setup_viewbuf();
+}
+
+
+void UI_FIRFilterDialog::filebuttonpressed()
+{
+  int len=0, i;
+
+  char path[MAX_PATH_LENGTH]="",
+  str[4096]="";
+
+  FILE *inputfile;
+
+  strcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "All files (*)").toLocal8Bit().data());
+
+  if(!strcmp(path, ""))
+  {
+    return;
+  }
+
+  get_directory_from_path(recent_opendir, path, MAX_PATH_LENGTH);
+
+  inputfile = fopeno(path, "rb");
+  if(inputfile==NULL)
+  {
+    snprintf(str, 2048, "Can not open file %s for reading.", path);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(str));
+    messagewindow.exec();
+    return;
+  }
+
+  fseek(inputfile, 0, SEEK_END);
+
+  len = ftell(inputfile);
+
+  if(len < 2)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit("File too small."));
+    messagewindow.exec();
+    fclose(inputfile);
+    return;
+  }
+
+  if(len > FIR_FILTER_MAX_BUFSZ)  len = FIR_FILTER_MAX_BUFSZ;
+
+  fseek(inputfile, 0, SEEK_SET);
+
+  if(fread(textbuf, len, 1, inputfile) != 1)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit("Read error."));
+    messagewindow.exec();
+    fclose(inputfile);
+    return;
+  }
+
+  fclose(inputfile);
+
+  for(i=0; i<len; i++)
+  {
+    if(((textbuf[i] < 32) || (textbuf[i] > 126)) && (textbuf[i] != '\n') && (textbuf[i] != '\r'))
+    {
+      textbuf[i] = '!';
+    }
+  }
+
+  textbuf[len] = 0;
+
+  textEdit->setPlainText(textbuf);
 }
 
 

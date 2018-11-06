@@ -907,7 +907,7 @@ void UI_Mainwindow::add_fir_filter()
 {
   if(!files_open)  return;
 
-  UI_FIRFilterDialog firfilterdialog(this);
+  UI_FIRFilterDialog firfilterdialog(recent_opendir, recent_savedir, this);
 }
 
 

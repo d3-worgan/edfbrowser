@@ -47,6 +47,8 @@
 #include <QTextEdit>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QFileDialog>
+#include <QToolTip>
 
 #include <stdlib.h>
 #include <string.h>
@@ -56,6 +58,9 @@
 #include "fir_filter.h"
 #include "utils.h"
 
+
+#define FIR_FILTER_MAX_TAPS       1000
+#define FIR_FILTER_MAX_BUFSZ    100000
 
 
 class UI_Mainwindow;
@@ -67,7 +72,7 @@ class UI_FIRFilterDialog : public QObject
   Q_OBJECT
 
 public:
-  UI_FIRFilterDialog(QWidget *parent=0);
+  UI_FIRFilterDialog(char *recent_dir=NULL, char *save_dir=NULL, QWidget *parent=0);
 
   UI_Mainwindow *mainwindow;
 
@@ -78,7 +83,8 @@ QDialog        *firfilterdialog;
 
 QPushButton    *CancelButton,
                *ApplyButton,
-               *helpButton;
+               *helpButton,
+               *fileButton;
 
 QListWidget    *list;
 
@@ -89,15 +95,18 @@ QLabel         *listlabel,
 
 int n_taps;
 
-double taps[1000];
+double taps[FIR_FILTER_MAX_TAPS];
 
-char textbuf[100000];
+char textbuf[FIR_FILTER_MAX_BUFSZ + 64],
+     *recent_opendir,
+     *recent_savedir;
 
 private slots:
 
 void ApplyButtonClicked();
 void check_text();
 void helpbuttonpressed();
+void filebuttonpressed();
 
 };
 
