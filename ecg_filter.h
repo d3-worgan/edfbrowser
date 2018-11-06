@@ -41,6 +41,10 @@
 #include <string.h>
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 
 
@@ -131,7 +135,6 @@ struct ecg_filter_settings{
 };
 
 
-
 struct ecg_filter_settings * create_ecg_filter(double, double, int);
 double run_ecg_filter(double, struct ecg_filter_settings *);
 void free_ecg_filter(struct ecg_filter_settings *);
@@ -141,6 +144,13 @@ void reset_ecg_filter(struct ecg_filter_settings *);
 int ecg_filter_get_beat_cnt(struct ecg_filter_settings *);
 long long * ecg_filter_get_onset_beatlist(struct ecg_filter_settings *);
 double * ecg_filter_get_interval_beatlist(struct ecg_filter_settings *);
+
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
+
+
 #endif
 
 

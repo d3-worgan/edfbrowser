@@ -68,6 +68,8 @@ struct spike_filter_settings * create_spike_filter(int sf, double sv, int ho, in
 
 void reset_spike_filter(struct spike_filter_settings *st)
 {
+  int i;
+
   st->cutoff = 0;
 
   st->cutoff_sav = 0;
@@ -84,7 +86,7 @@ void reset_spike_filter(struct spike_filter_settings *st)
 
   st->polarity_sav = 0;
 
-  for(int i=0; i<st->n_max; i++)  st->array[i] = 0;
+  for(i=0; i<st->n_max; i++)  st->array[i] = 0;
 
   st->idx = 0;
 
@@ -108,9 +110,11 @@ void reset_spike_filter(struct spike_filter_settings *st)
 
 void spike_filter_save_buf(struct spike_filter_settings *st)
 {
+  int i;
+
   st->holdoff_sav = st->holdoff;
   st->cutoff_sav = st->cutoff;
-  for(int i=0; i<st->n_max; i++) st->array_sav[i] = st->array[i];
+  for(i=0; i<st->n_max; i++) st->array_sav[i] = st->array[i];
   st->idx_sav = st->idx;
   st->base_smpl_sav = st->base_smpl;
   st->polarity_sav = st->polarity;
@@ -123,9 +127,11 @@ void spike_filter_save_buf(struct spike_filter_settings *st)
 
 void spike_filter_restore_buf(struct spike_filter_settings *st)
 {
+  int i;
+
   st->holdoff = st->holdoff_sav;
   st->cutoff = st->cutoff_sav;
-  for(int i=0; i<st->n_max; i++) st->array[i] = st->array_sav[i];
+  for(i=0; i<st->n_max; i++) st->array[i] = st->array_sav[i];
   st->idx = st->idx_sav;
   st->base_smpl = st->base_smpl_sav;
   st->polarity = st->polarity_sav;

@@ -41,6 +41,10 @@
 #include <math.h>
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 
 struct ravg_filter_settings{
@@ -65,6 +69,11 @@ void ravg_filter_restore_buf(struct ravg_filter_settings *);
 void ravg_filter_save_buf(struct ravg_filter_settings *);
 double ravg_filter_response(int, int, double);
 struct ravg_filter_settings * create_ravg_filter_copy(struct ravg_filter_settings *);
+
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 
 #endif

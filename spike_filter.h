@@ -42,6 +42,11 @@
 #define SPIKEFILTER_SPIKE_ONSET   1
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 
 
 struct spike_filter_settings{
@@ -83,6 +88,11 @@ void reset_spike_filter(struct spike_filter_settings *);
 struct spike_filter_settings * create_spike_filter_copy(struct spike_filter_settings *);
 void spike_filter_save_buf(struct spike_filter_settings *);
 void spike_filter_restore_buf(struct spike_filter_settings *);
+
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 
 #endif

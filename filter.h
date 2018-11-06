@@ -41,6 +41,9 @@
 #include <math.h>
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 struct filter_settings{
@@ -61,6 +64,10 @@ int first_order_filter(int, struct filter_settings *);
 double get_filter_factor(double, double);
 struct filter_settings * create_filter_copy(struct filter_settings *);
 
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 
 #endif

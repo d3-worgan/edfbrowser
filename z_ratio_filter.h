@@ -46,6 +46,9 @@
 #include "third_party/kiss_fft/kiss_fftr.h"
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 
@@ -80,6 +83,14 @@ void free_zratio_filter(struct zratio_filter_settings *);
 void reset_zratio_filter(struct zratio_filter_settings *);
 void zratio_filter_save_buf(struct zratio_filter_settings *);
 void zratio_filter_restore_buf(struct zratio_filter_settings *);
+
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
+
+
+
 #endif
 
 

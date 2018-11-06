@@ -48,6 +48,11 @@
 #define XML_ERROR_MALLOC   -6
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 struct xml_handle
 {
   FILE *file;
@@ -83,6 +88,12 @@ void xml_strcpy_encode_entity(char *, const char *);
 int xml_strncpy_encode_entity(char *, const char *, int);
 void xml_strcpy_decode_entity(char *, const char *);
 int xml_strncpy_decode_entity(char *, const char *, int);
+
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
+
 
 #endif
 
