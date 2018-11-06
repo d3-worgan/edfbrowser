@@ -111,9 +111,9 @@ void UI_Mainwindow::setup_viewbuf()
     {
       hasprefilter = 1;
 
-      if(pre_time < 10.0)
+      if(pre_time < ((double)(fir_filter_size(signalcomp[i]->fir_filter) + 3) / ((double)signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record / signalcomp[i]->edfhdr->data_record_duration)))
       {
-        pre_time = 10.0;
+        pre_time = (double)(fir_filter_size(signalcomp[i]->fir_filter) + 3) / ((double)signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record / signalcomp[i]->edfhdr->data_record_duration);
       }
     }
 
