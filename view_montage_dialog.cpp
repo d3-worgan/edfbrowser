@@ -974,7 +974,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
 
       for(r=0; r<n_taps; r++)
       {
-        sprintf(str2, " %.24f ", fir_vars[r]);
+        sprintf(str2, " %.20f ", fir_vars[r]);
 
         firfilterItem->appendRow(new QStandardItem(str2));
       }

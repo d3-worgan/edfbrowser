@@ -347,7 +347,7 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
 
       for(k=0; k<n_taps; k++)
       {
-        sprintf(txtbuf, " %.24f ", fir_filter_tap(k, mainwindow->signalcomp[i]->fir_filter));
+        sprintf(txtbuf, " %.20f ", fir_filter_tap(k, mainwindow->signalcomp[i]->fir_filter));
 
         firfilterItem->appendRow(new QStandardItem(txtbuf));
       }

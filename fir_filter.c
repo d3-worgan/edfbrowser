@@ -80,11 +80,13 @@ struct fir_filter_settings * create_fir_filter(double *vars, int sz)
 
 double run_fir_filter(double val, struct fir_filter_settings *settings)
 {
-  int i;
+  int i, j;
 
   double result = 0;
 
   if(settings == NULL)  return 0;
+
+  j = settings->idx;
 
   settings->buf[settings->idx++] = val;
 
@@ -92,9 +94,9 @@ double run_fir_filter(double val, struct fir_filter_settings *settings)
 
   for(i=0; i<settings->sz; i++)
   {
-    result += settings->buf[settings->idx++] * settings->vars[i];
+    result += settings->buf[j--] * settings->vars[i];
 
-    settings->idx %= settings->sz;
+    if(j < 0)  j = settings->sz - 1;
   }
 
   return result;
