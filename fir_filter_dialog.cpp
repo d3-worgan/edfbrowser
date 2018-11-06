@@ -58,17 +58,16 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
   varsLabel = new QLabel(firfilterdialog);
   varsLabel->setGeometry(20, 20, 100, 25);
-  varsLabel->setText("Taps: 0");
+  varsLabel->setText("Filter taps: 0");
 
   listlabel = new QLabel(firfilterdialog);
   listlabel->setGeometry(440, 20, 100, 25);
   listlabel->setText("Select signals:");
 
-  textEdit = new QTextEdit(firfilterdialog);
+  textEdit = new QPlainTextEdit(firfilterdialog);
   textEdit->setGeometry(20, 45, 250, 300);
   textEdit->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   textEdit->setReadOnly(false);
-  textEdit->setLineWrapMode(QTextEdit::NoWrap);
 
   list = new QListWidget(firfilterdialog);
   list->setGeometry(440, 45, 160, 300);
@@ -148,7 +147,7 @@ void UI_FIRFilterDialog::check_text()
     str = strtok(NULL, "\n");
   }
 
-  snprintf(str2, 256, "Taps: %i", n_taps);
+  snprintf(str2, 256, "Filter taps: %i", n_taps);
 
   varsLabel->setText(str2);
 }
@@ -252,7 +251,7 @@ void UI_FIRFilterDialog::filebuttonpressed()
 
   for(i=0; i<len; i++)
   {
-    if(((textbuf[i] < 32) || (textbuf[i] > 126)) && (textbuf[i] != '\n') && (textbuf[i] != '\r'))
+    if((((textbuf[i] < 32) || (textbuf[i] > 126)) && (textbuf[i] != '\n') && (textbuf[i] != '\r')) || (textbuf[i] == ','))
     {
       textbuf[i] = '!';
     }

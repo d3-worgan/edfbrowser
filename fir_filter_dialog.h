@@ -44,7 +44,8 @@
 #include <QString>
 #include <QMessageBox>
 #include <QVariant>
-#include <QTextEdit>
+#include <QPlainTextEdit>
+#include <QTextCursor>
 #include <QDesktopServices>
 #include <QUrl>
 #include <QFileDialog>
@@ -59,7 +60,7 @@
 #include "utils.h"
 
 
-#define FIR_FILTER_MAX_TAPS       1000
+#define FIR_FILTER_MAX_TAPS       5000
 #define FIR_FILTER_MAX_BUFSZ    100000
 
 
@@ -88,7 +89,7 @@ QPushButton    *CancelButton,
 
 QListWidget    *list;
 
-QTextEdit      *textEdit;
+QPlainTextEdit *textEdit;
 
 QLabel         *listlabel,
                *varsLabel;

@@ -238,7 +238,7 @@ void UI_SaveMontagewindow::SaveButtonClicked()
 
         for(j=0; j<k; j++)
         {
-          fprintf(mtgfile, "      <tap>%.24f</tap>\n", fir_filter_tap(j, mainwindow->signalcomp[i]->fir_filter));
+          fprintf(mtgfile, "      <tap>%.20f</tap>\n", fir_filter_tap(j, mainwindow->signalcomp[i]->fir_filter));
         }
 
         fprintf(mtgfile, "    </fir_filter>\n");
