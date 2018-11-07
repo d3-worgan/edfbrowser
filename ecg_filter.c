@@ -39,6 +39,8 @@
 
 // #define ECG_FILTER_DEBUG_ACTIVE
 
+// #define ECG_FILTER_DEBUG_ACTIVE_2
+
 
 
 struct ecg_filter_settings * create_ecg_filter(double sf, double bitval, int powerlinefreq)
@@ -539,6 +541,9 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *settings)
         }
 
         settings->stat_buf_idx++;
+#ifdef ECG_FILTER_DEBUG_ACTIVE_2
+        printf("beats: %i\n", settings->stat_buf_idx);
+#endif
       }
 
       settings->sample_cntr = 1;
