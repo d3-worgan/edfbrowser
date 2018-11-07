@@ -498,17 +498,17 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
   if(job_src == STAT_JOB_SRC_ANNOT)
   {
     free(beat_interval_list);
+
+    strcpy(mainwindow->toolbar_stats.annot_label, annot->annotation);
+
+    mainwindow->toolbar_stats.annot_list = annot_list;
+
+    mainwindow->toolbar_stats.sz = 0;
+
+    mainwindow->toolbar_stats.active = 1;
   }
 
   Label1->setText(stat_str);
-
-  mainwindow->toolbar_stats.annot_list = annot_list;
-
-  strcpy(mainwindow->toolbar_stats.annot_label, annot->annotation);
-
-  mainwindow->toolbar_stats.sz = 0;
-
-  mainwindow->toolbar_stats.active = 1;
 
   StatDialog->exec();
 }
