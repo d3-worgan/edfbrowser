@@ -83,6 +83,9 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   checkbox2->setTristate(false);
   checkbox2->setCheckState(Qt::Unchecked);
 
+  more_button = new QPushButton("More");
+  more_button->setMaximumWidth(40);
+
   list = new QListWidget(dialog1);
   list->setFont(*mainwindow->monofont);
   list->setAutoFillBackground(true);
@@ -123,6 +126,7 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   h_layout->addWidget(label1);
   h_layout->addWidget(lineedit1);
   h_layout->addWidget(checkbox2);
+  h_layout->addWidget(more_button);
 
   v_layout = new QVBoxLayout(dialog1);
   v_layout->addLayout(h_layout);
@@ -137,6 +141,7 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   QObject::connect(docklist,                   SIGNAL(visibilityChanged(bool)),        this, SLOT(hide_editdock(bool)));
   QObject::connect(checkbox1,                  SIGNAL(stateChanged(int)),              this, SLOT(checkbox1_clicked(int)));
   QObject::connect(checkbox2,                  SIGNAL(stateChanged(int)),              this, SLOT(checkbox2_clicked(int)));
+  QObject::connect(more_button,                SIGNAL(clicked(bool)),                  this, SLOT(more_button_clicked(bool)));
   QObject::connect(hide_annot_act,             SIGNAL(triggered(bool)),                this, SLOT(hide_annot(bool)));
   QObject::connect(unhide_annot_act,           SIGNAL(triggered(bool)),                this, SLOT(unhide_annot(bool)));
   QObject::connect(hide_same_annots_act,       SIGNAL(triggered(bool)),                this, SLOT(hide_same_annots(bool)));
@@ -154,8 +159,18 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
 }
 
 
+void UI_Annotationswindow::more_button_clicked(bool)
+{
+  QMessageBox messagewindow(QMessageBox::Information, "Info", "Right-click on an annotation for more options.");
+  messagewindow.exec();
+  return;
+}
+
+
 void UI_Annotationswindow::show_stats(bool)
 {
+  char str[4096]="";
+
   struct annotation_list *annot_list;
 
   struct annotationblock *annot;
@@ -169,7 +184,6 @@ void UI_Annotationswindow::show_stats(bool)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Close the annotation editor and try again.");
     messagewindow.exec();
-
     return;
   }
 
@@ -179,8 +193,22 @@ void UI_Annotationswindow::show_stats(bool)
   }
 
   annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
+  if(annot_list == NULL)
+  {
+    sprintf(str, "Nullpointer returned: file: %s line %i", __FILE__, __LINE__);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    messagewindow.exec();
+    return;
+  }
 
   annot = edfplus_annotation_get_item_visible_only(annot_list, list->currentRow());
+  if(annot == NULL)
+  {
+    sprintf(str, "Nullpointer returned: file: %s line %i", __FILE__, __LINE__);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    messagewindow.exec();
+    return;
+  }
 
   UI_StatisticWindow stats_wndw(NULL, 0LL, mainwindow, annot_list, annot);
 }

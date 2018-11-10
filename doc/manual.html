@@ -32,10 +32,11 @@
   <li><a href="#Filters">Filters</a></li>
   <li><a href="#Adjust_filters">Adjust filters</a></li>
   <li><a href="#Powerspectrum">Powerspectrum</a></li>
-  <li><a href="#Averaging_EP">Averaging (evoked potentials or other triggers)</a></li>
+  <li><a href="#Averaging_EP">Averaging (evoked potentials, heart beats or other triggers)</a></li>
   <li><a href="#ECG_PLIF_filter">ECG powerline interference filter</a></li>
   <li><a href="#ECG_detection">ECG heartrate detection</a></li>
   <li><a href="#HR_statistics">Heart Rate statistics</a></li>
+  <li><a href="#Export_Import_ECG_RR_interval">Export/Import ECG RR-interval</a></li>
   <li><a href="#Custom_fir_filter">Custom FIR filter</a></li>
   <li><a href="#Spike_filter">Spike filter</a></li>
   <li><a href="#Zoomfunction">Zoomfunction</a></li>
@@ -449,7 +450,7 @@
 
 <p><br><br></p>
 
-<h3><a name="Averaging_EP">Averaging (evoked potentials or other triggers)</a></h3>
+<h3><a name="Averaging_EP">Averaging (evoked potentials, heart beats or other triggers)</a></h3>
 
 <p>
   Averaging waveforms (multiple parts of a signal) can be done by rightclicking on an annotation (trigger) in<br>
@@ -540,7 +541,7 @@
 <br>
   Some statistics about the Heart Rate (variability) are available <a href="#HR_statistics">here</a>.<br>
 <br>
-  Important: before using the Heart Rate detection, go to the settings menu (Settings -&gt; Other) and adjust the "Powerline Frequency" to the frequency used in the country<br>
+  Note: before using the Heart Rate detection, go to the settings menu (Settings -&gt; Other) and adjust the "Powerline Frequency" to the frequency used in the country<br>
   where the recording of the ECG took place (50 or 60 Hz). Otherwise the powerline noise suppression filter in the Heart Rate detection algorithm will not work correctly.
 </p>
 
@@ -565,7 +566,31 @@
   - NN50, the number of pairs of successive RR's that differ by more than 50 ms.<br>
   - pNN50, the proportion of NN50 divided by total number of RR's as a percentage.<br>
 <br>
-  The data used for the statistics is derived from the timewindow that is visible on the screen.
+  The data used for the statistics is derived from the timewindow that is visible on the screen.<br>
+<br>
+  In case you want to see this info permanently at the bottom of the screen during navigation through the file,<br>
+  use the following procedure.<br>
+  First, import the output of the <a href="#ECG_detection">ECG heartrate detection</a> as annotations as described here: <a href="#Export_Import_ECG_RR_interval">Export/Import ECG RR-interval</a><br>
+  Now right-click on an annotation named "R-onset" and select "Heart Rate Variability".<br>
+  A new window with the statistics will appear. Close it.<br>
+  From now on, after changing file position e.g. PgUp/PgDn, you will see the updated statistics at the bottom of the screen.
+</p>
+
+<p><br></p>
+
+<p><a href="#Table_of_Contents">Table of Contents</a></p>
+
+<p><br><br></p>
+
+<h3><a name="Export_Import_ECG_RR_interval">Export/Import ECG RR-interval</a></h3>
+
+<p>
+  This tool can be used to export the output of the <a href="#ECG_detection">ECG heartrate detection</a>,<br>
+  or<br>
+  it can be used to import the output of the <a href="#ECG_detection">ECG heartrate detection</a> as annotations.<br>
+<br>
+  After having imported the <a href="#ECG_detection">ECG heartrate detection</a> output as annotations, more options<br>
+  are available by right-clicking on one of the annotations in the annotationlist.
 </p>
 
 <p><br></p>

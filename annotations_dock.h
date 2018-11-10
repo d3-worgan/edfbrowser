@@ -50,6 +50,7 @@
 #include <QAction>
 #include <QMessageBox>
 #include <QVariant>
+#include <QPushButton>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -108,6 +109,8 @@ private:
 
   QLineEdit *lineedit1;
 
+  QPushButton *more_button;
+
   QAction *show_between_act,
           *average_annot_act,
           *hide_annot_act,
@@ -128,6 +131,7 @@ private slots:
   void hide_editdock(bool);
   void checkbox1_clicked(int);
   void checkbox2_clicked(int);
+  void more_button_clicked(bool);
   void show_between(bool);
   void average_annot(bool);
   void hide_annot(bool);
