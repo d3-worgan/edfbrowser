@@ -1,5 +1,5 @@
 
- version 1.66      to be defined
+ version 1.66      November 17, 2018
  --------------
 
  - Increase maximum number of signals from 512 to 640.
