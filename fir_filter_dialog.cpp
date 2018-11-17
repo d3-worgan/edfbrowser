@@ -127,16 +127,28 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
 void UI_FIRFilterDialog::check_text()
 {
-  char *str,
-       str2[512];
+  int i, len=0;
+
+  char *str=NULL,
+       str2[512]="";
 
   n_taps = 0;
 
   strncpy(textbuf, textEdit->toPlainText().toLatin1().data(), FIR_FILTER_MAX_BUFSZ);
 
+  len = strlen(textbuf);
+
+  for(i=0; i<len; i++)
+  {
+    if(textbuf[i] == ',')
+    {
+      textbuf[i] = '.';
+    }
+  }
+
   textbuf[FIR_FILTER_MAX_BUFSZ] = 0;
 
-  str = strtok(textbuf, "\n");
+  str = strtok(textbuf, "\r\n");
 
   while(str != NULL)
   {
@@ -144,7 +156,7 @@ void UI_FIRFilterDialog::check_text()
 
     if(n_taps >= FIR_FILTER_MAX_TAPS)  break;
 
-    str = strtok(NULL, "\n");
+    str = strtok(NULL, "\r\n");
   }
 
   snprintf(str2, 256, "Filter taps: %i", n_taps);
@@ -251,9 +263,14 @@ void UI_FIRFilterDialog::filebuttonpressed()
 
   for(i=0; i<len; i++)
   {
-    if((((textbuf[i] < 32) || (textbuf[i] > 126)) && (textbuf[i] != '\n') && (textbuf[i] != '\r')) || (textbuf[i] == ','))
+    if(((textbuf[i] < 32) || (textbuf[i] > 126)) && (textbuf[i] != '\n') && (textbuf[i] != '\r'))
     {
       textbuf[i] = '!';
+    }
+
+    if(textbuf[i] == ',')
+    {
+      textbuf[i] = '.';
     }
   }
 
