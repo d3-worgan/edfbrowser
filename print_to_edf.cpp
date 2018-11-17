@@ -61,8 +61,8 @@ void print_screen_to_edf(UI_Mainwindow *mainwindow)
             annot_difftime=0LL;
 
   char path[MAX_PATH_LENGTH],
-       scratchpad[512],
-       datrecduration[8],
+       scratchpad[4096],
+       datrecduration[16],
        *viewbuf;
 
   double frequency,
@@ -798,6 +798,11 @@ void print_screen_to_edf(UI_Mainwindow *mainwindow)
       p = strlen(scratchpad);
 
       if(p>80)  break;
+    }
+
+    if(signalcomp[i]->fir_filter)
+    {
+      p += sprintf(scratchpad + p, "FIR ");
     }
 
     if(signalcomp[i]->ecg_filter != NULL)

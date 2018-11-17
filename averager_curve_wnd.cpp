@@ -238,7 +238,7 @@ void UI_AverageCurveWindow::export_edf(void)
       smpls_left;
 
   char path[MAX_PATH_LENGTH],
-       str[1024];
+       str[4096];
 
   double *buf,
          frequency,
@@ -405,6 +405,11 @@ void UI_AverageCurveWindow::export_edf(void)
     p = strlen(str);
 
     if(p>80)  break;
+  }
+
+  if(signalcomp->fir_filter)
+  {
+    p += sprintf(str + p, "FIR ");
   }
 
   strcat(str, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].prefilter);

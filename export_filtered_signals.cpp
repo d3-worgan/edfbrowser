@@ -955,6 +955,11 @@ void UI_ExportFilteredSignalsWindow::StartExport()
       if(p>80)  break;
     }
 
+    if(signalcomp[i]->fir_filter)
+    {
+      p += sprintf(scratchpad + p, "FIR ");
+    }
+
     if(signalcomp[i]->ecg_filter != NULL)
     {
       p += sprintf(scratchpad + p, "ECG:HR ");
