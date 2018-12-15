@@ -466,6 +466,12 @@ void UI_MIT2EDFwindow::SelectFileButton()
     {
       mit_hdr.adc_gain[j] = atof(charpntr + p);
     }
+    else if(charpntr[p + 1] == '.')
+      {
+        mit_hdr.adc_gain[j] = atof(charpntr + p);
+      }
+
+    if(mit_hdr.adc_gain[j] < 1e-9)  mit_hdr.adc_gain[j] = 200.0;
 
     p = ++i;
 
@@ -786,6 +792,11 @@ void UI_MIT2EDFwindow::SelectFileButton()
         }
       }
     }
+
+//     printf("physmax: %f    physmin: %f  adcgain: %f\n",
+//       (double)((32767 - mit_hdr.adc_zero[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i],
+//       (double)((-32768 - mit_hdr.adc_zero[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i],
+//       mit_hdr.adc_gain[i]);
 
     if(edf_set_physical_maximum(hdl, i, (double)((32767 - mit_hdr.adc_zero[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]))
     {
