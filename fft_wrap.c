@@ -33,7 +33,6 @@ static void window_func(const double *, double *, double *, int, int, int);
 static void set_gain_unity(double *, int);
 
 
-
 struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int dft_size, int window_type)
 {
   struct fft_wrap_settings_struct *st;
@@ -227,11 +226,11 @@ static void window_func(const double *src, double *dest, double *coef, int sz, i
           coef[i] = 0.42 - (0.5 * cos((2.0 * M_PI * i) / (sz - 1))) + (0.08 * cos((4.0 * M_PI * i) / (sz - 1)));  /* Blackman */
         }
       }
-      else if(type == FFT_WNDW_TYPE_HANNING)
+      else if(type == FFT_WNDW_TYPE_HANN)
         {
           for(i=0; i<sz2; i++)
           {
-            coef[i] = (1.0 - cos((2.0 * M_PI * i) / (sz - 1))) / 2.0;  /* Hanning */
+            coef[i] = (1.0 - cos((2.0 * M_PI * i) / (sz - 1))) / 2.0;  /* Hann */
           }
         }
         else
@@ -277,8 +276,6 @@ static void set_gain_unity(double *arr, int sz)
     }
   }
 }
-
-
 
 
 

@@ -263,7 +263,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   windowBox->addItem("Rectangular");
   windowBox->addItem("Hamming");
   windowBox->addItem("Blackman");
-  windowBox->addItem("Hanning");
+  windowBox->addItem("Hann");
   windowBox->setCurrentIndex(window_type);
   windowBox->setToolTip("Window");
 
