@@ -29,9 +29,8 @@
 #include "fft_wrap.h"
 
 
-static void hamming_window_func(const double *, double *, int);
-static void blackman_window_func(const double *, double *, int);
-static void hanning_window_func(const double *, double *, int);
+static void window_func(const double *, double *, double *, int, int, int);
+static void set_gain_unity(double *, int);
 
 
 
@@ -40,7 +39,7 @@ struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int
   struct fft_wrap_settings_struct *st;
 
   if(buf == NULL)  return NULL;
-  if(buf_size < 2)  return NULL;
+  if(buf_size < 4)  return NULL;
   if(dft_size < 4)  return NULL;
   if(dft_size & 1)  dft_size--;
   if((window_type < 0) || (window_type > 3))  return NULL;
@@ -77,10 +76,18 @@ struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int
       free(st);
       return NULL;
     }
+    st->buf_wndw_coef = (double *)malloc(sizeof(double) * (st->dft_sz / 2 + 2));
+    if(st->buf_wndw_coef == NULL)
+    {
+      free(st->buf_wndw);
+      free(st);
+      return NULL;
+    }
   }
   st->buf_out = (double *)malloc(sizeof(double) * (st->sz_out + 2));
   if(st->buf_out == NULL)
   {
+    free(st->buf_wndw_coef);
     free(st->buf_wndw);
     free(st);
     return NULL;
@@ -88,8 +95,9 @@ struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int
   st->kiss_fftbuf = (kiss_fft_cpx *)malloc((st->sz_out + 1) * sizeof(kiss_fft_cpx));
   if(st->kiss_fftbuf == NULL)
   {
-    free(st->buf_wndw);
     free(st->buf_out);
+    free(st->buf_wndw_coef);
+    free(st->buf_wndw);
     free(st);
     return NULL;
   }
@@ -104,8 +112,8 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
   int i, j;
 
   if(st == NULL)  return;
-  if(st->sz_in < 2)  return;
-  if(st->dft_sz < 2) return;
+  if(st->sz_in < 4)  return;
+  if(st->dft_sz < 4) return;
   if(st->sz_out < 1) return;
   if(st->buf_in == NULL)  return;
   if(st->buf_out == NULL)  return;
@@ -115,22 +123,10 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
   {
     if(st->buf_wndw == NULL)  return;
 
-    if(st->wndw_type == 1)
+    if(st->wndw_type)
     {
-      hamming_window_func(st->buf_in, st->buf_wndw, st->dft_sz);
+      window_func(st->buf_in, st->buf_wndw, st->buf_wndw_coef, st->dft_sz, st->wndw_type, 0);
     }
-    else if(st->wndw_type == 2)
-      {
-        blackman_window_func(st->buf_in, st->buf_wndw, st->dft_sz);
-      }
-      else if(st->wndw_type == 3)
-        {
-          hanning_window_func(st->buf_in, st->buf_wndw, st->dft_sz);
-        }
-        else
-        {
-          return;
-        }
 
     kiss_fftr(st->cfg, st->buf_wndw, st->kiss_fftbuf);
   }
@@ -146,21 +142,10 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
 
   for(j=1; j<st->blocks; j++)
   {
-    if(st->wndw_type == 1)
-    {
-      hamming_window_func(st->buf_in + (j * st->dft_sz), st->buf_wndw, st->dft_sz);
-    }
-    else if(st->wndw_type == 2)
-      {
-        blackman_window_func(st->buf_in + (j * st->dft_sz), st->buf_wndw, st->dft_sz);
-      }
-      else if(st->wndw_type == 3)
-        {
-          hanning_window_func(st->buf_in, st->buf_wndw, st->dft_sz);
-        }
-
     if(st->wndw_type)
     {
+      window_func(st->buf_in + (j * st->dft_sz), st->buf_wndw, st->buf_wndw_coef, st->dft_sz, st->wndw_type, j);
+
       kiss_fftr(st->cfg, st->buf_wndw, st->kiss_fftbuf);
     }
     else
@@ -176,21 +161,10 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
 
   if(st->smpls_left)
   {
-    if(st->wndw_type == 1)
-    {
-      hamming_window_func(st->buf_in + ((j-1) * st->dft_sz) + st->smpls_left, st->buf_wndw, st->dft_sz);
-    }
-    else if(st->wndw_type == 2)
-      {
-        blackman_window_func(st->buf_in + ((j-1) * st->dft_sz) + st->smpls_left, st->buf_wndw, st->dft_sz);
-      }
-      else if(st->wndw_type == 3)
-        {
-          hanning_window_func(st->buf_in, st->buf_wndw, st->dft_sz);
-        }
-
     if(st->wndw_type)
     {
+      window_func(st->buf_in + ((j-1) * st->dft_sz) + st->smpls_left, st->buf_wndw, st->buf_wndw_coef, st->dft_sz, st->wndw_type, j);
+
       kiss_fftr(st->cfg, st->buf_wndw, st->kiss_fftbuf);
     }
     else
@@ -225,44 +199,84 @@ void free_fft_wrap(struct fft_wrap_settings_struct *st)
   free(st->kiss_fftbuf);
   free(st->buf_out);
   free(st->buf_wndw);
+  free(st->buf_wndw_coef);
   memset(st, 0, sizeof(struct fft_wrap_settings_struct));
   free(st);
 }
 
 
-static void hamming_window_func(const double *src, double *dest, int sz)
+static void window_func(const double *src, double *dest, double *coef, int sz, int type, int block)
 {
-  int i;
+  int i, sz2;
 
-  for(i=0; i<sz; i++)
+  sz2 = sz / 2;
+
+  if(!block)
   {
-    dest[i] = (0.53836 - (0.46164 * cos((2.0 * M_PI * i) / (sz - 1)))) * src[i];
+    if(type == FFT_WNDW_TYPE_HAMMING)
+    {
+      for(i=0; i<sz2; i++)
+      {
+        coef[i] = 0.53836 - (0.46164 * cos((2.0 * M_PI * i) / (sz - 1)));  /* Hamming */
+      }
+    }
+    else if(type == FFT_WNDW_TYPE_BLACKMAN)
+      {
+        for(i=0; i<sz2; i++)
+        {
+          coef[i] = 0.42 - (0.5 * cos((2.0 * M_PI * i) / (sz - 1))) + (0.08 * cos((4.0 * M_PI * i) / (sz - 1)));  /* Blackman */
+        }
+      }
+      else if(type == FFT_WNDW_TYPE_HANNING)
+        {
+          for(i=0; i<sz2; i++)
+          {
+            coef[i] = (1.0 - cos((2.0 * M_PI * i) / (sz - 1))) / 2.0;  /* Hanning */
+          }
+        }
+        else
+        {
+          for(i=0; i<sz2; i++)
+          {
+            coef[i] = 0;
+          }
+        }
+
+    set_gain_unity(coef, sz2);
+  }
+
+  for(i=0; i<sz2; i++)
+  {
+    dest[i] = coef[i] * src[i];
+
+    dest[(sz - 1) - i] = coef[i] * src[(sz - 1) - i];
   }
 }
 
 
-static void blackman_window_func(const double *src, double *dest, int sz)
+static void set_gain_unity(double *arr, int sz)
 {
   int i;
 
-  for(i=0; i<sz; i++)
-  {
-    dest[i] = (0.42 - (0.5 * cos((2.0 * M_PI * i) / (sz - 1))) + (0.08 * cos((4.0 * M_PI * i) / (sz - 1)))) * src[i];
-  }
-}
+  double total = 0.0;
 
-
-static void hanning_window_func(const double *src, double *dest, int sz)
-{
-  int i;
+  if(sz < 4)  return;
 
   for(i=0; i<sz; i++)
   {
-    dest[i] = ((1.0 - cos((2.0 * M_PI * i) / (sz - 1))) / 2.0) * src[i];
+    total += arr[i];
+  }
+
+  total /= sz;
+
+  if(sz != 0.0)
+  {
+    for(i=0; i<sz; i++)
+    {
+      arr[i] /= total;
+    }
   }
 }
-
-
 
 
 

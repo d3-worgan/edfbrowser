@@ -39,6 +39,12 @@
 
 #include "third_party/kiss_fft/kiss_fftr.h"
 
+#define FFT_WNDW_TYPE_RECT       0
+#define FFT_WNDW_TYPE_HAMMING    1
+#define FFT_WNDW_TYPE_BLACKMAN   2
+#define FFT_WNDW_TYPE_HANNING    3
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -53,6 +59,7 @@ struct fft_wrap_settings_struct{
   int wndw_type;
   double *buf_in;
   double *buf_wndw;
+  double *buf_wndw_coef;
   double *buf_out;
   kiss_fftr_cfg cfg;
   kiss_fft_cpx *kiss_fftbuf;
