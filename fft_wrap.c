@@ -34,13 +34,14 @@ static void blackman_window_func(const double *, double *, int);
 static void hanning_window_func(const double *, double *, int);
 
 
+
 struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int dft_size, int window_type)
 {
   struct fft_wrap_settings_struct *st;
 
   if(buf == NULL)  return NULL;
   if(buf_size < 2)  return NULL;
-  if(dft_size < 2)  return NULL;
+  if(dft_size < 4)  return NULL;
   if(dft_size & 1)  dft_size--;
   if((window_type < 0) || (window_type > 3))  return NULL;
 
@@ -153,6 +154,10 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
       {
         blackman_window_func(st->buf_in + (j * st->dft_sz), st->buf_wndw, st->dft_sz);
       }
+      else if(st->wndw_type == 3)
+        {
+          hanning_window_func(st->buf_in, st->buf_wndw, st->dft_sz);
+        }
 
     if(st->wndw_type)
     {
@@ -179,6 +184,10 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
       {
         blackman_window_func(st->buf_in + ((j-1) * st->dft_sz) + st->smpls_left, st->buf_wndw, st->dft_sz);
       }
+      else if(st->wndw_type == 3)
+        {
+          hanning_window_func(st->buf_in, st->buf_wndw, st->dft_sz);
+        }
 
     if(st->wndw_type)
     {
@@ -252,9 +261,6 @@ static void hanning_window_func(const double *src, double *dest, int sz)
     dest[i] = ((1.0 - cos((2.0 * M_PI * i) / (sz - 1))) / 2.0) * src[i];
   }
 }
-
-
-
 
 
 
