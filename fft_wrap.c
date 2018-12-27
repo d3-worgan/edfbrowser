@@ -31,6 +31,7 @@
 
 static void hamming_window_func(const double *, double *, int);
 static void blackman_window_func(const double *, double *, int);
+static void hanning_window_func(const double *, double *, int);
 
 
 struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int dft_size, int window_type)
@@ -41,7 +42,7 @@ struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int
   if(buf_size < 2)  return NULL;
   if(dft_size < 2)  return NULL;
   if(dft_size & 1)  dft_size--;
-  if((window_type < 0) || (window_type > 2))  return NULL;
+  if((window_type < 0) || (window_type > 3))  return NULL;
 
   st = (struct fft_wrap_settings_struct *)calloc(1, sizeof(struct fft_wrap_settings_struct));
   if(st == NULL)  return NULL;
@@ -121,10 +122,14 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
       {
         blackman_window_func(st->buf_in, st->buf_wndw, st->dft_sz);
       }
-      else
-      {
-        return;
-      }
+      else if(st->wndw_type == 3)
+        {
+          hanning_window_func(st->buf_in, st->buf_wndw, st->dft_sz);
+        }
+        else
+        {
+          return;
+        }
 
     kiss_fftr(st->cfg, st->buf_wndw, st->kiss_fftbuf);
   }
@@ -234,6 +239,17 @@ static void blackman_window_func(const double *src, double *dest, int sz)
   for(i=0; i<sz; i++)
   {
     dest[i] = (0.42 - (0.5 * cos((2.0 * M_PI * i) / (sz - 1))) + (0.08 * cos((4.0 * M_PI * i) / (sz - 1)))) * src[i];
+  }
+}
+
+
+static void hanning_window_func(const double *src, double *dest, int sz)
+{
+  int i;
+
+  for(i=0; i<sz; i++)
+  {
+    dest[i] = ((1.0 - cos((2.0 * M_PI * i) / (sz - 1))) / 2.0) * src[i];
   }
 }
 

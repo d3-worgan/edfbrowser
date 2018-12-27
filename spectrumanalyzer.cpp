@@ -263,7 +263,9 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   windowBox->addItem("Rectangular");
   windowBox->addItem("Hamming");
   windowBox->addItem("Blackman");
+  windowBox->addItem("Hanning");
   windowBox->setCurrentIndex(window_type);
+  windowBox->setToolTip("Window");
 
   dftsz_label = new QLabel;
   dftsz_label->setText("Blocksize:");

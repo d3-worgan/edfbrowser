@@ -47,6 +47,7 @@
 #include <QThread>
 #include <QSpinBox>
 #include <QComboBox>
+#include <QToolTip>
 
 #include <stdio.h>
 #include <string.h>

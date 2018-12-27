@@ -212,7 +212,9 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   windowBox->addItem("Rectangular");
   windowBox->addItem("Hamming");
   windowBox->addItem("Blackman");
+  windowBox->addItem("Hanning");
   windowBox->setCurrentIndex(window_type);
+  windowBox->setToolTip("Window");
 
   dftsz_label = new QLabel;
   dftsz_label->setText("Blocksize:");
