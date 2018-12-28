@@ -284,7 +284,7 @@ static void set_gain_unity(double *arr, int sz)
 
   total /= sz;
 
-  if(sz != 0.0)
+  if(total != 0.0)
   {
     for(i=0; i<sz; i++)
     {
