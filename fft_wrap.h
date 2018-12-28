@@ -39,10 +39,12 @@
 
 #include "third_party/kiss_fft/kiss_fftr.h"
 
-#define FFT_WNDW_TYPE_RECT           0
-#define FFT_WNDW_TYPE_HAMMING        1
-#define FFT_WNDW_TYPE_BLACKMAN       2
-#define FFT_WNDW_TYPE_HANN           3
+#define FFT_WNDW_TYPE_RECT              0
+#define FFT_WNDW_TYPE_HAMMING           1
+#define FFT_WNDW_TYPE_BLACKMAN          2
+#define FFT_WNDW_TYPE_BLACKMANHARRIS    3
+#define FFT_WNDW_TYPE_BLACKMANNUTTALL   4
+#define FFT_WNDW_TYPE_HANN              5
 
 
 #ifdef __cplusplus

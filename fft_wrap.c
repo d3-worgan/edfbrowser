@@ -41,7 +41,7 @@ struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int
   if(buf_size < 4)  return NULL;
   if(dft_size < 4)  return NULL;
   if(dft_size & 1)  dft_size--;
-  if((window_type < 0) || (window_type > 3))  return NULL;
+  if((window_type < 0) || (window_type > 5))  return NULL;
 
   st = (struct fft_wrap_settings_struct *)calloc(1, sizeof(struct fft_wrap_settings_struct));
   if(st == NULL)  return NULL;
@@ -216,7 +216,8 @@ static void window_func(const double *src, double *dest, double *coef, int sz, i
     {
       for(i=0; i<sz2; i++)
       {
-        coef[i] = 0.53836 - (0.46164 * cos((2.0 * M_PI * i) / (sz - 1)));  /* Hamming */
+        coef[i] = 0.53836 - (0.46164 * cos((2.0 * M_PI * i) / (sz - 1)));  /* Hamming marginally optimized */
+//        coef[i] = 0.54 - (0.46 * cos((2.0 * M_PI * i) / (sz - 1)));  /* Hamming (original) */
       }
     }
     else if(type == FFT_WNDW_TYPE_BLACKMAN)
@@ -226,20 +227,35 @@ static void window_func(const double *src, double *dest, double *coef, int sz, i
           coef[i] = 0.42 - (0.5 * cos((2.0 * M_PI * i) / (sz - 1))) + (0.08 * cos((4.0 * M_PI * i) / (sz - 1)));  /* Blackman */
         }
       }
-      else if(type == FFT_WNDW_TYPE_HANN)
+      else if(type == FFT_WNDW_TYPE_BLACKMANHARRIS)
         {
           for(i=0; i<sz2; i++)
           {
-            coef[i] = (1.0 - cos((2.0 * M_PI * i) / (sz - 1))) / 2.0;  /* Hann */
+            coef[i] = 0.35875 - (0.48829 * cos((2.0 * M_PI * i) / (sz - 1))) + (0.14128 * cos((4.0 * M_PI * i) / (sz - 1))) - (0.01168 * cos((6.0 * M_PI * i) / (sz - 1)));  /* Blackman-Harris */
           }
         }
-        else
-        {
-          for(i=0; i<sz2; i++)
+        else if(type == FFT_WNDW_TYPE_BLACKMANNUTTALL)
           {
-            coef[i] = 0;
+            for(i=0; i<sz2; i++)
+            {
+              coef[i] =  0.3635819 - (0.4891775 * cos((2.0 * M_PI * i) / (sz - 1))) + ( 0.1365995 * cos((4.0 * M_PI * i) / (sz - 1))) - (0.0106411 * cos((6.0 * M_PI * i) / (sz - 1)));  /* Blackman-Nuttall */
+            }
           }
-        }
+          else if(type == FFT_WNDW_TYPE_HANN)
+            {
+              for(i=0; i<sz2; i++)
+              {                           /* both are the same */
+//                coef[i] = (1.0 - cos((2.0 * M_PI * i) / (sz - 1))) / 2.0;  /* Hann */
+                coef[i] = 0.5 - (0.5 * cos((2.0 * M_PI * i) / (sz - 1)));  /* Hann */
+              }
+            }
+            else
+            {
+              for(i=0; i<sz2; i++)
+              {
+                coef[i] = 0;
+              }
+            }
 
     set_gain_unity(coef, sz2);
   }
