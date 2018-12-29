@@ -30,8 +30,8 @@
 #include "spectrum_dock.h"
 
 
-#define SPECT_LOG_MINIMUM (1E-8)
-#define SPECT_LOG_MINIMUM_LOG (-7)
+#define SPECT_LOG_MINIMUM (1E-13)
+#define SPECT_LOG_MINIMUM_LOG (-12)
 
 
 
