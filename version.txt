@@ -1,4 +1,15 @@
 
+ version 1.67      to be defined
+ --------------
+
+ - MIT (Physionet) to EDF converter: fix bug in header parser.
+
+ - Spectrumanalyzer: added new window functions (Blackman-Harris, Blackman-Nuttall) and improved the dynamic range.
+
+ - Export filtered signals: in the treeview list, show also the custom FIR filters.
+
+
+
  version 1.66      November 17, 2018
  --------------
 
