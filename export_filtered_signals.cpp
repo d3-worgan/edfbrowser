@@ -1229,10 +1229,11 @@ void UI_ExportFilteredSignalsWindow::showpopupmessage(const char *str1, const ch
 
 void UI_ExportFilteredSignalsWindow::populate_tree_view()
 {
-  int i, j,
+  int i, j, k,
       type,
       model,
-      order;
+      order,
+      n_taps;
 
   char txtbuf[2048];
 
@@ -1242,7 +1243,8 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
 
   QStandardItem *parentItem,
                 *signalItem,
-                *filterItem;
+                *filterItem,
+                *firfilterItem;
 
   t_model->clear();
 
@@ -1459,6 +1461,24 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
       remove_trailing_zeros(txtbuf);
 
       filterItem->appendRow(new QStandardItem(txtbuf));
+    }
+
+    if(mainwindow->signalcomp[i]->fir_filter != NULL)
+    {
+      n_taps = fir_filter_size(mainwindow->signalcomp[i]->fir_filter);
+
+      sprintf(txtbuf, "Custom FIR filter with %i taps", n_taps);
+
+      firfilterItem = new QStandardItem(txtbuf);
+
+      filterItem->appendRow(firfilterItem);
+
+      for(k=0; k<n_taps; k++)
+      {
+        sprintf(txtbuf, " %.20f ", fir_filter_tap(k, mainwindow->signalcomp[i]->fir_filter));
+
+        firfilterItem->appendRow(new QStandardItem(txtbuf));
+      }
     }
 
     if(mainwindow->signalcomp[i]->ecg_filter != NULL)
