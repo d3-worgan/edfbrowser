@@ -562,9 +562,9 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   }
 
   edfhdr->data_record_duration = atof(scratchpad);
-  if(edfhdr->data_record_duration<-0.000001)
+  if(dblcmp(edfhdr->data_record_duration, 0.0) != 1)
   {
-    sprintf(txt_string, "Error, record duration is invalid: \"%s\", should be >=0",
+    sprintf(txt_string, "Error, record duration is invalid: \"%s\", should be > 0",
             scratchpad);
     free(edf_hdr);
     free(edfhdr);
@@ -1151,6 +1151,17 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     }
     edfhdr->edfparam[i].smp_per_record = n;
     edfhdr->recordsize += n;
+
+    edfhdr->edfparam[i].sf_f = (double)(edfhdr->edfparam[i].smp_per_record) / edfhdr->data_record_duration;
+
+    if(((long long)(edfhdr->edfparam[i].smp_per_record) * TIME_DIMENSION) % edfhdr->long_data_record_duration)
+    {
+      edfhdr->edfparam[i].sf_int = 0;
+    }
+    else
+    {
+      edfhdr->edfparam[i].sf_int = ((long long)(edfhdr->edfparam[i].smp_per_record) * TIME_DIMENSION) / edfhdr->long_data_record_duration;
+    }
   }
 
   if(edfhdr->bdf)

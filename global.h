@@ -110,6 +110,8 @@ struct edfparamblock{
         int    buf_offset;
         double bitvalue;
         int    annotation;
+        int    sf_int;
+        double sf_f;
       };
 
 struct edfhdrblock{

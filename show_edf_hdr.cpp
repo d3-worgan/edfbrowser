@@ -570,9 +570,7 @@ void UI_EDFhdrwindow::show_params(int row)
     ql->setMargin(margin);
     ql->setTextInteractionFlags(Qt::TextSelectableByMouse);
     signallist->setCellWidget(i, 0, ql);
-    convert_to_metric_suffix(str,
-                             (double)mainwindow->edfheaderlist[row]->edfparam[i].smp_per_record / mainwindow->edfheaderlist[row]->data_record_duration,
-                             3);
+    convert_to_metric_suffix(str, mainwindow->edfheaderlist[row]->edfparam[i].sf_f, 3);
     strcat(str, "Hz");
     remove_trailing_zeros(str);
     ql = new QLabel(str);

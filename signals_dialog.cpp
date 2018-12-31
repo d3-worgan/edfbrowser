@@ -751,9 +751,7 @@ void UI_Signalswindow::show_signals(int row)
     snprintf(str, 256, "%-3i ", i + 1);
     strcat(str, mainwindow->edfheaderlist[row]->edfparam[i].label);
     strcat(str, "   ");
-    convert_to_metric_suffix(str + strlen(str),
-                             mainwindow->edfheaderlist[row]->edfparam[i].smp_per_record / mainwindow->edfheaderlist[row]->data_record_duration,
-                             6);
+    convert_to_metric_suffix(str + strlen(str), mainwindow->edfheaderlist[row]->edfparam[i].sf_f, 6);
     remove_trailing_zeros(str);
     strcat(str, "Hz");
     item = new QListWidgetItem;
