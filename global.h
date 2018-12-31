@@ -112,6 +112,7 @@ struct edfparamblock{
         int    annotation;
         int    sf_int;
         double sf_f;
+        long long smpls;
       };
 
 struct edfhdrblock{

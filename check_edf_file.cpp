@@ -1162,6 +1162,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     {
       edfhdr->edfparam[i].sf_int = ((long long)(edfhdr->edfparam[i].smp_per_record) * TIME_DIMENSION) / edfhdr->long_data_record_duration;
     }
+
+    edfhdr->edfparam[i].smpls = edfhdr->edfparam[i].smp_per_record * edfhdr->datarecords;
   }
 
   if(edfhdr->bdf)

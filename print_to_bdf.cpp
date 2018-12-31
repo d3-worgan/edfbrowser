@@ -32,7 +32,7 @@
 
 void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 {
-  int i, j, k, p,
+  int i, j, k, p, r,
       n=0,
       records,
       records_written,
@@ -48,7 +48,10 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
       annot_list_sz=0,
       annot_cnt=0,
       type,
-      len;
+      len,
+      integer_sf=0,
+      datrec_multiple_int=0,
+      smpl_rate_divider=1;
 
   long long duration,
             smpls_written[MAXSIGNALS],
@@ -159,21 +162,135 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
     return;
   }
 
-  temp = 0;
+  for(integer_sf=1, i=0; i<signalcomps; i++)
+  {
+    if(!signalcomp[i]->edfhdr->edfparam[0].sf_int)
+    {
+      integer_sf = 0;
 
-  for(i=0; i<signalcomps; i++)
+      break;
+    }
+  }
+
+  if(integer_sf)
+  {
+    smpl_rate_divider = 10;
+
+    for(i=0; i<signalcomps; i++)
+    {
+      if(signalcomp[i]->edfhdr->edfparam[0].sf_int % 10)
+      {
+        smpl_rate_divider = 1;
+
+        break;
+      }
+    }
+
+    if(smpl_rate_divider == 1)
+    {
+      smpl_rate_divider = 8;
+
+      for(i=0; i<signalcomps; i++)
+      {
+        if(signalcomp[i]->edfhdr->edfparam[0].sf_int % 8)
+        {
+          smpl_rate_divider = 1;
+
+          break;
+        }
+      }
+    }
+
+    if(smpl_rate_divider == 1)
+    {
+      smpl_rate_divider = 5;
+
+      for(i=0; i<signalcomps; i++)
+      {
+        if(signalcomp[i]->edfhdr->edfparam[0].sf_int % 5)
+        {
+          smpl_rate_divider = 1;
+
+          break;
+        }
+      }
+    }
+
+    if(smpl_rate_divider == 1)
+    {
+      smpl_rate_divider = 4;
+
+      for(i=0; i<signalcomps; i++)
+      {
+        if(signalcomp[i]->edfhdr->edfparam[0].sf_int % 4)
+        {
+          smpl_rate_divider = 1;
+
+          break;
+        }
+      }
+    }
+
+    if(smpl_rate_divider == 1)
+    {
+      smpl_rate_divider = 2;
+
+      for(i=0; i<signalcomps; i++)
+      {
+        if(signalcomp[i]->edfhdr->edfparam[0].sf_int % 2)
+        {
+          smpl_rate_divider = 1;
+
+          break;
+        }
+      }
+    }
+  }
+
+  for(datrec_multiple_int=1, i=0; i<signalcomps; i++)
   {
     if(duration % signalcomp[i]->edfhdr->long_data_record_duration)
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "This combination of files can not be printed to BDF\n"
-                                                                "because the datarecordblock durations are not an integer multiple.");
-      messagewindow.exec();
-      return;
+      datrec_multiple_int = 0;
+
+      break;
     }
 
     duration_factor[signalcomp[i]->filenum] = duration / signalcomp[i]->edfhdr->long_data_record_duration;
+  }
 
-    temp += signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record;
+  if((!integer_sf) && (!datrec_multiple_int))
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "This combination of files/signals can not be printed to BDF,\n"
+                                                              "either the datarecordblock duration of the files must be an integer multiple\n"
+                                                              "or the samplerates of the signals must have integer values.");
+    messagewindow.exec();
+    return;
+  }
+
+  if(!datrec_multiple_int)
+  {
+    switch(smpl_rate_divider)
+    {
+      case  1 : strcpy(datrecduration, "1       ");
+                duration = TIME_DIMENSION;
+                break;
+      case  2 : strcpy(datrecduration, "0.5     ");
+                duration = TIME_DIMENSION / 2;
+                break;
+      case  4 : strcpy(datrecduration, "0.25    ");
+                duration = TIME_DIMENSION / 4;
+                break;
+      case  5 : strcpy(datrecduration, "0.2     ");
+                duration = TIME_DIMENSION / 5;
+                break;
+      case  8 : strcpy(datrecduration, "0.125   ");
+                duration = TIME_DIMENSION / 8;
+                break;
+      case 10 : strcpy(datrecduration, "0.1     ");
+                duration = TIME_DIMENSION / 10;
+                break;
+    }
   }
 
   path[0] = 0;
@@ -839,8 +956,15 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   for(i=0; i<signalcomps; i++)
   {
-    fprintf(outputfile, "%-8i", signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record
-     * duration_factor[signalcomp[i]->filenum]);
+    if(datrec_multiple_int)
+    {
+      fprintf(outputfile, "%-8i", signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record
+       * duration_factor[signalcomp[i]->filenum]);
+    }
+    else
+    {
+      fprintf(outputfile, "%-8i", signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].sf_int / smpl_rate_divider);
+    }
   }
 
   if(bdfplus)
@@ -887,7 +1011,16 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
     for(i=0; i<signalcomps; i++)
     {
-      for(k=0; k<signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record * duration_factor[signalcomp[i]->filenum]; k++)
+      if(datrec_multiple_int)
+      {
+        r = signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record * duration_factor[signalcomp[i]->filenum];
+      }
+      else
+      {
+        r = signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].sf_int / smpl_rate_divider;
+      }
+
+      for(k=0; k<r; k++)
       {
         if(smpls_preamble[i])
         {
