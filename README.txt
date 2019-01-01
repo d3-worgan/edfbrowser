@@ -5,23 +5,21 @@ Qt  http://www.qt.io/
 
 Minimum version 4.7.1 or later, preferable 4.8.7
 
-If you insist on using Qt5 (which I don't recommend), it must be version >= 5.9.1.
+If you want to use Qt5, it must be version >= 5.9.1.
 For info how to compile Qt5 from source, scroll down.
-
 
 The GCC compiler on Linux or Mingw-w64 on windows. <http://mingw-w64.sourceforge.net/>
 
 http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/4.8.2/threads-posix/dwarf/i686-4.8.2-release-posix-dwarf-rt_v3-rev3.7z/download
 
-Do not use microsoft tools or compilers.
-
+Do not use microsoft tools or compilers!
 
 
 Introduction
 ============
 
 EDFbrowser is a Qt4 application and uses qmake as part of the build
-process.  qmake is part of your Qt4 installation.
+process. qmake is part of your Qt4 installation.
 
 
 
@@ -75,7 +73,7 @@ How to compile
 Now you can run the program by typing: edfbrowser
 
 
-In case you insist on using Qt5, the recommended way is not to use the Qt5 libraries that comes with your distro.
+In case you want to use Qt5, the recommended way is not to use the Qt5 libraries that comes with your distro.
 Instead, download and compile the Qt5 source and use that to compile EDFbrowser.
 Here's a step by step list with instructions:
 
@@ -143,11 +141,11 @@ In order to reduce the size of the executable, run the following commands:
 
 strip -s edfbrowser
 
-upx edfbrowser
+upx edfbrowser (if upx is not recognized as a command, install it using your package manager)
 
 
 
--Requirements on macOS
+-Requirements on macOS (warning, I don't have a Mac and I can not support it!)
 -=====================
 
 -Development tools from Apple. To get them, run
