@@ -212,7 +212,8 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   windowBox->addItem("Rectangular");
   windowBox->addItem("Hamming");
   windowBox->addItem("Blackman");
-  windowBox->addItem("Blackman-Harris");
+  windowBox->addItem("4-term Blackman-Harris");
+  windowBox->addItem("7-term Blackman-Harris");
   windowBox->addItem("Blackman-Nuttall");
   windowBox->addItem("Hann");
   windowBox->setCurrentIndex(window_type);

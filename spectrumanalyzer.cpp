@@ -263,7 +263,8 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   windowBox->addItem("Rectangular");
   windowBox->addItem("Hamming");
   windowBox->addItem("Blackman");
-  windowBox->addItem("Blackman-Harris");
+  windowBox->addItem("4-term Blackman-Harris");
+  windowBox->addItem("7-term Blackman-Harris");
   windowBox->addItem("Blackman-Nuttall");
   windowBox->addItem("Hann");
   windowBox->setCurrentIndex(window_type);
@@ -488,6 +489,23 @@ void UI_FreqSpectrumWindow::print_to_txt()
     fprintf(outputfile, "Signal: %s\n", signalcomp->signallabel);
   }
   sprintf(str, "FFT blocksize: %i\n", fft_data->dft_sz);
+  switch(fft_data->wndw_type)
+  {
+    case FFT_WNDW_TYPE_RECT                  : sprintf(str, "FFT window function: None\n");
+            break;
+    case FFT_WNDW_TYPE_HAMMING               : sprintf(str, "FFT window function: Hamming\n");
+            break;
+    case FFT_WNDW_TYPE_BLACKMAN              : sprintf(str, "FFT window function: Blackman\n");
+            break;
+    case FFT_WNDW_TYPE_4TERM_BLACKMANHARRIS  : sprintf(str, "FFT window function: 4-term Blackman-Harris\n");
+            break;
+    case FFT_WNDW_TYPE_7TERM_BLACKMANHARRIS  : sprintf(str, "FFT window function: 7-term Blackman-Harris\n");
+            break;
+    case FFT_WNDW_TYPE_BLACKMANNUTTALL       : sprintf(str, "FFT window function: Blackman-Nuttall\n");
+            break;
+    case FFT_WNDW_TYPE_HANN                  : sprintf(str, "FFT window function: Hann\n");
+            break;
+  }
   sprintf(str + strlen(str), "FFT resolution: %f Hz\n", freqstep);
   sprintf(str + strlen(str), "Data Samples: %i\n", fft_data->sz_in);
   sprintf(str + strlen(str), "Power Samples: %i\n", fft_data->sz_out);

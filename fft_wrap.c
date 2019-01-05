@@ -41,7 +41,7 @@ struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int
   if(buf_size < 4)  return NULL;
   if(dft_size < 4)  return NULL;
   if(dft_size & 1)  dft_size--;
-  if((window_type < 0) || (window_type > 5))  return NULL;
+  if((window_type < 0) || (window_type > 6))  return NULL;
 
   st = (struct fft_wrap_settings_struct *)calloc(1, sizeof(struct fft_wrap_settings_struct));
   if(st == NULL)  return NULL;
@@ -227,35 +227,43 @@ static void window_func(const double *src, double *dest, double *coef, int sz, i
           coef[i] = 0.42 - (0.5 * cos((2.0 * M_PI * i) / (sz - 1))) + (0.08 * cos((4.0 * M_PI * i) / (sz - 1)));  /* Blackman */
         }
       }
-      else if(type == FFT_WNDW_TYPE_BLACKMANHARRIS)
-        {
+      else if(type == FFT_WNDW_TYPE_4TERM_BLACKMANHARRIS)
+        {  /* The use of DFT windows in signal-to-noise ratio and harmonic distortion computations IEEE */
           for(i=0; i<sz2; i++)
           {
-            coef[i] = 0.35875 - (0.48829 * cos((2.0 * M_PI * i) / (sz - 1))) + (0.14128 * cos((4.0 * M_PI * i) / (sz - 1))) - (0.01168 * cos((6.0 * M_PI * i) / (sz - 1)));  /* Blackman-Harris */
+            coef[i] = 0.35875 - (0.48829 * cos((2.0 * M_PI * i) / (sz - 1))) + (0.14128 * cos((4.0 * M_PI * i) / (sz - 1))) - (0.01168 * cos((6.0 * M_PI * i) / (sz - 1)));  /* 4-term Blackman-Harris */
           }
         }
-        else if(type == FFT_WNDW_TYPE_BLACKMANNUTTALL)
-          {
+        else if(type == FFT_WNDW_TYPE_7TERM_BLACKMANHARRIS)
+          {  /* The use of DFT windows in signal-to-noise ratio and harmonic distortion computations IEEE */
             for(i=0; i<sz2; i++)
             {
-              coef[i] =  0.3635819 - (0.4891775 * cos((2.0 * M_PI * i) / (sz - 1))) + ( 0.1365995 * cos((4.0 * M_PI * i) / (sz - 1))) - (0.0106411 * cos((6.0 * M_PI * i) / (sz - 1)));  /* Blackman-Nuttall */
+              coef[i] = 0.271051400693424 - (0.433297939234485 * cos((2.0 * M_PI * i) / (sz - 1))) + (0.218122999543110 * cos((4.0 * M_PI * i) / (sz - 1))) - (0.65925446388031e-1 * cos((6.0 * M_PI * i) / (sz - 1)))
+              + (0.10811742098371e-1 * cos((8.0 * M_PI * i) / (sz - 1))) - (0.776584825226e-3 * cos((10.0 * M_PI * i) / (sz - 1))) + (0.13887217352e-4 * cos((10.0 * M_PI * i) / (sz - 1)));  /* 7-term Blackman-Harris */
             }
           }
-          else if(type == FFT_WNDW_TYPE_HANN)
-            {
-              for(i=0; i<sz2; i++)
-              {                           /* both are the same */
-//                coef[i] = (1.0 - cos((2.0 * M_PI * i) / (sz - 1))) / 2.0;  /* Hann */
-                coef[i] = 0.5 - (0.5 * cos((2.0 * M_PI * i) / (sz - 1)));  /* Hann */
-              }
-            }
-            else
+          else if(type == FFT_WNDW_TYPE_BLACKMANNUTTALL)
             {
               for(i=0; i<sz2; i++)
               {
-                coef[i] = 0;
+                coef[i] =  0.3635819 - (0.4891775 * cos((2.0 * M_PI * i) / (sz - 1))) + ( 0.1365995 * cos((4.0 * M_PI * i) / (sz - 1))) - (0.0106411 * cos((6.0 * M_PI * i) / (sz - 1)));  /* Blackman-Nuttall */
               }
             }
+            else if(type == FFT_WNDW_TYPE_HANN)
+              {
+                for(i=0; i<sz2; i++)
+                {                           /* both are the same */
+  //                coef[i] = (1.0 - cos((2.0 * M_PI * i) / (sz - 1))) / 2.0;  /* Hann */
+                  coef[i] = 0.5 - (0.5 * cos((2.0 * M_PI * i) / (sz - 1)));  /* Hann */
+                }
+              }
+              else
+              {
+                for(i=0; i<sz2; i++)
+                {
+                  coef[i] = 0;
+                }
+              }
 
     set_gain_unity(coef, sz2);
   }
