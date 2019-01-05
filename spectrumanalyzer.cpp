@@ -267,6 +267,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   windowBox->addItem("7-term Blackman-Harris");
   windowBox->addItem("Blackman-Nuttall");
   windowBox->addItem("Hann");
+  windowBox->addItem("HFT223D");
   windowBox->setCurrentIndex(window_type);
   windowBox->setToolTip("Window");
 

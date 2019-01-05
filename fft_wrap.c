@@ -41,7 +41,7 @@ struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int
   if(buf_size < 4)  return NULL;
   if(dft_size < 4)  return NULL;
   if(dft_size & 1)  dft_size--;
-  if((window_type < 0) || (window_type > 6))  return NULL;
+  if((window_type < 0) || (window_type > 7))  return NULL;
 
   st = (struct fft_wrap_settings_struct *)calloc(1, sizeof(struct fft_wrap_settings_struct));
   if(st == NULL)  return NULL;
@@ -229,7 +229,7 @@ static void window_func(const double *src, double *dest, double *coef, int sz, i
       }
       else if(type == FFT_WNDW_TYPE_4TERM_BLACKMANHARRIS)
         {  /* The use of DFT windows in signal-to-noise ratio and harmonic distortion computations IEEE */
-          for(i=0; i<sz2; i++)
+          for(i=0; i<sz2; i++)  /* Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including a comprehensive list of window functions and some new at-top windows Max Planck Institute */
           {
             coef[i] = 0.35875 - (0.48829 * cos((2.0 * M_PI * i) / (sz - 1))) + (0.14128 * cos((4.0 * M_PI * i) / (sz - 1))) - (0.01168 * cos((6.0 * M_PI * i) / (sz - 1)));  /* 4-term Blackman-Harris */
           }
@@ -239,7 +239,7 @@ static void window_func(const double *src, double *dest, double *coef, int sz, i
             for(i=0; i<sz2; i++)
             {
               coef[i] = 0.271051400693424 - (0.433297939234485 * cos((2.0 * M_PI * i) / (sz - 1))) + (0.218122999543110 * cos((4.0 * M_PI * i) / (sz - 1))) - (0.65925446388031e-1 * cos((6.0 * M_PI * i) / (sz - 1)))
-              + (0.10811742098371e-1 * cos((8.0 * M_PI * i) / (sz - 1))) - (0.776584825226e-3 * cos((10.0 * M_PI * i) / (sz - 1))) + (0.13887217352e-4 * cos((10.0 * M_PI * i) / (sz - 1)));  /* 7-term Blackman-Harris */
+              + (0.10811742098371e-1 * cos((8.0 * M_PI * i) / (sz - 1))) - (0.776584825226e-3 * cos((10.0 * M_PI * i) / (sz - 1))) + (0.13887217352e-4 * cos((12.0 * M_PI * i) / (sz - 1)));  /* 7-term Blackman-Harris */
             }
           }
           else if(type == FFT_WNDW_TYPE_BLACKMANNUTTALL)
@@ -257,13 +257,22 @@ static void window_func(const double *src, double *dest, double *coef, int sz, i
                   coef[i] = 0.5 - (0.5 * cos((2.0 * M_PI * i) / (sz - 1)));  /* Hann */
                 }
               }
-              else
-              {
-                for(i=0; i<sz2; i++)
-                {
-                  coef[i] = 0;
+              else if(type == FFT_WNDW_TYPE_HFT223D)
+                {  /* Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including a comprehensive list of window functions and some new at-top windows Max Planck Institute */
+                  for(i=0; i<sz2; i++)
+                  {
+                    coef[i] = 1.0 - (1.98298997309 * cos((2.0 * M_PI * i) / (sz - 1))) + (1.75556083063 * cos((4.0 * M_PI * i) / (sz - 1))) - (1.19037717712 * cos((6.0 * M_PI * i) / (sz - 1)))
+                    + (0.56155440797 * cos((8.0 * M_PI * i) / (sz - 1))) - (0.17296769663 * cos((10.0 * M_PI * i) / (sz - 1))) + (0.3233247087e-1 * cos((12.0 * M_PI * i) / (sz - 1)))
+                    - (0.324954578e-2 * cos((14.0 * M_PI * i) / (sz - 1))) + (0.13801040e-3 * cos((16.0 * M_PI * i) / (sz - 1))) - (0.132725e-5 * cos((18.0 * M_PI * i) / (sz - 1)));  /* 9-term HFT223D */
+                  }
                 }
-              }
+                else
+                {
+                  for(i=0; i<sz2; i++)
+                  {
+                    coef[i] = 0;
+                  }
+                }
 
     set_gain_unity(coef, sz2);
   }

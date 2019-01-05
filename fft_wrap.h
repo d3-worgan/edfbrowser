@@ -46,6 +46,7 @@
 #define FFT_WNDW_TYPE_7TERM_BLACKMANHARRIS    4
 #define FFT_WNDW_TYPE_BLACKMANNUTTALL         5
 #define FFT_WNDW_TYPE_HANN                    6
+#define FFT_WNDW_TYPE_HFT223D                 7
 
 
 #ifdef __cplusplus
