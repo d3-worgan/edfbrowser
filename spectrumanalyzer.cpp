@@ -533,6 +533,7 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
 
   char str[2048];
 
+  if(fft_data == NULL)  return;
 
   if(VlogCheckBox->checkState() == Qt::Checked)
   {
@@ -692,7 +693,7 @@ void UI_FreqSpectrumWindow::run()
           unsigned char four[4];
         } var;
 
-  if(first_run)
+  if((first_run) || (buf1 == NULL))
   {
     first_run = 0;
 
