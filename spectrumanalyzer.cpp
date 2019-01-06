@@ -848,7 +848,7 @@ void UI_FreqSpectrumWindow::run()
       return;
     }
 
-    samplefreq = (double)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record / ((double)signalcomp->edfhdr->long_data_record_duration / TIME_DIMENSION);
+    samplefreq = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f;
 
     if(dftblocksize > samples)
     {
