@@ -215,21 +215,22 @@ static void window_func(const double *src, double *dest, double *coef, int sz, i
     if(type == FFT_WNDW_TYPE_HAMMING)
     {
       for(i=0; i<sz2; i++)
-      {
-        coef[i] = 0.53836 - (0.46164 * cos((2.0 * M_PI * i) / (sz - 1)));  /* Hamming marginally optimized */
-//        coef[i] = 0.54 - (0.46 * cos((2.0 * M_PI * i) / (sz - 1)));  /* Hamming (original) */
+      {  /* Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including a comprehensive list of window functions and some new at-top windows Max Planck Institute */
+        coef[i] = 0.54 - (0.46 * cos((2.0 * M_PI * i) / (sz - 1)));  /* Hamming (original) */
+//        coef[i] = 0.53836 - (0.46164 * cos((2.0 * M_PI * i) / (sz - 1)));  /* Hamming marginally optimized */
       }
     }
-    else if(type == FFT_WNDW_TYPE_BLACKMAN)
-      {
+    else if(type == FFT_WNDW_TYPE_NUTTALL3B)
+      {  /* Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including a comprehensive list of window functions and some new at-top windows Max Planck Institute */
         for(i=0; i<sz2; i++)
         {
-          coef[i] = 0.42 - (0.5 * cos((2.0 * M_PI * i) / (sz - 1))) + (0.08 * cos((4.0 * M_PI * i) / (sz - 1)));  /* Blackman */
+//          coef[i] = 0.42 - (0.5 * cos((2.0 * M_PI * i) / (sz - 1))) + (0.08 * cos((4.0 * M_PI * i) / (sz - 1)));  /* Blackman */
+          coef[i] = 0.4243801 - (0.4973406 * cos((2.0 * M_PI * i) / (sz - 1))) + (0.0782793 * cos((4.0 * M_PI * i) / (sz - 1)));  /* Nuttall3b */
         }
       }
       else if(type == FFT_WNDW_TYPE_4TERM_BLACKMANHARRIS)
-        {  /* The use of DFT windows in signal-to-noise ratio and harmonic distortion computations IEEE */
-          for(i=0; i<sz2; i++)  /* Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including a comprehensive list of window functions and some new at-top windows Max Planck Institute */
+        {  /* Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including a comprehensive list of window functions and some new at-top windows Max Planck Institute */
+          for(i=0; i<sz2; i++)
           {
             coef[i] = 0.35875 - (0.48829 * cos((2.0 * M_PI * i) / (sz - 1))) + (0.14128 * cos((4.0 * M_PI * i) / (sz - 1))) - (0.01168 * cos((6.0 * M_PI * i) / (sz - 1)));  /* 4-term Blackman-Harris */
           }
@@ -242,19 +243,19 @@ static void window_func(const double *src, double *dest, double *coef, int sz, i
               + (0.10811742098371e-1 * cos((8.0 * M_PI * i) / (sz - 1))) - (0.776584825226e-3 * cos((10.0 * M_PI * i) / (sz - 1))) + (0.13887217352e-4 * cos((12.0 * M_PI * i) / (sz - 1)));  /* 7-term Blackman-Harris */
             }
           }
-          else if(type == FFT_WNDW_TYPE_BLACKMANNUTTALL)
+          else if(type == FFT_WNDW_TYPE_NUTTALL4C)
             {
               for(i=0; i<sz2; i++)
-              {
-                coef[i] =  0.3635819 - (0.4891775 * cos((2.0 * M_PI * i) / (sz - 1))) + ( 0.1365995 * cos((4.0 * M_PI * i) / (sz - 1))) - (0.0106411 * cos((6.0 * M_PI * i) / (sz - 1)));  /* Blackman-Nuttall */
+              {  /* Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including a comprehensive list of window functions and some new at-top windows Max Planck Institute */
+                coef[i] =  0.3635819 - (0.4891775 * cos((2.0 * M_PI * i) / (sz - 1))) + ( 0.1365995 * cos((4.0 * M_PI * i) / (sz - 1))) - (0.0106411 * cos((6.0 * M_PI * i) / (sz - 1)));  /* Nuttall4c */
               }
             }
             else if(type == FFT_WNDW_TYPE_HANN)
-              {
+              {  /* Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including a comprehensive list of window functions and some new at-top windows Max Planck Institute */
                 for(i=0; i<sz2; i++)
                 {                           /* both are the same */
-  //                coef[i] = (1.0 - cos((2.0 * M_PI * i) / (sz - 1))) / 2.0;  /* Hann */
-                  coef[i] = 0.5 - (0.5 * cos((2.0 * M_PI * i) / (sz - 1)));  /* Hann */
+                  coef[i] = (1.0 - cos((2.0 * M_PI * i) / (sz - 1))) / 2.0;  /* Hann */
+//                  coef[i] = 0.5 - (0.5 * cos((2.0 * M_PI * i) / (sz - 1)));  /* Hann */
                 }
               }
               else if(type == FFT_WNDW_TYPE_HFT223D)

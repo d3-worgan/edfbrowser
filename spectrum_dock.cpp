@@ -211,10 +211,10 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   windowBox->setMinimumSize(70, 25);
   windowBox->addItem("Rectangular");
   windowBox->addItem("Hamming");
-  windowBox->addItem("Blackman");
   windowBox->addItem("4-term Blackman-Harris");
   windowBox->addItem("7-term Blackman-Harris");
-  windowBox->addItem("Blackman-Nuttall");
+  windowBox->addItem("Nuttall3b");
+  windowBox->addItem("Nuttall4c");
   windowBox->addItem("Hann");
   windowBox->addItem("HFT223D");
   windowBox->setCurrentIndex(window_type);
@@ -339,6 +339,8 @@ void UI_SpectrumDockWindow::windowBox_changed(int idx)
 
   window_type = idx;
 
+  init_maxvalue = 1;
+
   update_curve();
 }
 
@@ -350,6 +352,8 @@ void UI_SpectrumDockWindow::dftsz_value_changed(int new_val)
   if(dftblocksize == new_val)  return;
 
   dftblocksize = new_val;
+
+  init_maxvalue = 1;
 
   update_curve();
 }

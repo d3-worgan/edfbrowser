@@ -41,10 +41,10 @@
 
 #define FFT_WNDW_TYPE_RECT                    0
 #define FFT_WNDW_TYPE_HAMMING                 1
-#define FFT_WNDW_TYPE_BLACKMAN                2
-#define FFT_WNDW_TYPE_4TERM_BLACKMANHARRIS    3
-#define FFT_WNDW_TYPE_7TERM_BLACKMANHARRIS    4
-#define FFT_WNDW_TYPE_BLACKMANNUTTALL         5
+#define FFT_WNDW_TYPE_4TERM_BLACKMANHARRIS    2
+#define FFT_WNDW_TYPE_7TERM_BLACKMANHARRIS    3
+#define FFT_WNDW_TYPE_NUTTALL3B               4
+#define FFT_WNDW_TYPE_NUTTALL4C               5
 #define FFT_WNDW_TYPE_HANN                    6
 #define FFT_WNDW_TYPE_HFT223D                 7
 

@@ -262,10 +262,10 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   windowBox->setMinimumSize(70, 25);
   windowBox->addItem("Rectangular");
   windowBox->addItem("Hamming");
-  windowBox->addItem("Blackman");
   windowBox->addItem("4-term Blackman-Harris");
   windowBox->addItem("7-term Blackman-Harris");
-  windowBox->addItem("Blackman-Nuttall");
+  windowBox->addItem("Nuttall3b");
+  windowBox->addItem("Nuttall4c");
   windowBox->addItem("Hann");
   windowBox->addItem("HFT223D");
   windowBox->setCurrentIndex(window_type);
@@ -496,13 +496,13 @@ void UI_FreqSpectrumWindow::print_to_txt()
             break;
     case FFT_WNDW_TYPE_HAMMING               : sprintf(str, "FFT window function: Hamming\n");
             break;
-    case FFT_WNDW_TYPE_BLACKMAN              : sprintf(str, "FFT window function: Blackman\n");
+    case FFT_WNDW_TYPE_NUTTALL3B             : sprintf(str, "FFT window function: Nuttall3b\n");
             break;
     case FFT_WNDW_TYPE_4TERM_BLACKMANHARRIS  : sprintf(str, "FFT window function: 4-term Blackman-Harris\n");
             break;
     case FFT_WNDW_TYPE_7TERM_BLACKMANHARRIS  : sprintf(str, "FFT window function: 7-term Blackman-Harris\n");
             break;
-    case FFT_WNDW_TYPE_BLACKMANNUTTALL       : sprintf(str, "FFT window function: Blackman-Nuttall\n");
+    case FFT_WNDW_TYPE_NUTTALL4C             : sprintf(str, "FFT window function: Nuttall4c\n");
             break;
     case FFT_WNDW_TYPE_HANN                  : sprintf(str, "FFT window function: Hann\n");
             break;
