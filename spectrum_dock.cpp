@@ -73,6 +73,11 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 
   dftblocksize = mainwindow->maxdftblocksize;
 
+  if(dftblocksize > 1000)
+  {
+    dftblocksize = 1000;
+  }
+
   window_type = 0;
 
   if(mainwindow->spectrumdock_sqrt)
@@ -227,7 +232,7 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   dftsz_spinbox = new QSpinBox;
   dftsz_spinbox->setMinimumSize(70, 25);
   dftsz_spinbox->setMinimum(10);
-  dftsz_spinbox->setMaximum(16777216);  // (2^24)
+  dftsz_spinbox->setMaximum(1000);
   dftsz_spinbox->setSingleStep(2);
   dftsz_spinbox->setValue(dftblocksize);
 
@@ -900,8 +905,6 @@ void UI_SpectrumDockWindow::update_curve()
     return;
   }
 
-  dftsz_spinbox->setMaximum(samples);
-
   if(buf1_sz != signalcomp->samples_on_screen + 32)
   {
     free(buf1);
@@ -1063,7 +1066,10 @@ void UI_SpectrumDockWindow::update_curve()
 
   fft_inputbufsize = samples;
 
-  dftsz_spinbox->setMaximum(fft_inputbufsize);
+  if(fft_inputbufsize > 1000)
+  {
+    fft_inputbufsize = 1000;
+  }
 
   samplefreq = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f;
 
