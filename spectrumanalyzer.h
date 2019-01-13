@@ -109,8 +109,7 @@ private:
 
   QLabel *spanLabel,
          *centerLabel,
-         *amplitudeLabel,
-         *dftsz_label;
+         *amplitudeLabel;
 
   QCheckBox *sqrtCheckBox,
             *VlogCheckBox,
@@ -118,7 +117,8 @@ private:
 
   QSpinBox *dftsz_spinbox;
 
-  QComboBox *windowBox;
+  QComboBox *windowBox,
+            *dftsz_box;
 
   UI_Flywheel *flywheel1;
 
@@ -170,6 +170,7 @@ void update_flywheel(int);
 void thr_finished_func();
 void dftsz_value_changed(int);
 void windowBox_changed(int);
+void dftsz_box_changed(int);
 
 };
 

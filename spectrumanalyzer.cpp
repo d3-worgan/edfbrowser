@@ -34,6 +34,9 @@
 #define SPECT_LOG_MINIMUM_LOG (-12)
 
 
+static const int dftsz_range[24]={200,1000,1024,2048,4096,5000,8192,10000,16384,32768,50000,65536,100000,
+                    131072,262144,500000,524288,1000000,1048576,2097152,4194304,5000000,8388608,10000000};
+
 
 
 UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp, char *view_buf, UI_FreqSpectrumWindow **spectrdialog, int number, QWidget *w_parent)
@@ -258,6 +261,33 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
     BWCheckBox->setCheckState(Qt::Unchecked);
   }
 
+  dftsz_box = new QComboBox;
+  dftsz_box->setMinimumSize(70, 25);
+  dftsz_box->addItem("Blocksize: user defined");
+  dftsz_box->addItem("Blocksize: 1000");
+  dftsz_box->addItem("Blocksize: 1024");
+  dftsz_box->addItem("Blocksize: 2048");
+  dftsz_box->addItem("Blocksize: 4096");
+  dftsz_box->addItem("Blocksize: 5000");
+  dftsz_box->addItem("Blocksize: 8192");
+  dftsz_box->addItem("Blocksize: 10000");
+  dftsz_box->addItem("Blocksize: 16384");
+  dftsz_box->addItem("Blocksize: 32768");
+  dftsz_box->addItem("Blocksize: 50000");
+  dftsz_box->addItem("Blocksize: 65536");
+  dftsz_box->addItem("Blocksize: 100000");
+  dftsz_box->addItem("Blocksize: 131072");
+  dftsz_box->addItem("Blocksize: 262144");
+  dftsz_box->addItem("Blocksize: 500000");
+  dftsz_box->addItem("Blocksize: 524288");
+  dftsz_box->addItem("Blocksize: 1000000");
+  dftsz_box->addItem("Blocksize: 1048576");
+  dftsz_box->addItem("Blocksize: 2097152");
+  dftsz_box->addItem("Blocksize: 4194304");
+  dftsz_box->addItem("Blocksize: 5000000");
+  dftsz_box->addItem("Blocksize: 8388608");
+  dftsz_box->addItem("Blocksize: 10000000");
+
   windowBox = new QComboBox;
   windowBox->setMinimumSize(70, 25);
   windowBox->addItem("Rectangular");
@@ -271,14 +301,10 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   windowBox->setCurrentIndex(window_type);
   windowBox->setToolTip("Window");
 
-  dftsz_label = new QLabel;
-  dftsz_label->setText("Blocksize:");
-  dftsz_label->setMinimumSize(100, 25);
-
   dftsz_spinbox = new QSpinBox;
   dftsz_spinbox->setMinimumSize(70, 25);
   dftsz_spinbox->setMinimum(10);
-  dftsz_spinbox->setMaximum(16777216);  // (2^24)
+  dftsz_spinbox->setMaximum(1000);
   dftsz_spinbox->setSingleStep(2);
   dftsz_spinbox->setValue(dftblocksize);
 
@@ -303,7 +329,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   vlayout2->addWidget(VlogCheckBox);
   vlayout2->addWidget(BWCheckBox);
   vlayout2->addWidget(windowBox);
-  vlayout2->addWidget(dftsz_label);
+  vlayout2->addWidget(dftsz_box);
   vlayout2->addWidget(dftsz_spinbox);
 
   spanSlider = new QSlider;
@@ -376,6 +402,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   QObject::connect(this,            SIGNAL(finished()),               this, SLOT(thr_finished_func()));
   QObject::connect(dftsz_spinbox,   SIGNAL(valueChanged(int)),        this, SLOT(dftsz_value_changed(int)));
   QObject::connect(windowBox,       SIGNAL(currentIndexChanged(int)), this, SLOT(windowBox_changed(int)));
+  QObject::connect(dftsz_box,       SIGNAL(currentIndexChanged(int)), this, SLOT(dftsz_box_changed(int)));
 
   SpectrumDialog->show();
 
@@ -420,6 +447,41 @@ void UI_FreqSpectrumWindow::dftsz_value_changed(int new_val)
   QApplication::setOverrideCursor(Qt::WaitCursor);
 
   start();
+}
+
+
+void UI_FreqSpectrumWindow::dftsz_box_changed(int idx)
+{
+  if(idx)
+  {
+    if(dftsz_range[idx] > samples)
+    {
+      dftsz_box->setCurrentIndex(0);
+
+      return;
+    }
+
+    dftsz_spinbox->setMaximum(10000000);
+
+    dftsz_spinbox->setValue(dftsz_range[idx]);
+
+    dftsz_spinbox->setEnabled(false);
+  }
+  else
+  {
+    dftsz_spinbox->setEnabled(true);
+
+    dftsz_spinbox->setValue(dftsz_range[idx]);
+
+    if(samples < 1000)
+    {
+      dftsz_spinbox->setMaximum(samples);
+    }
+    else
+    {
+      dftsz_spinbox->setMaximum(1000);
+    }
+  }
 }
 
 
@@ -1079,7 +1141,12 @@ void UI_FreqSpectrumWindow::update_curve()
 
   busy = 1;
 
-  dftsz_spinbox->setMaximum(samples);
+  if(samples <= 1000)
+  {
+    dftsz_spinbox->setMaximum(samples);
+
+    dftsz_box->setEnabled(false);
+  }
 
   malloc_err = 0;
 
