@@ -918,14 +918,14 @@ void UI_Mainwindow::read_general_settings()
 
     maxdftblocksize = atoi(result);
 
-    if(maxdftblocksize > (32768 * 512))
+    if(maxdftblocksize > 1000)
     {
-      maxdftblocksize = 32768 * 512;
+      maxdftblocksize = 1000;
     }
 
     if(maxdftblocksize < 10)
     {
-      maxdftblocksize = 1000;
+      maxdftblocksize = 256;
     }
   }
 

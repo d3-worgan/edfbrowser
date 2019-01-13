@@ -1106,6 +1106,8 @@ void UI_FreqSpectrumWindow::run()
 
 void UI_FreqSpectrumWindow::update_curve()
 {
+  int i;
+
   if(signalcomp == NULL)
   {
     return;
@@ -1141,9 +1143,24 @@ void UI_FreqSpectrumWindow::update_curve()
 
   busy = 1;
 
-  if(samples <= 1000)
+  for(i=23; i>0; i--)
   {
-    dftsz_spinbox->setMaximum(samples);
+    if(samples < dftsz_range[i])
+    {
+      dftsz_box->removeItem(i);
+    }
+  }
+
+  if(samples < 1024)
+  {
+    if(samples < 1000)
+    {
+      dftsz_spinbox->setMaximum(samples);
+    }
+    else
+    {
+      dftsz_spinbox->setMaximum(1000);
+    }
 
     dftsz_box->setEnabled(false);
   }
