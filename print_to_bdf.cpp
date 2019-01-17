@@ -348,6 +348,11 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
     if(preamble)  add_one_sec = 1;
   }
 
+  for(i=0; i<signalcomps; i++)
+  {
+    smpls_preamble[i] = (preamble * signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record) / signalcomp[i]->edfhdr->long_data_record_duration;
+  }
+
   referencetime += (mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime / TIME_DIMENSION);
 
   utc_to_date_time(referencetime, &date_time);
@@ -996,11 +1001,6 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
   {
     fclose(outputfile);
     return;
-  }
-
-  for(i=0; i<signalcomps; i++)
-  {
-    smpls_preamble[i] = preamble / (signalcomp[i]->edfhdr->long_data_record_duration / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record);
   }
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
