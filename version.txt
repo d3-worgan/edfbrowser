@@ -11,6 +11,9 @@
  - Print to EDF/BDF: now it can print files which have datarecord durations which are not a multiple
    integer of each other. In that case the samplerates of the signals (on the screen) must have integer values.
 
+ - Fixed a bug that could cause a segfault when printing to EDF or BDF from a file that has
+   a small datarecord duration and a very high samplerate.
+
 
 
  version 1.66      November 17, 2018
