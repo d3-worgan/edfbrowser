@@ -4,7 +4,7 @@
 
  - MIT (Physionet) to EDF converter: fix bug in header parser.
 
- - Spectrumanalyzer: added new window functions (Blackman-Harris, Blackman-Nuttall) and improved the dynamic range.
+ - Spectrumanalyzer: added new window functions (Blackman-Harris, Hann, Nuttall) and improved the dynamic range.
 
  - Export filtered signals: in the treeview list, show also the custom FIR filters.
 
