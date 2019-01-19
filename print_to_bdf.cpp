@@ -53,6 +53,8 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
       datrec_multiple_int=0,
       smpl_rate_divider=1;
 
+  const int smpl_div_arr[14]={100,80,64,50,40,32,20,16,10, 8, 5, 4, 2, 1};
+
   long long duration,
             smpls_written[MAXSIGNALS],
             s2,
@@ -174,75 +176,23 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   if(integer_sf)
   {
-    smpl_rate_divider = 10;
+    smpl_rate_divider = 1;
 
-    for(i=0; i<signalcomps; i++)
+    for(j=0; j<14; j++)
     {
-      if(signalcomp[i]->edfhdr->edfparam[0].sf_int % 10)
+      for(i=0; i<signalcomps; i++)
       {
-        smpl_rate_divider = 1;
+        if(signalcomp[i]->edfhdr->edfparam[0].sf_int % smpl_div_arr[j])
+        {
+          break;
+        }
+      }
+
+      if(i == signalcomps)
+      {
+        smpl_rate_divider = smpl_div_arr[j];
 
         break;
-      }
-    }
-
-    if(smpl_rate_divider == 1)
-    {
-      smpl_rate_divider = 8;
-
-      for(i=0; i<signalcomps; i++)
-      {
-        if(signalcomp[i]->edfhdr->edfparam[0].sf_int % 8)
-        {
-          smpl_rate_divider = 1;
-
-          break;
-        }
-      }
-    }
-
-    if(smpl_rate_divider == 1)
-    {
-      smpl_rate_divider = 5;
-
-      for(i=0; i<signalcomps; i++)
-      {
-        if(signalcomp[i]->edfhdr->edfparam[0].sf_int % 5)
-        {
-          smpl_rate_divider = 1;
-
-          break;
-        }
-      }
-    }
-
-    if(smpl_rate_divider == 1)
-    {
-      smpl_rate_divider = 4;
-
-      for(i=0; i<signalcomps; i++)
-      {
-        if(signalcomp[i]->edfhdr->edfparam[0].sf_int % 4)
-        {
-          smpl_rate_divider = 1;
-
-          break;
-        }
-      }
-    }
-
-    if(smpl_rate_divider == 1)
-    {
-      smpl_rate_divider = 2;
-
-      for(i=0; i<signalcomps; i++)
-      {
-        if(signalcomp[i]->edfhdr->edfparam[0].sf_int % 2)
-        {
-          smpl_rate_divider = 1;
-
-          break;
-        }
       }
     }
   }
@@ -268,29 +218,17 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
     return;
   }
 
-  if(!datrec_multiple_int)
+  if(integer_sf)
   {
-    switch(smpl_rate_divider)
-    {
-      case  1 : strcpy(datrecduration, "1       ");
-                duration = TIME_DIMENSION;
-                break;
-      case  2 : strcpy(datrecduration, "0.5     ");
-                duration = TIME_DIMENSION / 2;
-                break;
-      case  4 : strcpy(datrecduration, "0.25    ");
-                duration = TIME_DIMENSION / 4;
-                break;
-      case  5 : strcpy(datrecduration, "0.2     ");
-                duration = TIME_DIMENSION / 5;
-                break;
-      case  8 : strcpy(datrecduration, "0.125   ");
-                duration = TIME_DIMENSION / 8;
-                break;
-      case 10 : strcpy(datrecduration, "0.1     ");
-                duration = TIME_DIMENSION / 10;
-                break;
-    }
+    sprintf(datrecduration, "%f", 1.0 / smpl_rate_divider);
+
+    remove_trailing_zeros(datrecduration);
+
+    strcat(datrecduration, "        ");
+
+    duration = TIME_DIMENSION / smpl_rate_divider;
+
+    datrec_multiple_int = 0;
   }
 
   path[0] = 0;
