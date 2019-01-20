@@ -374,9 +374,7 @@ void UI_BDF2EDFwindow::StartConversion()
 
         annotlist[new_edfsignals] = 0;
 
-        filterlist[new_edfsignals] = create_filter(0,
-                                                  ((QDoubleSpinBox *)(SignalsTablewidget->cellWidget(i, 1)))->value(),
-                                                  1.0 / (edfhdr->data_record_duration / edfhdr->edfparam[i].smp_per_record));
+        filterlist[new_edfsignals] = create_filter(0, ((QDoubleSpinBox *)(SignalsTablewidget->cellWidget(i, 1)))->value(), edfhdr->edfparam[i].sf_f);
 
         dividerlist[new_edfsignals] = ((QDoubleSpinBox *)(SignalsTablewidget->cellWidget(i, 2)))->value();
 
@@ -389,8 +387,8 @@ void UI_BDF2EDFwindow::StartConversion()
 
       annotlist[new_edfsignals] = 1;
 
-      filterlist[new_edfsignals] = create_filter(0, 0.01,
-                                                1.0 / (edfhdr->data_record_duration / edfhdr->edfparam[i].smp_per_record));
+      filterlist[new_edfsignals] = create_filter(0, 0.01, edfhdr->edfparam[i].sf_f);
+
       dividerlist[new_edfsignals] = 1.0;
 
       new_edfsignals++;

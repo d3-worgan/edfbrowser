@@ -514,9 +514,7 @@ void UI_ReduceSignalsWindow::SelectFileButton()
         if(!(edfhdr->edfparam[i].smp_per_record % j))
         {
           snprintf(str, 256, "%i  (", j);
-          convert_to_metric_suffix(str + strlen(str),
-                                   ((double)(edfhdr->edfparam[i].smp_per_record / j)) / edfhdr->data_record_duration,
-                                   3);
+          convert_to_metric_suffix(str + strlen(str), edfhdr->edfparam[i].sf_f / j, 3);
           remove_trailing_zeros(str);
           strcat(str, "Hz)");
           ((QComboBox *)(SignalsTablewidget->cellWidget(i, 1)))->addItem(str, QVariant(j));

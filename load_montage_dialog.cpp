@@ -841,9 +841,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       if(holdoff < 10)  holdoff = 10;
       if(holdoff > 1000)  holdoff = 1000;
 
-      newsignalcomp->spike_filter = create_spike_filter(
-        (double)(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record) /
-        newsignalcomp->edfhdr->data_record_duration,
+      newsignalcomp->spike_filter = create_spike_filter(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f,
         velocity / newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue,
         holdoff, NULL);
 
@@ -928,9 +926,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         return;
       }
 
-      if(frequency >= ((newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record
-                      / newsignalcomp->edfhdr->data_record_duration)
-                      / 2.0))
+      if(frequency >= newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f / 2.0)
       {
         sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
@@ -952,7 +948,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       filter_spec = spec_str;
 
-      err = fid_parse(((double)(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record)) / newsignalcomp->edfhdr->data_record_duration,
+      err = fid_parse(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f,
                       &filter_spec,
                       &newsignalcomp->fidfilter[filters_read]);
 
@@ -1228,9 +1224,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         return;
       }
 
-      if(frequency >= ((newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record
-                      / newsignalcomp->edfhdr->data_record_duration)
-                      / 2.0))
+      if(frequency >= newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f / 2.0)
       {
         sprintf(str2, "There seems to be an error in this montage file.\nThe frequency of the filter(s) must be less than: samplerate / 2\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
@@ -1242,9 +1236,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(type > 2)
       {
-        if(frequency2 >= ((newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record
-                        / newsignalcomp->edfhdr->data_record_duration)
-                        / 2.0))
+        if(frequency2 >= newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f / 2.0)
         {
           sprintf(str2, "There seems to be an error in this montage file.\nThe frequency of the filter(s) must be less than: samplerate / 2\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
@@ -1373,7 +1365,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       filter_spec = spec_str;
 
-      err = fid_parse(((double)(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record)) / newsignalcomp->edfhdr->data_record_duration,
+      err = fid_parse(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f,
                       &filter_spec,
                       &newsignalcomp->fidfilter[filters_read]);
 
@@ -1417,8 +1409,12 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     {
       not_compatibel = 0;
 
-      sf = ((long long)(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record) * TIME_DIMENSION) /
-           newsignalcomp->edfhdr->long_data_record_duration;
+      sf = newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_int;
+
+      if(!sf)
+      {
+        not_compatibel = 1;
+      }
 
       if(xml_goto_nth_element_inside(xml_hdl, "plf", 0))
       {
@@ -1598,8 +1594,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(type == 1)
       {
-        newsignalcomp->ecg_filter = create_ecg_filter(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record /
-                                                      newsignalcomp->edfhdr->data_record_duration,
+        newsignalcomp->ecg_filter = create_ecg_filter(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f,
                                                       newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue,
                                                       mainwindow->powerlinefreq);
         if(newsignalcomp->ecg_filter == NULL)

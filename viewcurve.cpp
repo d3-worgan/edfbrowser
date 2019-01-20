@@ -2734,7 +2734,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
           {
             if((mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime <= 0) && signalcomp[i]->fidfilter_setup[k])
             {
-              runin_samples = (signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record / signalcomp[i]->edfhdr->data_record_duration) / signalcomp[i]->fidfilter_freq[k];
+              runin_samples = signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].sf_f / signalcomp[i]->fidfilter_freq[k];
 
               runin_samples *= 26;
 
@@ -3237,7 +3237,7 @@ void drawCurve_stage_1_thread::run()
         {
           if((mainwindow->edfheaderlist[signalcomp->filenum]->viewtime <= 0) && signalcomp->fidfilter_setup[k])
           {
-            runin_samples = (signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record / signalcomp->edfhdr->data_record_duration) / signalcomp->fidfilter_freq[k];
+            runin_samples = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f / signalcomp->fidfilter_freq[k];
 
             runin_samples *= 26;
 
@@ -3754,8 +3754,7 @@ void ViewCurve::ECGdetectButton()
   }
 
   newsignalcomp->ecg_filter =
-    create_ecg_filter(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record /
-                      newsignalcomp->edfhdr->data_record_duration,
+    create_ecg_filter(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f,
                       newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue,
                       mainwindow->powerlinefreq);
 

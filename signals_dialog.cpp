@@ -484,9 +484,7 @@ void UI_Signalswindow::AddButtonClicked()
       snprintf(str, 200, "%-2i + ", row + 1);
       strcat(str, mainwindow->edfheaderlist[row]->edfparam[s].label);
       strcat(str, " x1 ");
-      convert_to_metric_suffix(str + strlen(str),
-                               mainwindow->edfheaderlist[row]->edfparam[s].smp_per_record / mainwindow->edfheaderlist[row]->data_record_duration,
-                               3);
+      convert_to_metric_suffix(str + strlen(str), mainwindow->edfheaderlist[row]->edfparam[s].sf_f, 3);
       remove_trailing_zeros(str);
       strcat(str, "Hz");
       item = new QListWidgetItem;
@@ -615,9 +613,7 @@ void UI_Signalswindow::SubtractButtonClicked()
       snprintf(str, 200, "%-2i - ", row + 1);
       strcat(str, mainwindow->edfheaderlist[row]->edfparam[s].label);
       strcat(str, " x1 ");
-      convert_to_metric_suffix(str + strlen(str),
-                               mainwindow->edfheaderlist[row]->edfparam[s].smp_per_record / mainwindow->edfheaderlist[row]->data_record_duration,
-                               3);
+      convert_to_metric_suffix(str + strlen(str), mainwindow->edfheaderlist[row]->edfparam[s].sf_f, 3);
       remove_trailing_zeros(str);
       strcat(str, "Hz");
       item = new QListWidgetItem;

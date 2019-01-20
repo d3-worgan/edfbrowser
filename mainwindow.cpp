@@ -3852,7 +3852,7 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
 
     filter_spec = spec_str;
 
-    err = fid_parse(((double)(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record)) / newsignalcomp->edfhdr->data_record_duration,
+    err = fid_parse(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f,
                     &filter_spec,
                     &newsignalcomp->fidfilter[i]);
 

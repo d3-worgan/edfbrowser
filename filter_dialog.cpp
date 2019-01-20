@@ -795,9 +795,7 @@ void UI_FilterDialog::ApplyButtonClicked()
 
       if((type == FILTERTYPE_HIGHPASS) || (type == FILTERTYPE_LOWPASS) || (type == FILTERTYPE_NOTCH))
       {
-        if(frequency >= ((mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].smp_per_record
-                        / mainwindow->signalcomp[s]->edfhdr->data_record_duration)
-                        / 2.0))
+        if(frequency >= mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].sf_f / 2.0)
         {
           QMessageBox messagewindow(QMessageBox::Critical, "Error",
                                     "The frequency of the filter(s) must be less than: samplerate / 2");
@@ -807,9 +805,7 @@ void UI_FilterDialog::ApplyButtonClicked()
       }
       else
       {
-        if(frequency2 >= ((mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].smp_per_record
-                        / mainwindow->signalcomp[s]->edfhdr->data_record_duration)
-                        / 2.0))
+        if(frequency2 >= mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].sf_f / 2.0)
         {
           QMessageBox messagewindow(QMessageBox::Critical, "Error",
                                     "The frequency of the filter(s) must be less than: samplerate / 2");
@@ -907,7 +903,7 @@ void UI_FilterDialog::ApplyButtonClicked()
 
       filter_spec = spec_str_2;
 
-      err = fid_parse(((double)(mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].smp_per_record)) / mainwindow->signalcomp[s]->edfhdr->data_record_duration,
+      err = fid_parse(mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].sf_f,
                       &filter_spec,
                       &mainwindow->signalcomp[s]->fidfilter[mainwindow->signalcomp[s]->fidfilter_cnt]);
 

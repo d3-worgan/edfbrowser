@@ -100,9 +100,9 @@ void UI_Mainwindow::setup_viewbuf()
 
       for(k=0; k<signalcomp[i]->ravg_filter_cnt; k++)
       {
-        if(pre_time < ((double)(signalcomp[i]->ravg_filter[k]->size + 3) / ((double)signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record / signalcomp[i]->edfhdr->data_record_duration)))
+        if(pre_time < ((double)(signalcomp[i]->ravg_filter[k]->size + 3) / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].sf_f))
         {
-          pre_time = (double)(signalcomp[i]->ravg_filter[k]->size + 3) / ((double)signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record / signalcomp[i]->edfhdr->data_record_duration);
+          pre_time = (double)(signalcomp[i]->ravg_filter[k]->size + 3) / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].sf_f;
         }
       }
     }
@@ -111,9 +111,9 @@ void UI_Mainwindow::setup_viewbuf()
     {
       hasprefilter = 1;
 
-      if(pre_time < ((double)(fir_filter_size(signalcomp[i]->fir_filter) + 3) / ((double)signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record / signalcomp[i]->edfhdr->data_record_duration)))
+      if(pre_time < ((double)(fir_filter_size(signalcomp[i]->fir_filter) + 3) / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].sf_f))
       {
-        pre_time = (double)(fir_filter_size(signalcomp[i]->fir_filter) + 3) / ((double)signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record / signalcomp[i]->edfhdr->data_record_duration);
+        pre_time = (double)(fir_filter_size(signalcomp[i]->fir_filter) + 3) / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].sf_f;
       }
     }
 

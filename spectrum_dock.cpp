@@ -520,7 +520,7 @@ void UI_SpectrumDockWindow::print_to_txt()
   sprintf(str + strlen(str), "FFT resolution: %f Hz\n", freqstep);
   sprintf(str + strlen(str), "Data Samples: %i\n", fft_data->sz_in);
   sprintf(str + strlen(str), "Power Samples: %i\n", fft_data->sz_out);
-  sprintf(str + strlen(str), "Samplefrequency: %f Hz\n", (double)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record / ((double)signalcomp->edfhdr->long_data_record_duration / TIME_DIMENSION));
+  sprintf(str + strlen(str), "Samplefrequency: %f Hz\n", signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f);
   remove_trailing_zeros(str);
   fprintf(outputfile, "%s", str);
 

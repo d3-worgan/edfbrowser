@@ -88,8 +88,7 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
 
   for(i=0; i<mainwindow->signalcomps; i++)
   {
-    sf = ((long long)mainwindow->signalcomp[i]->edfhdr->edfparam[mainwindow->signalcomp[i]->edfsignal[0]].smp_per_record * TIME_DIMENSION) /
-         mainwindow->signalcomp[i]->edfhdr->long_data_record_duration;
+    sf = mainwindow->signalcomp[i]->edfhdr->edfparam[mainwindow->signalcomp[i]->edfsignal[0]].sf_int;
 
     if(sf < 500)  /* don't list signals that have low samplerate */
     {
@@ -199,10 +198,9 @@ void UI_PLIF_ECG_filter_dialog::ApplyButtonClicked()
     item = selectedlist.at(i);
     s = item->data(Qt::UserRole).toInt();
 
-    sf = ((long long)mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].smp_per_record * TIME_DIMENSION) /
-         mainwindow->signalcomp[s]->edfhdr->long_data_record_duration;
+    sf = mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].sf_int;
 
-    if(sf % plf)
+    if((sf % plf) || (!sf))
     {
       err = 1;
       sprintf(str, "Samplefrequency (%iHz) is not an integer multiple of the powerline frequency (%iHz)", sf, plf);
