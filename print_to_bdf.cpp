@@ -32,7 +32,7 @@
 
 void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 {
-  int i, j, k, p, r,
+  int i, j, k, p, r, hf,
       n=0,
       records,
       records_written,
@@ -164,11 +164,20 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
     return;
   }
 
-  for(integer_sf=1, i=0; i<signalcomps; i++)
+  for(hf=0, integer_sf=1, i=0; i<signalcomps; i++)
   {
-    if(!signalcomp[i]->edfhdr->edfparam[0].sf_int)
+    if(signalcomp[i]->edfhdr->edfparam[0].sf_int)
+    {
+      if(signalcomp[i]->edfhdr->edfparam[0].sf_int >= 10000)
+      {
+        hf = 1;
+      }
+    }
+    else
     {
       integer_sf = 0;
+
+      hf = 0;
 
       break;
     }
@@ -178,7 +187,16 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
   {
     smpl_rate_divider = 1;
 
-    for(j=0; j<14; j++)
+    if(hf)
+    {
+      j = 0;
+    }
+    else
+    {
+      j = 8;
+    }
+
+    for(; j<14; j++)
     {
       for(i=0; i<signalcomps; i++)
       {
@@ -475,6 +493,11 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
   }
 
   records = (int)(mainwindow->pagetime / duration);
+
+  if(mainwindow->pagetime % duration)
+  {
+    records++;
+  }
 
   if(add_one_sec)
   {
