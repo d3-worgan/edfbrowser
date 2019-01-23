@@ -375,7 +375,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
 
       if(!ok)
       {
-        snprintf(txt_string, 2048, "Found unknown label/signal: %s", line);
+        snprintf(txt_string, 2048, "Found unknown label/signal: %.2000s", line);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
         messagewindow.exec();
         fclose(inputfile);

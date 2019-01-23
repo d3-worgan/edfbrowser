@@ -245,7 +245,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
       bytecntr,
       big_endian;
 
-  char str[256],
+  char str[1024],
        path[MAX_PATH_LENGTH];
 
   double phys_max;
@@ -625,7 +625,7 @@ END_1:
   fclose(inputfile);
   free(buf);
 
-  sprintf(str, "A new EDF file has been created:\n\n%s", path);
+  sprintf(str, "A new EDF file has been created:\n\n%.980s", path);
   QMessageBox messagewindow(QMessageBox::Information, "Ready", str);
   messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
   messagewindow.exec();

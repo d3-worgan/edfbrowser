@@ -2260,7 +2260,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         {
           convert_to_metric_suffix(str3, (double)crosshair_1.time_relative / TIME_DIMENSION, 3);
 
-          snprintf(string + strlen(string), 32, " (%sS)", str3);
+          snprintf(string + strlen(string), 32, " (%.26sS)", str3);
         }
 
         painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - 25, string);
@@ -2344,7 +2344,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         {
           convert_to_metric_suffix(str3, (double)crosshair_2.time_relative / TIME_DIMENSION, 3);
 
-          snprintf(string + strlen(string), 32, " (%sS)", str3);
+          snprintf(string + strlen(string), 32, " (%.26sS)", str3);
         }
 
         painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - 55, string);
@@ -2366,7 +2366,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         {
           convert_to_metric_suffix(str3, (double)l_time / TIME_DIMENSION, 3);
 
-          snprintf(string, 32, "delta %sS", str3);
+          snprintf(string, 32, "delta %.24sS", str3);
         }
         painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - 25, string);
         if(signalcomp[i]->alias[0] != 0)

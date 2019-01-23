@@ -534,7 +534,7 @@ void UI_FreqSpectrumWindow::print_to_txt()
   outputfile = fopen(path, "wb");
   if(outputfile == NULL)
   {
-    snprintf(str, 1024, "Can not open file %s for writing.", path);
+    snprintf(str, 1024, "Can not open file %.990s for writing.", path);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(str));
     messagewindow.exec();
     return;

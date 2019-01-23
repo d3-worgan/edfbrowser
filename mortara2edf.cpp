@@ -312,7 +312,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
     scratchpad[32] = 0;
     if(strcmp(scratchpad, "BASE64"))
     {
-      sprintf(scratchpad, "Error, value of attribute \"ENCODING\" in channel number %i is %s\n", i + 1, scratchpad);
+      sprintf(scratchpad, "Error, value of attribute \"ENCODING\" in channel number %i is %.4000s\n", i + 1, scratchpad);
       textEdit1->append(scratchpad);
       goto OUT_EXIT;
     }
