@@ -1066,11 +1066,6 @@ void UI_SpectrumDockWindow::update_curve()
 
   fft_inputbufsize = samples;
 
-  if(fft_inputbufsize > 1000)
-  {
-    fft_inputbufsize = 1000;
-  }
-
   samplefreq = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f;
 
   if(dftblocksize & 1)
@@ -1083,9 +1078,9 @@ void UI_SpectrumDockWindow::update_curve()
     dftblocksize = fft_inputbufsize;
   }
 
-  if(dftblocksize & 1)
+  if(dftblocksize > 1000)
   {
-    dftblocksize--;
+    dftblocksize = 1000;
   }
 
   free_fft_wrap(fft_data);
