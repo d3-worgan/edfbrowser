@@ -1,5 +1,5 @@
 
- version 1.67      to be defined
+ version 1.67      Januari 26, 2019
  --------------
 
  - MIT (Physionet) to EDF converter: fix bug in header parser.
