@@ -1058,7 +1058,8 @@ void UI_SpectrumDockWindow::update_curve()
 
   if(samples > buf1_sz)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Internal error (12345).");
+    snprintf(str, 1000, "Internal error in file: %s at line: %i.", __FILE__, __LINE__);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
     messagewindow.exec();
     busy = 0;
     return;
@@ -1068,14 +1069,16 @@ void UI_SpectrumDockWindow::update_curve()
 
   samplefreq = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f;
 
-  if(dftblocksize & 1)
-  {
-    dftblocksize--;
-  }
+  dftblocksize = dftsz_spinbox->value();
 
   if(dftblocksize > fft_inputbufsize)
   {
     dftblocksize = fft_inputbufsize;
+  }
+
+  if(dftblocksize & 1)
+  {
+    dftblocksize--;
   }
 
   if(dftblocksize > 1000)
