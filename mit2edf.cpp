@@ -847,7 +847,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
 /////////////////// Start conversion //////////////////////////////////////////
 
-  int k, blocks, tmp1, tmp2, l_end=0;
+  int k, blocks, tmp1, tmp2, l_end=0, odd_even=0;
 
   fseeko(data_inputfile, 0LL, SEEK_SET);
 
@@ -887,18 +887,19 @@ void UI_MIT2EDFwindow::SelectFileButton()
       {
         for(j=0; j<mit_hdr.chns; j++)
         {
-          if(j % 2)
+          if(odd_even)
           {
-            tmp1 = fgetc(data_inputfile);
-            tmp2 = fgetc(data_inputfile);
+            odd_even = 0;
 
-            if(tmp2 == EOF)
+            tmp1 = fgetc(data_inputfile);
+
+            if(tmp1 == EOF)
             {
               goto OUT;
             }
 
-            buf[j * mit_hdr.sf_block + i] = (tmp1 & 0xf0) << 4;
-            buf[j * mit_hdr.sf_block + i] += tmp2;
+            buf[j * mit_hdr.sf_block + i] = (tmp2 & 0xf0) << 4;
+            buf[j * mit_hdr.sf_block + i] += tmp1;
             if(buf[j * mit_hdr.sf_block + i] & 0x800)
             {
               buf[j * mit_hdr.sf_block + i] |= 0xfffff000;
@@ -906,6 +907,8 @@ void UI_MIT2EDFwindow::SelectFileButton()
           }
           else
           {
+            odd_even = 1;
+
             tmp1 = fgetc(data_inputfile);
             tmp2 = fgetc(data_inputfile);
 
@@ -915,8 +918,6 @@ void UI_MIT2EDFwindow::SelectFileButton()
             {
               buf[j * mit_hdr.sf_block + i] |= 0xfffff000;
             }
-
-            fseeko(data_inputfile, -1LL, SEEK_CUR);
           }
         }
       }
