@@ -875,6 +875,11 @@ UI_Mainwindow::UI_Mainwindow()
   connect(Escape_act, SIGNAL(triggered()), this, SLOT(Escape_fun()));
   maincurve->addAction(Escape_act);
 
+  next_crosshair = new QAction("Next Crosshair", this);
+  next_crosshair->setShortcut(Qt::ALT + Qt::SHIFT + Qt::Key_C);
+  connect(next_crosshair, SIGNAL(triggered()), maincurve, SLOT(next_crosshair_triggered()));
+  maincurve->addAction(next_crosshair);
+
   positionslider = new QSlider(Qt::Horizontal);
   positionslider->setRange(0, 1000000);
   positionslider->setSingleStep(10000);

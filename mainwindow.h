@@ -444,7 +444,8 @@ private:
            *absolut_timesync_act,
            *no_timesync_act,
            *user_def_sync_act,
-           *sel_viewtime_act[MAXFILES];
+           *sel_viewtime_act[MAXFILES],
+           *next_crosshair;
 
   QActionGroup *AmplitudeGroup,
                *DisplayGroup,

@@ -3536,6 +3536,7 @@ void UI_Mainwindow::show_kb_shortcuts()
    "Ctrl++\t\tzoom in\n"
    "Ctrl+-\t\tzoom out\n"
    "F1 - F8\t\tload predefined montage\n"
+   "Alt+Shift+C\t\tcrosshair\n"
    "Esc\t\tremove crosshairs or floating ruler\n"
 
    "\nafter zooming in by dragging a rectangle:\n"
@@ -3557,9 +3558,7 @@ void UI_Mainwindow::show_kb_shortcuts()
    "Keep middle mousebutton pressed to drag horizontally\n"
 
    "\nCtrl+Space\t\tToggle Playback or Pause\n"
-#ifdef Q_OS_LINUX
-   "Ctrl+Shift+V\t\tToggle Playback with video"
-#endif
+   "Ctrl+Shift+V\t\tToggle Playback with video\n"
   );
 
   messagewindow.exec();
@@ -3880,6 +3879,9 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
 
   return newsignalcomp;
 }
+
+
+
 
 
 
