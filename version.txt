@@ -1,4 +1,13 @@
 
+ version 1.68      to be decided
+ --------------
+
+ - MIT (Physionet) to EDF converter: fixed a bug related to 212 decoding when an odd number of signals is present.
+
+ - Added a shortcut for crosshairs.
+
+
+
  version 1.67      Januari 26, 2019
  --------------
 
