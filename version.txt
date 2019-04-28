@@ -6,6 +6,8 @@
 
  - Added a shortcut for crosshairs.
 
+ - FFT: When using a non-rectangular window, use overlapping blocks (50%).
+
 
 
  version 1.67      Januari 26, 2019

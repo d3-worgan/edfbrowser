@@ -1205,7 +1205,14 @@ void UI_FreqSpectrumWindow::thr_finished_func()
   strcpy(str, "FFT resolution: ");
   convert_to_metric_suffix(str + strlen(str), freqstep, 3);
   remove_trailing_zeros(str);
-  sprintf(str + strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks, fft_data->dft_sz);
+  if(fft_data->wndw_type)
+  {
+    sprintf(str + strlen(str), "Hz   %i blocks of %i samples (50%% overlap)", (fft_data->blocks * 2) - 1, fft_data->dft_sz);
+  }
+  else
+  {
+    sprintf(str + strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks, fft_data->dft_sz);
+  }
 
   curve1->setUpperLabel1(str);
 
