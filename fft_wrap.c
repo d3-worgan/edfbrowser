@@ -108,7 +108,7 @@ struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int
 
 void fft_wrap_run(struct fft_wrap_settings_struct *st)
 {
-  int i, j;
+  int i, j, tmp;
 
   if(st == NULL)  return;
   if(st->sz_in < 4)  return;
@@ -122,10 +122,7 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
   {
     if(st->buf_wndw == NULL)  return;
 
-    if(st->wndw_type)
-    {
-      window_func(st->buf_in, st->buf_wndw, st->buf_wndw_coef, st->dft_sz, st->wndw_type, 0);
-    }
+    window_func(st->buf_in, st->buf_wndw, st->buf_wndw_coef, st->dft_sz, st->wndw_type, 0);
 
     kiss_fftr(st->cfg, st->buf_wndw, st->kiss_fftbuf);
   }
@@ -141,6 +138,18 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
 
   for(j=1; j<st->blocks; j++)
   {
+    if(st->wndw_type)  /* in case of windowing, use a 50% overlap */
+    {
+      window_func(st->buf_in + (j * st->dft_sz) - (st->dft_sz / 2), st->buf_wndw, st->buf_wndw_coef, st->dft_sz, st->wndw_type, j);
+
+      kiss_fftr(st->cfg, st->buf_wndw, st->kiss_fftbuf);
+
+      for(i=0; i<st->sz_out; i++)
+      {
+        st->buf_out[i] += ((st->kiss_fftbuf[i].r * st->kiss_fftbuf[i].r) + (st->kiss_fftbuf[i].i * st->kiss_fftbuf[i].i)) / st->sz_out;
+      }
+    }
+
     if(st->wndw_type)
     {
       window_func(st->buf_in + (j * st->dft_sz), st->buf_wndw, st->buf_wndw_coef, st->dft_sz, st->wndw_type, j);
@@ -165,26 +174,47 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
       window_func(st->buf_in + ((j-1) * st->dft_sz) + st->smpls_left, st->buf_wndw, st->buf_wndw_coef, st->dft_sz, st->wndw_type, j);
 
       kiss_fftr(st->cfg, st->buf_wndw, st->kiss_fftbuf);
+
+      tmp = st->blocks * 2;
+
+      for(i=0; i<st->sz_out; i++)
+      {
+        st->buf_out[i] += ((st->kiss_fftbuf[i].r * st->kiss_fftbuf[i].r) + (st->kiss_fftbuf[i].i * st->kiss_fftbuf[i].i)) / st->sz_out;
+
+        st->buf_out[i] /= tmp;
+      }
     }
     else
     {
       kiss_fftr(st->cfg, st->buf_in + ((j-1) * st->dft_sz) + st->smpls_left, st->kiss_fftbuf);
-    }
 
-    for(i=0; i<st->sz_out; i++)
-    {
-      st->buf_out[i] += ((st->kiss_fftbuf[i].r * st->kiss_fftbuf[i].r) + (st->kiss_fftbuf[i].i * st->kiss_fftbuf[i].i)) / st->sz_out;
+      for(i=0; i<st->sz_out; i++)
+      {
+        st->buf_out[i] += ((st->kiss_fftbuf[i].r * st->kiss_fftbuf[i].r) + (st->kiss_fftbuf[i].i * st->kiss_fftbuf[i].i)) / st->sz_out;
 
-      st->buf_out[i] /= (st->blocks + 1);
+        st->buf_out[i] /= (st->blocks + 1);
+      }
     }
   }
   else
   {
     if(st->blocks > 1)
     {
-      for(i=0; i<st->sz_out; i++)
+      if(st->wndw_type)  /* in case of windowing, use a 50% overlap */
       {
-        st->buf_out[i] /= st->blocks;
+        tmp = (st->blocks * 2) - 1;
+
+        for(i=0; i<st->sz_out; i++)
+        {
+          st->buf_out[i] /= tmp;
+        }
+      }
+      else
+      {
+        for(i=0; i<st->sz_out; i++)
+        {
+          st->buf_out[i] /= st->blocks;
+        }
       }
     }
   }
