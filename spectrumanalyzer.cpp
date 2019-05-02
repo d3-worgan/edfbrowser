@@ -558,15 +558,17 @@ void UI_FreqSpectrumWindow::print_to_txt()
             break;
     case FFT_WNDW_TYPE_HAMMING               : sprintf(str, "FFT window function: Hamming\n");
             break;
-    case FFT_WNDW_TYPE_NUTTALL3B             : sprintf(str, "FFT window function: Nuttall3b\n");
-            break;
     case FFT_WNDW_TYPE_4TERM_BLACKMANHARRIS  : sprintf(str, "FFT window function: 4-term Blackman-Harris\n");
             break;
     case FFT_WNDW_TYPE_7TERM_BLACKMANHARRIS  : sprintf(str, "FFT window function: 7-term Blackman-Harris\n");
             break;
+    case FFT_WNDW_TYPE_NUTTALL3B             : sprintf(str, "FFT window function: Nuttall3b\n");
+            break;
     case FFT_WNDW_TYPE_NUTTALL4C             : sprintf(str, "FFT window function: Nuttall4c\n");
             break;
     case FFT_WNDW_TYPE_HANN                  : sprintf(str, "FFT window function: Hann\n");
+            break;
+    case FFT_WNDW_TYPE_HFT223D               : sprintf(str, "FFT window function: HFT223D\n");
             break;
   }
   sprintf(str + strlen(str), "FFT resolution: %f Hz\n", freqstep);
@@ -578,7 +580,8 @@ void UI_FreqSpectrumWindow::print_to_txt()
 
   for(i=0; i<fft_data->sz_out; i++)
   {
-    fprintf(outputfile, "%.16f\t%.16f\n", freqstep * i, buf2[i]);
+//    fprintf(outputfile, "%.16f\t%.16f\n", freqstep * i, buf2[i]);
+    fprintf(outputfile, "%e\t%e\n", freqstep * i, buf2[i]);
   }
 
   fclose (outputfile);
