@@ -70,7 +70,7 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
   list->setSelectionBehavior(QAbstractItemView::SelectRows);
   list->setSelectionMode(QAbstractItemView::ExtendedSelection);
   list->setToolTip("Only signals with a physical dimension V, mV or uV and\n"
-                   "a samplerate of >= 500Hz and\n"
+                   "a samplerate of >= 240Hz and\n"
                    "an integer ratio to 50 or 60 Hz will be listed here.");
 
   CancelButton = new QPushButton(plifecgfilterdialog);
@@ -90,7 +90,7 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
   {
     sf = mainwindow->signalcomp[i]->edfhdr->edfparam[mainwindow->signalcomp[i]->edfsignal[0]].sf_int;
 
-    if(sf < 500)  /* don't list signals that have low samplerate */
+    if(sf < 240)  /* don't list signals that have low samplerate */
     {
       continue;
     }

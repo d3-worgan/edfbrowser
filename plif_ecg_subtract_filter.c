@@ -65,7 +65,7 @@
 
 /*
  *
- * sf: samplefrequency (must be >= 500Hz and must be an integer multiple of the powerline frequency)
+ * sf: samplefrequency (must be >= 240Hz and must be an integer multiple of the powerline frequency)
  *
  * pwlf: powerline frequency (must be set to 50Hz or 60Hz)
  *
@@ -80,7 +80,7 @@ struct plif_subtract_filter_settings * plif_create_subtract_filter(int sf, int p
   struct plif_subtract_filter_settings *st;
 
 /* perform some sanity checks */
-  if(sf < 500)  return NULL;  /* we need at least the samplefrequency considered the "gold standard" */
+  if(sf < 240)  return NULL;
 
   if((pwlf != 50) && (pwlf != 60))  return NULL;  /* powerline frequency must be either 50 or 60Hz */
 
