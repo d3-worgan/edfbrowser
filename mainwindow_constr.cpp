@@ -1073,7 +1073,14 @@ UI_Mainwindow::UI_Mainwindow()
 
   v_nr = 0x10000 * atoi(v_str);
   v_nr += 0x100 * atoi(v_str + 2);
-  v_nr += atoi(v_str + 4);
+  if(v_str[3] == '.')
+  {
+    v_nr += atoi(v_str + 4);
+  }
+  else
+  {
+    v_nr += atoi(v_str + 5);
+  }
 
   if((v_nr < MINIMUM_QT4_VERSION) || ((v_nr >= 0x050000) && (v_nr < MINIMUM_QT5_VERSION)))
   {
