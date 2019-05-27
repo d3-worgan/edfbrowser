@@ -5,7 +5,7 @@
 *
 * Copyright (C) 2007 - 2019 Teunis van Beelen
 *
-* Email: teuniz@gmail.com
+* Email: teuniz@protonmail.com
 *
 ***************************************************************************
 *
