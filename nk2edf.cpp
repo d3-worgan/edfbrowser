@@ -1433,6 +1433,8 @@ int UI_NK2EDFwindow::check_device(char *str)
   if(!strncmp(str, "EEG-1100A V02.00", 16))  error = 0;
   if(!strncmp(str, "EEG-1100B V02.00", 16))  error = 0;
   if(!strncmp(str, "EEG-1100C V02.00", 16))  error = 0;
+  /* workaround for log file quirk where the last character of the version string is missing: */
+  if((!strncmp(str, "EEG-1100A V02.0",  15)) && (str[15] == 0))  error = 0;
 
   return error;
 }

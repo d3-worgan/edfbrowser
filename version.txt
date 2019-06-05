@@ -6,7 +6,10 @@
 
  - Added a shortcut for crosshairs.
 
- - FFT: When using a non-rectangular window, use overlapping blocks (50%).
+ - FFT: When using a non-rectangular window, use overlapping blocks (50%)
+
+ - Nihon Kohden to EDF+ converter:  added a workaround for a log file quirk where the
+   last character of the version string is missing.
 
 
 
