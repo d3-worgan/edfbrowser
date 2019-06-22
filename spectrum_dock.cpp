@@ -1107,7 +1107,7 @@ void UI_SpectrumDockWindow::update_curve()
   }
 
   free_fft_wrap(fft_data);
-  fft_data = fft_wrap_create(buf1, fft_inputbufsize, dftblocksize, window_type);
+  fft_data = fft_wrap_create(buf1, fft_inputbufsize, dftblocksize, window_type, 1);
   if(fft_data == NULL)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
@@ -1307,11 +1307,25 @@ void UI_SpectrumDockWindow::update_curve()
   remove_trailing_zeros(str);
   if(fft_data->wndw_type)
   {
-    sprintf(str + strlen(str), "Hz   %i blocks of %i samples (50%% overlap)", (fft_data->blocks * 2) - 1, fft_data->dft_sz);
+    if(fft_data->smpls_left)
+    {
+      sprintf(str + strlen(str), "Hz   %i blocks of %i samples (50%% overlap)", fft_data->blocks * 2, fft_data->dft_sz);
+    }
+    else
+    {
+      sprintf(str + strlen(str), "Hz   %i blocks of %i samples (50%% overlap)", (fft_data->blocks * 2) - 1, fft_data->dft_sz);
+    }
   }
   else
   {
-    sprintf(str + strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks, fft_data->dft_sz);
+    if(fft_data->smpls_left)
+    {
+      sprintf(str + strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks + 1, fft_data->dft_sz);
+    }
+    else
+    {
+      sprintf(str + strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks, fft_data->dft_sz);
+    }
   }
   curve1->setUpperLabel1(str);
 

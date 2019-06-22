@@ -1625,7 +1625,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
   if(upperlabel1[0] != 0)
   {
-    painter->drawText(curve_w / 2 - 200, 20, 400, 16, Qt::AlignCenter | Qt::TextSingleLine, upperlabel1);
+    painter->drawText(curve_w / 2 - 225, 20, 450, 16, Qt::AlignCenter | Qt::TextSingleLine, upperlabel1);
   }
 
   if(lowerlabel[0] != 0)
@@ -2481,8 +2481,8 @@ void SignalCurve::setV_label(const char *str)
 
 void SignalCurve::setUpperLabel1(const char *str)
 {
-  strncpy(upperlabel1, str, 64);
-  upperlabel1[63] = 0;
+  strncpy(upperlabel1, str, 128);
+  upperlabel1[127] = 0;
   update();
 }
 

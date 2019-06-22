@@ -81,6 +81,8 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   window_type = 0;
 
+  overlap = 1;
+
   for(i=strlen(signalcomp->edfhdr->filename); i>0; i--)
   {
        if((signalcomp->edfhdr->filename[i-1]=='/')||(signalcomp->edfhdr->filename[i-1]=='\\'))  break;
@@ -143,7 +145,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   SpectrumDialog = new QDialog();
   SpectrumDialog->setAttribute(Qt::WA_DeleteOnClose, true);
-  SpectrumDialog->setMinimumSize(650, 530);
+  SpectrumDialog->setMinimumSize(650, 565);
   SpectrumDialog->setSizeGripEnabled(true);
   SpectrumDialog->setModal(false);
   SpectrumDialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
@@ -308,6 +310,13 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   dftsz_spinbox->setSingleStep(2);
   dftsz_spinbox->setValue(dftblocksize);
 
+  overlap_box = new QComboBox;
+  overlap_box->setMinimumSize(70, 25);
+  overlap_box->addItem("Overlap: 0%");
+  overlap_box->addItem("Overlap: 50%");
+  overlap_box->addItem("Overlap: 67%");
+  overlap_box->addItem("Overlap: 75%");
+
   vlayout3 = new QVBoxLayout;
   vlayout3->addStretch(100);
   vlayout3->addWidget(flywheel1, 100);
@@ -331,6 +340,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   vlayout2->addWidget(windowBox);
   vlayout2->addWidget(dftsz_box);
   vlayout2->addWidget(dftsz_spinbox);
+  vlayout2->addWidget(overlap_box);
 
   spanSlider = new QSlider;
   spanSlider->setOrientation(Qt::Horizontal);
@@ -403,10 +413,11 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   QObject::connect(dftsz_spinbox,   SIGNAL(valueChanged(int)),        this, SLOT(dftsz_value_changed(int)));
   QObject::connect(windowBox,       SIGNAL(currentIndexChanged(int)), this, SLOT(windowBox_changed(int)));
   QObject::connect(dftsz_box,       SIGNAL(currentIndexChanged(int)), this, SLOT(dftsz_box_changed(int)));
+  QObject::connect(overlap_box,     SIGNAL(currentIndexChanged(int)), this, SLOT(overlap_box_changed(int)));
 
   SpectrumDialog->show();
 
-  SpectrumDialog->resize(650, 530);
+  SpectrumDialog->resize(650, 565);
 }
 
 
@@ -482,6 +493,26 @@ void UI_FreqSpectrumWindow::dftsz_box_changed(int idx)
       dftsz_spinbox->setMaximum(1000);
     }
   }
+}
+
+
+void UI_FreqSpectrumWindow::overlap_box_changed(int idx)
+{
+  if(busy)  return;
+
+  if(overlap == (idx + 1))  return;
+
+  overlap = idx + 1;
+
+  busy = 1;
+
+  malloc_err = 0;
+
+  curve1->setUpdatesEnabled(false);
+
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+  start();
 }
 
 
@@ -571,6 +602,7 @@ void UI_FreqSpectrumWindow::print_to_txt()
     case FFT_WNDW_TYPE_HFT223D               : sprintf(str, "FFT window function: HFT223D\n");
             break;
   }
+  sprintf(str + strlen(str), "Overlap: %i %%\n", overlap);
   sprintf(str + strlen(str), "FFT resolution: %f Hz\n", freqstep);
   sprintf(str + strlen(str), "Data Samples: %i\n", fft_data->sz_in);
   sprintf(str + strlen(str), "Power Samples: %i\n", fft_data->sz_out);
@@ -927,7 +959,7 @@ void UI_FreqSpectrumWindow::run()
   }  // end of first_run
 
   free_fft_wrap(fft_data);
-  fft_data = fft_wrap_create(buf1, fft_inputbufsize, dftblocksize, window_type);
+  fft_data = fft_wrap_create(buf1, fft_inputbufsize, dftblocksize, window_type, overlap);
   if(fft_data == NULL)
   {
 //     printf("buf1: %p   fft_inputbufsize: %i   dftblocksize: %i   window_type: %i\n",
@@ -1208,13 +1240,13 @@ void UI_FreqSpectrumWindow::thr_finished_func()
   strcpy(str, "FFT resolution: ");
   convert_to_metric_suffix(str + strlen(str), freqstep, 3);
   remove_trailing_zeros(str);
-  if(fft_data->wndw_type)
+  if(fft_data->smpls_left)
   {
-    sprintf(str + strlen(str), "Hz   %i blocks of %i samples (50%% overlap)", (fft_data->blocks * 2) - 1, fft_data->dft_sz);
+    sprintf(str + strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks * overlap - (overlap - 1) + 1, fft_data->dft_sz);
   }
   else
   {
-    sprintf(str + strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks, fft_data->dft_sz);
+    sprintf(str + strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks * overlap - (overlap - 1), fft_data->dft_sz);
   }
 
   curve1->setUpperLabel1(str);

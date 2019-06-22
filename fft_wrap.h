@@ -61,6 +61,7 @@ struct fft_wrap_settings_struct{
   int blocks;
   int smpls_left;
   int wndw_type;
+  int overlap;
   double *buf_in;
   double *buf_wndw;
   double *buf_wndw_coef;
@@ -70,7 +71,7 @@ struct fft_wrap_settings_struct{
 };
 
 
-struct fft_wrap_settings_struct * fft_wrap_create(double *, int, int, int);
+struct fft_wrap_settings_struct * fft_wrap_create(double *, int, int, int, int);
 void fft_wrap_run(struct fft_wrap_settings_struct *);
 void free_fft_wrap(struct fft_wrap_settings_struct *);
 

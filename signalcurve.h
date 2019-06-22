@@ -232,7 +232,7 @@ private:
 
   char h_label[32],
        v_label[21],
-       upperlabel1[64],
+       upperlabel1[128],
        upperlabel2[64],
        lowerlabel[64],
        extra_button_txt[16],

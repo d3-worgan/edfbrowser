@@ -118,7 +118,8 @@ private:
   QSpinBox *dftsz_spinbox;
 
   QComboBox *windowBox,
-            *dftsz_box;
+            *dftsz_box,
+            *overlap_box;
 
   UI_Flywheel *flywheel1;
 
@@ -130,7 +131,8 @@ private:
       spectrumdialognumber,
       flywheel_value,
       first_run,
-      fft_inputbufsize;
+      fft_inputbufsize,
+      overlap;
 
 
   volatile int busy,
@@ -171,6 +173,7 @@ void thr_finished_func();
 void dftsz_value_changed(int);
 void windowBox_changed(int);
 void dftsz_box_changed(int);
+void overlap_box_changed(int);
 
 };
 
