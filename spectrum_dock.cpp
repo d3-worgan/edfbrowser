@@ -80,6 +80,8 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 
   window_type = 0;
 
+  overlap = 1;
+
   if(mainwindow->spectrumdock_sqrt)
   {
     dock = new QDockWidget("Amplitude Spectrum", w_parent);
@@ -225,6 +227,14 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   windowBox->setCurrentIndex(window_type);
   windowBox->setToolTip("Window");
 
+  overlap_box = new QComboBox;
+  overlap_box->setMinimumSize(70, 25);
+  overlap_box->addItem("Overlap: 0%");
+  overlap_box->addItem("Overlap: 50%");
+  overlap_box->addItem("Overlap: 67%");
+  overlap_box->addItem("Overlap: 75%");
+  overlap_box->addItem("Overlap: 80%");
+
   dftsz_label = new QLabel;
   dftsz_label->setText("Blocksize:");
   dftsz_label->setMinimumSize(100, 25);
@@ -260,6 +270,7 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   vlayout2->addWidget(windowBox);
   vlayout2->addWidget(dftsz_label);
   vlayout2->addWidget(dftsz_spinbox);
+  vlayout2->addWidget(overlap_box);
 
   spanSlider = new QSlider;
   spanSlider->setOrientation(Qt::Horizontal);
@@ -333,6 +344,7 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   QObject::connect(dock,            SIGNAL(visibilityChanged(bool)), this, SLOT(open_close_dock(bool)));
   QObject::connect(dftsz_spinbox,   SIGNAL(valueChanged(int)),        this, SLOT(dftsz_value_changed(int)));
   QObject::connect(windowBox,       SIGNAL(currentIndexChanged(int)), this, SLOT(windowBox_changed(int)));
+  QObject::connect(overlap_box,     SIGNAL(currentIndexChanged(int)), this, SLOT(overlap_box_changed(int)));
 }
 
 
@@ -357,6 +369,20 @@ void UI_SpectrumDockWindow::dftsz_value_changed(int new_val)
   if(dftblocksize == new_val)  return;
 
   dftblocksize = new_val;
+
+  init_maxvalue = 1;
+
+  update_curve();
+}
+
+
+void UI_SpectrumDockWindow::overlap_box_changed(int idx)
+{
+  if(busy)  return;
+
+  if(overlap == (idx + 1))  return;
+
+  overlap = idx + 1;
 
   init_maxvalue = 1;
 
@@ -1107,7 +1133,7 @@ void UI_SpectrumDockWindow::update_curve()
   }
 
   free_fft_wrap(fft_data);
-  fft_data = fft_wrap_create(buf1, fft_inputbufsize, dftblocksize, window_type, 1);
+  fft_data = fft_wrap_create(buf1, fft_inputbufsize, dftblocksize, window_type, overlap);
   if(fft_data == NULL)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
@@ -1305,28 +1331,7 @@ void UI_SpectrumDockWindow::update_curve()
   strcpy(str, "FFT resolution: ");
   convert_to_metric_suffix(str + strlen(str), freqstep, 3);
   remove_trailing_zeros(str);
-  if(fft_data->wndw_type)
-  {
-    if(fft_data->smpls_left)
-    {
-      sprintf(str + strlen(str), "Hz   %i blocks of %i samples (50%% overlap)", fft_data->blocks * 2, fft_data->dft_sz);
-    }
-    else
-    {
-      sprintf(str + strlen(str), "Hz   %i blocks of %i samples (50%% overlap)", (fft_data->blocks * 2) - 1, fft_data->dft_sz);
-    }
-  }
-  else
-  {
-    if(fft_data->smpls_left)
-    {
-      sprintf(str + strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks + 1, fft_data->dft_sz);
-    }
-    else
-    {
-      sprintf(str + strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks, fft_data->dft_sz);
-    }
-  }
+  sprintf(str + strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks_processed, fft_data->dft_sz);
   curve1->setUpperLabel1(str);
 
   curve1->setUpperLabel2(signallabel);

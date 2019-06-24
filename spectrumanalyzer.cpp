@@ -316,6 +316,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   overlap_box->addItem("Overlap: 50%");
   overlap_box->addItem("Overlap: 67%");
   overlap_box->addItem("Overlap: 75%");
+  overlap_box->addItem("Overlap: 80%");
 
   vlayout3 = new QVBoxLayout;
   vlayout3->addStretch(100);
@@ -1240,14 +1241,7 @@ void UI_FreqSpectrumWindow::thr_finished_func()
   strcpy(str, "FFT resolution: ");
   convert_to_metric_suffix(str + strlen(str), freqstep, 3);
   remove_trailing_zeros(str);
-  if(fft_data->smpls_left)
-  {
-    sprintf(str + strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks * overlap - (overlap - 1) + 1, fft_data->dft_sz);
-  }
-  else
-  {
-    sprintf(str + strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks * overlap - (overlap - 1), fft_data->dft_sz);
-  }
+  sprintf(str + strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks_processed, fft_data->dft_sz);
 
   curve1->setUpperLabel1(str);
 

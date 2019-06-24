@@ -151,7 +151,8 @@ private:
 
   QSpinBox *dftsz_spinbox;
 
-  QComboBox *windowBox;
+  QComboBox *windowBox,
+            *overlap_box;
 
   UI_Flywheel *flywheel1;
 
@@ -166,7 +167,8 @@ private:
       flywheel_value,
       init_maxvalue,
       signal_nr,
-      set_settings;
+      set_settings,
+      overlap;
 
   volatile int busy;
 
@@ -206,6 +208,7 @@ void setdashboard();
 void update_flywheel(int);
 void dftsz_value_changed(int);
 void windowBox_changed(int);
+void overlap_box_changed(int);
 
 void open_close_dock(bool);
 };

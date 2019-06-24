@@ -42,7 +42,7 @@ struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int
   if(dft_size < 4)  return NULL;
   if(dft_size & 1)  dft_size--;
   if((window_type < 0) || (window_type > 7))  return NULL;
-  if((overlap < 1) || (overlap > 4))  return NULL;
+  if((overlap < 1) || (overlap > 5))  return NULL;
 
   st = (struct fft_wrap_settings_struct *)calloc(1, sizeof(struct fft_wrap_settings_struct));
   if(st == NULL)  return NULL;
@@ -110,7 +110,7 @@ struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int
 
 void fft_wrap_run(struct fft_wrap_settings_struct *st)
 {
-  int i, j, k, tmp;
+  int i, j, k;
 
   if(st == NULL)  return;
   if(st->sz_in < 4)  return;
@@ -119,6 +119,8 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
   if(st->buf_in == NULL)  return;
   if(st->buf_out == NULL)  return;
   if(st->kiss_fftbuf == NULL)  return;
+
+  st->blocks_processed = 0;
 
   if(st->wndw_type)
   {
@@ -138,6 +140,8 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
     st->buf_out[i] = ((st->kiss_fftbuf[i].r * st->kiss_fftbuf[i].r) + (st->kiss_fftbuf[i].i * st->kiss_fftbuf[i].i)) / st->sz_out;
   }
 
+  st->blocks_processed++;
+
   for(j=1; j<st->blocks; j++)
   {
     for(k=1; k<st->overlap; k++)
@@ -147,16 +151,18 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
         window_func(st->buf_in + (j * st->dft_sz) - ((st->dft_sz / st->overlap) * k), st->buf_wndw, st->buf_wndw_coef, st->dft_sz, st->wndw_type, j);
 
         kiss_fftr(st->cfg, st->buf_wndw, st->kiss_fftbuf);
-
-        for(i=0; i<st->sz_out; i++)
-        {
-          st->buf_out[i] += ((st->kiss_fftbuf[i].r * st->kiss_fftbuf[i].r) + (st->kiss_fftbuf[i].i * st->kiss_fftbuf[i].i)) / st->sz_out;
-        }
       }
       else
       {
         kiss_fftr(st->cfg, st->buf_in + (j * st->dft_sz) - ((st->dft_sz / st->overlap) * k), st->kiss_fftbuf);
       }
+
+      for(i=0; i<st->sz_out; i++)
+      {
+        st->buf_out[i] += ((st->kiss_fftbuf[i].r * st->kiss_fftbuf[i].r) + (st->kiss_fftbuf[i].i * st->kiss_fftbuf[i].i)) / st->sz_out;
+      }
+
+      st->blocks_processed++;
     }
 
     if(st->wndw_type)
@@ -174,6 +180,8 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
     {
       st->buf_out[i] += ((st->kiss_fftbuf[i].r * st->kiss_fftbuf[i].r) + (st->kiss_fftbuf[i].i * st->kiss_fftbuf[i].i)) / st->sz_out;
     }
+
+    st->blocks_processed++;
   }
 
   if(st->smpls_left)
@@ -189,25 +197,19 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
       kiss_fftr(st->cfg, st->buf_in + ((j-1) * st->dft_sz) + st->smpls_left, st->kiss_fftbuf);
     }
 
-    tmp = st->blocks * st->overlap;
-
     for(i=0; i<st->sz_out; i++)
     {
       st->buf_out[i] += ((st->kiss_fftbuf[i].r * st->kiss_fftbuf[i].r) + (st->kiss_fftbuf[i].i * st->kiss_fftbuf[i].i)) / st->sz_out;
-
-      st->buf_out[i] /= tmp;
     }
-  }
-  else
-  {
-    if(st->blocks > 1)
-    {
-      tmp = ((st->blocks - 1) * st->overlap) + 1;
 
-      for(i=0; i<st->sz_out; i++)
-      {
-        st->buf_out[i] /= tmp;
-      }
+    st->blocks_processed++;
+  }
+
+  if(st->blocks_processed > 1)
+  {
+    for(i=0; i<st->sz_out; i++)
+    {
+      st->buf_out[i] /= st->blocks_processed;
     }
   }
 }
