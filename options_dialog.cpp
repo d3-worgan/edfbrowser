@@ -730,11 +730,13 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   label4_12 = new QLabel(tab4);
   label4_12->setGeometry(20, 535, 310, 25);
-  label4_12->setText("Use linear interpolation");
+  label4_12->setText("Use linear interpolation for plotting");
+  label4_12->setToolTip("Enabling this option will avoid the \"stairstep\" effect and will make the signal look smoother.");
 
   checkbox4_6 = new QCheckBox(tab4);
   checkbox4_6->setGeometry(325, 538, 20, 20);
   checkbox4_6->setTristate(false);
+  checkbox4_6->setToolTip("Enabling this option will avoid the \"stairstep\" effect and will make the signal look smoother.");
   if(mainwindow->linear_interpol)
   {
     checkbox4_6->setCheckState(Qt::Checked);
