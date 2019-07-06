@@ -143,6 +143,13 @@ HEADERS += third_party/kiss_fft/kiss_fft.h
 HEADERS += third_party/kiss_fft/_kiss_fft_guts.h
 HEADERS += third_party/kiss_fft/kiss_fftr.h
 
+HEADERS += third_party/smarc/filtering.h
+HEADERS += third_party/smarc/multi_stage.h
+HEADERS += third_party/smarc/polyfilt.h
+HEADERS += third_party/smarc/smarc.h
+HEADERS += third_party/smarc/stage_impl.h
+HEADERS += third_party/smarc/remez_lp.h
+
 SOURCES += main.cpp
 SOURCES += mainwindow_constr.cpp
 SOURCES += mainwindow.cpp
@@ -238,6 +245,13 @@ SOURCES += third_party/fidlib/fidlib.c
 
 SOURCES += third_party/kiss_fft/kiss_fft.c
 SOURCES += third_party/kiss_fft/kiss_fftr.c
+
+SOURCES += third_party/smarc/filtering.c
+SOURCES += third_party/smarc/multi_stage.c
+SOURCES += third_party/smarc/polyfilt.c
+SOURCES += third_party/smarc/smarc.c
+SOURCES += third_party/smarc/stage_impl.c
+SOURCES += third_party/smarc/remez_lp.c
 
 
 RESOURCES = images.qrc
