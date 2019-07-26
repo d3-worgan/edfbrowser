@@ -36,7 +36,7 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
   if(i_signalcomp == NULL)
   {
     datarecord_cnt = -1;
-    total_samples = -1;
+    total_samples = -1LL;
 
     return NULL;
   }
@@ -46,7 +46,7 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
   if(hdr == NULL)
   {
     datarecord_cnt = -1;
-    total_samples = -1;
+    total_samples = -1LL;
 
     return NULL;
   }
@@ -55,7 +55,7 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
   if(inputfile == NULL)
   {
     datarecord_cnt = -1;
-    total_samples = -1;
+    total_samples = -1LL;
 
     return NULL;
   }
@@ -65,14 +65,14 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
   if((datarecord_cnt > hdr->datarecords) || (datarecord_cnt < 1))
   {
     datarecord_cnt = -1;
-    total_samples = -1;
+    total_samples = -1LL;
 
     return NULL;
   }
 
   samples_per_datrec = hdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
 
-  total_samples = samples_per_datrec * datarecord_cnt;
+  total_samples = (long long)samples_per_datrec * (long long)datarecord_cnt;
 
   if(processed_samples_buf != NULL)
   {
@@ -82,7 +82,7 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
   if(processed_samples_buf == NULL)
   {
     datarecord_cnt = -1;
-    total_samples = -1;
+    total_samples = -1LL;
 
     return NULL;
   }
@@ -95,7 +95,7 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
   if(readbuf == NULL)
   {
     datarecord_cnt = -1;
-    total_samples = -1;
+    total_samples = -1LL;
 
     free(processed_samples_buf);
     processed_samples_buf = NULL;
@@ -108,7 +108,7 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
 }
 
 
-int FilteredBlockReadClass::samples_in_buf(void)
+long long FilteredBlockReadClass::samples_in_buf(void)
 {
   return total_samples;
 }
@@ -120,7 +120,7 @@ FilteredBlockReadClass::FilteredBlockReadClass()
   processed_samples_buf = NULL;
 
   datarecord_cnt = -1;
-  total_samples = -1;
+  total_samples = -1LL;
 
   inputfile = NULL;
   hdr = NULL;
@@ -144,7 +144,9 @@ FilteredBlockReadClass::~FilteredBlockReadClass()
 
 int FilteredBlockReadClass::process_signalcomp(int datarecord_start)
 {
-  int j, k, s;
+  int j, k;
+
+  long long s;
 
   double dig_value=0.0,
          f_tmp=0.0;
@@ -200,14 +202,14 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_start)
           readbuf
           + (signalcomp->edfhdr->recordsize * (s / samples_per_datrec))
           + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
-          + ((s % samples_per_datrec) * 3)));
+          + ((s % samples_per_datrec) * 3LL)));
 
         var.four[2] = *((unsigned char *)(
           readbuf
           + (signalcomp->edfhdr->recordsize * (s / samples_per_datrec))
           + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
-          + ((s % samples_per_datrec) * 3)
-          + 2));
+          + ((s % samples_per_datrec) * 3LL)
+          + 2LL));
 
         if(var.four[2]&0x80)
         {
