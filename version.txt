@@ -13,6 +13,9 @@
 
  - Annotation editor: Update the onset time automatically when changing file position and a crosshair is active.
 
+ -  Fixed a bug that, when displaying many channels, triggered a false error message
+    saying that the system did not have enough memory.
+
 
 
  version 1.67      Januari 26, 2019

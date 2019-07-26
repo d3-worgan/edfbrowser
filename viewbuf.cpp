@@ -592,24 +592,10 @@ void UI_Mainwindow::setup_viewbuf()
     viewbuf = NULL;
   }
 
-  for(i=0, l_temp=0; i<signalcomps; i++)
-  {
-    l_temp += (long long)signalcomp[i]->records_in_viewbuf * (long long)signalcomp[i]->edfhdr->recordsize;
-  }
-
-  if(l_temp >= 0x80000000)
-  {
-    live_stream_active = 0;
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.\n"
-                                                              "Decrease the timescale and try again.");
-    messagewindow.exec();
-
-    remove_all_signals();
-    return;
-  }
-
   if(totalsize)
   {
+//    printf("debug: totalsize is: %i\n", totalsize);
+
     viewbuf = (char *)malloc(totalsize);
     if(viewbuf==NULL)
     {
