@@ -34,7 +34,6 @@ void UI_Mainwindow::setup_viewbuf()
   int i, j, k, r, s,
       temp=0,
       skip,
-      totalsize,
       hasprefilter=0,
       readsize=0,
       dif;
@@ -44,7 +43,8 @@ void UI_Mainwindow::setup_viewbuf()
          dig_value;
 
   long long l_temp,
-            datarecords;
+            datarecords,
+            totalsize=0LL;
 
   union {
           unsigned int one;
@@ -166,7 +166,7 @@ void UI_Mainwindow::setup_viewbuf()
       }
     }
 
-    totalsize = 0;
+    totalsize = 0LL;
 
     for(i=0; i<signalcomps; i++)
     {
@@ -224,15 +224,12 @@ void UI_Mainwindow::setup_viewbuf()
       viewbuf = NULL;
     }
 
-    for(i=0, l_temp=0; i<signalcomps; i++)
-    {
-      l_temp += (long long)signalcomp[i]->records_in_viewbuf * (long long)signalcomp[i]->edfhdr->recordsize;
-    }
-
-    if(l_temp >= 0x80000000)
+//    printf("debug: totalsize is: %i\n", totalsize);
+    if(totalsize >= 0x80000000LL)  // 2.1GB
     {
       live_stream_active = 0;
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Internal error: Memory limit protection:\n\"prefilterbuf\"");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "You reached the program's memory limit of 2.1GB.\n"
+                                                                "Please decrease the timescale and/or number of traces and try again.");
       messagewindow.exec();
 
       remove_all_signals();
@@ -595,6 +592,16 @@ void UI_Mainwindow::setup_viewbuf()
   if(totalsize)
   {
 //    printf("debug: totalsize is: %i\n", totalsize);
+    if(totalsize >= 0x80000000LL)  // 2.1GB
+    {
+      live_stream_active = 0;
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "You reached the program's memory limit of 2.1GB.\n"
+                                                                "Please decrease the timescale and/or number of traces and try again.");
+      messagewindow.exec();
+
+      remove_all_signals();
+      return;
+    }
 
     viewbuf = (char *)malloc(totalsize);
     if(viewbuf==NULL)
