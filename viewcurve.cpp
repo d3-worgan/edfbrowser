@@ -2274,8 +2274,10 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
         painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
 
-          // Don't update the onset time when changing file position
-//        mainwindow->annotationEditDock->annotEditSetOnset(crosshair_1.time_relative);
+        if((!crosshair_1.moving) && (!mainwindow->annotationEditDock->dockedit->isHidden()))
+        {
+          mainwindow->annotationEditDock->annotEditSetOnset(crosshair_1.time_relative);
+        }
       }
     }
 

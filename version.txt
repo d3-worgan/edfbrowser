@@ -11,6 +11,8 @@
  - Nihon Kohden to EDF+ converter:  added a workaround for a log file quirk where the
    last character of the version string is missing.
 
+ - Annotation editor: Update the onset time automatically when changing file position and a crosshair is active.
+
 
 
  version 1.67      Januari 26, 2019
