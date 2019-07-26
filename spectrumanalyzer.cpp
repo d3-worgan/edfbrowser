@@ -779,7 +779,7 @@ void UI_FreqSpectrumWindow::run()
 {
   int i, j, k;
 
-  long long s, s2;
+  unsigned long long s, s2;
 
   double dig_value=0.0,
          f_tmp=0.0;

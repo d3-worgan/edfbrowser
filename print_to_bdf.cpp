@@ -55,15 +55,16 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   const int smpl_div_arr[14]={100,80,64,50,40,32,20,16,10, 8, 5, 4, 2, 1};
 
-  long long duration,
-            smpls_written[MAXSIGNALS],
-            s2,
-            preamble=0LL,
-            smpls_preamble[MAXSIGNALS],
-            taltime=0LL,
+  long long taltime=0LL,
             l_temp,
             referencetime,
-            annot_difftime=0LL;
+            annot_difftime=0LL,
+            s2;
+
+  unsigned long long duration,
+            smpls_written[MAXSIGNALS],
+            preamble=0LL,
+            smpls_preamble[MAXSIGNALS];
 
   char path[MAX_PATH_LENGTH],
        scratchpad[4096],
@@ -149,7 +150,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   for(i=0; i<signalcomps; i++)
   {
-    if(signalcomp[i]->edfhdr->long_data_record_duration>duration)
+    if(signalcomp[i]->edfhdr->long_data_record_duration > duration)
     {
       duration = signalcomp[i]->edfhdr->long_data_record_duration;
       n = i;
@@ -1301,7 +1302,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
           l_temp = annot_ptr->onset - annot_difftime;
 
-          if((l_temp >= 0LL) && (l_temp < (mainwindow->pagetime + TIME_DIMENSION)))
+          if((l_temp >= 0LL) && ((unsigned long long)l_temp < (mainwindow->pagetime + TIME_DIMENSION)))
           {
             tallen += fprintf(outputfile, "%+i.%07i",
             (int)(l_temp / TIME_DIMENSION),

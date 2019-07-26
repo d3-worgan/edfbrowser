@@ -1528,7 +1528,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
           if(((l_tmp + annot->long_duration) > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) && (!annot->hided))
           {
-            if(l_tmp > (mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
+            if(l_tmp > (long long)(mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
             {
               break;
             }
@@ -1994,7 +1994,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
         l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
 
-        if(l_tmp > (mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
+        if(l_tmp > (long long)(mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
         {
           break;
         }
@@ -2475,7 +2475,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
   char *viewbuf;
 
-  long long s, s2;
+  unsigned long long s, s2;
 
   double dig_value=0.0,
          f_tmp=0.0;
@@ -2904,7 +2904,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
           x2 = (int)(((double)(s + 1)) / signalcomp[i]->sample_pixel_ratio);
           y2 = value;
 
-          if(signalcomp[i]->samples_on_screen < w)
+          if(signalcomp[i]->samples_on_screen < (unsigned long long)w)
           {
             if(linear_interpol)
             {
@@ -2984,7 +2984,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
         {
           if(printing)
           {
-            if(s==((int)((double)(crosshair_1.x_position * printsize_x_factor + (double)signalcomp[i]->pixels_shift) * signalcomp[i]->sample_pixel_ratio)))
+            if(s == (unsigned long long)((double)(crosshair_1.x_position * printsize_x_factor + (double)signalcomp[i]->pixels_shift) * signalcomp[i]->sample_pixel_ratio))
             {
               crosshair_1.y_value = value;
               crosshair_1.value = dig_value * signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue;
@@ -2994,7 +2994,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
           }
           else
           {
-            if(s==((int)((double)(crosshair_1.x_position + signalcomp[i]->pixels_shift) * signalcomp[i]->sample_pixel_ratio)))
+            if(s == (unsigned long long)((double)(crosshair_1.x_position + signalcomp[i]->pixels_shift) * signalcomp[i]->sample_pixel_ratio))
             {
               crosshair_1.y_value = value;
               crosshair_1.value = dig_value * signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue;
@@ -3008,7 +3008,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
         {
           if(printing)
           {
-            if(s==((int)((double)(crosshair_2.x_position * printsize_x_factor + (double)signalcomp[i]->pixels_shift) * signalcomp[i]->sample_pixel_ratio)))
+            if(s == (unsigned long long)((double)(crosshair_2.x_position * printsize_x_factor + (double)signalcomp[i]->pixels_shift) * signalcomp[i]->sample_pixel_ratio))
             {
               crosshair_2.y_value = value;
               crosshair_2.value = dig_value * signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue;
@@ -3018,7 +3018,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
           }
           else
           {
-            if(s==((int)((double)(crosshair_2.x_position + signalcomp[i]->pixels_shift) * signalcomp[i]->sample_pixel_ratio)))
+            if(s == (unsigned long long)((double)(crosshair_2.x_position + signalcomp[i]->pixels_shift) * signalcomp[i]->sample_pixel_ratio))
             {
               crosshair_2.y_value = value;
               crosshair_2.value = dig_value * signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue;
@@ -3081,7 +3081,7 @@ void drawCurve_stage_1_thread::run()
       runin_samples,
       stat_zero_crossing;
 
-  long long s, s2;
+  unsigned long long s, s2;
 
   double dig_value,
          f_tmp;
@@ -3125,7 +3125,7 @@ void drawCurve_stage_1_thread::run()
 
     signalcomp->pixels_shift = signalcomp->sample_timeoffset_part / signalcomp->sample_pixel_ratio;
 
-    for(s=signalcomp->sample_start; s<signalcomp->samples_on_screen; s++)
+    for(s=signalcomp->sample_start; s < signalcomp->samples_on_screen; s++)
     {
       if(s>=signalcomp->sample_stop)  break;
 
@@ -3407,7 +3407,7 @@ void drawCurve_stage_1_thread::run()
         x2 = (int)(((double)(s + 1)) / signalcomp->sample_pixel_ratio);
         y2 = value;
 
-        if(signalcomp->samples_on_screen < w)
+        if(signalcomp->samples_on_screen < (unsigned long long)w)
         {
           if(linear_interpol)
           {
@@ -3487,7 +3487,7 @@ void drawCurve_stage_1_thread::run()
       {
         if(printing)
         {
-          if(s==((int)((double)(crosshair_1->x_position * printsize_x_factor + (double)signalcomp->pixels_shift) * signalcomp->sample_pixel_ratio)))
+          if(s == (unsigned long long)((double)(crosshair_1->x_position * printsize_x_factor + (double)signalcomp->pixels_shift) * signalcomp->sample_pixel_ratio))
           {
             crosshair_1->y_value = value;
             crosshair_1->value = dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue;
@@ -3497,7 +3497,7 @@ void drawCurve_stage_1_thread::run()
         }
         else
         {
-          if(s==((int)((double)(crosshair_1->x_position + signalcomp->pixels_shift) * signalcomp->sample_pixel_ratio)))
+          if(s == (unsigned long long)((double)(crosshair_1->x_position + signalcomp->pixels_shift) * signalcomp->sample_pixel_ratio))
           {
             crosshair_1->y_value = value;
             crosshair_1->value = dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue;
@@ -3511,7 +3511,7 @@ void drawCurve_stage_1_thread::run()
       {
         if(printing)
         {
-          if(s==((int)((double)(crosshair_2->x_position * printsize_x_factor + (double)signalcomp->pixels_shift) * signalcomp->sample_pixel_ratio)))
+          if(s == ((double)(crosshair_2->x_position * printsize_x_factor + (double)signalcomp->pixels_shift) * signalcomp->sample_pixel_ratio))
           {
             crosshair_2->y_value = value;
             crosshair_2->value = dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue;
@@ -3521,7 +3521,7 @@ void drawCurve_stage_1_thread::run()
         }
         else
         {
-          if(s==((int)((double)(crosshair_2->x_position + signalcomp->pixels_shift) * signalcomp->sample_pixel_ratio)))
+          if(s == ((double)(crosshair_2->x_position + signalcomp->pixels_shift) * signalcomp->sample_pixel_ratio))
           {
             crosshair_2->y_value = value;
             crosshair_2->value = dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue;

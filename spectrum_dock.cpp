@@ -885,7 +885,7 @@ void UI_SpectrumDockWindow::update_curve()
       fft_inputbufsize=0;
 //      fft_outputbufsize;
 
-  long long s, s2;
+  unsigned long long s, s2;
 
   char str[1024];
 

@@ -34,9 +34,7 @@ void UI_Mainwindow::setup_viewbuf()
   int i, j, k, r, s,
       temp=0,
       skip,
-      hasprefilter=0,
-      readsize=0,
-      dif;
+      hasprefilter=0;
 
   double pre_time=0.0,
          d_temp=0.0,
@@ -44,7 +42,10 @@ void UI_Mainwindow::setup_viewbuf()
 
   long long l_temp,
             datarecords,
-            totalsize=0LL;
+            dif;
+
+  unsigned long long totalsize=0LL,
+                     readsize=0LL;
 
   union {
           unsigned int one;
@@ -224,12 +225,17 @@ void UI_Mainwindow::setup_viewbuf()
       viewbuf = NULL;
     }
 
-//    printf("debug: totalsize is: %i\n", totalsize);
-    if(totalsize >= 0x80000000LL)  // 2.1GB
+//    printf("debug: totalsize is: %llu\n", totalsize);
+    if(totalsize >= UINT_MAX)  // 4.2GB on 32-bit systems, muuuuch bigger on 64-bit systems
     {
       live_stream_active = 0;
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "You reached the program's memory limit of 2.1GB.\n"
-                                                                "Please decrease the timescale and/or number of traces and try again.");
+#ifdef __LP64__
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Somehow you hit the memory limit...\n"
+                                                                "Decrease the timescale and/or number of traces and try again.");
+#else
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "You have hit the memory limit of 4.2GB.\n"
+                                                                "Decrease the timescale and/or number of traces and try again.");
+#endif
       messagewindow.exec();
 
       remove_all_signals();
@@ -254,11 +260,11 @@ void UI_Mainwindow::setup_viewbuf()
 
         signalcomp[i]->prefilter_starttime = datarecords * signalcomp[i]->edfhdr->long_data_record_duration;
 
-        if((signalcomp[i]->viewbufsize>0)&&(datarecords<signalcomp[i]->edfhdr->datarecords))
+        if((signalcomp[i]->viewbufsize > 0) && (datarecords < signalcomp[i]->edfhdr->datarecords))
         {
           fseeko(signalcomp[i]->edfhdr->file_hdl, (long long)(signalcomp[i]->edfhdr->hdrsize + (datarecords * signalcomp[i]->edfhdr->recordsize)), SEEK_SET);
 
-          if(signalcomp[i]->viewbufsize>((signalcomp[i]->edfhdr->datarecords - datarecords) * signalcomp[i]->edfhdr->recordsize))
+          if(signalcomp[i]->viewbufsize > (unsigned long long)((signalcomp[i]->edfhdr->datarecords - datarecords) * signalcomp[i]->edfhdr->recordsize))
           {
             signalcomp[i]->viewbufsize = (signalcomp[i]->edfhdr->datarecords - datarecords) * signalcomp[i]->edfhdr->recordsize;
           }
@@ -292,11 +298,11 @@ void UI_Mainwindow::setup_viewbuf()
 
           signalcomp[i]->prefilter_starttime = datarecords * signalcomp[i]->edfhdr->long_data_record_duration;
 
-          if((signalcomp[i]->viewbufsize>0)&&(datarecords<signalcomp[i]->edfhdr->datarecords))
+          if((signalcomp[i]->viewbufsize > 0) && (datarecords<signalcomp[i]->edfhdr->datarecords))
           {
             fseeko(signalcomp[i]->edfhdr->file_hdl, (long long)(signalcomp[i]->edfhdr->hdrsize + (datarecords * signalcomp[i]->edfhdr->recordsize)), SEEK_SET);
 
-            if(signalcomp[i]->viewbufsize>((signalcomp[i]->edfhdr->datarecords - datarecords) * signalcomp[i]->edfhdr->recordsize))
+            if(signalcomp[i]->viewbufsize > (unsigned long long)((signalcomp[i]->edfhdr->datarecords - datarecords) * signalcomp[i]->edfhdr->recordsize))
             {
               signalcomp[i]->viewbufsize = (signalcomp[i]->edfhdr->datarecords - datarecords) * signalcomp[i]->edfhdr->recordsize;
             }
@@ -591,12 +597,17 @@ void UI_Mainwindow::setup_viewbuf()
 
   if(totalsize)
   {
-//    printf("debug: totalsize is: %i\n", totalsize);
-    if(totalsize >= 0x80000000LL)  // 2.1GB
+//    printf("debug: totalsize is: %llu\n", totalsize);
+    if(totalsize >= UINT_MAX)  // 4.2GB on 32-bit systems, muuuuch bigger on 64-bit systems
     {
       live_stream_active = 0;
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "You reached the program's memory limit of 2.1GB.\n"
-                                                                "Please decrease the timescale and/or number of traces and try again.");
+#ifdef __LP64__
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Somehow you hit the memory limit...\n"
+                                                                "Decrease the timescale and/or number of traces and try again.");
+#else
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "You have hit the memory limit of 4.2GB.\n"
+                                                                "Decrease the timescale and/or number of traces and try again.");
+#endif
       messagewindow.exec();
 
       remove_all_signals();
@@ -631,7 +642,14 @@ void UI_Mainwindow::setup_viewbuf()
 
       dif = signalcomp[i]->edfhdr->datarecords - datarecords;
 
-      if(dif<=0)
+//       printf("signalcomp[%i]->viewbufoffset: %llu\n"
+//              "signalcomp[%i]->records_in_viewbuf: %llu\n"
+//              "signalcomp[%i]->edfhdr->recordsize: %i\n"
+//              "dif: %lli\n"
+//              "datarecords: %lli\n",
+//              i, signalcomp[i]->viewbufoffset, i, signalcomp[i]->records_in_viewbuf, i, signalcomp[i]->edfhdr->recordsize, dif, datarecords);
+
+      if(dif <= 0)
       {
         memset(viewbuf + signalcomp[i]->viewbufoffset, 0, signalcomp[i]->records_in_viewbuf * signalcomp[i]->edfhdr->recordsize);
 
@@ -639,7 +657,7 @@ void UI_Mainwindow::setup_viewbuf()
       }
       else
       {
-        if(dif<signalcomp[i]->records_in_viewbuf)
+        if(dif < (long long)signalcomp[i]->records_in_viewbuf)
         {
           readsize = dif * signalcomp[i]->edfhdr->recordsize;
 
@@ -704,7 +722,7 @@ void UI_Mainwindow::setup_viewbuf()
       }
       else
       {
-        if(dif<signalcomp[i]->records_in_viewbuf)
+        if((unsigned long long)dif < signalcomp[i]->records_in_viewbuf)
         {
           if(!skip)
           {
@@ -868,19 +886,19 @@ void UI_Mainwindow::setup_viewbuf()
 
         record_duration -= pagetime;
 
-        if(edfheaderlist[sel_viewtime]->viewtime<=0)
+        if(edfheaderlist[sel_viewtime]->viewtime <= 0)
         {
           positionslider->setValue(0);
         }
         else
         {
-          if(edfheaderlist[sel_viewtime]->viewtime>=record_duration)
+          if(edfheaderlist[sel_viewtime]->viewtime >= record_duration)
           {
             positionslider->setValue(1000000);
           }
           else
           {
-            if(record_duration<pagetime)
+            if(record_duration < (long long)pagetime)
             {
               positionslider->setValue(1000000);
             }

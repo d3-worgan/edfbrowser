@@ -156,9 +156,7 @@ private:
 
   UI_Flywheel *flywheel1;
 
-  int samples,
-      buf1_sz,
-      dftblocksize,
+  int dftblocksize,
       window_type,
       steps,
       spectrumdock_sqrt,
@@ -169,6 +167,9 @@ private:
       signal_nr,
       set_settings,
       overlap;
+
+  unsigned long long samples,
+                     buf1_sz;
 
   volatile int busy;
 

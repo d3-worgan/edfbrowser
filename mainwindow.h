@@ -100,6 +100,7 @@
 #include <string.h>
 #include <locale.h>
 #include <time.h>
+#include <limits.h>
 
 #include "global.h"
 #include "viewcurve.h"
@@ -240,8 +241,8 @@ public:
       linear_interpol,
       average_period;
 
-  long long pagetime,
-            maxfilesize_to_readin_annotations;
+  unsigned long long pagetime,
+                     maxfilesize_to_readin_annotations;
 
   char *viewbuf,
        viewtime_string[128],

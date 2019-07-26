@@ -55,15 +55,16 @@ void print_screen_to_edf(UI_Mainwindow *mainwindow)
 
   const int smpl_div_arr[14]={100,80,64,50,40,32,20,16,10, 8, 5, 4, 2, 1};
 
-  long long duration,
-            smpls_written[MAXSIGNALS],
-            s2,
-            preamble=0LL,
-            smpls_preamble[MAXSIGNALS],
+  long long s2,
             taltime=0LL,
             l_temp,
             referencetime,
             annot_difftime=0LL;
+
+  unsigned long long duration,
+            smpls_written[MAXSIGNALS],
+            preamble=0LL,
+            smpls_preamble[MAXSIGNALS];
 
   char path[MAX_PATH_LENGTH],
        scratchpad[4096],
@@ -1261,7 +1262,7 @@ void print_screen_to_edf(UI_Mainwindow *mainwindow)
 
           l_temp = annot_ptr->onset - annot_difftime;
 
-          if((l_temp >= 0LL) && (l_temp < (mainwindow->pagetime + TIME_DIMENSION)))
+          if((l_temp >= 0LL) && (l_temp < (long long)(mainwindow->pagetime + TIME_DIMENSION)))
           {
             tallen += fprintf(outputfile, "%+i.%07i",
             (int)(l_temp / TIME_DIMENSION),

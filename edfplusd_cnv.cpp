@@ -376,7 +376,7 @@ void UI_EDFDwindow::SelectFileButton()
       former_timestamp = next_timestamp - edfhdr->long_data_record_duration;
     }
 
-    if(next_timestamp!=(former_timestamp + edfhdr->long_data_record_duration))
+    if(next_timestamp != (long long)(former_timestamp + edfhdr->long_data_record_duration))
     {
       chunk_endtime = next_timestamp;
 

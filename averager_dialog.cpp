@@ -489,7 +489,7 @@ void UI_AveragerWindow::process_avg(struct signalcompblock *signalcomp)
 
   char *viewbuf;
 
-  long long s, s2;
+  unsigned long long s, s2;
 
   double dig_value=0.0,
          f_tmp=0.0;

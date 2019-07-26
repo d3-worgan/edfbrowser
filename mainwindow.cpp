@@ -1611,7 +1611,7 @@ void UI_Mainwindow::open_new_file()
 
     if((edfhdr->edfplus || edfhdr->bdfplus) && (!live_stream_active))
     {
-      if((edfhdr->datarecords * (long long)edfhdr->recordsize) <= maxfilesize_to_readin_annotations)
+      if((edfhdr->datarecords * (unsigned long long)edfhdr->recordsize) <= maxfilesize_to_readin_annotations)
       {
         EDF_annotations annotations;
 
@@ -1641,7 +1641,7 @@ void UI_Mainwindow::open_new_file()
 
     if((edfhdr->bdf && (!edfhdr->bdfplus) && read_biosemi_status_signal) && (!live_stream_active))
     {
-      if((edfhdr->datarecords * (long long)edfhdr->recordsize) <= maxfilesize_to_readin_annotations)
+      if((edfhdr->datarecords * (unsigned long long)edfhdr->recordsize) <= maxfilesize_to_readin_annotations)
       {
         BDF_triggers bdf_triggers_obj;
 
