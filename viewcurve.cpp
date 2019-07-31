@@ -2908,7 +2908,14 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
           {
             if(linear_interpol)
             {
-              x1 = (int)(((double)(s - 1)) / signalcomp[i]->sample_pixel_ratio);
+              if(s==signalcomp[i]->sample_start)
+              {
+                x1 = (int)(((double)s) / signalcomp[i]->sample_pixel_ratio);
+              }
+              else
+              {
+                x1 = (int)(((double)(s - 1)) / signalcomp[i]->sample_pixel_ratio);
+              }
               x2 = (int)((double)s / signalcomp[i]->sample_pixel_ratio);
 
               graphicBuf[screensamples[i]].graphicLine[i].x1 = x1 - signalcomp[i]->pixels_shift;
@@ -3411,7 +3418,14 @@ void drawCurve_stage_1_thread::run()
         {
           if(linear_interpol)
           {
-            x1 = (int)(((double)(s - 1)) / signalcomp->sample_pixel_ratio);
+            if(s==signalcomp->sample_start)
+            {
+             x1 = (int)(((double)s) / signalcomp->sample_pixel_ratio);
+            }
+            else
+            {
+             x1 = (int)(((double)(s - 1)) / signalcomp->sample_pixel_ratio);
+            }
             x2 = (int)((double)s / signalcomp->sample_pixel_ratio);
 
             graphicBuf[*screensamples].graphicLine[i].x1 = x1 - signalcomp->pixels_shift;
