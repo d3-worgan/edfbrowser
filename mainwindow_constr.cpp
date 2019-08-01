@@ -35,6 +35,8 @@ UI_Mainwindow::UI_Mainwindow()
 {
   int i, j, k, pxw;
 
+  char str[1024]={""};
+
   QPixmap pxm(500, 100);
 
   QPainter p_aint(&pxm);
@@ -49,6 +51,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   monofont->setFamily("courier");
   monofont->setPixelSize(12);
+
+  QApplication::setFont(*myfont);
 #else
   myfont->setFamily("Noto Sans");
   for(i=20; i>7; i--)
@@ -69,9 +73,12 @@ UI_Mainwindow::UI_Mainwindow()
 
   monofont->setFamily("andale mono");
   monofont->setPixelSize(12);
-#endif
 
   QApplication::setFont(*myfont);
+
+  sprintf(str, "font: %ipx;", font_size);
+  setStyleSheet(str);
+#endif
 
   setMinimumSize(640, 480);
   setWindowTitle(PROGRAM_NAME);
