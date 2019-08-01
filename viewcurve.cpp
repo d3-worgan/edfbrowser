@@ -2908,20 +2908,18 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
           {
             if(linear_interpol)
             {
-              if(s==signalcomp[i]->sample_start)
-              {
-                x1 = (int)(((double)s) / signalcomp[i]->sample_pixel_ratio);
-              }
-              else
+              if(s>signalcomp[i]->sample_start)
               {
                 x1 = (int)(((double)(s - 1)) / signalcomp[i]->sample_pixel_ratio);
-              }
-              x2 = (int)((double)s / signalcomp[i]->sample_pixel_ratio);
+                x2 = (int)((double)s / signalcomp[i]->sample_pixel_ratio);
 
-              graphicBuf[screensamples[i]].graphicLine[i].x1 = x1 - signalcomp[i]->pixels_shift;
-              graphicBuf[screensamples[i]].graphicLine[i].y1 = y1;
-              graphicBuf[screensamples[i]].graphicLine[i].x2 = x2 - signalcomp[i]->pixels_shift;
-              graphicBuf[screensamples[i]].graphicLine[i].y2 = y2;
+                graphicBuf[screensamples[i]].graphicLine[i].x1 = x1 - signalcomp[i]->pixels_shift;
+                graphicBuf[screensamples[i]].graphicLine[i].y1 = y1;
+                graphicBuf[screensamples[i]].graphicLine[i].x2 = x2 - signalcomp[i]->pixels_shift;
+                graphicBuf[screensamples[i]].graphicLine[i].y2 = y2;
+
+                screensamples[i]++;
+              }
             }
             else
             {
@@ -2939,9 +2937,9 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
                 graphicBuf[screensamples[i]].graphicLine[i].x2 = x1 - signalcomp[i]->pixels_shift;
                 graphicBuf[screensamples[i]].graphicLine[i].y2 = y2;
               }
-            }
 
-            screensamples[i]++;
+              screensamples[i]++;
+            }
           }
           else
           {
@@ -3418,20 +3416,18 @@ void drawCurve_stage_1_thread::run()
         {
           if(linear_interpol)
           {
-            if(s==signalcomp->sample_start)
+            if(s>signalcomp->sample_start)
             {
-             x1 = (int)(((double)s) / signalcomp->sample_pixel_ratio);
-            }
-            else
-            {
-             x1 = (int)(((double)(s - 1)) / signalcomp->sample_pixel_ratio);
-            }
-            x2 = (int)((double)s / signalcomp->sample_pixel_ratio);
+              x1 = (int)(((double)(s - 1)) / signalcomp->sample_pixel_ratio);
+              x2 = (int)((double)s / signalcomp->sample_pixel_ratio);
 
-            graphicBuf[*screensamples].graphicLine[i].x1 = x1 - signalcomp->pixels_shift;
-            graphicBuf[*screensamples].graphicLine[i].y1 = y1;
-            graphicBuf[*screensamples].graphicLine[i].x2 = x2 - signalcomp->pixels_shift;
-            graphicBuf[*screensamples].graphicLine[i].y2 = y2;
+              graphicBuf[*screensamples].graphicLine[i].x1 = x1 - signalcomp->pixels_shift;
+              graphicBuf[*screensamples].graphicLine[i].y1 = y1;
+              graphicBuf[*screensamples].graphicLine[i].x2 = x2 - signalcomp->pixels_shift;
+              graphicBuf[*screensamples].graphicLine[i].y2 = y2;
+
+              (*screensamples)++;
+            }
           }
           else
           {
@@ -3449,9 +3445,9 @@ void drawCurve_stage_1_thread::run()
               graphicBuf[*screensamples].graphicLine[i].x2 = x1 - signalcomp->pixels_shift;
               graphicBuf[*screensamples].graphicLine[i].y2 = y2;
             }
-          }
 
-          (*screensamples)++;
+            (*screensamples)++;
+          }
         }
         else
         {
