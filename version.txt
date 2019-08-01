@@ -18,6 +18,8 @@
 
  - Fixed a bug that, when linear interpolation is enabled, artefacts in the form of horizontal lines could appear.
 
+ - Enforce the same fontsize independent from distro and available fonts.
+
 
 
  version 1.67      Januari 26, 2019

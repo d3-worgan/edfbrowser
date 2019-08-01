@@ -33,11 +33,11 @@
 
 UI_Mainwindow::UI_Mainwindow()
 {
-  int i, j, k;
+  int i, j, k, pxw;
 
-  setMinimumSize(640, 480);
-  setWindowTitle(PROGRAM_NAME);
-  setWindowIcon(QIcon(":/images/edf.png"));
+  QPixmap pxm(500, 100);
+
+  QPainter p_aint(&pxm);
 
   myfont = new QFont;
 
@@ -50,14 +50,32 @@ UI_Mainwindow::UI_Mainwindow()
   monofont->setFamily("courier");
   monofont->setPixelSize(12);
 #else
-  myfont->setFamily("Arial");
-  myfont->setPixelSize(12);
+  myfont->setFamily("Noto Sans");
+  for(i=20; i>7; i--)
+  {
+    myfont->setPixelSize(i);
+
+    p_aint.setFont(*myfont);
+
+    pxw = p_aint.boundingRect(0, 0, 500, 100, Qt::AlignLeft | Qt::TextSingleLine, "ABCDEFGHIJKLMNOPQRSTUVWXYZ").width();
+
+//    printf("i is: %i    width is: %i\n", i, pxw);
+
+    if(pxw < 203)  break;
+  }
+  font_size = i;
+
+  myfont->setPixelSize(font_size);
 
   monofont->setFamily("andale mono");
   monofont->setPixelSize(12);
 #endif
 
   QApplication::setFont(*myfont);
+
+  setMinimumSize(640, 480);
+  setWindowTitle(PROGRAM_NAME);
+  setWindowIcon(QIcon(":/images/edf.png"));
 
   setlocale(LC_NUMERIC, "C");
 

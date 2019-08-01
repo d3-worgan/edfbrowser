@@ -94,6 +94,7 @@
 #include <QTcpSocket>
 #include <QHostAddress>
 #include <QDir>
+#include <QRect>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -239,7 +240,8 @@ public:
       viewtime_indicator_type,
       mainwindow_title_type,
       linear_interpol,
-      average_period;
+      average_period,
+      font_size;
 
   unsigned long long pagetime,
                      maxfilesize_to_readin_annotations;
