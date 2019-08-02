@@ -30,16 +30,6 @@
 
 #include "about_dialog.h"
 
-#if defined(__LP64__)
-#if __LP64__ == 1
-#define THIS_BITS_W   "64-bit"
-#else
-#define THIS_BITS_W   "32-bit"
-#endif
-#else
-#define THIS_BITS_W   "32-bit"
-#endif
-
 UI_Aboutwindow::UI_Aboutwindow(UI_Mainwindow *mainwindow)
 {
   char str[512];
@@ -73,7 +63,7 @@ UI_Aboutwindow::UI_Aboutwindow(UI_Mainwindow *mainwindow)
   textedit1->setReadOnly(true);
   textedit1->setLineWrapMode(QTextEdit::NoWrap);
   textedit1->setPlainText(
-        "\n " PROGRAM_NAME " version " PROGRAM_VERSION "     " THIS_BITS_W "\n"
+        "\n " PROGRAM_NAME " version " PROGRAM_VERSION "     " THIS_APP_BITS_W "\n"
         "\n This program is made by Teunis van Beelen.\n"
         "\n Copyright (C) 2007 - 2019 Teunis van Beelen.\n"
         "\n Email: teuniz@protonmail.com\n"

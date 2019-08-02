@@ -7,6 +7,9 @@
 #include <QTimer>
 #include <QStyle>
 #include <QStyleFactory>
+#include <QPen>
+#include <QColor>
+#include <QFont>
 
 #include "mainwindow.h"
 
@@ -18,6 +21,13 @@ int main(int argc, char *argv[])
 //   app.setAttribute(Qt::AA_DontUseNativeMenuBar);
 
   QPixmap pixmap(":/images/splash.png");
+
+  QPainter p(&pixmap);
+  QFont sansFont("Noto Sans", 10);
+  p.setFont(sansFont);
+  p.setPen(Qt::black);
+  p.drawText(250, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_VERSION "     " THIS_APP_BITS_W);
+
   QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
 
   QTimer t1;

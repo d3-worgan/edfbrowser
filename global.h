@@ -33,6 +33,16 @@
 #error "You need the GNU C compiler!"
 #endif
 
+#if defined(__LP64__)
+#if __LP64__ == 1
+#define THIS_APP_BITS_W   "64-bit"
+#else
+#define THIS_APP_BITS_W   "32-bit"
+#endif
+#else
+#define THIS_APP_BITS_W   "32-bit"
+#endif
+
 #include <stdio.h>
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
