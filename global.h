@@ -29,6 +29,10 @@
 #ifndef EDFBROWSER_GLOBAL_H
 #define EDFBROWSER_GLOBAL_H
 
+#if !defined(__GNUC__)
+#error "You need the GNU C compiler!"
+#endif
+
 #include <stdio.h>
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)

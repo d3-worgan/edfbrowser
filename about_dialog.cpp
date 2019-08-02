@@ -73,7 +73,7 @@ UI_Aboutwindow::UI_Aboutwindow(UI_Mainwindow *mainwindow)
   textedit1->setReadOnly(true);
   textedit1->setLineWrapMode(QTextEdit::NoWrap);
   textedit1->setPlainText(
-        "\n " PROGRAM_NAME " " PROGRAM_VERSION "   " THIS_BITS_W "\n"
+        "\n " PROGRAM_NAME " version " PROGRAM_VERSION "     " THIS_BITS_W "\n"
         "\n This program is made by Teunis van Beelen.\n"
         "\n Copyright (C) 2007 - 2019 Teunis van Beelen.\n"
         "\n Email: teuniz@protonmail.com\n"
