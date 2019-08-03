@@ -1129,7 +1129,7 @@ UI_Mainwindow::UI_Mainwindow()
   QFont sansFont("Noto Sans", 10);
   p.setFont(sansFont);
   p.setPen(Qt::black);
-  p.drawText(250, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_VERSION "     " THIS_APP_BITS_W);
+  p.drawText(250, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_VERSION " " PROGRAM_BETA_SUFFIX "    " THIS_APP_BITS_W);
   splash = new QSplashScreen(this, *pixmap, Qt::WindowStaysOnTopHint);
 
   update_checker = NULL;

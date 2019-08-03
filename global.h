@@ -37,12 +37,8 @@
 #endif
 #endif
 
-#if defined(__LP64__)
-#if __LP64__ == 1
+#if defined(__LP64__) || defined(__MINGW64__)
 #define THIS_APP_BITS_W   "64-bit"
-#else
-#define THIS_APP_BITS_W   "32-bit"
-#endif
 #else
 #define THIS_APP_BITS_W   "32-bit"
 #endif
@@ -63,6 +59,7 @@
 
 #define PROGRAM_NAME "EDFbrowser"
 #define PROGRAM_VERSION "1.67"
+#define PROGRAM_BETA_SUFFIX ""
 #define MINIMUM_QT4_VERSION 0x040701
 #define MINIMUM_QT5_VERSION 0x050901
 #define MAXFILES 32
