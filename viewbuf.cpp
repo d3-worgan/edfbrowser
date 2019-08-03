@@ -229,7 +229,7 @@ void UI_Mainwindow::setup_viewbuf()
     if(totalsize >= UINT_MAX)  // 4.2GB on 32-bit systems, muuuuch bigger on 64-bit systems
     {
       live_stream_active = 0;
-#ifdef __LP64__
+#if defined(__LP64__) || defined(__MINGW64__)
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Somehow you hit the memory limit...\n"
                                                                 "Decrease the timescale and/or number of traces and try again.");
 #else
@@ -601,7 +601,7 @@ void UI_Mainwindow::setup_viewbuf()
     if(totalsize >= UINT_MAX)  // 4.2GB on 32-bit systems, muuuuch bigger on 64-bit systems
     {
       live_stream_active = 0;
-#ifdef __LP64__
+#if defined(__LP64__) || defined(__MINGW64__)
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Somehow you hit the memory limit...\n"
                                                                 "Decrease the timescale and/or number of traces and try again.");
 #else
