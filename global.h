@@ -30,7 +30,11 @@
 #define EDFBROWSER_GLOBAL_H
 
 #if !defined(__GNUC__)
+#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
+/* nothing */
+#else
 #error "You need the GNU C compiler!"
+#endif
 #endif
 
 #if defined(__LP64__)
