@@ -146,6 +146,7 @@ UI_Mainwindow::UI_Mainwindow()
   toolbar_stats.active = 0;
   toolbar_stats.annot_label[0] = 0;
   toolbar_stats.annot_list = NULL;
+  toolbar_stats.ival = (double *)calloc(1, sizeof(double) * STATISTICS_IVAL_LIST_SZ);
 
   recent_montagedir[0] = 0;
   recent_savedir[0] = 0;

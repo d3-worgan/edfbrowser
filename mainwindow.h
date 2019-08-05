@@ -272,7 +272,7 @@ public:
   struct{
           int sz;
           int active;
-          double ival[STATISTICS_IVAL_LIST_SZ];
+          double *ival;
           char annot_label[MAX_ANNOTATION_LEN + 1];
           struct annotation_list *annot_list;
         } toolbar_stats;

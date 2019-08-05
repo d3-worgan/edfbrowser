@@ -46,6 +46,7 @@ UI_Mainwindow::~UI_Mainwindow()
   delete playback_realtime_time;
   delete playback_realtime_timer;
   if(update_checker != NULL)  delete update_checker;
+  free(toolbar_stats.ival);
 }
 
 

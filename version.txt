@@ -1,5 +1,5 @@
 
- version 1.68      to be decided
+ version 1.68      August 5, 2019
  --------------
 
  - MIT (Physionet) to EDF converter: fixed a bug related to 212 decoding when an odd number of signals is present.
