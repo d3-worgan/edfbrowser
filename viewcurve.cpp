@@ -4629,7 +4629,7 @@ inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, s
   {
     for(i=0; i<7; i++)
     {
-      snprintf(str_hz[i], 15, "%.1f",  (w_size / pixels_per_second) * (9.0 + i));
+      snprintf(str_hz[i], 15, "%.1f",  (pixels_per_second / w_size) * (9.0 + i));
 
       str_hz[i][15] = 0;
     }

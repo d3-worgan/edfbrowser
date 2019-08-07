@@ -1,4 +1,12 @@
 
+
+ version 1.69      to be defined
+ --------------
+
+ - Fixed a bug in the floating ruler.
+
+
+
  version 1.68      August 5, 2019
  --------------
 
