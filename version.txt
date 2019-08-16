@@ -5,6 +5,8 @@
 
  - Fixed a bug in the floating ruler.
 
+ - MIT (Physionet) to EDF converter: fixed a bug regarding offset scaling (baseline & adczero)
+
 
 
  version 1.68      August 5, 2019

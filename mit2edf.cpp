@@ -348,6 +348,8 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
     mit_hdr.baseline[j] = 0;
 
+    mit_hdr.baseline_present[j] = 0;
+
     mit_hdr.unit_multiplier[j] = 1;  /* default 1 milliVolt */
 
     strcpy(mit_hdr.unit[j], "mV");
@@ -499,11 +501,18 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
       mit_hdr.baseline[j] = atoi(charpntr + p);
 
+      mit_hdr.baseline_present[j] = 1;
+
       p = ++i;
     }
 
     if((ch_tmp == '/') || (charpntr[i] == '/'))
     {
+      if(charpntr[i] == '/')
+      {
+        p++;
+      }
+
       for(; i<len; i++)
       {
         if(charpntr[i] == ' ')
@@ -521,8 +530,6 @@ void UI_MIT2EDFwindow::SelectFileButton()
         pushButton1->setEnabled(true);
         return;
       }
-
-      p++;
 
       strncpy(mit_hdr.unit[j], charpntr + p, 8);
       mit_hdr.unit[j][8] = 0;
@@ -571,6 +578,11 @@ void UI_MIT2EDFwindow::SelectFileButton()
     }
 
     mit_hdr.adc_zero[j] = atoi(charpntr + p);
+
+    if(!mit_hdr.baseline_present[j])
+    {
+      mit_hdr.baseline[j] = mit_hdr.adc_zero[j];
+    }
 
     p = ++i;
 
@@ -782,9 +794,9 @@ void UI_MIT2EDFwindow::SelectFileButton()
   {
     if(!strcmp(mit_hdr.unit[i], "mV"))
     {
-      if(((double)((32767 - mit_hdr.adc_zero[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]) <= 100)
+      if(((double)((32767 + mit_hdr.baseline[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]) <= 100)
       {
-        if(((double)((-32768 - mit_hdr.adc_zero[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]) >= -100)
+        if(((double)((-32768 + mit_hdr.baseline[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]) >= -100)
         {
           strcpy(mit_hdr.unit[i], "uV");
 
@@ -793,12 +805,12 @@ void UI_MIT2EDFwindow::SelectFileButton()
       }
     }
 
-//     printf("physmax: %f    physmin: %f  adcgain: %f\n",
-//       (double)((32767 - mit_hdr.adc_zero[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i],
-//       (double)((-32768 - mit_hdr.adc_zero[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i],
-//       mit_hdr.adc_gain[i]);
+//     printf("physmax: %f    physmin: %f  adcgain: %f   adczero: %i   baseline: %i   unit: %s   multiplier: %i\n",
+//       (double)((32767 + mit_hdr.baseline[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i],
+//       (double)((-32768 + mit_hdr.baseline[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i],
+//       mit_hdr.adc_gain[i], mit_hdr.adc_zero[i], mit_hdr.baseline[i], mit_hdr.unit[i], mit_hdr.unit_multiplier[i]);
 
-    if(edf_set_physical_maximum(hdl, i, (double)((32767 - mit_hdr.adc_zero[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]))
+    if(edf_set_physical_maximum(hdl, i, (double)((32767 + mit_hdr.baseline[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]))
     {
       textEdit1->append("Error: edf_set_physical_maximum()\n");
       fclose(data_inputfile);
@@ -807,7 +819,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
       return;
     }
 
-    if(edf_set_physical_minimum(hdl, i, (double)((-32768 - mit_hdr.adc_zero[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]))
+    if(edf_set_physical_minimum(hdl, i, (double)((-32768 + mit_hdr.baseline[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]))
     {
       textEdit1->append("Error: edf_set_physical_minimum()\n");
       fclose(data_inputfile);

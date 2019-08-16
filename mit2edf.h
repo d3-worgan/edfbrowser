@@ -87,6 +87,7 @@ struct {
         int format[MAXSIGNALS];
         double adc_gain[MAXSIGNALS];
         int baseline[MAXSIGNALS];
+        int baseline_present[MAXSIGNALS];
         int adc_resolution[MAXSIGNALS];
         int adc_zero[MAXSIGNALS];
         int init_val[MAXSIGNALS];
