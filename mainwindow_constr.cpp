@@ -547,7 +547,7 @@ UI_Mainwindow::UI_Mainwindow()
   amp_200 = new QAction("200", this);
   amplitudemenu->addAction(amp_200);
 
-  amp_100 = new QAction("100 (50uV/5mm)", this);
+  amp_100 = new QAction("100", this);
   amplitudemenu->addAction(amp_100);
 
   amp_50 = new QAction("50", this);
