@@ -33,8 +33,6 @@
 
 UI_EDFDwindow::UI_EDFDwindow(char *recent_ope_dir, char *recent_sav_dir)
 {
-  char txt_string[2048];
-
   recent_opendir = recent_ope_dir;
   recent_savedir = recent_sav_dir;
 
@@ -59,8 +57,7 @@ UI_EDFDwindow::UI_EDFDwindow(char *recent_ope_dir, char *recent_sav_dir)
   textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
-  sprintf(txt_string, "EDF+D/BDF+D to EDF+C/BDF+C converter.\n");
-  textEdit1->append(txt_string);
+  textEdit1->append("EDF+D/BDF+D to EDF+C/BDF+C converter.\n");
 
   QObject::connect(pushButton1, SIGNAL(clicked()), this, SLOT(SelectFileButton()));
   QObject::connect(pushButton2, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
@@ -112,7 +109,7 @@ void UI_EDFDwindow::SelectFileButton()
 
   pushButton1->setEnabled(false);
 
-  strcpy(inputpath, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "EDF/BDF files (*.edf *.EDF *.bdf *.BDF *.rec *.REC)").toLocal8Bit().data());
+  strlcpy(inputpath, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "EDF/BDF files (*.edf *.EDF *.bdf *.BDF *.rec *.REC)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(inputpath, ""))
   {
@@ -138,7 +135,7 @@ void UI_EDFDwindow::SelectFileButton()
 
   EDFfileCheck EDFfilechecker;
 
-  edfhdr = EDFfilechecker.check_edf_file(inputfile, txt_string);
+  edfhdr = EDFfilechecker.check_edf_file(inputfile, txt_string, 2048);
   if(edfhdr==NULL)
   {
     fclose(inputfile);
@@ -247,18 +244,18 @@ void UI_EDFDwindow::SelectFileButton()
 
   file_number = 1;
 
-  strcpy(output_path, inputpath);
+  strlcpy(output_path, inputpath, MAX_PATH_LENGTH);
   remove_extension_from_filename(output_path);
   if(edfhdr->edfplus)
   {
-    sprintf(output_path + strlen(output_path), "_%04i.edf", file_number);
+    snprintf(output_path + strlen(output_path), MAX_PATH_LENGTH, "_%04i.edf", file_number);
   }
   else
   {
-    sprintf(output_path + strlen(output_path), "_%04i.bdf", file_number);
+    snprintf(output_path + strlen(output_path), MAX_PATH_LENGTH, "_%04i.bdf", file_number);
   }
 
-  strcpy(txt_string, "Creating file ");
+  strlcpy(txt_string, "Creating file ", 2048);
   len = strlen(txt_string);
   get_filename_from_path(txt_string + len, output_path, MAX_PATH_LENGTH - len);
   textEdit1->append(QString::fromLocal8Bit(txt_string));
@@ -466,18 +463,18 @@ void UI_EDFDwindow::SelectFileButton()
 
       file_number++;
 
-      strcpy(output_path, inputpath);
+      strlcpy(output_path, inputpath, MAX_PATH_LENGTH);
       remove_extension_from_filename(output_path);
       if(edfhdr->edfplus)
       {
-        sprintf(output_path + strlen(output_path), "_%04i.edf", file_number);
+        snprintf(output_path + strlen(output_path), MAX_PATH_LENGTH - strlen(output_path), "_%04i.edf", file_number);
       }
       else
       {
-        sprintf(output_path + strlen(output_path), "_%04i.bdf", file_number);
+        snprintf(output_path + strlen(output_path), MAX_PATH_LENGTH - strlen(output_path), "_%04i.bdf", file_number);
       }
 
-      strcpy(txt_string, "Creating file ");
+      strlcpy(txt_string, "Creating file ", 2048);
       len = strlen(txt_string);
       get_filename_from_path(txt_string + len, output_path, MAX_PATH_LENGTH - len);
       textEdit1->append(txt_string);
@@ -513,11 +510,11 @@ void UI_EDFDwindow::SelectFileButton()
       }
     }
 
-    cnt = sprintf(tal, "+%i", (int)((next_timestamp - new_hdr_timestamp) / TIME_DIMENSION));
+    cnt = snprintf(tal, 16, "+%i", (int)((next_timestamp - new_hdr_timestamp) / TIME_DIMENSION));
 
     if((next_timestamp - new_hdr_timestamp)%TIME_DIMENSION)
     {
-      cnt += sprintf(tal + cnt, ".%07i", (int)((next_timestamp - new_hdr_timestamp) % TIME_DIMENSION));
+      cnt += snprintf(tal + cnt, 10, ".%07i", (int)((next_timestamp - new_hdr_timestamp) % TIME_DIMENSION));
 
       for(i=cnt-1; i>0; i--)
       {

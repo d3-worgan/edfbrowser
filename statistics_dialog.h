@@ -55,6 +55,7 @@
 #include "signalcurve.h"
 #include "edf_annot_list.h"
 #include "ecg_statistics.h"
+#include "utils.h"
 
 
 class UI_Mainwindow;

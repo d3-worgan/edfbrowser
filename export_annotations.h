@@ -62,6 +62,7 @@
 #include "edflib.h"
 #include "utc_date_time.h"
 #include "edf_annot_list.h"
+#include "utils.h"
 
 
 

@@ -103,7 +103,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
       line_nr;
 
   char txt_string[2048],
-       path[512],
+       path[MAX_PATH_LENGTH],
        outputfilename[MAX_PATH_LENGTH],
        line[2048],
        scratchpad[128],
@@ -150,7 +150,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
     return;
   }
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "Text files (*.txt *.TXT)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "Text files (*.txt *.TXT)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -286,160 +286,160 @@ void UI_FINO2EDFwindow::SelectFileButton()
 
       if(!strcmp(line, "\" reSYS\""))
       {
-        strcpy(labels[edfsignals], "reSYS           ");
-        strcpy(phys_dim[edfsignals], "mmHg    ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "reSYS           ", 17);
+        strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
 
       if(!strcmp(line, "\" fiSYS\""))
       {
-        strcpy(labels[edfsignals], "fiSYS           ");
-        strcpy(phys_dim[edfsignals], "mmHg    ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "fiSYS           ", 17);
+        strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
 
       if(!strcmp(line, "\" reDIA\""))
       {
-        strcpy(labels[edfsignals], "reDIA           ");
-        strcpy(phys_dim[edfsignals], "mmHg    ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "reDIA           ", 17);
+        strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
 
       if(!strcmp(line, "\" fiDIA\""))
       {
-        strcpy(labels[edfsignals], "fiDIA           ");
-        strcpy(phys_dim[edfsignals], "mmHg    ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "fiDIA           ", 17);
+        strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
 
       if(!strcmp(line, "\" reMAP\""))
       {
-        strcpy(labels[edfsignals], "reMAP           ");
-        strcpy(phys_dim[edfsignals], "mmHg    ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "reMAP           ", 17);
+        strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
 
       if(!strcmp(line, "\" fiMAP\""))
       {
-        strcpy(labels[edfsignals], "fiMAP           ");
-        strcpy(phys_dim[edfsignals], "mmHg    ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "fiMAP           ", 17);
+        strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
 
       if(!strcmp(line, "\"  HR\""))
       {
-        strcpy(labels[edfsignals], "HR              ");
-        strcpy(phys_dim[edfsignals], "bpm     ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "HR              ", 17);
+        strlcpy(phys_dim[edfsignals], "bpm     ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
 
       if(!strcmp(line, "\"   IBI\""))
       {
-        strcpy(labels[edfsignals], "IBI             ");
-        strcpy(phys_dim[edfsignals], "s       ");
-        strcpy(phys_min[edfsignals], "-31.744 ");
-        strcpy(phys_max[edfsignals], "31.744  ");
+        strlcpy(labels[edfsignals], "IBI             ", 17);
+        strlcpy(phys_dim[edfsignals], "s       ", 9);
+        strlcpy(phys_min[edfsignals], "-31.744 ", 9);
+        strlcpy(phys_max[edfsignals], "31.744  ", 9);
         sensitivity[edfsignals] = 1000.0;
         ok = 1;
       }
 
       if(!strcmp(line, "\"  SV\""))
       {
-        strcpy(labels[edfsignals], "SV              ");
-        strcpy(phys_dim[edfsignals], "ml      ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "SV              ", 17);
+        strlcpy(phys_dim[edfsignals], "ml      ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
 
       if(!strcmp(line, "\"    CO\""))
       {
-        strcpy(labels[edfsignals], "CO              ");
-        strcpy(phys_dim[edfsignals], "lpm     ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "CO              ", 17);
+        strlcpy(phys_dim[edfsignals], "lpm     ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
 
       if(!strcmp(line, "\"   EJT\""))
       {
-        strcpy(labels[edfsignals], "EJT             ");
-        strcpy(phys_dim[edfsignals], "s       ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "EJT             ", 17);
+        strlcpy(phys_dim[edfsignals], "s       ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
 
       if(!strcmp(line, "\"    TPR\""))
       {
-        strcpy(labels[edfsignals], "TPR             ");
-        strcpy(phys_dim[edfsignals], "MU      ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "TPR             ", 17);
+        strlcpy(phys_dim[edfsignals], "MU      ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
 
       if(!strcmp(line, "\" Artifact\""))
       {
-        strcpy(labels[edfsignals], "Artifact        ");
-        strcpy(phys_dim[edfsignals], "_TPSROD2");
-        strcpy(phys_min[edfsignals], "0       ");
-        strcpy(phys_max[edfsignals], "10000000");
+        strlcpy(labels[edfsignals], "Artifact        ", 17);
+        strlcpy(phys_dim[edfsignals], "_TPSROD2", 9);
+        strlcpy(phys_min[edfsignals], "0       ", 9);
+        strlcpy(phys_max[edfsignals], "10000000", 9);
         sensitivity[edfsignals] = 0.0063488;
         ok = 1;
       }
 
       if(!strcmp(line, "\" Zao\""))
       {
-        strcpy(labels[edfsignals], "Zao             ");
-        strcpy(phys_dim[edfsignals], "mMU     ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "Zao             ", 17);
+        strlcpy(phys_dim[edfsignals], "mMU     ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
 
       if(!strcmp(line, "\"   Cwk\""))
       {
-        strcpy(labels[edfsignals], "Cwk             ");
-        strcpy(phys_dim[edfsignals], "MU      ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "Cwk             ", 17);
+        strlcpy(phys_dim[edfsignals], "MU      ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
 
       if(!strcmp(line, "\" Height\""))
       {
-        strcpy(labels[edfsignals], "Height          ");
-        strcpy(phys_dim[edfsignals], "mmHg    ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "Height          ", 17);
+        strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
@@ -476,7 +476,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
     return;
   }
 
-  p = sprintf(patientname, "%s", PatientnameLineEdit->text().toLatin1().data());
+  p = snprintf(patientname, 81, "%s", PatientnameLineEdit->text().toLatin1().data());
   latin1_to_ascii(patientname, p);
   for( ; p<80; p++)
   {
@@ -484,7 +484,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
   }
   patientname[80] = 0;
 
-  p = sprintf(recording, "%s", RecordingLineEdit->text().toLatin1().data());
+  p = snprintf(recording, 81, "%s", RecordingLineEdit->text().toLatin1().data());
   latin1_to_ascii(recording, p);
   for( ; p<80; p++)
   {
@@ -492,7 +492,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
   }
   recording[80] = 0;
 
-  sprintf(datetime,
+  snprintf(datetime, 128,
           "%02i.%02i.%02i%02i.%02i.%02i",
           StartDatetimeedit->date().day(),
           StartDatetimeedit->date().month(),
@@ -507,17 +507,17 @@ void UI_FINO2EDFwindow::SelectFileButton()
 
   get_filename_from_path(outputfilename, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(outputfilename);
-  strcat(outputfilename, "_finometer.edf");
+  strlcat(outputfilename, "_finometer.edf", MAX_PATH_LENGTH);
 
   path[0] = 0;
   if(recent_savedir[0]!=0)
   {
-    strcpy(path, recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, recent_savedir, MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
-  strcat(path, outputfilename);
+  strlcat(path, outputfilename, MAX_PATH_LENGTH);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "EDF files (*.edf *.EDF)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "EDF files (*.edf *.EDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {

@@ -359,7 +359,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     return;
   }
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Open ASCII file", QString::fromLocal8Bit(recent_opendir), "ASCII files (*.txt *.TXT *.csv *.CSV)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Open ASCII file", QString::fromLocal8Bit(recent_opendir), "ASCII files (*.txt *.TXT *.csv *.CSV)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -672,23 +672,23 @@ void UI_ASCII2EDFapp::gobuttonpressed()
   outputfilename[0] = 0;
   if(recent_savedir[0]!=0)
   {
-    strcpy(outputfilename, recent_savedir);
-    strcat(outputfilename, "/");
+    strlcpy(outputfilename, recent_savedir, MAX_PATH_LENGTH);
+    strlcat(outputfilename, "/", MAX_PATH_LENGTH);
   }
   len = strlen(outputfilename);
   get_filename_from_path(outputfilename + len, path, MAX_PATH_LENGTH - len);
   remove_extension_from_filename(outputfilename);
   if(edf_format)
   {
-    strcat(outputfilename, ".edf");
+    strlcat(outputfilename, ".edf", MAX_PATH_LENGTH);
 
-    strcpy(outputfilename, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(outputfilename), "EDF files (*.edf *.EDF)").toLocal8Bit().data());
+    strlcpy(outputfilename, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(outputfilename), "EDF files (*.edf *.EDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
   else
   {
-    strcat(outputfilename, ".bdf");
+    strlcat(outputfilename, ".bdf", MAX_PATH_LENGTH);
 
-    strcpy(outputfilename, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(outputfilename), "BDF files (*.bdf *.BDF)").toLocal8Bit().data());
+    strlcpy(outputfilename, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(outputfilename), "BDF files (*.bdf *.BDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
 
   if(!strcmp(outputfilename, ""))
@@ -816,8 +816,8 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     {
       if(autoPhysicalMaximum)
       {
-        sprintf(str, "%.8f", physmax[edf_signal++] * -1.0);
-        strcat(str, "        ");
+        snprintf(str, 256, "%.8f", physmax[edf_signal++] * -1.0);
+        strlcat(str, "        ", 256);
         str[8] = 0;
         fprintf(outputfile, "%s", str);
       }
@@ -841,8 +841,8 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     {
       if(autoPhysicalMaximum)
       {
-        sprintf(str, "%.8f", physmax[edf_signal++]);
-        strcat(str, "        ");
+        snprintf(str, 256, "%.8f", physmax[edf_signal++]);
+        strlcat(str, "        ", 256);
         str[8] = 0;
         fprintf(outputfile, "%s", str);
       }
@@ -1196,7 +1196,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
 
 void UI_ASCII2EDFapp::savebuttonpressed()
 {
-  int i, j, len;
+  int i;
 
   char path[MAX_PATH_LENGTH],
        str[128];
@@ -1215,12 +1215,12 @@ void UI_ASCII2EDFapp::savebuttonpressed()
   path[0] = 0;
   if(recent_savedir[0]!=0)
   {
-    strcpy(path, recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, recent_savedir, MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
-  strcat(path, "ascii_to_edf.template");
+  strlcat(path, "ascii_to_edf.template", MAX_PATH_LENGTH);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Save parameters", QString::fromLocal8Bit(path), "Template files (*.template *.TEMPLATE)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Save parameters", QString::fromLocal8Bit(path), "Template files (*.template *.TEMPLATE)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -1273,36 +1273,21 @@ void UI_ASCII2EDFapp::savebuttonpressed()
       fprintf(outputfile, "    <checked>0</checked>\n");
     }
 
-    strcpy(str, ((QLineEdit *)SignalsTablewidget->cellWidget(i, 1))->text().toLatin1().data());
+    strlcpy(str, ((QLineEdit *)SignalsTablewidget->cellWidget(i, 1))->text().toLatin1().data(), 128);
 
-    len = strlen(str);
-    for(j=len-1; j>0; j--)
-    {
-      if(str[j]!=' ')  break;
-    }
-    str[j+1] = 0;
+    remove_trailing_spaces(str);
 
     fprintf(outputfile, "    <label>%s</label>\n", str);
 
-    strcpy(str, ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->text().toLatin1().data());
+    strlcpy(str, ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->text().toLatin1().data(), 128);
 
-    len = strlen(str);
-    for(j=len-1; j>0; j--)
-    {
-      if(str[j]!=' ')  break;
-    }
-    str[j+1] = 0;
+    remove_trailing_spaces(str);
 
     fprintf(outputfile, "    <physical_maximum>%s</physical_maximum>\n", str);
 
-    strcpy(str, ((QLineEdit *)SignalsTablewidget->cellWidget(i, 3))->text().toLatin1().data());
+    strlcpy(str, ((QLineEdit *)SignalsTablewidget->cellWidget(i, 3))->text().toLatin1().data(), 128);
 
-    len = strlen(str);
-    for(j=len-1; j>0; j--)
-    {
-      if(str[j]!=' ')  break;
-    }
-    str[j+1] = 0;
+    remove_trailing_spaces(str);
 
     fprintf(outputfile, "    <physical_dimension>%s</physical_dimension>\n", str);
 
@@ -1331,7 +1316,7 @@ void UI_ASCII2EDFapp::loadbuttonpressed()
 
   struct xml_handle *xml_hdl;
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Load parameters", QString::fromLocal8Bit(recent_opendir), "Template files (*.template *.TEMPLATE)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Load parameters", QString::fromLocal8Bit(recent_opendir), "Template files (*.template *.TEMPLATE)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -1649,7 +1634,7 @@ int UI_ASCII2EDFapp::check_input(void)
   const char *columnname[]={"", "Label", "Physical maximum", "Physical dimension"};
 
 
-  strcpy(str, SeparatorLineEdit->text().toLatin1().data());
+  strlcpy(str, SeparatorLineEdit->text().toLatin1().data(), 128);
 
   if(!strcmp(str, "tab"))
   {
@@ -1722,7 +1707,7 @@ int UI_ASCII2EDFapp::check_input(void)
 
         dot = 0;
 
-        strcpy(str, ((QLineEdit *)SignalsTablewidget->cellWidget(i, j))->text().toLatin1().data());
+        strlcpy(str, ((QLineEdit *)SignalsTablewidget->cellWidget(i, j))->text().toLatin1().data(), 128);
 
         len = strlen(str);
 
@@ -1878,9 +1863,9 @@ void UI_ASCII2EDFapp::helpbuttonpressed()
 #ifdef Q_OS_WIN32
   char p_path[MAX_PATH_LENGTH];
 
-  strcpy(p_path, "file:///");
-  strcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
-  strcat(p_path, "\\EDFbrowser\\manual.html#ASCII_to_EDF_converter");
+  strlcpy(p_path, "file:///", MAX_PATH_LENGTH);
+  strlcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcat(p_path, "\\EDFbrowser\\manual.html#ASCII_to_EDF_converter", MAX_PATH_LENGTH);
   QDesktopServices::openUrl(QUrl(p_path));
 #endif
 }

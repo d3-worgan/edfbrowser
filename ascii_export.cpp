@@ -152,15 +152,15 @@ void UI_AsciiExportwindow::ExportButtonClicked()
   path[0] = 0;
   if(mainwindow->recent_savedir[0]!=0)
   {
-    strcpy(path, mainwindow->recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, mainwindow->recent_savedir, MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
   len = strlen(path);
   get_filename_from_path(path + len, mainwindow->edfheaderlist[n]->filename, MAX_PATH_LENGTH - len);
   remove_extension_from_filename(path);
-  strcat(path, "_data.txt");
+  strlcat(path, "_data.txt", MAX_PATH_LENGTH);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Export to ASCII", QString::fromLocal8Bit(path), "Text files (*.txt *.TXT)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Export to ASCII", QString::fromLocal8Bit(path), "Text files (*.txt *.TXT)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -391,9 +391,9 @@ void UI_AsciiExportwindow::ExportButtonClicked()
 
 /***************** write header ******************************/
 
-  strcpy(ascii_path, path);
+  strlcpy(ascii_path, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(ascii_path);
-  strcat(ascii_path, "_header.txt");
+  strlcat(ascii_path, "_header.txt", MAX_PATH_LENGTH);
   outputfile = fopeno(ascii_path, "wb");
   if(outputfile==NULL)
   {
@@ -434,9 +434,9 @@ void UI_AsciiExportwindow::ExportButtonClicked()
 
 /***************** write signals ******************************/
 
-  strcpy(ascii_path, path);
+  strlcpy(ascii_path, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(ascii_path);
-  strcat(ascii_path, "_signals.txt");
+  strlcat(ascii_path, "_signals.txt", MAX_PATH_LENGTH);
   outputfile = fopeno(ascii_path, "wb");
   if(outputfile==NULL)
   {
@@ -485,9 +485,9 @@ void UI_AsciiExportwindow::ExportButtonClicked()
 
 /***************** open annotation file ******************************/
 
-  strcpy(ascii_path, path);
+  strlcpy(ascii_path, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(ascii_path);
-  strcat(ascii_path, "_annotations.txt");
+  strlcat(ascii_path, "_annotations.txt", MAX_PATH_LENGTH);
   annotationfile = fopeno(ascii_path, "wb");
   if(annotationfile==NULL)
   {
@@ -507,9 +507,9 @@ void UI_AsciiExportwindow::ExportButtonClicked()
 
 /***************** write data ******************************/
 
-  strcpy(ascii_path, path);
+  strlcpy(ascii_path, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(ascii_path);
-  strcat(ascii_path, "_data.txt");
+  strlcat(ascii_path, "_data.txt", MAX_PATH_LENGTH);
   outputfile = fopeno(ascii_path, "wb");
   if(outputfile==NULL)
   {
@@ -700,7 +700,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
             if(duration)
             {
               scratchpad[n] = 0;
-              strcpy(duration_in_txt, scratchpad);
+              strlcpy(duration_in_txt, scratchpad, max_tal_ln + 3);
               n = 0;
               duration = 0;
               scratchpad[0] = 0;
@@ -735,7 +735,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
                  else
                  {
                    scratchpad[n] = 0;
-                   strcpy(time_in_txt, scratchpad);
+                   strlcpy(time_in_txt, scratchpad, max_tal_ln + 3);
                    n = 0;
                    onset = 1;
                    duration = 0;
@@ -750,7 +750,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
             if(!onset)
             {
               scratchpad[n] = 0;
-              strcpy(time_in_txt, scratchpad);
+              strlcpy(time_in_txt, scratchpad, max_tal_ln + 3);
               onset = 1;
             }
             n = 0;

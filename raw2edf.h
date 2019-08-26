@@ -60,6 +60,7 @@
 #include "utils.h"
 #include "edflib.h"
 #include "global.h"
+#include "utils.h"
 
 struct raw2edf_var_struct{
         int sf;

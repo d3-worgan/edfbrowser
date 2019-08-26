@@ -318,7 +318,7 @@ void UI_headerEditorWindow::open_file()
     return;
   }
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Open file", QString::fromLocal8Bit(mainwindow->recent_opendir), "EDF/BDF files (*.edf *.EDF *.bdf *.BDF)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Open file", QString::fromLocal8Bit(mainwindow->recent_opendir), "EDF/BDF files (*.edf *.EDF *.bdf *.BDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -519,7 +519,7 @@ void UI_headerEditorWindow::read_header()
 
     strncpy(scratchpad, hdr + 8, 80);
     scratchpad[80] = 0;
-    strcat(scratchpad, "    ");
+    strlcat(scratchpad, "    ", 256);
 
     p = 0;
 
@@ -534,7 +534,7 @@ void UI_headerEditorWindow::read_header()
       {
         if(scratchpad[j] == '_')  scratchpad[j] = ' ';
       }
-      strcpy(str, scratchpad);
+      strlcpy(str, scratchpad, 256);
       remove_trailing_spaces(str);
       lineEdit3->setText(str);
     }
@@ -611,7 +611,7 @@ void UI_headerEditorWindow::read_header()
       {
         if(scratchpad[j] == '_')  scratchpad[j] = ' ';
       }
-      strcpy(str, scratchpad + p);
+      strlcpy(str, scratchpad + p, 256);
       remove_trailing_spaces(str);
       lineEdit4->setText(str);
     }
@@ -623,13 +623,13 @@ void UI_headerEditorWindow::read_header()
     p = ++i;
 
     scratchpad[80] = 0;
-    strcpy(str, scratchpad + p);
+    strlcpy(str, scratchpad + p, 256);
     remove_trailing_spaces(str);
     lineEdit5->setText(str);
 
-    strncpy(scratchpad, hdr + 88, 80);
+    strlcpy(scratchpad, hdr + 88, 256);
     scratchpad[80] = 0;
-    strcat(scratchpad, "    ");
+    strlcat(scratchpad, "    ", 256);
 
     p = 10;
 
@@ -687,7 +687,7 @@ void UI_headerEditorWindow::read_header()
       {
         if(scratchpad[j] == '_')  scratchpad[j] = ' ';
       }
-      strcpy(str, scratchpad + p);
+      strlcpy(str, scratchpad + p, 256);
       remove_trailing_spaces(str);
       lineEdit6->setText(str);
     }
@@ -709,7 +709,7 @@ void UI_headerEditorWindow::read_header()
       {
         if(scratchpad[j] == '_')  scratchpad[j] = ' ';
       }
-      strcpy(str, scratchpad + p);
+      strlcpy(str, scratchpad + p, 256);
       remove_trailing_spaces(str);
       lineEdit7->setText(str);
     }
@@ -731,7 +731,7 @@ void UI_headerEditorWindow::read_header()
       {
         if(scratchpad[j] == '_')  scratchpad[j] = ' ';
       }
-      strcpy(str, scratchpad + p);
+      strlcpy(str, scratchpad + p, 256);
       remove_trailing_spaces(str);
       lineEdit8->setText(str);
     }
@@ -743,7 +743,7 @@ void UI_headerEditorWindow::read_header()
     p = ++i;
 
     scratchpad[80] = 0;
-    strcpy(str, scratchpad + p);
+    strlcpy(str, scratchpad + p, 256);
     remove_trailing_spaces(str);
     lineEdit9->setText(str);
 
@@ -939,7 +939,7 @@ void UI_headerEditorWindow::save_hdr()
     len = strlen(lineEdit3->text().toLatin1().data());  // patient code
     if(len)
     {
-      strcpy(scratchpad, lineEdit3->text().toLatin1().data());
+      strlcpy(scratchpad, lineEdit3->text().toLatin1().data(), 256);
       latin1_to_ascii(scratchpad, len);
       remove_trailing_spaces(scratchpad);
       for(i=0; i<len; i++)
@@ -948,32 +948,32 @@ void UI_headerEditorWindow::save_hdr()
       }
       if(!strlen(scratchpad))
       {
-        strcpy(scratchpad, "X");
+        strlcpy(scratchpad, "X", 256);
       }
-      strcat(scratchpad, " ");
-      strcat(str, scratchpad);
+      strlcat(scratchpad, " ", 256);
+      strlcat(str, scratchpad, 256);
     }
     else
     {
-      strcat(str, "X ");
+      strlcat(str, "X ", 256);
     }
 
     if(comboBox1->currentIndex() == 0)  // gender
     {
-      strcat(str, "X ");
+      strlcat(str, "X ", 256);
     }
     if(comboBox1->currentIndex() == 1)
     {
-      strcat(str, "M ");
+      strlcat(str, "M ", 256);
     }
     if(comboBox1->currentIndex() == 2)
     {
-      strcat(str, "F ");
+      strlcat(str, "F ", 256);
     }
 
     if(checkBox1->checkState() == Qt::Checked)  // birthdate
     {
-      strcat(str, "X ");
+      strlcat(str, "X ", 256);
     }
     else
     {
@@ -981,39 +981,39 @@ void UI_headerEditorWindow::save_hdr()
 
       switch(i)
       {
-        case  1 : sprintf(scratchpad, "%02i-JAN-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        case  1 : snprintf(scratchpad, 256, "%02i-JAN-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
                   break;
-        case  2 : sprintf(scratchpad, "%02i-FEB-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        case  2 : snprintf(scratchpad, 256, "%02i-FEB-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
                   break;
-        case  3 : sprintf(scratchpad, "%02i-MAR-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        case  3 : snprintf(scratchpad, 256, "%02i-MAR-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
                   break;
-        case  4 : sprintf(scratchpad, "%02i-APR-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        case  4 : snprintf(scratchpad, 256, "%02i-APR-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
                   break;
-        case  5 : sprintf(scratchpad, "%02i-MAY-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        case  5 : snprintf(scratchpad, 256, "%02i-MAY-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
                   break;
-        case  6 : sprintf(scratchpad, "%02i-JUN-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        case  6 : snprintf(scratchpad, 256, "%02i-JUN-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
                   break;
-        case  7 : sprintf(scratchpad, "%02i-JUL-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        case  7 : snprintf(scratchpad, 256, "%02i-JUL-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
                   break;
-        case  8 : sprintf(scratchpad, "%02i-AUG-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        case  8 : snprintf(scratchpad, 256, "%02i-AUG-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
                   break;
-        case  9 : sprintf(scratchpad, "%02i-SEP-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        case  9 : snprintf(scratchpad, 256, "%02i-SEP-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
                   break;
-        case 10 : sprintf(scratchpad, "%02i-OCT-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        case 10 : snprintf(scratchpad, 256, "%02i-OCT-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
                   break;
-        case 11 : sprintf(scratchpad, "%02i-NOV-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        case 11 : snprintf(scratchpad, 256, "%02i-NOV-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
                   break;
-        case 12 : sprintf(scratchpad, "%02i-DEC-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        case 12 : snprintf(scratchpad, 256, "%02i-DEC-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
                   break;
       }
 
-      strcat(str, scratchpad);
+      strlcat(str, scratchpad, 256);
     }
 
     len = strlen(lineEdit4->text().toLatin1().data());  // patient name
     if(len)
     {
-      strcpy(scratchpad, lineEdit4->text().toLatin1().data());
+      strlcpy(scratchpad, lineEdit4->text().toLatin1().data(), 256);
       latin1_to_ascii(scratchpad, len);
       remove_trailing_spaces(scratchpad);
       for(i=0; i<len; i++)
@@ -1022,28 +1022,28 @@ void UI_headerEditorWindow::save_hdr()
       }
       if(!strlen(scratchpad))
       {
-        strcpy(scratchpad, "X");
+        strlcpy(scratchpad, "X", 256);
       }
-      strcat(scratchpad, " ");
-      strcat(str, scratchpad);
+      strlcat(scratchpad, " ", 256);
+      strlcat(str, scratchpad, 256);
     }
     else
     {
-      strcat(str, "X ");
+      strlcat(str, "X ", 256);
     }
 
     len = strlen(lineEdit5->text().toLatin1().data());  // additional info
     if(len)
     {
-      strcpy(scratchpad, lineEdit5->text().toLatin1().data());
+      strlcpy(scratchpad, lineEdit5->text().toLatin1().data(), 256);
       latin1_to_ascii(scratchpad, len);
       remove_trailing_spaces(scratchpad);
-      strcat(str, scratchpad);
+      strlcat(str, scratchpad, 256);
     }
 
     for(i=0; i<8; i++)
     {
-      strcat(str, "          ");
+      strlcat(str, "          ", 256);
     }
 
     str[80] = 0;
@@ -1053,49 +1053,49 @@ void UI_headerEditorWindow::save_hdr()
 
     if(has_startdate)
     {
-      strcpy(str, "Startdate ");
+      strlcpy(str, "Startdate ", 256);
 
       i = startTimeDate->date().month();
 
       switch(i)
       {
-        case  1 : sprintf(scratchpad, "%02i-JAN-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        case  1 : snprintf(scratchpad, 256, "%02i-JAN-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
                   break;
-        case  2 : sprintf(scratchpad, "%02i-FEB-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        case  2 : snprintf(scratchpad, 256, "%02i-FEB-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
                   break;
-        case  3 : sprintf(scratchpad, "%02i-MAR-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        case  3 : snprintf(scratchpad, 256, "%02i-MAR-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
                   break;
-        case  4 : sprintf(scratchpad, "%02i-APR-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        case  4 : snprintf(scratchpad, 256, "%02i-APR-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
                   break;
-        case  5 : sprintf(scratchpad, "%02i-MAY-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        case  5 : snprintf(scratchpad, 256, "%02i-MAY-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
                   break;
-        case  6 : sprintf(scratchpad, "%02i-JUN-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        case  6 : snprintf(scratchpad, 256, "%02i-JUN-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
                   break;
-        case  7 : sprintf(scratchpad, "%02i-JUL-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        case  7 : snprintf(scratchpad, 256, "%02i-JUL-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
                   break;
-        case  8 : sprintf(scratchpad, "%02i-AUG-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        case  8 : snprintf(scratchpad, 256, "%02i-AUG-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
                   break;
-        case  9 : sprintf(scratchpad, "%02i-SEP-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        case  9 : snprintf(scratchpad, 256, "%02i-SEP-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
                   break;
-        case 10 : sprintf(scratchpad, "%02i-OCT-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        case 10 : snprintf(scratchpad, 256, "%02i-OCT-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
                   break;
-        case 11 : sprintf(scratchpad, "%02i-NOV-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        case 11 : snprintf(scratchpad, 256, "%02i-NOV-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
                   break;
-        case 12 : sprintf(scratchpad, "%02i-DEC-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        case 12 : snprintf(scratchpad, 256, "%02i-DEC-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
                   break;
       }
 
-      strcat(str, scratchpad);
+      strlcat(str, scratchpad, 256);
     }
     else
     {
-      strcpy(str, "Startdate X ");
+      strlcpy(str, "Startdate X ", 256);
     }
 
     len = strlen(lineEdit6->text().toLatin1().data());  // administration code
     if(len)
     {
-      strcpy(scratchpad, lineEdit6->text().toLatin1().data());
+      strlcpy(scratchpad, lineEdit6->text().toLatin1().data(), 256);
       latin1_to_ascii(scratchpad, len);
       remove_trailing_spaces(scratchpad);
       for(i=0; i<len; i++)
@@ -1104,20 +1104,20 @@ void UI_headerEditorWindow::save_hdr()
       }
       if(!strlen(scratchpad))
       {
-        strcpy(scratchpad, "X");
+        strlcpy(scratchpad, "X", 256);
       }
-      strcat(scratchpad, " ");
-      strcat(str, scratchpad);
+      strlcat(scratchpad, " ", 256);
+      strlcat(str, scratchpad, 256);
     }
     else
     {
-      strcat(str, "X ");
+      strlcat(str, "X ", 256);
     }
 
     len = strlen(lineEdit7->text().toLatin1().data());  // technician
     if(len)
     {
-      strcpy(scratchpad, lineEdit7->text().toLatin1().data());
+      strlcpy(scratchpad, lineEdit7->text().toLatin1().data(), 256);
       latin1_to_ascii(scratchpad, len);
       remove_trailing_spaces(scratchpad);
       for(i=0; i<len; i++)
@@ -1126,20 +1126,20 @@ void UI_headerEditorWindow::save_hdr()
       }
       if(!strlen(scratchpad))
       {
-        strcpy(scratchpad, "X");
+        strlcpy(scratchpad, "X", 256);
       }
-      strcat(scratchpad, " ");
-      strcat(str, scratchpad);
+      strlcat(scratchpad, " ", 256);
+      strlcat(str, scratchpad, 256);
     }
     else
     {
-      strcat(str, "X ");
+      strlcat(str, "X ", 256);
     }
 
     len = strlen(lineEdit8->text().toLatin1().data());  // device
     if(len)
     {
-      strcpy(scratchpad, lineEdit8->text().toLatin1().data());
+      strlcpy(scratchpad, lineEdit8->text().toLatin1().data(), 256);
       latin1_to_ascii(scratchpad, len);
       remove_trailing_spaces(scratchpad);
       for(i=0; i<len; i++)
@@ -1148,28 +1148,28 @@ void UI_headerEditorWindow::save_hdr()
       }
       if(!strlen(scratchpad))
       {
-        strcpy(scratchpad, "X");
+        strlcpy(scratchpad, "X", 256);
       }
-      strcat(scratchpad, " ");
-      strcat(str, scratchpad);
+      strlcat(scratchpad, " ", 256);
+      strlcat(str, scratchpad, 256);
     }
     else
     {
-      strcat(str, "X ");
+      strlcat(str, "X ", 256);
     }
 
     len = strlen(lineEdit9->text().toLatin1().data());  // additional info
     if(len)
     {
-      strcpy(scratchpad, lineEdit9->text().toLatin1().data());
+      strlcpy(scratchpad, lineEdit9->text().toLatin1().data(), 256);
       latin1_to_ascii(scratchpad, len);
       remove_trailing_spaces(scratchpad);
-      strcat(str, scratchpad);
+      strlcat(str, scratchpad, 256);
     }
 
     for(i=0; i<8; i++)
     {
-      strcat(str, "          ");
+      strlcat(str, "          ", 256);
     }
 
     str[80] = 0;
@@ -1179,7 +1179,7 @@ void UI_headerEditorWindow::save_hdr()
   }
   else
   {
-    strcpy(scratchpad, lineEdit1->text().toLatin1().data());
+    strlcpy(scratchpad, lineEdit1->text().toLatin1().data(), 256);
     for(j=strlen(scratchpad); j<80; j++)
     {
       scratchpad[j] = ' ';
@@ -1189,7 +1189,7 @@ void UI_headerEditorWindow::save_hdr()
     fseeko(file, 8LL, SEEK_SET);
     fprintf(file, "%s", scratchpad);
 
-    strcpy(scratchpad, lineEdit2->text().toLatin1().data());
+    strlcpy(scratchpad, lineEdit2->text().toLatin1().data(), 256);
     for(j=strlen(scratchpad); j<80; j++)
     {
       scratchpad[j] = ' ';
@@ -1279,7 +1279,7 @@ void UI_headerEditorWindow::save_hdr()
     }
     else
     {
-      strcpy(scratchpad, ((QLineEdit *)(signallist->cellWidget(i, 0)))->text().toLatin1().data());
+      strlcpy(scratchpad, ((QLineEdit *)(signallist->cellWidget(i, 0)))->text().toLatin1().data(), 256);
       for(j=strlen(scratchpad); j<16; j++)
       {
         scratchpad[j] = ' ';
@@ -1289,7 +1289,7 @@ void UI_headerEditorWindow::save_hdr()
       fseeko(file, (long long)(256 + (i * 16)), SEEK_SET);
       fprintf(file, "%s", scratchpad);
 
-      strcpy(scratchpad, ((QLineEdit *)(signallist->cellWidget(i, 1)))->text().toLatin1().data());
+      strlcpy(scratchpad, ((QLineEdit *)(signallist->cellWidget(i, 1)))->text().toLatin1().data(), 256);
       for(j=strlen(scratchpad); j<8; j++)
       {
         scratchpad[j] = ' ';
@@ -1299,7 +1299,7 @@ void UI_headerEditorWindow::save_hdr()
       fseeko(file, (long long)(256 + (edfsignals * 96) + (i * 8)), SEEK_SET);
       fprintf(file, "%s", scratchpad);
 
-      strcpy(scratchpad, ((QLineEdit *)(signallist->cellWidget(i, 2)))->text().toLatin1().data());
+      strlcpy(scratchpad, ((QLineEdit *)(signallist->cellWidget(i, 2)))->text().toLatin1().data(), 256);
       for(j=strlen(scratchpad); j<80; j++)
       {
         scratchpad[j] = ' ';
@@ -1309,7 +1309,7 @@ void UI_headerEditorWindow::save_hdr()
       fseeko(file, (long long)(256 + (edfsignals * 136) + (i * 80)), SEEK_SET);
       fprintf(file, "%s", scratchpad);
 
-      strcpy(scratchpad, ((QLineEdit *)(signallist->cellWidget(i, 3)))->text().toLatin1().data());
+      strlcpy(scratchpad, ((QLineEdit *)(signallist->cellWidget(i, 3)))->text().toLatin1().data(), 256);
       for(j=strlen(scratchpad); j<80; j++)
       {
         scratchpad[j] = ' ';
@@ -1319,7 +1319,7 @@ void UI_headerEditorWindow::save_hdr()
       fseeko(file, (long long)(256 + (edfsignals * 16) + (i * 80)), SEEK_SET);
       fprintf(file, "%s", scratchpad);
 
-      strncpy(scratchpad, hdr + 256 + (edfsignals * 120) + (i * 8), 8);  // digital minimum
+      strlcpy(scratchpad, hdr + 256 + (edfsignals * 120) + (i * 8), 9);  // digital minimum
       hassign = 0;
       p = 0;
       dig_ok = 0;
@@ -1348,7 +1348,7 @@ void UI_headerEditorWindow::save_hdr()
         dig_ok++;
       }
 
-      strncpy(scratchpad2, hdr + 256 + (edfsignals * 128) + (i * 8), 8);  // digital maximum
+      strlcpy(scratchpad2, hdr + 256 + (edfsignals * 128) + (i * 8), 9);  // digital maximum
       hassign = 0;
       p = 0;
       if((scratchpad2[0] == '+') || (scratchpad2[0] == '-'))
@@ -1394,8 +1394,8 @@ void UI_headerEditorWindow::save_hdr()
             if(digmax < 32767)
             {
               digmax++;
-              sprintf(scratchpad, "%i", digmax);
-              strcat(scratchpad, "        ");
+              snprintf(scratchpad, 256, "%i", digmax);
+              strlcat(scratchpad, "        ", 256);
               scratchpad[8] = 0;
               fseeko(file, (long long)(256 + (edfsignals * 128) + (i * 8)), SEEK_SET);
               fprintf(file, "%s", scratchpad);
@@ -1403,8 +1403,8 @@ void UI_headerEditorWindow::save_hdr()
             else
             {
               digmin--;
-              sprintf(scratchpad, "%i", digmin);
-              strcat(scratchpad, "        ");
+              snprintf(scratchpad, 256, "%i", digmin);
+              strlcat(scratchpad, "        ", 256);
               scratchpad[8] = 0;
               fseeko(file, (long long)(256 + (edfsignals * 120) + (i * 8)), SEEK_SET);
               fprintf(file, "%s", scratchpad);
@@ -1415,8 +1415,8 @@ void UI_headerEditorWindow::save_hdr()
             if(digmax < 8388607)
             {
               digmax++;
-              sprintf(scratchpad, "%i", digmax);
-              strcat(scratchpad, "        ");
+              snprintf(scratchpad, 256, "%i", digmax);
+              strlcat(scratchpad, "        ", 256);
               scratchpad[8] = 0;
               fseeko(file, (long long)(256 + (edfsignals * 128) + (i * 8)), SEEK_SET);
               fprintf(file, "%s", scratchpad);
@@ -1424,8 +1424,8 @@ void UI_headerEditorWindow::save_hdr()
             else
             {
               digmin--;
-              sprintf(scratchpad, "%i", digmin);
-              strcat(scratchpad, "        ");
+              snprintf(scratchpad, 256, "%i", digmin);
+              strlcat(scratchpad, "        ", 256);
               scratchpad[8] = 0;
               fseeko(file, (long long)(256 + (edfsignals * 120) + (i * 8)), SEEK_SET);
               fprintf(file, "%s", scratchpad);
@@ -1434,7 +1434,7 @@ void UI_headerEditorWindow::save_hdr()
         }
       }
 
-      strncpy(scratchpad, hdr + 256 + (edfsignals * 104) + (i * 8), 8);  // physical minimum
+      strlcpy(scratchpad, hdr + 256 + (edfsignals * 104) + (i * 8), 9);  // physical minimum
       for(p=7; p>0; p--)
       {
         if((scratchpad[p] < '0') || (scratchpad[p] > '9'))
@@ -1720,10 +1720,10 @@ void UI_headerEditorWindow::helpbuttonpressed()
 #ifdef Q_OS_WIN32
   char p_path[MAX_PATH_LENGTH];
 
-  strcpy(p_path, "file:///");
-  strcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
-  strcat(p_path, "\\EDFbrowser\\manual.html#Header_editor");
-  QDesktopServices::openUrl(QUrl(p_path));
+  strlcpy(p_path, "file:///", MAX_PATH_LENGTH);
+  strlcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcat(p_path, "\\EDFbrowser\\manual.html#Header_editor");
+  QDesktopServices::openUrl(QUrl(p_path), MAX_PATH_LENGTH);
 #endif
 }
 

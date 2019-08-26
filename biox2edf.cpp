@@ -49,8 +49,6 @@
 
 UI_BIOX2EDFwindow::UI_BIOX2EDFwindow(char *recent_dir, char *save_dir)
 {
-  char txt_string[2048];
-
   recent_opendir = recent_dir;
   recent_savedir = save_dir;
 
@@ -75,8 +73,7 @@ UI_BIOX2EDFwindow::UI_BIOX2EDFwindow(char *recent_dir, char *save_dir)
   textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
-  sprintf(txt_string, "Biox CB-1305-C to EDF converter.\n");
-  textEdit1->append(txt_string);
+  textEdit1->append("Biox CB-1305-C to EDF converter.\n");
 
   QObject::connect(pushButton1, SIGNAL(clicked()), this, SLOT(SelectFileButton()));
   QObject::connect(pushButton2, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
@@ -109,7 +106,7 @@ void UI_BIOX2EDFwindow::SelectFileButton()
 
   pushButton1->setEnabled(false);
 
-  strcpy(data_filename, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "Biox CB-1305-C data files (*.dat *.DAT)").toLocal8Bit().data());
+  strlcpy(data_filename, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "Biox CB-1305-C data files (*.dat *.DAT)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(data_filename, ""))
   {
@@ -189,12 +186,12 @@ void UI_BIOX2EDFwindow::SelectFileButton()
   edf_filename[0] = 0;
   if(recent_savedir[0]!=0)
   {
-    strcpy(edf_filename, recent_savedir);
-    strcat(edf_filename, "/");
+    strlcpy(edf_filename, recent_savedir, MAX_PATH_LENGTH);
+    strlcat(edf_filename, "/", MAX_PATH_LENGTH);
   }
-  strcat(edf_filename, "biox_ecg.edf");
+  strlcat(edf_filename, "biox_ecg.edf", MAX_PATH_LENGTH);
 
-  strcpy(edf_filename, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(edf_filename), "EDF files (*.edf *.EDF)").toLocal8Bit().data());
+  strlcpy(edf_filename, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(edf_filename), "EDF files (*.edf *.EDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(edf_filename, ""))
   {
@@ -289,7 +286,7 @@ void UI_BIOX2EDFwindow::SelectFileButton()
 
   for(i=0; i<chns; i++)
   {
-    sprintf(str, "chan. %i", i + 1);
+    snprintf(str, 512, "chan. %i", i + 1);
 
     if(edf_set_label(hdl, i, str))
     {

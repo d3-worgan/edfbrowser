@@ -195,7 +195,7 @@ void UI_Annotationswindow::show_stats(bool)
   annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
   if(annot_list == NULL)
   {
-    sprintf(str, "Nullpointer returned: file: %s line %i", __FILE__, __LINE__);
+    snprintf(str, 4096, "Nullpointer returned: file: %s line %i", __FILE__, __LINE__);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
     messagewindow.exec();
     return;
@@ -204,7 +204,7 @@ void UI_Annotationswindow::show_stats(bool)
   annot = edfplus_annotation_get_item_visible_only(annot_list, list->currentRow());
   if(annot == NULL)
   {
-    sprintf(str, "Nullpointer returned: file: %s line %i", __FILE__, __LINE__);
+    snprintf(str, 4096, "Nullpointer returned: file: %s line %i", __FILE__, __LINE__);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
     messagewindow.exec();
     return;
@@ -402,7 +402,7 @@ void UI_Annotationswindow::filter_edited(const QString text)
     return;
   }
 
-  strcpy(filter_str, lineedit1->text().toUtf8().data());
+  strlcpy(filter_str, lineedit1->text().toUtf8().data(), 32);
 
   len = strlen(filter_str);
 
@@ -648,7 +648,7 @@ void UI_Annotationswindow::hide_same_annots(bool)
 
   annot = edfplus_annotation_get_item_visible_only(annot_list, n);
 
-  strcpy(str1, annot->annotation);
+  strlcpy(str1, annot->annotation, MAX_ANNOTATION_LEN);
 
   remove_leading_spaces(str1);
 
@@ -658,7 +658,7 @@ void UI_Annotationswindow::hide_same_annots(bool)
   {
     annot = edfplus_annotation_get_item(annot_list, i);
 
-    strcpy(str2, annot->annotation);
+    strlcpy(str2, annot->annotation, MAX_ANNOTATION_LEN);
 
     remove_leading_spaces(str2);
 
@@ -699,7 +699,7 @@ void UI_Annotationswindow::unhide_same_annots(bool)
 
   annot = edfplus_annotation_get_item_visible_only(annot_list, n);
 
-  strcpy(str1, annot->annotation);
+  strlcpy(str1, annot->annotation, MAX_ANNOTATION_LEN);
 
   remove_leading_spaces(str1);
 
@@ -709,7 +709,7 @@ void UI_Annotationswindow::unhide_same_annots(bool)
   {
     annot = edfplus_annotation_get_item(annot_list, i);
 
-    strcpy(str2, annot->annotation);
+    strlcpy(str2, annot->annotation, MAX_ANNOTATION_LEN);
 
     remove_leading_spaces(str2);
 
@@ -958,7 +958,7 @@ void UI_Annotationswindow::updateList(void)
 
     remove_trailing_zeros(str);
 
-    strcat(str, "\n\n");
+    strlcat(str, "\n\n", MAX_ANNOTATION_LEN + 32);
 
     string = QString::fromLatin1(str);
 

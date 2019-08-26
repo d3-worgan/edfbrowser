@@ -567,8 +567,8 @@ void UI_ImportAnnotationswindow::DCEventSignalChanged(int index)
     return;
   }
 
-  strcpy(scratchpad, " ");
-  strcat(scratchpad, mainwindow->signalcomp[index]->physdimension);
+  strlcpy(scratchpad, " ", 64);
+  strlcat(scratchpad, mainwindow->signalcomp[index]->physdimension, 64);
 
   DCEventTriggerLevelSpinBox->setSuffix(scratchpad);
 }
@@ -660,11 +660,11 @@ void UI_ImportAnnotationswindow::ImportButtonClicked()
   {
     if((input_format == ASCIICSV_FORMAT) && (mal_formatted_lines > 0))
     {
-      sprintf(str, "One or more lines were skipped because they were malformatted:\n"
+      snprintf(str, 4096, "One or more lines were skipped because they were malformatted:\n"
                    "line(s):");
       for(i=0; i<mal_formatted_lines; i++)
       {
-        sprintf(str + strlen(str), " %i,", mal_formatted_line_nrs[i]);
+        snprintf(str + strlen(str), 4096 - strlen(str)," %i,", mal_formatted_line_nrs[i]);
       }
       QMessageBox messagewindow(QMessageBox::Information, "Ready", str);
       messagewindow.exec();
@@ -754,7 +754,7 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
 
   sampletime = TIME_DIMENSION / SampleTimeSpinbox->value();
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Open MIT WFDB annotation file", QString::fromLocal8Bit(mainwindow->recent_opendir), "MIT annotation files (*.ari *.ecg *.trigger *.qrs *.atr *.apn *.st *.pwave)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Open MIT WFDB annotation file", QString::fromLocal8Bit(mainwindow->recent_opendir), "MIT annotation files (*.ari *.ecg *.trigger *.qrs *.atr *.apn *.st *.pwave)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -858,7 +858,7 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
 
             total_annots++;
 
-            strcpy(last_description_aux, aux_str);
+            strlcpy(last_description_aux, aux_str, 256);
           }
         }
       }
@@ -951,7 +951,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
     ignore_consecutive = 0;
   }
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Open XML file", QString::fromLocal8Bit(mainwindow->recent_opendir), "XML files (*.xml *.XML)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Open XML file", QString::fromLocal8Bit(mainwindow->recent_opendir), "XML files (*.xml *.XML)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -1087,7 +1087,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
         return 1;
       }
 
-      strncpy(duration, result, 16);
+      strlcpy(duration, result, 32);
       duration[15] = 0;
       if((!(is_number(duration))) && (duration[0] != '-'))
       {
@@ -1126,7 +1126,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
         latin1_to_utf8(annotation.annotation, MAX_ANNOTATION_LEN);
       }
       annotation.annotation[MAX_ANNOTATION_LEN] = 0;
-      strcpy(annotation.duration, duration);
+      strlcpy(annotation.duration, duration, 32);
       annotation.long_duration = edfplus_annotation_get_long_from_number(duration);
       if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
       {
@@ -1137,7 +1137,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
         return 1;
       }
 
-      strcpy(last_description, result);
+      strlcpy(last_description, result, 256);
     }
 
     xml_go_up(xml_hdl);
@@ -1194,14 +1194,14 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
   {
     manualdescription = 1;
 
-    strcpy(description, DescriptionLineEdit->text().toLatin1().data());
+    strlcpy(description, DescriptionLineEdit->text().toLatin1().data(), 256);
   }
   else
   {
     manualdescription = 0;
   }
 
-  strcpy(str, SeparatorLineEdit->text().toLatin1().data());
+  strlcpy(str, SeparatorLineEdit->text().toLatin1().data(), 4096);
 
   if(!strcmp(str, "tab"))
   {
@@ -1240,7 +1240,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
     separator[0] = str[0];
   }
 
-  strcpy(mainwindow->import_annotations_var->separator, str);
+  strlcpy(mainwindow->import_annotations_var->separator, str, 4);
 
   startline = DatastartSpinbox->value();
 
@@ -1296,7 +1296,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
   {
     mainwindow->import_annotations_var->manualdescription = 0;
   }
-  strcpy(mainwindow->import_annotations_var->description, DescriptionLineEdit->text().toLatin1().data());
+  strlcpy(mainwindow->import_annotations_var->description, DescriptionLineEdit->text().toLatin1().data(), 21);
 
   if(IgnoreConsecutiveCheckBox->checkState() == Qt::Checked)
   {
@@ -1309,7 +1309,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   mainwindow->import_annotations_var->ignoreconsecutive = ignore_consecutive;
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Open ASCII file", QString::fromLocal8Bit(mainwindow->recent_opendir), "ASCII files (*.txt *.TXT *.csv *.CSV)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Open ASCII file", QString::fromLocal8Bit(mainwindow->recent_opendir), "ASCII files (*.txt *.TXT *.csv *.CSV)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -1437,11 +1437,11 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
             remove_trailing_zeros(duration);
             if(duration[0] == '+')
             {
-              strcpy(annotation.duration, duration + 1);
+              strlcpy(annotation.duration, duration + 1, MAX_ANNOTATION_LEN_II + 1);
             }
             else
             {
-              strcpy(annotation.duration, duration);
+              strlcpy(annotation.duration, duration, MAX_ANNOTATION_LEN_II + 1);
             }
 
             annotation.long_duration = edfplus_annotation_get_long_from_number(duration);
@@ -1456,7 +1456,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
           return 1;
         }
 
-        strcpy(last_description, description);
+        strlcpy(last_description, description, 256);
       }
     }
     else
@@ -1493,7 +1493,7 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
   struct annotationblock *annotation;
 
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Open EDF+/BDF+ file", QString::fromLocal8Bit(mainwindow->recent_opendir), "EDF/BDF files (*.edf *.EDF *.bdf *.BDF )").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Open EDF+/BDF+ file", QString::fromLocal8Bit(mainwindow->recent_opendir), "EDF/BDF files (*.edf *.EDF *.bdf *.BDF )").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -1516,10 +1516,10 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
 
   str[0] = 0;
 
-  edfhdr = EDFfilechecker.check_edf_file(inputfile, str, 0);
+  edfhdr = EDFfilechecker.check_edf_file(inputfile, str, 2048, 0);
   if(edfhdr==NULL)
   {
-    strcat(str, "\n File is not a valid EDF or BDF file.");
+    strlcat(str, "\n File is not a valid EDF or BDF file.", 2048);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
     messagewindow.exec();
     fclose(inputfile);
@@ -1536,7 +1536,7 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
     return 1;
   }
 
-  strcpy(edfhdr->filename, path);
+  strlcpy(edfhdr->filename, path, MAX_PATH_LENGTH);
 
   edfhdr->file_hdl = inputfile;
 
@@ -1858,7 +1858,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
             {
               if(tmp_value < triggervalue)
               {
-                sprintf(scratchpad, "Trigger ID=%i", eventcode);
+                snprintf(scratchpad, 256, "Trigger ID=%i", eventcode);
 
                 if((!ignore_consecutive) || (strcmp(scratchpad, last_description)))
                 {
@@ -1879,7 +1879,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
 
                   annotations_found++;
 
-                  strcpy(last_description, scratchpad);
+                  strlcpy(last_description, scratchpad, 256);
                 }
               }
 
@@ -1931,9 +1931,9 @@ void UI_ImportAnnotationswindow::helpbuttonpressed()
 #ifdef Q_OS_WIN32
   char p_path[MAX_PATH_LENGTH];
 
-  strcpy(p_path, "file:///");
-  strcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
-  strcat(p_path, "\\EDFbrowser\\manual.html#Import_annotations");
+  strlcpy(p_path, "file:///", MAX_PATH_LENGTH);
+  strlcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcat(p_path, "\\EDFbrowser\\manual.html#Import_annotations", MAX_PATH_LENGTH);
   QDesktopServices::openUrl(QUrl(p_path));
 #endif
 }

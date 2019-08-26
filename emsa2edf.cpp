@@ -33,8 +33,6 @@
 
 UI_EMSA2EDFwindow::UI_EMSA2EDFwindow(char *recent_dir, char *save_dir)
 {
-  char txt_string[2048];
-
   recent_opendir = recent_dir;
   recent_savedir = save_dir;
 
@@ -59,8 +57,7 @@ UI_EMSA2EDFwindow::UI_EMSA2EDFwindow(char *recent_dir, char *save_dir)
   textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
-  sprintf(txt_string, "Emsa to EDF+ converter.\n");
-  textEdit1->append(txt_string);
+  textEdit1->append("Emsa to EDF+ converter.\n");
 
   QObject::connect(pushButton1, SIGNAL(clicked()), this, SLOT(SelectFileButton()));
   QObject::connect(pushButton2, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
@@ -131,7 +128,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
 
   pushButton1->setEnabled(false);
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "PLG files (*.plg *.PLG)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "PLG files (*.plg *.PLG)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -260,7 +257,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
     pushButton1->setEnabled(true);
     return;
   }
-  strcpy(time, scratchpad);
+  strlcpy(time, scratchpad, 9);
   if(time[2] != ':')  error = 1;
   if(time[5] != ':')  error = 1;
   time[2] = 0;
@@ -292,37 +289,37 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   i = atoi(date+3);
   switch(i)
   {
-    case  1 : strcpy(month, "JAN");
+    case  1 : strlcpy(month, "JAN", 4);
               break;
-    case  2 : strcpy(month, "FEB");
+    case  2 : strlcpy(month, "FEB", 4);
               break;
-    case  3 : strcpy(month, "MAR");
+    case  3 : strlcpy(month, "MAR", 4);
               break;
-    case  4 : strcpy(month, "APR");
+    case  4 : strlcpy(month, "APR", 4);
               break;
-    case  5 : strcpy(month, "MAY");
+    case  5 : strlcpy(month, "MAY", 4);
               break;
-    case  6 : strcpy(month, "JUN");
+    case  6 : strlcpy(month, "JUN", 4);
               break;
-    case  7 : strcpy(month, "JUL");
+    case  7 : strlcpy(month, "JUL", 4);
               break;
-    case  8 : strcpy(month, "AUG");
+    case  8 : strlcpy(month, "AUG", 4);
               break;
-    case  9 : strcpy(month, "SEP");
+    case  9 : strlcpy(month, "SEP", 4);
               break;
-    case 10 : strcpy(month, "OCT");
+    case 10 : strlcpy(month, "OCT", 4);
               break;
-    case 11 : strcpy(month, "NOV");
+    case 11 : strlcpy(month, "NOV", 4);
               break;
-    case 12 : strcpy(month, "DEC");
+    case 12 : strlcpy(month, "DEC", 4);
               break;
-    default : strcpy(month, "ERR");
+    default : strlcpy(month, "ERR", 4);
               break;
   }
 
   if(get_string(scratchpad, inputfile, 169, 32)!=8)
   {
-    strcpy(birthdate, "X");
+    strlcpy(birthdate, "X", 16);
   }
   else
   {
@@ -339,42 +336,42 @@ void UI_EMSA2EDFwindow::SelectFileButton()
     if((i<1)||(i>12))  error = 1;
     switch(i)
     {
-      case  1 : strcpy(b_month, "JAN");
+      case  1 : strlcpy(b_month, "JAN", 4);
                 break;
-      case  2 : strcpy(b_month, "FEB");
+      case  2 : strlcpy(b_month, "FEB", 4);
                 break;
-      case  3 : strcpy(b_month, "MAR");
+      case  3 : strlcpy(b_month, "MAR", 4);
                 break;
-      case  4 : strcpy(b_month, "APR");
+      case  4 : strlcpy(b_month, "APR", 4);
                 break;
-      case  5 : strcpy(b_month, "MAY");
+      case  5 : strlcpy(b_month, "MAY", 4);
                 break;
-      case  6 : strcpy(b_month, "JUN");
+      case  6 : strlcpy(b_month, "JUN", 4);
                 break;
-      case  7 : strcpy(b_month, "JUL");
+      case  7 : strlcpy(b_month, "JUL", 4);
                 break;
-      case  8 : strcpy(b_month, "AUG");
+      case  8 : strlcpy(b_month, "AUG", 4);
                 break;
-      case  9 : strcpy(b_month, "SEP");
+      case  9 : strlcpy(b_month, "SEP", 4);
                 break;
-      case 10 : strcpy(b_month, "OCT");
+      case 10 : strlcpy(b_month, "OCT", 4);
                 break;
-      case 11 : strcpy(b_month, "NOV");
+      case 11 : strlcpy(b_month, "NOV", 4);
                 break;
-      case 12 : strcpy(b_month, "DEC");
+      case 12 : strlcpy(b_month, "DEC", 4);
                 break;
-      default : strcpy(b_month, "ERR");
+      default : strlcpy(b_month, "ERR", 4);
                 break;
     }
     scratchpad[4] = 0;
     b_year = atoi(scratchpad);
     if(error)
     {
-      strcpy(birthdate, "X");
+      strlcpy(birthdate, "X", 16);
     }
     else
     {
-      sprintf(birthdate, "%02i-%s-%04i", b_date, b_month, b_year);
+      snprintf(birthdate, 16, "%02i-%s-%04i", b_date, b_month, b_year);
     }
   }
 
@@ -393,7 +390,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   }
   else
   {
-    strcpy(patientname, "X");
+    strlcpy(patientname, "X", 128);
   }
 
   fseeko(inputfile, 4LL, SEEK_SET);
@@ -425,9 +422,12 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   len = fgetc(inputfile);
   switch(len)
   {
-    case 'E' : strcpy(handedness, " lefthanded");  break;
-    case 'D' : strcpy(handedness, " righthanded");  break;
-    default  : handedness[0] = 0;  break;
+    case 'E' : strlcpy(handedness, " lefthanded", 16);
+               break;
+    case 'D' : strlcpy(handedness, " righthanded", 16);
+               break;
+    default  : strlcpy(handedness, "", 16);
+               break;
   }
 
   len = get_string(weight + 1, inputfile, 351, 6);
@@ -439,7 +439,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
 
     weight[0] = ' ';
 
-    strcat(weight, " Kg");
+    strlcat(weight, " Kg", 16);
   }
   else
   {
@@ -461,7 +461,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   }
   else
   {
-    strcpy(equipment, "X");
+    strlcpy(equipment, "X", 41);
   }
 
   if(samplefrequency%10)
@@ -488,13 +488,13 @@ void UI_EMSA2EDFwindow::SelectFileButton()
 /***************** read logfile *****************************************/
 
   remove_extension_from_filename(path);
-  strcat(path, ".LBK");
+  strlcat(path, ".LBK", MAX_PATH_LENGTH);
 
   logfile = fopeno(path, "rb");
   if(logfile==NULL)
   {
     remove_extension_from_filename(path);
-    strcat(path, ".lbk");
+    strlcat(path, ".lbk", MAX_PATH_LENGTH);
 
     logfile = fopeno(path, "rb");
   }
@@ -671,17 +671,17 @@ void UI_EMSA2EDFwindow::SelectFileButton()
 
   get_filename_from_path(outputfilename, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(outputfilename);
-  strcat(outputfilename, ".edf");
+  strlcat(outputfilename, ".edf", MAX_PATH_LENGTH);
 
   path[0] = 0;
   if(recent_savedir[0]!=0)
   {
-    strcpy(path, recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, recent_savedir, MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
-  strcat(path, outputfilename);
+  strlcat(path, outputfilename, MAX_PATH_LENGTH);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "EDF files (*.edf *.EDF)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "EDF files (*.edf *.EDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {

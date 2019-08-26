@@ -333,31 +333,31 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
   path[0] = 0;
   if(mainwindow->recent_savedir[0]!=0)
   {
-    strcpy(path, mainwindow->recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, mainwindow->recent_savedir, MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
   len = strlen(path);
   get_filename_from_path(path + len, mainwindow->edfheaderlist[n]->filename, MAX_PATH_LENGTH - len);
   remove_extension_from_filename(path);
   if((csv_format > 0) && (csv_format < 6))
   {
-    strcat(path, "_annotations.txt");
+    strlcat(path, "_annotations.txt", MAX_PATH_LENGTH);
 
-    strcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "Text files (*.txt *.TXT *.csv *.CSV)").toLocal8Bit().data());
+    strlcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "Text files (*.txt *.TXT *.csv *.CSV)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
 
   if(csv_format == 8)
   {
-    strcat(path, "_annotations.xml");
+    strlcat(path, "_annotations.xml", MAX_PATH_LENGTH);
 
-    strcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "XML files (*.xml *.XML)").toLocal8Bit().data());
+    strlcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "XML files (*.xml *.XML)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
 
   if(csv_format == 0)
   {
-    strcat(path, "_annotations.edf");
+    strlcat(path, "_annotations.edf", MAX_PATH_LENGTH);
 
-    strcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "EDF files (*.edf *.EDF)").toLocal8Bit().data());
+    strlcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "EDF files (*.edf *.EDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
 
   if(!strcmp(path, ""))
@@ -652,17 +652,17 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
     {
       switch(hdl)
       {
-        case EDFLIB_MALLOC_ERROR : strcpy(str, "EDFlib: malloc error");
+        case EDFLIB_MALLOC_ERROR : strlcpy(str, "EDFlib: malloc error", 1024);
                                   break;
-        case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY : strcpy(str, "EDFlib: no such file or directory");
+        case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY : strlcpy(str, "EDFlib: no such file or directory", 1024);
                                   break;
-        case EDFLIB_MAXFILES_REACHED : strcpy(str, "EDFlib: maximum files reached");
+        case EDFLIB_MAXFILES_REACHED : strlcpy(str, "EDFlib: maximum files reached", 1024);
                                   break;
-        case EDFLIB_FILE_ALREADY_OPENED : strcpy(str, "EDFlib: file already opened");
+        case EDFLIB_FILE_ALREADY_OPENED : strlcpy(str, "EDFlib: file already opened", 1024);
                                   break;
-        case EDFLIB_NUMBER_OF_SIGNALS_INVALID : strcpy(str, "EDFlib: number of signals is invalid");
+        case EDFLIB_NUMBER_OF_SIGNALS_INVALID : strlcpy(str, "EDFlib: number of signals is invalid", 1024);
                                   break;
-        default : strcpy(str, "EDFlib: unknown error");
+        default : strlcpy(str, "EDFlib: unknown error", 1024);
                                   break;
       }
 
@@ -734,7 +734,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       }
       else
       {
-        strcpy(str, annot->duration);
+        strlcpy(str, annot->duration, 1024);
 
         len = strlen(str);
 
@@ -773,7 +773,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
         if(!hasdot)
         {
-          strcat(str, "0000");
+          strlcat(str, "0000", 1024);
         }
 
         edfwrite_annotation_utf8(hdl, annot->onset / 1000LL, atoi(str), annot->annotation);

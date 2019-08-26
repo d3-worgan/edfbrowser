@@ -153,22 +153,22 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
 
               nk_trigger_sample_duration = data_record_duration / (long long)nk_triggers_smpls;
 
-              strcpy(nk_triggerlabel[0], "CAL mode");
-              strcpy(nk_triggerlabel[1], "RESET condition");
-              strcpy(nk_triggerlabel[2], "External mark");
-              strcpy(nk_triggerlabel[3], "Photo/HV mark");
-              strcpy(nk_triggerlabel[4], "Remote mark");
-              strcpy(nk_triggerlabel[5], "HV mark");
-              strcpy(nk_triggerlabel[6], "DC trigger 9");
-              strcpy(nk_triggerlabel[7], "DC trigger 10");
-              strcpy(nk_triggerlabel[8], "DC trigger 11");
-              strcpy(nk_triggerlabel[9], "DC trigger 12");
-              strcpy(nk_triggerlabel[10], "DC trigger 13");
-              strcpy(nk_triggerlabel[11], "DC trigger 14");
-              strcpy(nk_triggerlabel[12], "DC trigger 15");
-              strcpy(nk_triggerlabel[13], "DC trigger 16");
-              strcpy(nk_triggerlabel[14], "");
-              strcpy(nk_triggerlabel[15], "");
+              strlcpy(nk_triggerlabel[0], "CAL mode", 32);
+              strlcpy(nk_triggerlabel[1], "RESET condition", 32);
+              strlcpy(nk_triggerlabel[2], "External mark", 32);
+              strlcpy(nk_triggerlabel[3], "Photo/HV mark", 32);
+              strlcpy(nk_triggerlabel[4], "Remote mark", 32);
+              strlcpy(nk_triggerlabel[5], "HV mark", 32);
+              strlcpy(nk_triggerlabel[6], "DC trigger 9", 32);
+              strlcpy(nk_triggerlabel[7], "DC trigger 10", 32);
+              strlcpy(nk_triggerlabel[8], "DC trigger 11", 32);
+              strlcpy(nk_triggerlabel[9], "DC trigger 12", 32);
+              strlcpy(nk_triggerlabel[10], "DC trigger 13", 32);
+              strlcpy(nk_triggerlabel[11], "DC trigger 14", 32);
+              strlcpy(nk_triggerlabel[12], "DC trigger 15", 32);
+              strlcpy(nk_triggerlabel[13], "DC trigger 16", 32);
+              strlcpy(nk_triggerlabel[14], "", 32);
+              strlcpy(nk_triggerlabel[15], "", 32);
 
               nk_triggers_enabled = 1;
 
@@ -437,7 +437,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
 
                 if(duration)
                 {
-                  strcpy(annotblock.duration, duration_in_txt);
+                  strlcpy(annotblock.duration, duration_in_txt, MAX_ANNOTATION_LEN_II + 1);
 
                   annotblock.long_duration = get_long_time(duration_in_txt);
                 }
@@ -472,7 +472,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
             }
             onset = 1;
             n = 0;
-            strcpy(time_in_txt, scratchpad);
+            strlcpy(time_in_txt, scratchpad, max_tal_ln + 3);
             continue;
           }
 
@@ -548,7 +548,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
               annotblock.file_num = edf_hdr->file_num;
               annotblock.onset = ((long long)i * data_record_duration) + ((long long)k * nk_trigger_sample_duration);
               annotblock.onset += edf_hdr->starttime_offset;
-              strcpy(annotblock.annotation, nk_triggerlabel[j]);
+              strlcpy(annotblock.annotation, nk_triggerlabel[j], MAX_ANNOTATION_LEN_II + 1);
               annotblock.ident = (1 << ANNOT_ID_NK_TRIGGER);
 
               if(edfplus_annotation_add_item(&edf_hdr->annot_list, annotblock))

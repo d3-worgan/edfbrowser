@@ -33,6 +33,8 @@
 #include <string.h>
 #include <math.h>
 
+#include "utils.h"
+
 
 #ifdef __cplusplus
 extern "C" {

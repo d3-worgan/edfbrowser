@@ -31,6 +31,7 @@
 #ifndef DATE_TIME_STAMP_PARSER_INCLUDED
 #define DATE_TIME_STAMP_PARSER_INCLUDED
 
+#include "utils.h"
 
 #ifdef __cplusplus
 extern "C" {

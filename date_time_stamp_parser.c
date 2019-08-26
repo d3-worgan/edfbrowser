@@ -50,7 +50,7 @@ long long parse_date_time_stamp(const char *src)
 
   if(len < DATE_TIME_STAMP_LEN + 4)  goto ERROR;
 
-  strcpy(str, src);
+  strlcpy(str, src, 1024);
 
   len = strlen(str);
 

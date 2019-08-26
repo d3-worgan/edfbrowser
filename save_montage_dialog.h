@@ -53,6 +53,7 @@
 #include "mainwindow.h"
 #include "xml.h"
 #include "spectrum_dock.h"
+#include "utils.h"
 
 
 

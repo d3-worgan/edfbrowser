@@ -69,14 +69,14 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
 
   filtersettings_dialog->setMinimumSize(460, 255);
   filtersettings_dialog->setMaximumSize(460, 255);
-  strcpy(txtbuf, "Filter settings ");
+  strlcpy(txtbuf, "Filter settings ", 2048);
   if(signalcomp->alias[0] != 0)
   {
-    strcat(txtbuf, signalcomp->alias);
+    strlcat(txtbuf, signalcomp->alias, 2048);
   }
   else
   {
-    strcat(txtbuf, signalcomp->signallabel);
+    strlcat(txtbuf, signalcomp->signallabel, 2048);
   }
   filtersettings_dialog->setWindowTitle(txtbuf);
   filtersettings_dialog->setModal(true);
@@ -161,9 +161,7 @@ void AdjustFilterSettings::loadFilterSettings(void)
 {
   int i;
 
-  char txtbuf[2048];
-
-  txtbuf[0] = 0;
+  char txtbuf[2048]={""};
 
   filterbox->clear();
 
@@ -183,17 +181,17 @@ void AdjustFilterSettings::loadFilterSettings(void)
     {
       if(model == 0)
       {
-        sprintf(txtbuf, "HighPass Butterworth");
+        snprintf(txtbuf, 2048, "HighPass Butterworth");
       }
 
       if(model == 1)
       {
-        sprintf(txtbuf, "HighPass Chebyshev %.1fdB ripple", ripple);
+        snprintf(txtbuf, 2048, "HighPass Chebyshev %.1fdB ripple", ripple);
       }
 
       if(model == 2)
       {
-        sprintf(txtbuf, "HighPass Bessel");
+        snprintf(txtbuf, 2048, "HighPass Bessel");
       }
     }
 
@@ -201,40 +199,40 @@ void AdjustFilterSettings::loadFilterSettings(void)
     {
       if(model == 0)
       {
-        sprintf(txtbuf, "LowPass Butterworth");
+        snprintf(txtbuf, 2048, "LowPass Butterworth");
       }
 
       if(model == 1)
       {
-        sprintf(txtbuf, "LowPass Chebyshev %.1fdB ripple", ripple);
+        snprintf(txtbuf, 2048, "LowPass Chebyshev %.1fdB ripple", ripple);
       }
 
       if(model == 2)
       {
-        sprintf(txtbuf, "LowPass Bessel");
+        snprintf(txtbuf, 2048, "LowPass Bessel");
       }
     }
 
     if(type == 2)
     {
-      sprintf(txtbuf, "Notch (resonator)");
+      snprintf(txtbuf, 2048, "Notch (resonator)");
     }
 
     if(type == 3)
     {
       if(model == 0)
       {
-        sprintf(txtbuf, "BandPass Butterworth");
+        snprintf(txtbuf, 2048, "BandPass Butterworth");
       }
 
       if(model == 1)
       {
-        sprintf(txtbuf, "BandPass Chebyshev %.1fdB ripple", ripple);
+        snprintf(txtbuf, 2048, "BandPass Chebyshev %.1fdB ripple", ripple);
       }
 
       if(model == 2)
       {
-        sprintf(txtbuf, "BandPass Bessel");
+        snprintf(txtbuf, 2048, "BandPass Bessel");
       }
     }
 
@@ -242,25 +240,25 @@ void AdjustFilterSettings::loadFilterSettings(void)
     {
       if(model == 0)
       {
-        sprintf(txtbuf, "BandStop Butterworth");
+        snprintf(txtbuf, 2048, "BandStop Butterworth");
       }
 
       if(model == 1)
       {
-        sprintf(txtbuf, "BandStop Chebyshev %.1fdB ripple", ripple);
+        snprintf(txtbuf, 2048, "BandStop Chebyshev %.1fdB ripple", ripple);
       }
 
       if(model == 2)
       {
-        sprintf(txtbuf, "BandStop Bessel");
+        snprintf(txtbuf, 2048, "BandStop Bessel");
       }
     }
 
-    sprintf(txtbuf + strlen(txtbuf), " %f", frequency1);
+    snprintf(txtbuf + strlen(txtbuf), 2048, " %f", frequency1);
 
     remove_trailing_zeros(txtbuf);
 
-    strcat(txtbuf, " Hz");
+    strlcat(txtbuf, " Hz", 2048);
 
     filterbox->addItem(txtbuf);
 
@@ -275,12 +273,12 @@ void AdjustFilterSettings::loadFilterSettings(void)
 
     if(type == 0)
     {
-      sprintf(txtbuf, "Highpass Moving Average %i samples", size);
+      snprintf(txtbuf, 2048, "Highpass Moving Average %i samples", size);
     }
 
     if(type == 1)
     {
-      sprintf(txtbuf, "Lowpass Moving Average %i samples", size);
+      snprintf(txtbuf, 2048, "Lowpass Moving Average %i samples", size);
     }
 
     filterbox->addItem(txtbuf);
@@ -589,17 +587,17 @@ void AdjustFilterSettings::update_filter()
     {
       if(model == 0)
       {
-        sprintf(spec_str_1, "HpBu%i/%f", order, frequency1);
+        snprintf(spec_str_1, 256, "HpBu%i/%f", order, frequency1);
       }
 
       if(model == 1)
       {
-        sprintf(spec_str_1, "HpCh%i/%f/%f", order, ripple, frequency1);
+        snprintf(spec_str_1, 256, "HpCh%i/%f/%f", order, ripple, frequency1);
       }
 
       if(model == 2)
       {
-        sprintf(spec_str_1, "HpBe%i/%f", order, frequency1);
+        snprintf(spec_str_1, 256, "HpBe%i/%f", order, frequency1);
       }
     }
 
@@ -607,40 +605,40 @@ void AdjustFilterSettings::update_filter()
     {
       if(model == 0)
       {
-        sprintf(spec_str_1, "LpBu%i/%f", order, frequency1);
+        snprintf(spec_str_1, 256, "LpBu%i/%f", order, frequency1);
       }
 
       if(model == 1)
       {
-        sprintf(spec_str_1, "LpCh%i/%f/%f", order, ripple, frequency1);
+        snprintf(spec_str_1, 256, "LpCh%i/%f/%f", order, ripple, frequency1);
       }
 
       if(model == 2)
       {
-        sprintf(spec_str_1, "LpBe%i/%f", order, frequency1);
+        snprintf(spec_str_1, 256, "LpBe%i/%f", order, frequency1);
       }
     }
 
     if(type == 2)
     {
-      sprintf(spec_str_1, "BsRe/%i/%f", order, frequency1);
+      snprintf(spec_str_1, 256, "BsRe/%i/%f", order, frequency1);
     }
 
     if(type == 3)
     {
       if(model == 0)
       {
-        sprintf(spec_str_1, "BpBu%i/%f-%f", order, frequency1, frequency2);
+        snprintf(spec_str_1, 256, "BpBu%i/%f-%f", order, frequency1, frequency2);
       }
 
       if(model == 1)
       {
-        sprintf(spec_str_1, "BpCh%i/%f/%f-%f", order, ripple, frequency1, frequency2);
+        snprintf(spec_str_1, 256, "BpCh%i/%f/%f-%f", order, ripple, frequency1, frequency2);
       }
 
       if(model == 2)
       {
-        sprintf(spec_str_1, "BpBe%i/%f-%f", order, frequency1, frequency2);
+        snprintf(spec_str_1, 256, "BpBe%i/%f-%f", order, frequency1, frequency2);
       }
     }
 
@@ -648,21 +646,21 @@ void AdjustFilterSettings::update_filter()
     {
       if(model == 0)
       {
-        sprintf(spec_str_1, "BsBu%i/%f-%f", order, frequency1, frequency2);
+        snprintf(spec_str_1, 256, "BsBu%i/%f-%f", order, frequency1, frequency2);
       }
 
       if(model == 1)
       {
-        sprintf(spec_str_1, "BsCh%i/%f/%f-%f", order, ripple, frequency1, frequency2);
+        snprintf(spec_str_1, 256, "BsCh%i/%f/%f-%f", order, ripple, frequency1, frequency2);
       }
 
       if(model == 2)
       {
-        sprintf(spec_str_1, "BsBe%i/%f-%f", order, frequency1, frequency2);
+        snprintf(spec_str_1, 256, "BsBe%i/%f-%f", order, frequency1, frequency2);
       }
     }
 
-    strcpy(spec_str_2, spec_str_1);
+    strlcpy(spec_str_2, spec_str_1, 256);
 
     filter_spec = spec_str_2;
 

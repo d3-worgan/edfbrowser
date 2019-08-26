@@ -272,17 +272,17 @@ void UI_FilterDialog::updatecurve(void)
   {
     if(model == FILTERMODEL_BUTTERWORTH)
     {
-      sprintf(spec_str_1, "HpBu%i/%f", order, frequency);
+      snprintf(spec_str_1, 256, "HpBu%i/%f", order, frequency);
     }
 
     if(model == FILTERMODEL_CHEBYSHEV)
     {
-      sprintf(spec_str_1, "HpCh%i/%f/%f", order, ripple, frequency);
+      snprintf(spec_str_1, 256, "HpCh%i/%f/%f", order, ripple, frequency);
     }
 
     if(model == FILTERMODEL_BESSEL)
     {
-      sprintf(spec_str_1, "HpBe%i/%f", order, frequency);
+      snprintf(spec_str_1, 256, "HpBe%i/%f", order, frequency);
     }
   }
 
@@ -290,40 +290,40 @@ void UI_FilterDialog::updatecurve(void)
   {
     if(model == FILTERMODEL_BUTTERWORTH)
     {
-      sprintf(spec_str_1, "LpBu%i/%f", order, frequency);
+      snprintf(spec_str_1, 256, "LpBu%i/%f", order, frequency);
     }
 
     if(model == FILTERMODEL_CHEBYSHEV)
     {
-      sprintf(spec_str_1, "LpCh%i/%f/%f", order, ripple, frequency);
+      snprintf(spec_str_1, 256, "LpCh%i/%f/%f", order, ripple, frequency);
     }
 
     if(model == FILTERMODEL_BESSEL)
     {
-      sprintf(spec_str_1, "LpBe%i/%f", order, frequency);
+      snprintf(spec_str_1, 256, "LpBe%i/%f", order, frequency);
     }
   }
 
   if(type == FILTERTYPE_NOTCH)
   {
-    sprintf(spec_str_1, "BsRe/%i/%f", order, frequency);
+    snprintf(spec_str_1, 256, "BsRe/%i/%f", order, frequency);
   }
 
   if(type == FILTERTYPE_BANDPASS)
   {
     if(model == FILTERMODEL_BUTTERWORTH)
     {
-      sprintf(spec_str_1, "BpBu%i/%f-%f", order, frequency, frequency2);
+      snprintf(spec_str_1, 256, "BpBu%i/%f-%f", order, frequency, frequency2);
     }
 
     if(model == FILTERMODEL_CHEBYSHEV)
     {
-      sprintf(spec_str_1, "BpCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
+      snprintf(spec_str_1, 256, "BpCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
     }
 
     if(model == FILTERMODEL_BESSEL)
     {
-      sprintf(spec_str_1, "BpBe%i/%f-%f", order, frequency, frequency2);
+      snprintf(spec_str_1, 256, "BpBe%i/%f-%f", order, frequency, frequency2);
     }
   }
 
@@ -331,21 +331,21 @@ void UI_FilterDialog::updatecurve(void)
   {
     if(model == FILTERMODEL_BUTTERWORTH)
     {
-      sprintf(spec_str_1, "BsBu%i/%f-%f", order, frequency, frequency2);
+      snprintf(spec_str_1, 256, "BsBu%i/%f-%f", order, frequency, frequency2);
     }
 
     if(model == FILTERMODEL_CHEBYSHEV)
     {
-      sprintf(spec_str_1, "BsCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
+      snprintf(spec_str_1, 256, "BsCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
     }
 
     if(model == FILTERMODEL_BESSEL)
     {
-      sprintf(spec_str_1, "BsBe%i/%f-%f", order, frequency, frequency2);
+      snprintf(spec_str_1, 256, "BsBe%i/%f-%f", order, frequency, frequency2);
     }
   }
 
-  strcpy(spec_str_2, spec_str_1);
+  strlcpy(spec_str_2, spec_str_1, 256);
 
   filter_spec = spec_str_2;
 
@@ -489,7 +489,7 @@ void UI_FilterDialog::orderboxvaluechanged(int order)
 
   if(type == FILTERTYPE_NOTCH)
   {
-    sprintf(str,"%f Hz", freqbox->value() / orderbox->value());
+    snprintf(str, 256, "%f Hz", freqbox->value() / orderbox->value());
     remove_trailing_zeros(str);
     ordervaluelabel->setText(str);
     ordervaluelabel->setVisible(true);
@@ -567,7 +567,7 @@ void UI_FilterDialog::filtertypeboxvaluechanged(int type)
     orderbox->setValue(last_qfactor);
     orderbox->setVisible(true);
     orderlabel->setText("-3 dB bandwidth:");
-    sprintf(str,"%f Hz", freqbox->value() / orderbox->value());
+    snprintf(str, 256, "%f Hz", freqbox->value() / orderbox->value());
     remove_trailing_zeros(str);
     ordervaluelabel->setText(str);
     ordervaluelabel->setVisible(true);
@@ -706,7 +706,7 @@ void UI_FilterDialog::frequencyboxvaluechanged(double value)
 
   if(typebox->currentIndex() == FILTERTYPE_NOTCH)
   {
-    sprintf(str,"%f Hz", freqbox->value() / orderbox->value());
+    snprintf(str, 256, "%f Hz", freqbox->value() / orderbox->value());
     remove_trailing_zeros(str);
     ordervaluelabel->setText(str);
   }
@@ -821,17 +821,17 @@ void UI_FilterDialog::ApplyButtonClicked()
     {
       if(model == FILTERMODEL_BUTTERWORTH)
       {
-        sprintf(spec_str_1, "HpBu%i/%f", order, frequency);
+        snprintf(spec_str_1, 256, "HpBu%i/%f", order, frequency);
       }
 
       if(model == FILTERMODEL_CHEBYSHEV)
       {
-        sprintf(spec_str_1, "HpCh%i/%f/%f", order, ripple, frequency);
+        snprintf(spec_str_1, 256, "HpCh%i/%f/%f", order, ripple, frequency);
       }
 
       if(model == FILTERMODEL_BESSEL)
       {
-        sprintf(spec_str_1, "HpBe%i/%f", order, frequency);
+        snprintf(spec_str_1, 256, "HpBe%i/%f", order, frequency);
       }
     }
 
@@ -839,40 +839,40 @@ void UI_FilterDialog::ApplyButtonClicked()
     {
       if(model == FILTERMODEL_BUTTERWORTH)
       {
-        sprintf(spec_str_1, "LpBu%i/%f", order, frequency);
+        snprintf(spec_str_1, 256, "LpBu%i/%f", order, frequency);
       }
 
       if(model == FILTERMODEL_CHEBYSHEV)
       {
-        sprintf(spec_str_1, "LpCh%i/%f/%f", order, ripple, frequency);
+        snprintf(spec_str_1, 256, "LpCh%i/%f/%f", order, ripple, frequency);
       }
 
       if(model == FILTERMODEL_BESSEL)
       {
-        sprintf(spec_str_1, "LpBe%i/%f", order, frequency);
+        snprintf(spec_str_1, 256, "LpBe%i/%f", order, frequency);
       }
     }
 
     if(type == FILTERTYPE_NOTCH)
     {
-      sprintf(spec_str_1, "BsRe/%i/%f", order, frequency);
+      snprintf(spec_str_1, 256, "BsRe/%i/%f", order, frequency);
     }
 
     if(type == FILTERTYPE_BANDPASS)
     {
       if(model == FILTERMODEL_BUTTERWORTH)
       {
-        sprintf(spec_str_1, "BpBu%i/%f-%f", order, frequency, frequency2);
+        snprintf(spec_str_1, 256, "BpBu%i/%f-%f", order, frequency, frequency2);
       }
 
       if(model == FILTERMODEL_CHEBYSHEV)
       {
-        sprintf(spec_str_1, "BpCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
+        snprintf(spec_str_1, 256, "BpCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
       }
 
       if(model == FILTERMODEL_BESSEL)
       {
-        sprintf(spec_str_1, "BpBe%i/%f-%f", order, frequency, frequency2);
+        snprintf(spec_str_1, 256, "BpBe%i/%f-%f", order, frequency, frequency2);
       }
     }
 
@@ -880,17 +880,17 @@ void UI_FilterDialog::ApplyButtonClicked()
     {
       if(model == FILTERMODEL_BUTTERWORTH)
       {
-        sprintf(spec_str_1, "BsBu%i/%f-%f", order, frequency, frequency2);
+        snprintf(spec_str_1, 256, "BsBu%i/%f-%f", order, frequency, frequency2);
       }
 
       if(model == FILTERMODEL_CHEBYSHEV)
       {
-        sprintf(spec_str_1, "BsCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
+        snprintf(spec_str_1, 256, "BsCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
       }
 
       if(model == FILTERMODEL_BESSEL)
       {
-        sprintf(spec_str_1, "BsBe%i/%f-%f", order, frequency, frequency2);
+        snprintf(spec_str_1, 256, "BsBe%i/%f-%f", order, frequency, frequency2);
       }
     }
 
@@ -899,7 +899,7 @@ void UI_FilterDialog::ApplyButtonClicked()
       item = selectedlist.at(i);
       s = list->row(item);
 
-      strcpy(spec_str_2, spec_str_1);
+      strlcpy(spec_str_2, spec_str_1, 256);
 
       filter_spec = spec_str_2;
 

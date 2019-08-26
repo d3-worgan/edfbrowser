@@ -241,7 +241,7 @@ void UI_BDF2EDFwindow::SelectFileButton()
     pushButton5->setEnabled(false);
   }
 
-  strcpy(inputpath, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "BDF files (*.bdf *.BDF)").toLocal8Bit().data());
+  strlcpy(inputpath, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "BDF files (*.bdf *.BDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(inputpath, ""))
   {
@@ -263,7 +263,7 @@ void UI_BDF2EDFwindow::SelectFileButton()
 
   EDFfileCheck EDFfilechecker;
 
-  edfhdr = EDFfilechecker.check_edf_file(inputfile, txt_string);
+  edfhdr = EDFfilechecker.check_edf_file(inputfile, txt_string, 2048);
   if(edfhdr==NULL)
   {
     fclose(inputfile);
@@ -423,16 +423,16 @@ void UI_BDF2EDFwindow::StartConversion()
 
   if(recent_savedir[0]!=0)
   {
-    strcpy(outputpath, recent_savedir);
-    strcat(outputpath, "/");
+    strlcpy(outputpath, recent_savedir, MAX_PATH_LENGTH);
+    strlcat(outputpath, "/", MAX_PATH_LENGTH);
   }
   len = strlen(outputpath);
   get_filename_from_path(outputpath + len, inputpath, MAX_PATH_LENGTH - len);
   remove_extension_from_filename(outputpath);
 
-  strcat(outputpath, ".edf");
+  strlcat(outputpath, ".edf", MAX_PATH_LENGTH);
 
-  strcpy(outputpath, QFileDialog::getSaveFileName(0, "Select outputfile", QString::fromLocal8Bit(outputpath), "EDF files (*.edf *.EDF)").toLocal8Bit().data());
+  strlcpy(outputpath, QFileDialog::getSaveFileName(0, "Select outputfile", QString::fromLocal8Bit(outputpath), "EDF files (*.edf *.EDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(outputpath, ""))
   {
@@ -582,9 +582,9 @@ void UI_BDF2EDFwindow::StartConversion()
     {
       snprintf(scratchpad, 256, "HP:%f", ((QDoubleSpinBox *)(SignalsTablewidget->cellWidget(signalslist[i], 1)))->value());
       remove_trailing_zeros(scratchpad);
-      strcat(scratchpad, "Hz ");
+      strlcat(scratchpad, "Hz ", 256);
 
-      strcat(scratchpad, edfhdr->edfparam[signalslist[i]].prefilter);
+      strlcat(scratchpad, edfhdr->edfparam[signalslist[i]].prefilter, 256);
 
       for(j=strlen(scratchpad); j<200; j++)
       {

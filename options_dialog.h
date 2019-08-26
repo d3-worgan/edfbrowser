@@ -70,6 +70,7 @@
 #include "special_button.h"
 #include "signalcurve.h"
 #include "edf_annot_list.h"
+#include "utils.h"
 
 
 class UI_Mainwindow;

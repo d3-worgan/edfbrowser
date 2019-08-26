@@ -73,7 +73,7 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
 
   avg_period = avg__period;
 
-  strcpy(avg_annotation, annotation);
+  strlcpy(avg_annotation, annotation, MAX_ANNOTATION_LEN + 1);
 
   flywheel_value = 1000;
 
@@ -85,8 +85,8 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
   averager_curve_dialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
   averager_curve_dialog->setWindowIcon(QIcon(":/images/edf.png"));
 
-  strcpy(str, "Averaging  ");
-  strcat(str, signalcomp->signallabel);
+  strlcpy(str, "Averaging  ", 1024);
+  strlcat(str, signalcomp->signallabel, 1024);
   averager_curve_dialog->setWindowTitle(str);
 
   curve1 = new SignalCurve;
@@ -102,7 +102,7 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
   curve1->setMarker1Color(Qt::yellow);
   curve1->create_button("to EDF/BDF");
 
-  sprintf(str, "Averaging %i triggers \"%s\"", avg_cnt, avg_annotation);
+  snprintf(str, 1024, "Averaging %i triggers \"%s\"", avg_cnt, avg_annotation);
   curve1->setUpperLabel1(str);
 
   flywheel1 = new UI_Flywheel;
@@ -254,27 +254,27 @@ void UI_AverageCurveWindow::export_edf(void)
   path[0] = 0;
   if(mainwindow->recent_savedir[0]!=0)
   {
-    strcpy(path, mainwindow->recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, mainwindow->recent_savedir, MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
   get_filename_from_path(path + strlen(path), signalcomp->edfhdr->filename, 512);
   remove_extension_from_filename(path);
-  sprintf(path + strlen(path), " averaging %s %i triggers [%s]",
+  snprintf(path + strlen(path), MAX_PATH_LENGTH - strlen(path), " averaging %s %i triggers [%s]",
           signalcomp->signallabel,
           avg_cnt,
           avg_annotation);
 
   if(signalcomp->edfhdr->edf)
   {
-    strcat(path, ".edf");
+    strlcat(path, ".edf", MAX_PATH_LENGTH);
 
-    strcpy(path, QFileDialog::getSaveFileName(0, "Save as EDF", QString::fromLocal8Bit(path), "EDF files (*.edf *.EDF)").toLocal8Bit().data());
+    strlcpy(path, QFileDialog::getSaveFileName(0, "Save as EDF", QString::fromLocal8Bit(path), "EDF files (*.edf *.EDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
   else
   {
-    strcat(path, ".bdf");
+    strlcat(path, ".bdf", MAX_PATH_LENGTH);
 
-    strcpy(path, QFileDialog::getSaveFileName(0, "Save as BDF", QString::fromLocal8Bit(path), "BDF files (*.bdf *.BDF)").toLocal8Bit().data());
+    strlcpy(path, QFileDialog::getSaveFileName(0, "Save as BDF", QString::fromLocal8Bit(path), "BDF files (*.bdf *.BDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
 
   if(!strcmp(path, ""))
@@ -337,27 +337,27 @@ void UI_AverageCurveWindow::export_edf(void)
 
     if(type == 0)
     {
-      p += sprintf(str + p, "HP:%f", frequency);
+      p += snprintf(str + p, 4096 - p, "HP:%f", frequency);
     }
 
     if(type == 1)
     {
-      p += sprintf(str + p, "LP:%f", frequency);
+      p += snprintf(str + p, 4096 - p, "LP:%f", frequency);
     }
 
     if(type == 2)
     {
-      p += sprintf(str + p, "N:%f", frequency);
+      p += snprintf(str + p, 4096 - p, "N:%f", frequency);
     }
 
     if(type == 3)
     {
-      p += sprintf(str + p, "BP:%f", frequency);
+      p += snprintf(str + p, 4096 - p, "BP:%f", frequency);
     }
 
     if(type == 4)
     {
-      p += sprintf(str + p, "BS:%f", frequency);
+      p += snprintf(str + p, 4096 - p, "BS:%f", frequency);
     }
 
     for(k=(p-1); k>0; k--)
@@ -372,7 +372,7 @@ void UI_AverageCurveWindow::export_edf(void)
 
     if((type == 3) || (type == 4))
     {
-      p += sprintf(str + p, "-%f", frequency2);
+      p += snprintf(str + p, 4096 - p, "-%f", frequency2);
 
       for(k=(p-1); k>0; k--)
       {
@@ -383,7 +383,7 @@ void UI_AverageCurveWindow::export_edf(void)
       else  str[k+1] = 0;
     }
 
-    strcat(str, "Hz ");
+    strlcat(str, "Hz ", 4096);
 
     p = strlen(str);
 
@@ -394,12 +394,12 @@ void UI_AverageCurveWindow::export_edf(void)
   {
     if(signalcomp->ravg_filter_type[j] == 0)
     {
-      p += sprintf(str + p, "HP:%iSmpls ", signalcomp->ravg_filter[j]->size);
+      p += snprintf(str + p, 4096 - p, "HP:%iSmpls ", signalcomp->ravg_filter[j]->size);
     }
 
     if(signalcomp->ravg_filter_type[j] == 1)
     {
-      p += sprintf(str + p, "LP:%iSmpls ", signalcomp->ravg_filter[j]->size);
+      p += snprintf(str + p, 4096 - p, "LP:%iSmpls ", signalcomp->ravg_filter[j]->size);
     }
 
     p = strlen(str);
@@ -409,17 +409,17 @@ void UI_AverageCurveWindow::export_edf(void)
 
   if(signalcomp->fir_filter)
   {
-    p += sprintf(str + p, "FIR ");
+    p += snprintf(str + p, 4096 - p, "FIR ");
   }
 
-  strcat(str, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].prefilter);
+  strlcat(str, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].prefilter, 4096);
   edf_set_prefilter(edf_hdl, 0, str);
   edf_set_transducer(edf_hdl, 0, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].transducer);
 
   if((signalcomp->edfhdr->edfplus) || (signalcomp->edfhdr->bdfplus))
   {
     edf_set_patientname(edf_hdl, signalcomp->edfhdr->plus_patient_name);
-    sprintf(str, "%i triggers \"%s\" averaged. %s", avg_cnt, avg_annotation, signalcomp->edfhdr->plus_recording_additional);
+    snprintf(str, 4096, "%i triggers \"%s\" averaged. %s", avg_cnt, avg_annotation, signalcomp->edfhdr->plus_recording_additional);
     edf_set_recording_additional(edf_hdl, str);
     edf_set_patientcode(edf_hdl, signalcomp->edfhdr->plus_patientcode);
     if(signalcomp->edfhdr->plus_gender[0] == 'M')
@@ -438,7 +438,7 @@ void UI_AverageCurveWindow::export_edf(void)
   else
   {
     edf_set_patientname(edf_hdl, signalcomp->edfhdr->patient);
-    sprintf(str, "%i triggers \"%s\" averaged. %s", avg_cnt, avg_annotation, signalcomp->edfhdr->recording);
+    snprintf(str, 4096, "%i triggers \"%s\" averaged. %s", avg_cnt, avg_annotation, signalcomp->edfhdr->recording);
     edf_set_recording_additional(edf_hdl, str);
   }
 

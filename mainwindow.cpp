@@ -1557,7 +1557,7 @@ void UI_Mainwindow::open_new_file()
 
     EDFfileCheck EDFfilechecker;
 
-    edfhdr = EDFfilechecker.check_edf_file(newfile, str, live_stream_active);
+    edfhdr = EDFfilechecker.check_edf_file(newfile, str, 2048, live_stream_active);
     if(edfhdr==NULL)
     {
       fclose(newfile);

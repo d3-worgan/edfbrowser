@@ -142,7 +142,7 @@ UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, int annot_nr, int file_n
 
   annot_ptr = edfplus_annotation_get_item_visible_only(&mainwindow->edfheaderlist[file_num]->annot_list, annot_nr);
 
-  strcpy(annot_str, annot_ptr->annotation);
+  strlcpy(annot_str, annot_ptr->annotation, MAX_ANNOTATION_LEN + 1);
   remove_leading_spaces(annot_str);
   remove_trailing_spaces(annot_str);
 
@@ -198,7 +198,7 @@ void UI_AveragerWindow::startButtonClicked()
 
   if(itemCnt > MAXAVERAGECURVEDIALOGS)
   {
-    sprintf(scratchpad,"You can not select more than %i signals.", MAXAVERAGECURVEDIALOGS);
+    snprintf(scratchpad, 1024, "You can not select more than %i signals.", MAXAVERAGECURVEDIALOGS);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
     messagewindow.exec();
     return;
@@ -250,7 +250,7 @@ void UI_AveragerWindow::startButtonClicked()
     if(((annot_ptr->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) >= l_time1)
       && ((annot_ptr->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) <= l_time2))
     {
-      strcpy(str, annot_ptr->annotation);
+      strlcpy(str, annot_ptr->annotation, MAX_ANNOTATION_LEN + 1);
 
       remove_leading_spaces(str);
       remove_trailing_spaces(str);
@@ -345,7 +345,7 @@ void UI_AveragerWindow::startButtonClicked()
       if(((annot_ptr->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) >= l_time1)
         && ((annot_ptr->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) <= l_time2))
       {
-        strcpy(str, annot_ptr->annotation);
+        strlcpy(str, annot_ptr->annotation, MAX_ANNOTATION_LEN + 1);
 
         remove_leading_spaces(str);
         remove_trailing_spaces(str);
@@ -393,11 +393,12 @@ void UI_AveragerWindow::startButtonClicked()
 
     if(!avg_cnt)
     {
-      sprintf(scratchpad, "The selected annotation/trigger \"%s\" is not in the selected timewindow\n"
-                          "%i:%02i:%02i - %i:%02i:%02i",
-                          annot_str,
-                          timeEdit1->time().hour(), timeEdit1->time().minute(), timeEdit1->time().second(),
-                          timeEdit2->time().hour(), timeEdit2->time().minute(), timeEdit2->time().second());
+      snprintf(scratchpad, 1024,
+               "The selected annotation/trigger \"%s\" is not in the selected timewindow\n"
+               "%i:%02i:%02i - %i:%02i:%02i",
+               annot_str,
+               timeEdit1->time().hour(), timeEdit1->time().minute(), timeEdit1->time().second(),
+               timeEdit2->time().hour(), timeEdit2->time().minute(), timeEdit2->time().second());
 
       QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
       messagewindow.exec();

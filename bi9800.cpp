@@ -98,7 +98,7 @@ void UI_BI98002EDFwindow::SelectFileButton()
 
 
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "DCM files (*.dcm *.DCM)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "DCM files (*.dcm *.DCM)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -119,12 +119,12 @@ void UI_BI98002EDFwindow::SelectFileButton()
   }
 
   remove_extension_from_filename(path);
-  strcat(path, ".EVT");
+  strlcat(path, ".EVT", MAX_PATH_LENGTH);
   evtfile = fopeno(path, "rb");
   if(evtfile==NULL)
   {
     remove_extension_from_filename(path);
-    strcat(path, ".evt");
+    strlcat(path, ".evt", MAX_PATH_LENGTH);
     evtfile = fopeno(path, "rb");
     if(evtfile==NULL)
     {
@@ -306,14 +306,14 @@ void UI_BI98002EDFwindow::SelectFileButton()
   path[0] = 0;
   if(recent_savedir[0]!=0)
   {
-    strcpy(path, recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, recent_savedir, MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
-  strcat(path, outputfilename);
+  strlcat(path, outputfilename, MAX_PATH_LENGTH);
   remove_extension_from_filename(path);
-  strcat(path, ".edf");
+  strlcat(path, ".edf", MAX_PATH_LENGTH);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Select outputfile", QString::fromLocal8Bit(path), "EDF files (*.edf *.EDF)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Select outputfile", QString::fromLocal8Bit(path), "EDF files (*.edf *.EDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {

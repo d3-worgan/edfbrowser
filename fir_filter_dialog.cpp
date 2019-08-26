@@ -217,7 +217,7 @@ void UI_FIRFilterDialog::filebuttonpressed()
 
   FILE *inputfile;
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "All files (*)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -289,9 +289,9 @@ void UI_FIRFilterDialog::helpbuttonpressed()
 #ifdef Q_OS_WIN32
   char p_path[MAX_PATH_LENGTH];
 
-  strcpy(p_path, "file:///");
-  strcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
-  strcat(p_path, "\\EDFbrowser\\manual.html#Custom_fir_filter");
+  strlcpy(p_path, "file:///", MAX_PATH_LENGTH);
+  strlcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcat(p_path, "\\EDFbrowser\\manual.html#Custom_fir_filter", MAX_PATH_LENGTH);
   QDesktopServices::openUrl(QUrl(p_path));
 #endif
 }

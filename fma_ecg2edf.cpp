@@ -169,7 +169,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
     return;
   }
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "Text files (*.wav *.WAV)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "Text files (*.wav *.WAV)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -316,7 +316,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
 
   if(!dsf)
   {
-    sprintf(scratchpad, "error: samplefrequency is %iHz.\n"
+    snprintf(scratchpad, 512, "error: samplefrequency is %iHz.\n"
            "expected: 8000, 11025, 16000, 22050, 32000, 44100, 48000, 88200 or 96000 Hz\n", sf);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
     messagewindow.exec();
@@ -461,17 +461,17 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
 
   get_filename_from_path(outputfilename, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(outputfilename);
-  strcat(outputfilename, ".edf");
+  strlcat(outputfilename, ".edf", MAX_PATH_LENGTH);
 
   path[0] = 0;
   if(recent_savedir[0]!=0)
   {
-    strcpy(path, recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, recent_savedir, MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
-  strcat(path, outputfilename);
+  strlcat(path, outputfilename, MAX_PATH_LENGTH);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "EDF files (*.edf *.EDF)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "EDF files (*.edf *.EDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -788,9 +788,9 @@ void UI_FMaudio2EDFwindow::helpbuttonpressed()
 #ifdef Q_OS_WIN32
   char p_path[MAX_PATH_LENGTH];
 
-  strcpy(p_path, "file:///");
-  strcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
-  strcat(p_path, "\\EDFbrowser\\manual.html#FMaudio_to_EDF");
+  strlcpy(p_path, "file:///", MAX_PATH_LENGTH);
+  strlcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcat(p_path, "\\EDFbrowser\\manual.html#FMaudio_to_EDF", MAX_PATH_LENGTH);
   QDesktopServices::openUrl(QUrl(p_path));
 #endif
 }

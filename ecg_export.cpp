@@ -313,15 +313,15 @@ void UI_ECGExport::Export_RR_intervals()
     path[0] = 0;
     if(mainwindow->recent_savedir[0]!=0)
     {
-      strcpy(path, mainwindow->recent_savedir);
-      strcat(path, "/");
+      strlcpy(path, mainwindow->recent_savedir, MAX_PATH_LENGTH);
+      strlcat(path, "/", MAX_PATH_LENGTH);
     }
     len = strlen(path);
     get_filename_from_path(path + len, signalcomp->edfhdr->filename, MAX_PATH_LENGTH - len);
     remove_extension_from_filename(path);
-    strcat(path, "_RR_interval.txt");
+    strlcat(path, "_RR_interval.txt", MAX_PATH_LENGTH);
 
-    strcpy(path, QFileDialog::getSaveFileName(0, "Export RR-interval to ASCII", QString::fromLocal8Bit(path), "Text files (*.txt *.TXT)").toLocal8Bit().data());
+    strlcpy(path, QFileDialog::getSaveFileName(0, "Export RR-interval to ASCII", QString::fromLocal8Bit(path), "Text files (*.txt *.TXT)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
     if(!strcmp(path, ""))
     {
@@ -411,7 +411,7 @@ void UI_ECGExport::Export_RR_intervals()
 
   if(!import_as_annots)
   {
-    sprintf(str, "Done. The R-onsets and/or RR-intervals are exported to:\n\n%s", path);
+    snprintf(str, 2048, "Done. The R-onsets and/or RR-intervals are exported to:\n\n%s", path);
     QMessageBox messagewindow(QMessageBox::Information, "Ready", QString::fromLocal8Bit(str));
     messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
     messagewindow.exec();
@@ -450,9 +450,9 @@ void UI_ECGExport::helpbuttonpressed()
 #ifdef Q_OS_WIN32
   char p_path[MAX_PATH_LENGTH];
 
-  strcpy(p_path, "file:///");
-  strcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
-  strcat(p_path, "\\EDFbrowser\\manual.html#ECG_detection");
+  strlcpy(p_path, "file:///", MAX_PATH_LENGTH);
+  strlcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcat(p_path, "\\EDFbrowser\\manual.html#ECG_detection", MAX_PATH_LENGTH);
   QDesktopServices::openUrl(QUrl(p_path));
 #endif
 }

@@ -49,6 +49,7 @@
 
 #include "global.h"
 #include "mainwindow.h"
+#include "utils.h"
 
 
 class UI_Mainwindow;

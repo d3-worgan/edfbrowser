@@ -137,7 +137,7 @@ UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, struct annotationb
   CloseButton->setText("Close");
 
   sel_annot_ptr = annot;
-  strcpy(sel_annot_str, sel_annot_ptr->annotation);
+  strlcpy(sel_annot_str, sel_annot_ptr->annotation, MAX_ANNOTATION_LEN + 1);
   remove_leading_spaces(sel_annot_str);
   remove_trailing_spaces(sel_annot_str);
 
@@ -244,7 +244,7 @@ void UI_AnnotFilterWindow::apply_filter()
   {
     annot = edfplus_annotation_get_item(annot_list, i);
 
-    strcpy(annot_str, annot->annotation);
+    strlcpy(annot_str, annot->annotation, MAX_ANNOTATION_LEN + 1);
     remove_leading_spaces(sel_annot_str);
     remove_trailing_spaces(annot_str);
 

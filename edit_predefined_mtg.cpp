@@ -54,11 +54,11 @@ UI_edit_predefined_mtg_window::UI_edit_predefined_mtg_window(QWidget *w_parent)
   mtg_path_list->setSpacing(1);
   for(i=0; i < MAXPREDEFINEDMONTAGES; i++)
   {
-    sprintf(str, "F%i : ", i + 1);
+    snprintf(str, 1200, "F%i : ", i + 1);
 
     if(mainwindow->predefined_mtg_path[i][0] != 0)
     {
-      strcat(str, &(mainwindow->predefined_mtg_path[i][0]));
+      strlcat(str, &(mainwindow->predefined_mtg_path[i][0]), 1200);
     }
 
     new QListWidgetItem(str, mtg_path_list);
@@ -116,7 +116,7 @@ void UI_edit_predefined_mtg_window::adEntry()
 
   dialog->close();
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Select montage", QString::fromLocal8Bit(mainwindow->recent_montagedir), "MTG files (*.mtg *.MTG)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Select montage", QString::fromLocal8Bit(mainwindow->recent_montagedir), "MTG files (*.mtg *.MTG)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -125,12 +125,12 @@ void UI_edit_predefined_mtg_window::adEntry()
 
   get_directory_from_path(mainwindow->recent_montagedir, path, MAX_PATH_LENGTH);
 
-  strcpy(&(mainwindow->predefined_mtg_path[row][0]), path);
+  strlcpy(&(mainwindow->predefined_mtg_path[row][0]), path, MAX_PATH_LENGTH);
 
   mainwindow->load_predefined_mtg_act[row]->setText(QString::fromLocal8Bit(mainwindow->predefined_mtg_path[row]));
 
-  sprintf(str, "F%i : ", row + 1);
-  strcat(str, path);
+  snprintf(str, 1200, "F%i : ", row + 1);
+  strlcat(str, path, 1200);
 
   listItem->setText(str);
 }
@@ -145,7 +145,7 @@ void UI_edit_predefined_mtg_window::removeEntry()
   mainwindow->predefined_mtg_path[row][0] = 0;
   mainwindow->load_predefined_mtg_act[row]->setText("Empty");
 
-  sprintf(str, "F%i :", row + 1);
+  snprintf(str, 32, "F%i :", row + 1);
 
   listItem->setText(str);
 }
