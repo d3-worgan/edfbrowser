@@ -65,17 +65,17 @@ void remove_extension_from_filename(char *str)
 }
 
 
-  /* size is size of destination, returns length of filename */
-int get_filename_from_path(char *dest, const char *src, int size)
+  /* sz is size of destination, returns length of filename */
+int get_filename_from_path(char *dest, const char *src, int sz)
 {
   int i, len;
 
-  if(size<1)
+  if(sz<1)
   {
     return -1;
   }
 
-  if(size<2)
+  if(sz<2)
   {
     dest[0] = 0;
 
@@ -108,26 +108,26 @@ int get_filename_from_path(char *dest, const char *src, int size)
     return 0;
   }
 
-  strncpy(dest, src + i, size);
+  strncpy(dest, src + i, sz);
 
-  dest[size-1] = 0;
+  dest[sz-1] = 0;
 
   return strlen(dest);
 }
 
 
-  /* size is size of destination, returns length of directory */
+  /* sz is size of destination, returns length of directory */
   /* last character of destination is not a slash! */
-int get_directory_from_path(char *dest, const char *src, int size)
+int get_directory_from_path(char *dest, const char *src, int sz)
 {
   int i, len;
 
-  if(size<1)
+  if(sz<1)
   {
     return -1;
   }
 
-  if(size<2)
+  if(sz<2)
   {
     dest[0] = 0;
 
@@ -151,15 +151,15 @@ int get_directory_from_path(char *dest, const char *src, int size)
     }
   }
 
-  strncpy(dest, src, size);
+  strncpy(dest, src, sz);
 
-  if(i < size)
+  if(i < sz)
   {
     dest[i] = 0;
   }
   else
   {
-    dest[size-1] = 0;
+    dest[sz-1] = 0;
   }
 
   return strlen(dest);
@@ -2127,6 +2127,53 @@ char * strtok_r_e(char *str, const char *delim, char **saveptr)
 
   return NULL;
 }
+
+
+/* sz is size of destination, returns length of string in dest */
+int strlcat(char *dst, const char *src, int sz)
+{
+  int srclen,
+      dstlen;
+
+  dstlen = strlen(dst);
+
+  sz -= dstlen + 1;
+
+  if(!sz)  return dstlen;
+
+  srclen = strlen(src);
+
+  if(srclen > sz)  srclen = sz;
+
+  memcpy(dst + dstlen, src, srclen);
+
+  dst[dstlen + srclen] = 0;
+
+  return (dstlen + srclen);
+}
+
+
+/* sz is size of destination, returns length of string in dest */
+int strlcpy(char *dst, const char *src, int sz)
+{
+  int srclen;
+
+  sz--;
+
+  srclen = strlen(src);
+
+  if(srclen > sz)  srclen = sz;
+
+  memcpy(dst, src, srclen);
+
+  dst[srclen] = 0;
+
+  return srclen;
+}
+
+
+
+
 
 
 

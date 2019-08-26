@@ -103,6 +103,9 @@ int dblcmp(double, double);  /* returns 0 when equal */
 
 int base64_dec(const void *, void *, int);
 
+int strlcat(char *, const char *, int);
+int strlcpy(char *, const char *, int);
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
