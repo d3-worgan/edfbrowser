@@ -1027,9 +1027,9 @@ void ViewCurve::print_to_printer()
     }
     i++;
 
-    strcpy(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename + i);
-    strcat(path, "  ");
-    strcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->patient);
+    strlcpy(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename + i, MAX_PATH_LENGTH);
+    strlcat(path, "  ", MAX_PATH_LENGTH);
+    strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->patient, MAX_PATH_LENGTH);
     remove_trailing_spaces(path);
 
     utc_to_date_time(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->utc_starttime, &date_time);
@@ -1038,18 +1038,18 @@ void ViewCurve::print_to_printer()
     date_time.month_str[1] += 32;
     date_time.month_str[2] += 32;
 
-    sprintf(path + strlen(path), "  %i %s %i  ",
+    snprintf(path + strlen(path), MAX_PATH_LENGTH - strlen(path), "  %i %s %i  ",
             date_time.day,
             date_time.month_str,
             date_time.year);
 
     if(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->edfplus||mainwindow->edfheaderlist[mainwindow->sel_viewtime]->bdfplus)
     {
-      strcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording + 22);
+      strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording + 22, MAX_PATH_LENGTH);
     }
     else
     {
-      strcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording);
+      strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording, MAX_PATH_LENGTH);
     }
     remove_trailing_spaces(path);
 
@@ -1097,15 +1097,15 @@ void ViewCurve::print_to_postscript()
   path[0] = 0;
   if(mainwindow->recent_savedir[0]!=0)
   {
-    strcpy(path, mainwindow->recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, mainwindow->recent_savedir, MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
   len = strlen(path);
   get_filename_from_path(path + len, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename, MAX_PATH_LENGTH - len);
   remove_extension_from_filename(path);
-  strcat(path, ".ps");
+  strlcat(path, ".ps", MAX_PATH_LENGTH);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Print to PostScript", QString::fromLocal8Bit(path), "PostScript files (*.ps *.PS)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Print to PostScript", QString::fromLocal8Bit(path), "PostScript files (*.ps *.PS)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -1147,9 +1147,9 @@ void ViewCurve::print_to_postscript()
   }
   i++;
 
-  strcpy(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename + i);
-  strcat(path, "  ");
-  strcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->patient);
+  strlcpy(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename + i, MAX_PATH_LENGTH);
+  strlcat(path, "  ", MAX_PATH_LENGTH);
+  strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->patient, MAX_PATH_LENGTH);
   remove_trailing_spaces(path);
 
   utc_to_date_time(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->utc_starttime, &date_time);
@@ -1158,18 +1158,18 @@ void ViewCurve::print_to_postscript()
   date_time.month_str[1] += 32;
   date_time.month_str[2] += 32;
 
-  sprintf(path + strlen(path), "  %i %s %i  ",
+  snprintf(path + strlen(path), MAX_PATH_LENGTH - strlen(path), "  %i %s %i  ",
           date_time.day,
           date_time.month_str,
           date_time.year);
 
   if(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->edfplus||mainwindow->edfheaderlist[mainwindow->sel_viewtime]->bdfplus)
   {
-    strcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording + 22);
+    strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording + 22, MAX_PATH_LENGTH);
   }
   else
   {
-    strcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording);
+    strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording, MAX_PATH_LENGTH);
   }
 
   remove_trailing_spaces(path);
@@ -1217,15 +1217,15 @@ void ViewCurve::print_to_pdf()
   path[0] = 0;
   if(mainwindow->recent_savedir[0]!=0)
   {
-    strcpy(path, mainwindow->recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, mainwindow->recent_savedir, MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
   len = strlen(path);
   get_filename_from_path(path + len, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename, MAX_PATH_LENGTH - len);
   remove_extension_from_filename(path);
-  strcat(path, ".pdf");
+  strlcat(path, ".pdf", MAX_PATH_LENGTH);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Print to PDF", QString::fromLocal8Bit(path), "PDF files (*.pdf *.PDF)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Print to PDF", QString::fromLocal8Bit(path), "PDF files (*.pdf *.PDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -1270,9 +1270,9 @@ void ViewCurve::print_to_pdf()
   }
   i++;
 
-  strcpy(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename + i);
-  strcat(path, "  ");
-  strcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->patient);
+  strlcpy(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename + i, MAX_PATH_LENGTH);
+  strlcat(path, "  ", MAX_PATH_LENGTH);
+  strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->patient, MAX_PATH_LENGTH);
   remove_trailing_spaces(path);
 
   utc_to_date_time(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->utc_starttime, &date_time);
@@ -1281,18 +1281,18 @@ void ViewCurve::print_to_pdf()
   date_time.month_str[1] += 32;
   date_time.month_str[2] += 32;
 
-  sprintf(path + strlen(path), "  %i %s %i  ",
+  snprintf(path + strlen(path), MAX_PATH_LENGTH - strlen(path), "  %i %s %i  ",
           date_time.day,
           date_time.month_str,
           date_time.year);
 
   if(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->edfplus||mainwindow->edfheaderlist[mainwindow->sel_viewtime]->bdfplus)
   {
-    strcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording + 22);
+    strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording + 22, MAX_PATH_LENGTH);
   }
   else
   {
-    strcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording);
+    strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording, MAX_PATH_LENGTH);
   }
 
   remove_trailing_spaces(path);
@@ -1337,15 +1337,15 @@ void ViewCurve::print_to_image(int w_img, int h_img)
   path[0] = 0;
   if(mainwindow->recent_savedir[0]!=0)
   {
-    strcpy(path, mainwindow->recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, mainwindow->recent_savedir, MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
   len = strlen(path);
   get_filename_from_path(path + len, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename, MAX_PATH_LENGTH - len);
   remove_extension_from_filename(path);
-  strcat(path, ".png");
+  strlcat(path, ".png", MAX_PATH_LENGTH);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Print to Image", QString::fromLocal8Bit(path), "PNG (*.png *.PNG)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Print to Image", QString::fromLocal8Bit(path), "PNG (*.png *.PNG)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -1379,9 +1379,9 @@ void ViewCurve::print_to_image(int w_img, int h_img)
   }
   i++;
 
-  strcpy(str, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename + i);
-  strcat(str, "  ");
-  strcat(str, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->patient);
+  strlcpy(str, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename + i, 1024);
+  strlcat(str, "  ", 1024);
+  strlcat(str, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->patient, 1024);
   remove_trailing_spaces(str);
 
   utc_to_date_time(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->utc_starttime, &date_time);
@@ -1390,18 +1390,18 @@ void ViewCurve::print_to_image(int w_img, int h_img)
   date_time.month_str[1] += 32;
   date_time.month_str[2] += 32;
 
-  sprintf(str + strlen(str), "  %i %s %i  ",
+  snprintf(str + strlen(str), 1024 - strlen(str), "  %i %s %i  ",
           date_time.day,
           date_time.month_str,
           date_time.year);
 
   if(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->edfplus||mainwindow->edfheaderlist[mainwindow->sel_viewtime]->bdfplus)
   {
-    strcat(str, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording + 22);
+    strlcat(str, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording + 22, 1024);
   }
   else
   {
-    strcat(str, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording);
+    strlcat(str, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording, 1024);
   }
 
   len = strlen(str);
@@ -1873,22 +1873,22 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
       if(signalcomp[i]->voltpercm < 0.1)
       {
-        strcpy(str2, "%+.3f ");
+        strlcpy(str2, "%+.3f ", 32);
       }
       else if(signalcomp[i]->voltpercm < 1.0)
             {
-              strcpy(str2, "%+.2f ");
+              strlcpy(str2, "%+.2f ", 32);
             }
             else if(signalcomp[i]->voltpercm < 10.0)
                 {
-                  strcpy(str2, "%+.1f ");
+                  strlcpy(str2, "%+.1f ", 32);
                 }
                 else
                 {
-                  strcpy(str2, "%+.0f ");
+                  strlcpy(str2, "%+.0f ", 32);
                 }
 
-      strcat(str2, signalcomp[i]->physdimension);
+      strlcat(str2, signalcomp[i]->physdimension, 32);
 
       for(j=1; j<18; j++)
       {
@@ -2054,13 +2054,13 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
             if((annot->duration[0]) && (mainwindow->annotations_show_duration))
             {
-              strcat(string, " Duration: ");
+              strlcat(string, " Duration: ", 600);
 
-              strcat(string, annot->duration);
+              strlcat(string, annot->duration, 600);
 
               remove_trailing_zeros(string);
 
-              strcat(string, " sec");
+              strlcat(string, " sec", 600);
             }
 
             if(printing)
@@ -2129,7 +2129,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     }
     else
     {
-      sprintf(str4, "  "
+      snprintf(str4, 1024, "  "
               "Beats: %i  "
               "Mean RR: %.1fms  "
               "SDNN RR: %.1fms  "
@@ -3549,7 +3549,7 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
 {
   int i;
 
-  char str[32]={0,0,0,0,0,0};
+  char str[32]={0,0,0,0,0,0,0,0,0,0,0,0};
 
   signal_nr = signal_nr_intern;
 
@@ -3595,12 +3595,12 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   {
     ScaleBox->setValue(mainwindow->signalcomp[signal_nr]->voltpercm);
   }
-  strcpy(str, mainwindow->signalcomp[signal_nr]->physdimension);
+  strlcpy(str, mainwindow->signalcomp[signal_nr]->physdimension, 32);
   for(i=1; i<4; i++)
   {
     if(str[i]==' ')  break;
   }
-  strcpy(str + i, "/cm");
+  strlcpy(str + i, "/cm", 32 - i);
   ScaleBox->setSuffix(str);
 
   ScaleBox2 = new QDoubleSpinBox(sidemenu);
@@ -3770,12 +3770,12 @@ void ViewCurve::ECGdetectButton()
                       newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue,
                       mainwindow->powerlinefreq);
 
-  strcpy(newsignalcomp->signallabel_bu, newsignalcomp->signallabel);
+  strlcpy(newsignalcomp->signallabel_bu, newsignalcomp->signallabel, 512);
   newsignalcomp->signallabellen_bu = newsignalcomp->signallabellen;
-  strcpy(newsignalcomp->signallabel, "HR");
+  strlcpy(newsignalcomp->signallabel, "HR", 512);
   newsignalcomp->signallabellen = strlen(newsignalcomp->signallabel);
-  strcpy(newsignalcomp->physdimension_bu, newsignalcomp->physdimension);
-  strcpy(newsignalcomp->physdimension, "bpm");
+  strlcpy(newsignalcomp->physdimension_bu, newsignalcomp->physdimension, 9);
+  strlcpy(newsignalcomp->physdimension, "bpm", 9);
   newsignalcomp->alias[0] = 0;
   newsignalcomp->polarity = 1;
 
@@ -4119,9 +4119,9 @@ void ViewCurve::RemovefilterButton()
 
     mainwindow->signalcomp[signal_nr]->ecg_filter = NULL;
 
-    strcpy(mainwindow->signalcomp[signal_nr]->signallabel, mainwindow->signalcomp[signal_nr]->signallabel_bu);
+    strlcpy(mainwindow->signalcomp[signal_nr]->signallabel, mainwindow->signalcomp[signal_nr]->signallabel_bu, 512);
     mainwindow->signalcomp[signal_nr]->signallabellen = mainwindow->signalcomp[signal_nr]->signallabellen_bu;
-    strcpy(mainwindow->signalcomp[signal_nr]->physdimension, mainwindow->signalcomp[signal_nr]->physdimension_bu);
+    strlcpy(mainwindow->signalcomp[signal_nr]->physdimension, mainwindow->signalcomp[signal_nr]->physdimension_bu, 9);
   }
 
   if(mainwindow->signalcomp[signal_nr]->zratio_filter != NULL)
@@ -4130,9 +4130,9 @@ void ViewCurve::RemovefilterButton()
 
     mainwindow->signalcomp[signal_nr]->zratio_filter = NULL;
 
-    strcpy(mainwindow->signalcomp[signal_nr]->signallabel, mainwindow->signalcomp[signal_nr]->signallabel_bu);
+    strlcpy(mainwindow->signalcomp[signal_nr]->signallabel, mainwindow->signalcomp[signal_nr]->signallabel_bu, 512);
     mainwindow->signalcomp[signal_nr]->signallabellen = mainwindow->signalcomp[signal_nr]->signallabellen_bu;
-    strcpy(mainwindow->signalcomp[signal_nr]->physdimension, mainwindow->signalcomp[signal_nr]->physdimension_bu);
+    strlcpy(mainwindow->signalcomp[signal_nr]->physdimension, mainwindow->signalcomp[signal_nr]->physdimension_bu, 9);
   }
 
   for(j=0; j<mainwindow->signalcomp[signal_nr]->fidfilter_cnt; j++)
@@ -4290,9 +4290,9 @@ void ViewCurve::RemovesignalButton()
 
     mainwindow->signalcomp[signal_nr]->ecg_filter = NULL;
 
-    strcpy(mainwindow->signalcomp[signal_nr]->signallabel, mainwindow->signalcomp[signal_nr]->signallabel_bu);
+    strlcpy(mainwindow->signalcomp[signal_nr]->signallabel, mainwindow->signalcomp[signal_nr]->signallabel_bu, 512);
     mainwindow->signalcomp[signal_nr]->signallabellen = mainwindow->signalcomp[signal_nr]->signallabellen_bu;
-    strcpy(mainwindow->signalcomp[signal_nr]->physdimension, mainwindow->signalcomp[signal_nr]->physdimension_bu);
+    strlcpy(mainwindow->signalcomp[signal_nr]->physdimension, mainwindow->signalcomp[signal_nr]->physdimension_bu, 32);
   }
 
   if(mainwindow->signalcomp[signal_nr]->zratio_filter != NULL)
@@ -4301,9 +4301,9 @@ void ViewCurve::RemovesignalButton()
 
     mainwindow->signalcomp[signal_nr]->zratio_filter = NULL;
 
-    strcpy(mainwindow->signalcomp[signal_nr]->signallabel, mainwindow->signalcomp[signal_nr]->signallabel_bu);
+    strlcpy(mainwindow->signalcomp[signal_nr]->signallabel, mainwindow->signalcomp[signal_nr]->signallabel_bu, 512);
     mainwindow->signalcomp[signal_nr]->signallabellen = mainwindow->signalcomp[signal_nr]->signallabellen_bu;
-    strcpy(mainwindow->signalcomp[signal_nr]->physdimension, mainwindow->signalcomp[signal_nr]->physdimension_bu);
+    strlcpy(mainwindow->signalcomp[signal_nr]->physdimension, mainwindow->signalcomp[signal_nr]->physdimension_bu, 9);
   }
 
   for(j=0; j<mainwindow->signalcomp[signal_nr]->fidfilter_cnt; j++)

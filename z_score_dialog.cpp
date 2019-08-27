@@ -375,13 +375,13 @@ void UI_ZScoreWindow::addTraceButtonClicked()
     return;
   }
 
-  strcpy(signalcomp->signallabel_bu, signalcomp->signallabel);
+  strlcpy(signalcomp->signallabel_bu, signalcomp->signallabel, 512);
   signalcomp->signallabellen_bu = signalcomp->signallabellen;
-  strcpy(signalcomp->signallabel, "Z-ratio ");
-  strcat(signalcomp->signallabel, signalcomp->signallabel_bu);
+  strlcpy(signalcomp->signallabel, "Z-ratio ", 512);
+  strlcat(signalcomp->signallabel, signalcomp->signallabel_bu, 512);
   signalcomp->signallabellen = strlen(signalcomp->signallabel);
-  strcpy(signalcomp->physdimension_bu, signalcomp->physdimension);
-  strcpy(signalcomp->physdimension, "");
+  strlcpy(signalcomp->physdimension_bu, signalcomp->physdimension, 9);
+  strlcpy(signalcomp->physdimension, "", 9);
   signalcomp->polarity = -1;
 
   if(dblcmp(signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue, 0.0) < 0)
@@ -1075,11 +1075,11 @@ void UI_ZScoreWindow::get_annotationsButtonClicked()
         annotation.onset = i * zscore_page_len * 2LL * TIME_DIMENSION;
         if(awake)
         {
-          strcpy(annotation.annotation, "Wake");
+          strlcpy(annotation.annotation, "Wake", MAX_ANNOTATION_LEN_II + 1);
         }
         else
         {
-          strcpy(annotation.annotation, "Sleep");
+          strlcpy(annotation.annotation, "Sleep", MAX_ANNOTATION_LEN_II + 1);
         }
         edfplus_annotation_add_item(&mainwindow->edfheaderlist[filenum]->annot_list, annotation);
       }
@@ -1184,7 +1184,7 @@ void UI_ZScoreWindow::RadioButtonsClicked(bool)
 
 //    printf("b0 is %f    b1 is %f\n", b0, b1);
 
-    sprintf(str, "%s   coefficient: %f   intercept: %f", mainwindow->signalcomp[signalnr]->signallabel, b1, b0);
+    snprintf(str, 1024, "%s   coefficient: %f   intercept: %f", mainwindow->signalcomp[signalnr]->signallabel, b1, b0);
 
     curve1->drawCurve(zscore_epoch_buf, epoch_cntr, 1.0, -1.0);
     curve1->setH_RulerValues(0, epoch_cntr);
@@ -1249,7 +1249,7 @@ void UI_ZScoreWindow::RadioButtonsClicked(bool)
 
 //    printf("b0 is %f    b1 is %f\n", b0, b1);
 
-    sprintf(str, "%s   coefficient: %f   intercept: %f", mainwindow->signalcomp[signalnr]->signallabel, b1, b0);
+    snprintf(str, 1024, "%s   coefficient: %f   intercept: %f", mainwindow->signalcomp[signalnr]->signallabel, b1, b0);
 
     curve1->drawCurve(zscore_page_buf, zscore_pages, 1.0, -1.0);
     curve1->setH_RulerValues(0, zscore_pages);
@@ -1302,7 +1302,7 @@ void UI_ZScoreWindow::RadioButtonsClicked(bool)
 
     sleep_pct = (sleep_cnt * 100) / regression_samples;
 
-    sprintf(str, "%s    sleep: %i%%", mainwindow->signalcomp[signalnr]->signallabel, sleep_pct);
+    snprintf(str, 1024, "%s    sleep: %i%%", mainwindow->signalcomp[signalnr]->signallabel, sleep_pct);
 
     curve1->drawCurve(zscore_sleepstage_buf, zscore_pages, 3.0, -3.0);
     curve1->setH_RulerValues(0, zscore_pages);

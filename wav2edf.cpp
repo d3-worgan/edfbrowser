@@ -159,7 +159,7 @@ unsigned int fmt_chunk_offset,
     return;
   }
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "Text files (*.wav *.WAV)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "Text files (*.wav *.WAV)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -434,28 +434,28 @@ unsigned int fmt_chunk_offset,
   remove_extension_from_filename(outputfilename);
   if(resolution > 16)
   {
-    strcat(outputfilename, ".bdf");
+    strlcat(outputfilename, ".bdf", MAX_PATH_LENGTH);
   }
   else
   {
-    strcat(outputfilename, ".edf");
+    strlcat(outputfilename, ".edf", MAX_PATH_LENGTH);
   }
 
   path[0] = 0;
   if(recent_savedir[0]!=0)
   {
-    strcpy(path, recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, recent_savedir, MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
-  strcat(path, outputfilename);
+  strlcat(path, outputfilename, MAX_PATH_LENGTH);
 
   if(resolution > 16)
   {
-    strcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "BDF files (*.bdf *.BDF)").toLocal8Bit().data());
+    strlcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "BDF files (*.bdf *.BDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
   else
   {
-    strcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "EDF files (*.edf *.EDF)").toLocal8Bit().data());
+    strlcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "EDF files (*.edf *.EDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
 
   if(!strcmp(path, ""))
@@ -552,7 +552,7 @@ unsigned int fmt_chunk_offset,
 
   for(i=0; i<edfsignals; i++)
   {
-    sprintf(scratchpad, "channel %i", i + 1);
+    snprintf(scratchpad, 512, "channel %i", i + 1);
 
     edf_set_label(edf_hdl, i, scratchpad);
   }

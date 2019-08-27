@@ -42,7 +42,7 @@ UI_ViewMontagewindow::UI_ViewMontagewindow(QWidget *w_parent)
 
   if(mainwindow->recent_montagedir[0]!=0)
   {
-    strcpy(mtg_dir, mainwindow->recent_montagedir);
+    strlcpy(mtg_dir, mainwindow->recent_montagedir, MAX_PATH_LENGTH);
   }
 
   ViewMontageDialog = new QDialog;
@@ -138,7 +138,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
   struct xml_handle *xml_hdl;
 
 
-  strcpy(mtg_path, QFileDialog::getOpenFileName(0, "Choose a montage", QString::fromLocal8Bit(mtg_dir), "Montage files (*.mtg *.MTG)").toLocal8Bit().data());
+  strlcpy(mtg_path, QFileDialog::getOpenFileName(0, "Choose a montage", QString::fromLocal8Bit(mtg_dir), "Montage files (*.mtg *.MTG)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(mtg_path, ""))
   {
@@ -341,9 +341,9 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       }
       if(result[0] != 0)
       {
-        strcpy(composition_txt, "alias: ");
-        strcat(composition_txt, result);
-        strcat(composition_txt, "   ");
+        strlcpy(composition_txt, "alias: ", 2048);
+        strlcat(composition_txt, result, 2048);
+        strlcat(composition_txt, "   ", 2048);
       }
       xml_go_up(xml_hdl);
     }
@@ -389,13 +389,13 @@ void UI_ViewMontagewindow::SelectButtonClicked()
         xml_close(xml_hdl);
         return;
       }
-      strcpy(label, result);
+      strlcpy(label, result, 256);
 
-      sprintf(composition_txt + strlen(composition_txt), "%+ix %s", factor[signals_read], label);
+      snprintf(composition_txt + strlen(composition_txt), 2048 - strlen(composition_txt), "%+ix %s", factor[signals_read], label);
 
       remove_trailing_spaces(composition_txt);
 
-      strcat(composition_txt, "   ");
+      strlcat(composition_txt, "   ", 2048);
 
       xml_go_up(xml_hdl);
       xml_go_up(xml_hdl);
@@ -403,74 +403,74 @@ void UI_ViewMontagewindow::SelectButtonClicked()
 
     if(polarity == -1)
     {
-      strcat(composition_txt, "inverted: yes");
+      strlcat(composition_txt, "inverted: yes", 2048);
     }
 
     signalItem = new QStandardItem(composition_txt);
 
     parentItem->appendRow(signalItem);
 
-    sprintf(composition_txt, "amplitude: %f", voltpercm);
+    snprintf(composition_txt, 2048, "amplitude: %f", voltpercm);
 
     remove_trailing_zeros(composition_txt);
 
-    sprintf(composition_txt + strlen(composition_txt), "/cm  offset: %f", (double)screen_offset * mainwindow->pixelsizefactor * voltpercm);
+    snprintf(composition_txt + strlen(composition_txt), 2048 - strlen(composition_txt), "/cm  offset: %f", (double)screen_offset * mainwindow->pixelsizefactor * voltpercm);
 
     remove_trailing_zeros(composition_txt);
 
-    strcat(composition_txt, "  color: ");
+    strlcat(composition_txt, "  color: ", 2048);
 
     switch(color)
     {
-      case Qt::white       : strcat(composition_txt, "white");
+      case Qt::white       : strlcat(composition_txt, "white", 2048);
                              signalItem->setIcon(QIcon(":/images/white_icon_16x16"));
                              break;
-      case Qt::black       : strcat(composition_txt, "black");
+      case Qt::black       : strlcat(composition_txt, "black", 2048);
                              signalItem->setIcon(QIcon(":/images/black_icon_16x16"));
                              break;
-      case Qt::red         : strcat(composition_txt, "red");
+      case Qt::red         : strlcat(composition_txt, "red", 2048);
                              signalItem->setIcon(QIcon(":/images/red_icon_16x16"));
                              break;
-      case Qt::darkRed     : strcat(composition_txt, "dark red");
+      case Qt::darkRed     : strlcat(composition_txt, "dark red", 2048);
                              signalItem->setIcon(QIcon(":/images/darkred_icon_16x16"));
                              break;
-      case Qt::green       : strcat(composition_txt, "green");
+      case Qt::green       : strlcat(composition_txt, "green", 2048);
                              signalItem->setIcon(QIcon(":/images/green_icon_16x16"));
                              break;
-      case Qt::darkGreen   : strcat(composition_txt, "dark green");
+      case Qt::darkGreen   : strlcat(composition_txt, "dark green", 2048);
                              signalItem->setIcon(QIcon(":/images/darkgreen_icon_16x16"));
                              break;
-      case Qt::blue        : strcat(composition_txt, "blue");
+      case Qt::blue        : strlcat(composition_txt, "blue", 2048);
                              signalItem->setIcon(QIcon(":/images/blue_icon_16x16"));
                              break;
-      case Qt::darkBlue    : strcat(composition_txt, "dark blue");
+      case Qt::darkBlue    : strlcat(composition_txt, "dark blue", 2048);
                              signalItem->setIcon(QIcon(":/images/darkblue_icon_16x16"));
                              break;
-      case Qt::cyan        : strcat(composition_txt, "cyan");
+      case Qt::cyan        : strlcat(composition_txt, "cyan", 2048);
                              signalItem->setIcon(QIcon(":/images/cyan_icon_16x16"));
                              break;
-      case Qt::darkCyan    : strcat(composition_txt, "dark cyan");
+      case Qt::darkCyan    : strlcat(composition_txt, "dark cyan", 2048);
                              signalItem->setIcon(QIcon(":/images/darkcyan_icon_16x16"));
                              break;
-      case Qt::magenta     : strcat(composition_txt, "magenta");
+      case Qt::magenta     : strlcat(composition_txt, "magenta", 2048);
                              signalItem->setIcon(QIcon(":/images/magenta_icon_16x16"));
                              break;
-      case Qt::darkMagenta : strcat(composition_txt, "dark magenta");
+      case Qt::darkMagenta : strlcat(composition_txt, "dark magenta", 2048);
                              signalItem->setIcon(QIcon(":/images/darkmagenta_icon_16x16"));
                              break;
-      case Qt::yellow      : strcat(composition_txt, "yellow");
+      case Qt::yellow      : strlcat(composition_txt, "yellow", 2048);
                              signalItem->setIcon(QIcon(":/images/yellow_icon_16x16"));
                              break;
-      case Qt::darkYellow  : strcat(composition_txt, "dark yellow");
+      case Qt::darkYellow  : strlcat(composition_txt, "dark yellow", 2048);
                              signalItem->setIcon(QIcon(":/images/darkyellow_icon_16x16"));
                              break;
-      case Qt::gray        : strcat(composition_txt, "gray");
+      case Qt::gray        : strlcat(composition_txt, "gray", 2048);
                              signalItem->setIcon(QIcon(":/images/gray_icon_16x16"));
                              break;
-      case Qt::darkGray    : strcat(composition_txt, "dark gray");
+      case Qt::darkGray    : strlcat(composition_txt, "dark gray", 2048);
                              signalItem->setIcon(QIcon(":/images/darkgray_icon_16x16"));
                              break;
-      case Qt::lightGray   : strcat(composition_txt, "light gray");
+      case Qt::lightGray   : strlcat(composition_txt, "light gray", 2048);
                              signalItem->setIcon(QIcon(":/images/lightgray_icon_16x16"));
                              break;
     }
@@ -530,11 +530,11 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       if(holdoff < 10)  holdoff = 10;
       if(holdoff > 1000)  holdoff = 1000;
 
-      sprintf(composition_txt, "Spike: Velocity: %.8f", velocity);
+      snprintf(composition_txt, 2048, "Spike: Velocity: %.8f", velocity);
 
       remove_trailing_zeros(composition_txt);
 
-      sprintf(composition_txt + strlen(composition_txt), "  Hold-off: %i milli-Sec.", holdoff);
+      snprintf(composition_txt + strlen(composition_txt), 2048 - strlen(composition_txt), "  Hold-off: %i milli-Sec.", holdoff);
 
       filterItem->appendRow(new QStandardItem(composition_txt));
 
@@ -587,11 +587,11 @@ void UI_ViewMontagewindow::SelectButtonClicked()
 
       if(islpf)
       {
-        sprintf(composition_txt, "LPF: %fHz", frequency);
+        snprintf(composition_txt, 2048, "LPF: %fHz", frequency);
       }
       else
       {
-        sprintf(composition_txt, "HPF: %fHz", frequency);
+        snprintf(composition_txt, 2048, "HPF: %fHz", frequency);
       }
 
       remove_trailing_zeros(composition_txt);
@@ -647,12 +647,12 @@ void UI_ViewMontagewindow::SelectButtonClicked()
 
       if(type == 0)
       {
-        sprintf(composition_txt, "highpass moving average %ismpls", size);
+        snprintf(composition_txt, 2048, "highpass moving average %ismpls", size);
       }
 
       if(type == 1)
       {
-        sprintf(composition_txt, "lowpass moving average %ismpls", size);
+        snprintf(composition_txt, 2048, "lowpass moving average %ismpls", size);
       }
 
       filterItem->appendRow(new QStandardItem(composition_txt));
@@ -776,17 +776,17 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       {
         if(model == 0)
         {
-          sprintf(composition_txt, "highpass Butterworth %fHz %ith order  ", frequency, order);
+          snprintf(composition_txt, 2048, "highpass Butterworth %fHz %ith order  ", frequency, order);
         }
 
         if(model == 1)
         {
-          sprintf(composition_txt, "highpass Chebyshev %fHz %ith order %fdB ripple  ", frequency, order, ripple);
+          snprintf(composition_txt, 2048, "highpass Chebyshev %fHz %ith order %fdB ripple  ", frequency, order, ripple);
         }
 
         if(model == 2)
         {
-          sprintf(composition_txt, "highpass Bessel %fHz %ith order  ", frequency, order);
+          snprintf(composition_txt, 2048, "highpass Bessel %fHz %ith order  ", frequency, order);
         }
       }
 
@@ -794,40 +794,40 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       {
         if(model == 0)
         {
-          sprintf(composition_txt, "lowpass Butterworth %fHz %ith order  ", frequency, order);
+          snprintf(composition_txt, 2048, "lowpass Butterworth %fHz %ith order  ", frequency, order);
         }
 
         if(model == 1)
         {
-          sprintf(composition_txt, "lowpass Chebyshev %fHz %ith order %fdB ripple  ", frequency, order, ripple);
+          snprintf(composition_txt, 2048, "lowpass Chebyshev %fHz %ith order %fdB ripple  ", frequency, order, ripple);
         }
 
         if(model == 2)
         {
-          sprintf(composition_txt, "lowpass Bessel %fHz %ith order  ", frequency, order);
+          snprintf(composition_txt, 2048, "lowpass Bessel %fHz %ith order  ", frequency, order);
         }
       }
 
       if(type == 2)
       {
-        sprintf(composition_txt, "notch %fHz Q-factor %i  ", frequency, order);
+        snprintf(composition_txt, 2048, "notch %fHz Q-factor %i  ", frequency, order);
       }
 
       if(type == 3)
       {
         if(model == 0)
         {
-          sprintf(composition_txt, "bandpass Butterworth %f-%fHz %ith order  ", frequency, frequency2, order);
+          snprintf(composition_txt, 2048, "bandpass Butterworth %f-%fHz %ith order  ", frequency, frequency2, order);
         }
 
         if(model == 1)
         {
-          sprintf(composition_txt, "bandpass Chebyshev %f-%fHz %ith order %fdB ripple  ", frequency, frequency2, order, ripple);
+          snprintf(composition_txt, 2048, "bandpass Chebyshev %f-%fHz %ith order %fdB ripple  ", frequency, frequency2, order, ripple);
         }
 
         if(model == 2)
         {
-          sprintf(composition_txt, "bandpass Bessel %f-%fHz %ith order  ", frequency, frequency2, order);
+          snprintf(composition_txt, 2048, "bandpass Bessel %f-%fHz %ith order  ", frequency, frequency2, order);
         }
       }
 
@@ -835,17 +835,17 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       {
         if(model == 0)
         {
-          sprintf(composition_txt, "bandstop Butterworth %f-%fHz %ith order  ", frequency, frequency2, order);
+          snprintf(composition_txt, 2048, "bandstop Butterworth %f-%fHz %ith order  ", frequency, frequency2, order);
         }
 
         if(model == 1)
         {
-          sprintf(composition_txt, "bandstop Chebyshev %f-%fHz %ith order %fdB ripple  ", frequency, frequency2, order, ripple);
+          snprintf(composition_txt, 2048, "bandstop Chebyshev %f-%fHz %ith order %fdB ripple  ", frequency, frequency2, order, ripple);
         }
 
         if(model == 2)
         {
-          sprintf(composition_txt, "bandstop Bessel %f-%fHz %ith order  ", frequency, frequency2, order);
+          snprintf(composition_txt, 2048, "bandstop Bessel %f-%fHz %ith order  ", frequency, frequency2, order);
         }
       }
 
@@ -909,7 +909,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       }
       xml_go_up(xml_hdl);
 
-      sprintf(composition_txt, "Powerline interference removal: %iHz  threshold: %iuV", plif_powerlinefrequency, plif_linear_threshold);
+      snprintf(composition_txt, 2048, "Powerline interference removal: %iHz  threshold: %iuV", plif_powerlinefrequency, plif_linear_threshold);
 
       filterItem->appendRow(new QStandardItem(composition_txt));
 
@@ -920,7 +920,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
     {
       if(xml_goto_nth_element_inside(xml_hdl, "size", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 2048, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         xml_close(xml_hdl);
@@ -948,7 +948,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       {
         if(xml_goto_nth_element_inside(xml_hdl, "tap", r))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 2048, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           xml_close(xml_hdl);
@@ -966,7 +966,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
         xml_go_up(xml_hdl);
       }
 
-      sprintf(str2, "Custom FIR filter with %i taps", n_taps);
+      snprintf(str2, 2048, "Custom FIR filter with %i taps", n_taps);
 
       firfilterItem = new QStandardItem(str2);
 
@@ -974,7 +974,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
 
       for(r=0; r<n_taps; r++)
       {
-        sprintf(str2, " %.20f ", fir_vars[r]);
+        snprintf(str2, 2048, " %.20f ", fir_vars[r]);
 
         firfilterItem->appendRow(new QStandardItem(str2));
       }
@@ -1002,7 +1002,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
 
       if(type == 1)
       {
-        sprintf(composition_txt, "ECG heartrate detection");
+        snprintf(composition_txt, 2048, "ECG heartrate detection");
       }
 
       filterItem->appendRow(new QStandardItem(composition_txt));
@@ -1049,7 +1049,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
         }
         d_tmp = atof(result);
 
-        sprintf(composition_txt, "Z-ratio  cross-over frequency is %.1f", d_tmp);
+        snprintf(composition_txt, 2048, "Z-ratio  cross-over frequency is %.1f", d_tmp);
       }
 
       filterItem->appendRow(new QStandardItem(composition_txt));
@@ -1074,7 +1074,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
     }
     timescale = atof(result);
     timescale /= TIME_DIMENSION;
-    sprintf(composition_txt, "timescale: %f seconds", timescale);
+    snprintf(composition_txt, 2048, "timescale: %f seconds", timescale);
     remove_trailing_zeros(composition_txt);
     parentItem->appendRow(new QStandardItem(composition_txt));
   }
