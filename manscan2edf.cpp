@@ -68,8 +68,6 @@ struct segment_prop_struct{
 
 UI_MANSCAN2EDFwindow::UI_MANSCAN2EDFwindow(char *recent_dir, char *save_dir)
 {
-  char txt_string[2048];
-
   recent_opendir = recent_dir;
   recent_savedir = save_dir;
 
@@ -94,8 +92,7 @@ UI_MANSCAN2EDFwindow::UI_MANSCAN2EDFwindow(char *recent_dir, char *save_dir)
   textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
-  sprintf(txt_string, "Manscan MICROAMPS binary data to EDF+ converter.\n");
-  textEdit1->append(txt_string);
+  textEdit1->append("Manscan MICROAMPS binary data to EDF+ converter.\n");
 
   QObject::connect(pushButton1, SIGNAL(clicked()), this, SLOT(SelectFileButton()));
   QObject::connect(pushButton2, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
@@ -132,7 +129,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
   pushButton1->setEnabled(false);
 
-  strcpy(header_filename, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "MBI files (*.mbi *.MBI)").toLocal8Bit().data());
+  strlcpy(header_filename, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "MBI files (*.mbi *.MBI)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(header_filename, ""))
   {
@@ -310,22 +307,22 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       return;
     }
 
-    strcpy(edf_filename, header_filename);
+    strlcpy(edf_filename, header_filename, MAX_PATH_LENGTH);
 
     remove_extension_from_filename(edf_filename);
 
     if(n_segments > 1)
     {
-      sprintf(edf_filename + strlen(edf_filename), "_%02i", segment_cnt + 1);
+      snprintf(edf_filename + strlen(edf_filename), MAX_PATH_LENGTH - strlen(edf_filename), "_%02i", segment_cnt + 1);
     }
 
-    strcat(edf_filename, ".edf");
+    strlcat(edf_filename, ".edf", MAX_PATH_LENGTH);
 
     get_directory_from_path(data_filename, header_filename, MAX_PATH_LENGTH - 1);
 
-    strcat(data_filename, "/");
+    strlcat(data_filename, "/", MAX_PATH_LENGTH);
 
-    strcat(data_filename, segment_properties->datafilename);
+    strlcat(data_filename, segment_properties->datafilename, MAX_PATH_LENGTH);
 
     data_inputfile = fopeno(data_filename, "rb");
     if(data_inputfile==NULL)
@@ -446,13 +443,13 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       {
         d_tmp = 32767.0 / segment_properties->gain[i];
 
-        strcpy(scratchpad, "uV");
+        strlcpy(scratchpad, "uV", MAX_PATH_LENGTH);
       }
       else
       {
         d_tmp = 32.767 / segment_properties->gain[i];
 
-        strcpy(scratchpad, "mV");
+        strlcpy(scratchpad, "mV", MAX_PATH_LENGTH);
       }
 
       if(edf_set_physical_dimension(hdl, i, scratchpad))
@@ -549,7 +546,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
       remove_trailing_zeros(scratchpad);
 
-      strcat(scratchpad, "Hz ");
+      strlcat(scratchpad, "Hz ", MAX_PATH_LENGTH);
     }
 
     if(segment_properties->lpf > 0.0001)
@@ -558,7 +555,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
       remove_trailing_zeros(scratchpad);
 
-      strcat(scratchpad, "Hz ");
+      strlcat(scratchpad, "Hz ", MAX_PATH_LENGTH);
     }
 
     for(i=0; i<chns; i++)
@@ -834,7 +831,7 @@ int UI_MANSCAN2EDFwindow::get_events(struct segment_prop_struct *segprop, int se
             duration = ((long long)durationsmpl * 10000LL) / sf;
           }
 
-          strcpy(segprop->ev_description[ev_cnt], annot_descr);
+          strlcpy(segprop->ev_description[ev_cnt], annot_descr, MBIMAXEVLEN + 1);
 
           segprop->ev_onset[ev_cnt] = onset;
 
@@ -1771,7 +1768,7 @@ int UI_MANSCAN2EDFwindow::get_worddatafile(struct segment_prop_struct *segprop, 
 
   strncpy(scratchpad, linebuf + p, len);
   scratchpad[len] = 0;
-  strcpy(segprop->datafilename, scratchpad);  // field 4
+  strlcpy(segprop->datafilename, scratchpad, MAX_PATH_LENGTH);  // field 4
 
   return 0;
 }

@@ -296,21 +296,21 @@ void UI_Mainwindow::save_file()
 
   hdr = edfheaderlist[0];
 
-  strcpy(f_path, recent_savedir);
-  strcat(f_path, "/");
+  strlcpy(f_path, recent_savedir, MAX_PATH_LENGTH);
+  strlcat(f_path, "/", MAX_PATH_LENGTH);
   len = strlen(f_path);
   get_filename_from_path(f_path + len, hdr->filename, MAX_PATH_LENGTH - len);
   remove_extension_from_filename(f_path);
   if(hdr->edf)
   {
-    strcat(f_path, "_edited.edf");
+    strlcat(f_path, "_edited.edf", MAX_PATH_LENGTH);
   }
   else
   {
-    strcat(f_path, "_edited.bdf");
+    strlcat(f_path, "_edited.bdf", MAX_PATH_LENGTH);
   }
 
-  strcpy(f_path, QFileDialog::getSaveFileName(this, "Save file", QString::fromLocal8Bit(f_path), "EDF/BDF files (*.edf *.EDF *.bdf *.BDF *.rec *.REC)").toLocal8Bit().data());
+  strlcpy(f_path, QFileDialog::getSaveFileName(this, "Save file", QString::fromLocal8Bit(f_path), "EDF/BDF files (*.edf *.EDF *.bdf *.BDF *.rec *.REC)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(f_path, ""))
   {
@@ -1429,7 +1429,7 @@ void UI_Mainwindow::open_new_file()
 
   if(cmdlineargument == 0)
   {
-    strcpy(path, QFileDialog::getOpenFileName(this, "Open file", QString::fromLocal8Bit(recent_opendir), "EDF/BDF files (*.edf *.EDF *.bdf *.BDF *.rec *.REC)").toLocal8Bit().data());
+    strlcpy(path, QFileDialog::getOpenFileName(this, "Open file", QString::fromLocal8Bit(recent_opendir), "EDF/BDF files (*.edf *.EDF *.bdf *.BDF *.rec *.REC)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
     if(!strcmp(path, ""))
     {
@@ -1456,7 +1456,7 @@ void UI_Mainwindow::open_new_file()
 
       if(cmdlineargument != 2)
       {
-        strcpy(montagepath, &recent_file_mtg_path[i][0]);
+        strlcpy(montagepath, &recent_file_mtg_path[i][0], MAX_PATH_LENGTH);
       }
 
       break;
@@ -1467,21 +1467,21 @@ void UI_Mainwindow::open_new_file()
   {
     for(i=position; i>0; i--)
     {
-      strcpy(&recent_file_path[i][0], &recent_file_path[i-1][0]);
-      strcpy(&recent_file_mtg_path[i][0], &recent_file_mtg_path[i-1][0]);
+      strlcpy(&recent_file_path[i][0], &recent_file_path[i-1][0], MAX_PATH_LENGTH);
+      strlcpy(&recent_file_mtg_path[i][0], &recent_file_mtg_path[i-1][0], MAX_PATH_LENGTH);
     }
   }
   else
   {
     for(i=MAX_RECENTFILES-1; i>0; i--)
     {
-      strcpy(&recent_file_path[i][0], &recent_file_path[i-1][0]);
-      strcpy(&recent_file_mtg_path[i][0], &recent_file_mtg_path[i-1][0]);
+      strlcpy(&recent_file_path[i][0], &recent_file_path[i-1][0], MAX_PATH_LENGTH);
+      strlcpy(&recent_file_mtg_path[i][0], &recent_file_mtg_path[i-1][0], MAX_PATH_LENGTH);
     }
   }
 
-  strcpy(&recent_file_path[0][0], path);
-  strcpy(&recent_file_mtg_path[0][0], montagepath);
+  strlcpy(&recent_file_path[0][0], path, MAX_PATH_LENGTH);
+  strlcpy(&recent_file_mtg_path[0][0], montagepath, MAX_PATH_LENGTH);
 
   recent_filesmenu->clear();
 
@@ -1540,7 +1540,7 @@ void UI_Mainwindow::open_new_file()
       return;
     }
 
-    strcpy(recent_opendir, path);
+    strlcpy(recent_opendir, path, MAX_PATH_LENGTH);
 
     if(len)
     {
@@ -1562,7 +1562,7 @@ void UI_Mainwindow::open_new_file()
     {
       fclose(newfile);
 
-      strcat(str, "\n File is not a valid EDF or BDF file.");
+      strlcat(str, "\n File is not a valid EDF or BDF file.", 2048);
 
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
       messagewindow.exec();
@@ -1598,7 +1598,7 @@ void UI_Mainwindow::open_new_file()
       return;
     }
 
-    strcpy(edfhdr->filename, path);
+    strlcpy(edfhdr->filename, path, MAX_PATH_LENGTH);
 
     edfhdr->file_hdl = newfile;
 
@@ -1703,7 +1703,7 @@ void UI_Mainwindow::open_new_file()
   if((montagepath[0]!=0)&&(cmdlineargument==2))
   {
     UI_LoadMontagewindow load_mtg(this, montagepath);
-    strcpy(&recent_file_mtg_path[0][0], montagepath);
+    strlcpy(&recent_file_mtg_path[0][0], montagepath, MAX_PATH_LENGTH);
   }
   else
   {
@@ -1764,7 +1764,7 @@ void UI_Mainwindow::setMainwindowTitle(struct edfhdrblock *edfhdr)
 {
   int i, len;
 
-  char str[MAX_PATH_LENGTH + 64];
+  char str[MAX_PATH_LENGTH + 64]={""};
 
   struct date_time_struct date_time;
 
@@ -1775,8 +1775,6 @@ void UI_Mainwindow::setMainwindowTitle(struct edfhdrblock *edfhdr)
 
     return;
   }
-
-  str[0] = 0;
 
   if(mainwindow_title_type == 0)
   {
@@ -1815,14 +1813,14 @@ void UI_Mainwindow::setMainwindowTitle(struct edfhdrblock *edfhdr)
   {
     get_filename_from_path(str, edfhdr->filename, MAX_PATH_LENGTH);
 
-    strcat(str, " - " PROGRAM_NAME);
+    strlcat(str, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 64);
   }
 
   if(mainwindow_title_type == 2)
   {
-    strcpy(str, edfhdr->filename);
+    strlcpy(str, edfhdr->filename, MAX_PATH_LENGTH + 64);
 
-    strcat(str, " - " PROGRAM_NAME);
+    strlcat(str, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 64);
   }
 
   setWindowTitle(str);
@@ -1921,9 +1919,9 @@ void UI_Mainwindow::remove_all_filters()
 
       signalcomp[i]->ecg_filter = NULL;
 
-      strcpy(signalcomp[i]->signallabel, signalcomp[i]->signallabel_bu);
+      strlcpy(signalcomp[i]->signallabel, signalcomp[i]->signallabel_bu, 512);
       signalcomp[i]->signallabellen = signalcomp[i]->signallabellen_bu;
-      strcpy(signalcomp[i]->physdimension, signalcomp[i]->physdimension_bu);
+      strlcpy(signalcomp[i]->physdimension, signalcomp[i]->physdimension_bu, 512);
     }
 
     if(signalcomp[i]->zratio_filter != NULL)
@@ -1932,9 +1930,9 @@ void UI_Mainwindow::remove_all_filters()
 
       signalcomp[i]->zratio_filter = NULL;
 
-      strcpy(signalcomp[i]->signallabel, signalcomp[i]->signallabel_bu);
+      strlcpy(signalcomp[i]->signallabel, signalcomp[i]->signallabel_bu, 512);
       signalcomp[i]->signallabellen = signalcomp[i]->signallabellen_bu;
-      strcpy(signalcomp[i]->physdimension, signalcomp[i]->physdimension_bu);
+      strlcpy(signalcomp[i]->physdimension, signalcomp[i]->physdimension_bu, 512);
     }
   }
 
@@ -2125,7 +2123,7 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
 
   nav_toolbar_label->setText("");
 
-  strcpy(f_path, action->text().toLocal8Bit().data());
+  strlcpy(f_path, action->text().toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   for(file_n=0; file_n<files_open; file_n++)
   {
@@ -2265,9 +2263,9 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
 
         signalcomp[j]->ecg_filter = NULL;
 
-        strcpy(signalcomp[j]->signallabel, signalcomp[j]->signallabel_bu);
+        strlcpy(signalcomp[j]->signallabel, signalcomp[j]->signallabel_bu, 512);
         signalcomp[j]->signallabellen = signalcomp[j]->signallabellen_bu;
-        strcpy(signalcomp[j]->physdimension, signalcomp[j]->physdimension_bu);
+        strlcpy(signalcomp[j]->physdimension, signalcomp[j]->physdimension_bu, 512);
       }
 
       for(k=0; k<signalcomp[j]->fidfilter_cnt; k++)
@@ -3272,7 +3270,7 @@ void UI_Mainwindow::load_predefined_mtg(QAction *action)
     {
       if(predefined_mtg_path[i][0] != 0)
       {
-        strcpy(montagepath, &predefined_mtg_path[i][0]);
+        strlcpy(montagepath, &predefined_mtg_path[i][0], MAX_PATH_LENGTH);
 
         UI_LoadMontagewindow load_mtg(this, montagepath);
 
@@ -3435,7 +3433,7 @@ long long UI_Mainwindow::get_long_time(char *str)
 
 void UI_Mainwindow::recent_file_action_func(QAction *action)
 {
-  strcpy(path, &recent_file_path[action->data().toInt()][0]);
+  strlcpy(path, &recent_file_path[action->data().toInt()][0], MAX_PATH_LENGTH);
 
   cmdlineargument = 1;
 
@@ -3512,9 +3510,9 @@ void UI_Mainwindow::show_help()
 #ifdef Q_OS_WIN32
   char p_path[MAX_PATH_LENGTH];
 
-  strcpy(p_path, "file:///");
-  strcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
-  strcat(p_path, "\\EDFbrowser\\manual.html");
+  strlcpy(p_path, "file:///", MAX_PATH_LENGTH);
+  strlcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcat(p_path, "\\EDFbrowser\\manual.html", MAX_PATH_LENGTH);
   QDesktopServices::openUrl(QUrl(p_path));
 #endif
 }
@@ -3774,17 +3772,17 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
     {
       if(newsignalcomp->fidfilter_model[i] == 0)
       {
-        sprintf(spec_str, "HpBu%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
+        snprintf(spec_str, 256, "HpBu%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
       }
 
       if(newsignalcomp->fidfilter_model[i] == 1)
       {
-        sprintf(spec_str, "HpCh%i/%f/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_ripple[i], newsignalcomp->fidfilter_freq[i]);
+        snprintf(spec_str, 256, "HpCh%i/%f/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_ripple[i], newsignalcomp->fidfilter_freq[i]);
       }
 
       if(newsignalcomp->fidfilter_model[i] == 2)
       {
-        sprintf(spec_str, "HpBe%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
+        snprintf(spec_str, 256, "HpBe%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
       }
     }
 
@@ -3792,17 +3790,17 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
     {
       if(newsignalcomp->fidfilter_model[i] == 0)
       {
-        sprintf(spec_str, "LpBu%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
+        snprintf(spec_str, 256, "LpBu%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
       }
 
       if(newsignalcomp->fidfilter_model[i] == 1)
       {
-        sprintf(spec_str, "LpCh%i/%f/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_ripple[i], newsignalcomp->fidfilter_freq[i]);
+        snprintf(spec_str, 256, "LpCh%i/%f/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_ripple[i], newsignalcomp->fidfilter_freq[i]);
       }
 
       if(newsignalcomp->fidfilter_model[i] == 2)
       {
-        sprintf(spec_str, "LpBe%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
+        snprintf(spec_str, 256, "LpBe%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
       }
     }
 
@@ -3810,7 +3808,7 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
     {
       if(newsignalcomp->fidfilter_model[i] == 0)
       {
-        sprintf(spec_str, "BsRe/%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
+        snprintf(spec_str, 256, "BsRe/%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
       }
     }
 
@@ -3818,17 +3816,17 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
     {
       if(newsignalcomp->fidfilter_model[i] == 0)
       {
-        sprintf(spec_str, "BpBu%i/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
+        snprintf(spec_str, 256, "BpBu%i/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
       }
 
       if(newsignalcomp->fidfilter_model[i] == 1)
       {
-        sprintf(spec_str, "BpCh%i/%f/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_ripple[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
+        snprintf(spec_str, 256, "BpCh%i/%f/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_ripple[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
       }
 
       if(newsignalcomp->fidfilter_model[i] == 2)
       {
-        sprintf(spec_str, "BpBe%i/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
+        snprintf(spec_str, 256, "BpBe%i/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
       }
     }
 
@@ -3836,17 +3834,17 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
     {
       if(newsignalcomp->fidfilter_model[i] == 0)
       {
-        sprintf(spec_str, "BsBu%i/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
+        snprintf(spec_str, 256, "BsBu%i/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
       }
 
       if(newsignalcomp->fidfilter_model[i] == 1)
       {
-        sprintf(spec_str, "BsCh%i/%f/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_ripple[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
+        snprintf(spec_str, 256, "BsCh%i/%f/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_ripple[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
       }
 
       if(newsignalcomp->fidfilter_model[i] == 2)
       {
-        sprintf(spec_str, "BsBe%i/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
+        snprintf(spec_str, 256, "BsBe%i/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
       }
     }
 

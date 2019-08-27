@@ -121,8 +121,6 @@ static char annotextlist[ANNOT_EXT_CNT][16]=
 
 UI_MIT2EDFwindow::UI_MIT2EDFwindow(char *recent_dir, char *save_dir)
 {
-  char txt_string[2048];
-
   recent_opendir = recent_dir;
   recent_savedir = save_dir;
 
@@ -147,8 +145,7 @@ UI_MIT2EDFwindow::UI_MIT2EDFwindow(char *recent_dir, char *save_dir)
   textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
-  sprintf(txt_string, "MIT (PhysioBank) to EDF+ converter.\n");
-  textEdit1->append(txt_string);
+  textEdit1->append("MIT (PhysioBank) to EDF+ converter.\n");
 
   QObject::connect(pushButton1, SIGNAL(clicked()), this, SLOT(SelectFileButton()));
   QObject::connect(pushButton2, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
@@ -186,7 +183,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
   pushButton1->setEnabled(false);
 
-  strcpy(header_filename, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "MIT header files (*.hea *.HEA)").toLocal8Bit().data());
+  strlcpy(header_filename, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "MIT header files (*.hea *.HEA)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(header_filename, ""))
   {
@@ -334,7 +331,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
   mit_hdr.smp_period = 1000000000LL / mit_hdr.sf;
 
-  strcat(filename_x, ".dat");
+  strlcat(filename_x, ".dat", MAX_PATH_LENGTH);
 
   for(j=0; j<mit_hdr.chns; j++)
   {
@@ -352,9 +349,9 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
     mit_hdr.unit_multiplier[j] = 1;  /* default 1 milliVolt */
 
-    strcpy(mit_hdr.unit[j], "mV");
+    strlcpy(mit_hdr.unit[j], "mV", 9);
 
-    sprintf(mit_hdr.label[j], "chan. %i", j + 1);
+    snprintf(mit_hdr.label[j], 17, "chan. %i", j + 1);
 
     charpntr = fgets(scratchpad, 4095, header_inputfile);
     if(charpntr == NULL)
@@ -538,7 +535,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
     }
 //     else
 //     {
-//       strcpy(mit_hdr.unit[j], "uV");
+//       strlcpy(mit_hdr.unit[j], "uV", 9);
 //
 //       mit_hdr.unit_multiplier[j] = 1000;
 //     }
@@ -665,19 +662,19 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
   fclose(header_inputfile);
 
-  strcpy(data_filename, header_filename);
+  strlcpy(data_filename, header_filename, MAX_PATH_LENGTH);
 
   remove_extension_from_filename(data_filename);
 
-  strcpy(edf_filename, data_filename);
+  strlcpy(edf_filename, data_filename, MAX_PATH_LENGTH);
 
-  strcpy(annot_filename, data_filename);
+  strlcpy(annot_filename, data_filename, MAX_PATH_LENGTH);
 
-  strcat(data_filename, ".dat");
+  strlcat(data_filename, ".dat", MAX_PATH_LENGTH);
 
-  strcat(edf_filename, ".edf");
+  strlcat(edf_filename, ".edf", MAX_PATH_LENGTH);
 
-  strcat(annot_filename, ".atr");
+  strlcat(annot_filename, ".atr", MAX_PATH_LENGTH);
 
   data_inputfile = fopeno(data_filename, "rb");
   if(data_inputfile==NULL)
@@ -798,7 +795,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
       {
         if(((double)((-32768 + mit_hdr.baseline[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]) >= -100)
         {
-          strcpy(mit_hdr.unit[i], "uV");
+          strlcpy(mit_hdr.unit[i], "uV", 9);
 
           mit_hdr.unit_multiplier[i] *= 1000;
         }
@@ -1098,7 +1095,7 @@ OUT:
 
     remove_extension_from_filename(annot_filename);
 
-    strcat(annot_filename, annotextlist[k]);
+    strlcat(annot_filename, annotextlist[k], MAX_PATH_LENGTH);
 
     annot_inputfile = fopeno(annot_filename, "rb");
     if(annot_inputfile==NULL)

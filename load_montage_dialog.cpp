@@ -41,7 +41,7 @@ UI_LoadMontagewindow::UI_LoadMontagewindow(QWidget *w_parent, char *path)
 
   if(path!=NULL)
   {
-    strcpy(mtg_path, path);
+    strlcpy(mtg_path, path, MAX_PATH_LENGTH);
   }
 
   if(mainwindow->files_open==1)
@@ -105,7 +105,6 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       filter_cnt=0,
       ravg_filter_cnt=0,
       fidfilter_cnt=0,
-      len,
       order=1,
       type=0,
       model=0,
@@ -144,7 +143,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
   if(mtg_path[0]==0)
   {
-    strcpy(mtg_path, QFileDialog::getOpenFileName(0, "Load montage", QString::fromLocal8Bit(mainwindow->recent_montagedir), "Montage files (*.mtg *.MTG)").toLocal8Bit().data());
+    strlcpy(mtg_path, QFileDialog::getOpenFileName(0, "Load montage", QString::fromLocal8Bit(mainwindow->recent_montagedir), "Montage files (*.mtg *.MTG)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
     if(!strcmp(mtg_path, ""))
     {
@@ -157,7 +156,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
   xml_hdl = xml_get_handle(mtg_path);
   if(xml_hdl==NULL)
   {
-    sprintf(scratchpad, "Can not open montage file:\n%s", mtg_path);
+    snprintf(scratchpad, 2048, "Can not open montage file:\n%s", mtg_path);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(scratchpad));
     messagewindow.exec();
     mainwindow->remove_recent_file_mtg_path(mtg_path);
@@ -166,7 +165,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
   if(strcmp(xml_hdl->elementname[xml_hdl->level], PROGRAM_NAME "_montage"))
   {
-    sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+    snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
     messagewindow.exec();
     xml_close(xml_hdl);
@@ -289,7 +288,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
         mainwindow->signalcomp[k]->ecg_filter = NULL;
 
-        strcpy(mainwindow->signalcomp[k]->signallabel, mainwindow->signalcomp[k]->signallabel_bu);
+        strlcpy(mainwindow->signalcomp[k]->signallabel, mainwindow->signalcomp[k]->signallabel_bu, 512);
         mainwindow->signalcomp[k]->signallabellen = mainwindow->signalcomp[k]->signallabellen_bu;
       }
 
@@ -336,7 +335,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
     if(xml_goto_nth_element_inside(xml_hdl, "num_of_signals", 0))
     {
-      sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+      snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
       messagewindow.exec();
       free(newsignalcomp);
@@ -345,7 +344,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     }
     if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
-      sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+      snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
       messagewindow.exec();
       free(newsignalcomp);
@@ -355,7 +354,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     signal_cnt = atoi(result);
     if((signal_cnt<1)||(signal_cnt>MAXSIGNALS))
     {
-      sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+      snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
       messagewindow.exec();
       free(newsignalcomp);
@@ -385,7 +384,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     {
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -405,7 +404,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
     if(xml_goto_nth_element_inside(xml_hdl, "voltpercm", 0))
     {
-      sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+      snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
       messagewindow.exec();
       free(newsignalcomp);
@@ -414,7 +413,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     }
     if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
-      sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+      snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
       messagewindow.exec();
       free(newsignalcomp);
@@ -426,7 +425,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     xml_go_up(xml_hdl);
     if(xml_goto_nth_element_inside(xml_hdl, "screen_offset", 0))
     {
-      sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+      snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
       messagewindow.exec();
       free(newsignalcomp);
@@ -435,7 +434,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     }
     if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
-      sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+      snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
       messagewindow.exec();
       free(newsignalcomp);
@@ -449,7 +448,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     {
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -466,7 +465,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
     if(xml_goto_nth_element_inside(xml_hdl, "color", 0))
     {
-      sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+      snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
       messagewindow.exec();
       free(newsignalcomp);
@@ -475,7 +474,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     }
     if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
-      sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+      snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
       messagewindow.exec();
       free(newsignalcomp);
@@ -494,7 +493,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     {
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -512,7 +511,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     {
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -530,7 +529,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     {
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -554,7 +553,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           free(newsignalcomp);
@@ -573,7 +572,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     {
       if(xml_goto_nth_element_inside(xml_hdl, "signal", signals_read))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -583,7 +582,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "factor", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -592,7 +591,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -619,7 +618,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_goto_nth_element_inside(xml_hdl, "label", 0))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           free(newsignalcomp);
@@ -628,7 +627,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         }
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           free(newsignalcomp);
@@ -642,7 +641,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
         for(i=0; i<newsignalcomp->edfhdr->edfsignals; i++)
         {
-          strcpy(scratchpad, newsignalcomp->edfhdr->edfparam[i].label);
+          strlcpy(scratchpad, newsignalcomp->edfhdr->edfparam[i].label, 2048);
 
           remove_trailing_spaces(scratchpad);
 
@@ -666,7 +665,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           free(newsignalcomp);
@@ -748,28 +747,23 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(signal_cnt>1)
       {
-        if(newsignalcomp->factor[signals_read]<0)
+        if(newsignalcomp->factor[signals_read] < 0)
         {
-          strcat(newsignalcomp->signallabel, "- ");
+          strlcat(newsignalcomp->signallabel, "- ", 512);
         }
         else
         {
           if(signals_read)
           {
-            strcat(newsignalcomp->signallabel, "+ ");
+            strlcat(newsignalcomp->signallabel, "+ ", 512);
           }
         }
       }
-      strcpy(str, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].label);
+      strlcpy(str, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].label, 128);
       strip_types_from_label(str);
-      strcat(newsignalcomp->signallabel, str);
-      strcat(newsignalcomp->signallabel, " ");
-      len = strlen(newsignalcomp->signallabel);
-      for(k=(len-1); k>0; k--)
-      {
-        if(newsignalcomp->signallabel[k]!=' ')  break;
-      }
-      newsignalcomp->signallabel[k+2] = 0;
+      strlcat(newsignalcomp->signallabel, str, 512);
+      remove_trailing_spaces(newsignalcomp->signallabel);
+      strlcat(newsignalcomp->signallabel, " ", 512);
 
       newsignalcomp->file_duration = newsignalcomp->edfhdr->long_data_record_duration * newsignalcomp->edfhdr->datarecords;
 
@@ -781,14 +775,14 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
     if(skip)  continue;
 
-    strcpy(newsignalcomp->physdimension, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension);
+    strlcpy(newsignalcomp->physdimension, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension, 9);
     remove_trailing_spaces(newsignalcomp->physdimension);
 
     if(spike_filter_cnt)
     {
       if(xml_goto_nth_element_inside(xml_hdl, "spike_filter", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -798,7 +792,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "velocity", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -807,7 +801,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -821,7 +815,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       xml_go_up(xml_hdl);
       if(xml_goto_nth_element_inside(xml_hdl, "holdoff", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -830,7 +824,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -847,7 +841,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(newsignalcomp->spike_filter == NULL)
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -867,7 +861,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     {
       if(xml_goto_nth_element_inside(xml_hdl, "filter", filters_read))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -877,7 +871,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "LPF", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -886,7 +880,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -898,7 +892,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       xml_go_up(xml_hdl);
       if(xml_goto_nth_element_inside(xml_hdl, "frequency", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -907,7 +901,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -918,7 +912,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if((type   < 0) || (type   >   1) || (frequency < 0.0001))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -928,7 +922,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(frequency >= newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f / 2.0)
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -938,12 +932,12 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(type == 0)
       {
-        sprintf(spec_str, "HpBu1/%f", frequency);
+        snprintf(spec_str, 256, "HpBu1/%f", frequency);
       }
 
       if(type == 1)
       {
-        sprintf(spec_str, "LpBu1/%f", frequency);
+        snprintf(spec_str, 256, "LpBu1/%f", frequency);
       }
 
       filter_spec = spec_str;
@@ -954,7 +948,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(err != NULL)
       {
-        sprintf(str2, "%s\nFile: %s line: %i", err, __FILE__, __LINE__);
+        snprintf(str2, 512, "%s\nFile: %s line: %i", err, __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(err);
@@ -993,7 +987,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     {
       if(xml_goto_nth_element_inside(xml_hdl, "ravg_filter", filters_read))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1003,7 +997,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "type", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1012,7 +1006,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1024,7 +1018,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       xml_go_up(xml_hdl);
       if(xml_goto_nth_element_inside(xml_hdl, "size", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1033,7 +1027,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1044,7 +1038,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if((type   < 0) || (type   >   1) || (size < 2) || (size > 10000))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1055,7 +1049,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       newsignalcomp->ravg_filter[filters_read] = create_ravg_filter(type, size);
       if(newsignalcomp->ravg_filter[filters_read] == NULL)
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1077,7 +1071,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     {
       if(xml_goto_nth_element_inside(xml_hdl, "fidfilter", filters_read))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1087,7 +1081,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "type", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1096,7 +1090,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1108,7 +1102,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       xml_go_up(xml_hdl);
       if(xml_goto_nth_element_inside(xml_hdl, "model", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1117,7 +1111,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1129,7 +1123,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       xml_go_up(xml_hdl);
       if(xml_goto_nth_element_inside(xml_hdl, "frequency", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1138,7 +1132,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1150,7 +1144,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       xml_go_up(xml_hdl);
       if(xml_goto_nth_element_inside(xml_hdl, "frequency2", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1159,7 +1153,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1171,7 +1165,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       xml_go_up(xml_hdl);
       if(xml_goto_nth_element_inside(xml_hdl, "ripple", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1180,7 +1174,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1192,7 +1186,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       xml_go_up(xml_hdl);
       if(xml_goto_nth_element_inside(xml_hdl, "order", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1201,7 +1195,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1216,7 +1210,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
          (ripple < (-6.0))    || (ripple > (-0.1))    ||
          (frequency < 0.0001) || (frequency2 < 0.0001))
       {
-        sprintf(str2, "There seems to be an error in this montage file. (fidfilter values)\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file. (fidfilter values)\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1226,7 +1220,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(frequency >= newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f / 2.0)
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nThe frequency of the filter(s) must be less than: samplerate / 2\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nThe frequency of the filter(s) must be less than: samplerate / 2\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1238,7 +1232,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(frequency2 >= newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f / 2.0)
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nThe frequency of the filter(s) must be less than: samplerate / 2\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nThe frequency of the filter(s) must be less than: samplerate / 2\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           free(newsignalcomp);
@@ -1259,17 +1253,17 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(model == 0)
         {
-          sprintf(spec_str, "HpBu%i/%f", order, frequency);
+          snprintf(spec_str, 256, "HpBu%i/%f", order, frequency);
         }
 
         if(model == 1)
         {
-          sprintf(spec_str, "HpCh%i/%f/%f", order, ripple, frequency);
+          snprintf(spec_str, 256, "HpCh%i/%f/%f", order, ripple, frequency);
         }
 
         if(model == 2)
         {
-          sprintf(spec_str, "HpBe%i/%f", order, frequency);
+          snprintf(spec_str, 256, "HpBe%i/%f", order, frequency);
         }
       }
 
@@ -1277,17 +1271,17 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(model == 0)
         {
-          sprintf(spec_str, "LpBu%i/%f", order, frequency);
+          snprintf(spec_str, 256, "LpBu%i/%f", order, frequency);
         }
 
         if(model == 1)
         {
-          sprintf(spec_str, "LpCh%i/%f/%f", order, ripple, frequency);
+          snprintf(spec_str, 256, "LpCh%i/%f/%f", order, ripple, frequency);
         }
 
         if(model == 2)
         {
-          sprintf(spec_str, "LpBe%i/%f", order, frequency);
+          snprintf(spec_str, 256, "LpBe%i/%f", order, frequency);
         }
       }
 
@@ -1305,7 +1299,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
         if(model == 0)
         {
-          sprintf(spec_str, "BsRe/%i/%f", order, frequency);
+          snprintf(spec_str, 256, "BsRe/%i/%f", order, frequency);
         }
       }
 
@@ -1331,17 +1325,17 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(model == 0)
         {
-          sprintf(spec_str, "BpBu%i/%f-%f", order, frequency, frequency2);
+          snprintf(spec_str, 256, "BpBu%i/%f-%f", order, frequency, frequency2);
         }
 
         if(model == 1)
         {
-          sprintf(spec_str, "BpCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
+          snprintf(spec_str, 256, "BpCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
         }
 
         if(model == 2)
         {
-          sprintf(spec_str, "BpBe%i/%f-%f", order, frequency, frequency2);
+          snprintf(spec_str, 256, "BpBe%i/%f-%f", order, frequency, frequency2);
         }
       }
 
@@ -1349,17 +1343,17 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(model == 0)
         {
-          sprintf(spec_str, "BsBu%i/%f-%f", order, frequency, frequency2);
+          snprintf(spec_str, 256, "BsBu%i/%f-%f", order, frequency, frequency2);
         }
 
         if(model == 1)
         {
-          sprintf(spec_str, "BsCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
+          snprintf(spec_str, 256, "BsCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
         }
 
         if(model == 2)
         {
-          sprintf(spec_str, "BsBe%i/%f-%f", order, frequency, frequency2);
+          snprintf(spec_str, 256, "BsBe%i/%f-%f", order, frequency, frequency2);
         }
       }
 
@@ -1418,7 +1412,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "plf", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1436,7 +1430,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       plif_powerlinefrequency = atoi(result);
       if((plif_powerlinefrequency != 0) && (plif_powerlinefrequency != 1))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1449,7 +1443,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(sf % plif_powerlinefrequency)  not_compatibel = 1;
 
-      strcpy(str, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension);
+      strlcpy(str, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension, 128);
 
       remove_trailing_spaces(str);
 
@@ -1475,7 +1469,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         newsignalcomp->plif_ecg_filter = plif_create_subtract_filter(sf, plif_powerlinefrequency, dthreshold);
         if(newsignalcomp->plif_ecg_filter == NULL)
         {
-          sprintf(str2, "A memory allocation error occurred when creating a powerline interference removal filter.\n"
+          snprintf(str2, 512, "A memory allocation error occurred when creating a powerline interference removal filter.\n"
                         "File: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
@@ -1487,7 +1481,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         newsignalcomp->plif_ecg_filter_sav = plif_create_subtract_filter(sf, plif_powerlinefrequency, dthreshold);
         if(newsignalcomp->plif_ecg_filter_sav == NULL)
         {
-          sprintf(str2, "A memory allocation error occurred when creating a powerline interference removal filter.\n"
+          snprintf(str2, 512, "A memory allocation error occurred when creating a powerline interference removal filter.\n"
                         "File: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
@@ -1506,7 +1500,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     {
       if(xml_goto_nth_element_inside(xml_hdl, "size", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1537,7 +1531,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_goto_nth_element_inside(xml_hdl, "tap", r))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           free(newsignalcomp);
@@ -1560,7 +1554,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       newsignalcomp->fir_filter = create_fir_filter(fir_vars, n_taps);
       if(newsignalcomp->fir_filter == NULL)
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1575,7 +1569,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     {
       if(xml_goto_nth_element_inside(xml_hdl, "type", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         free(newsignalcomp);
@@ -1599,7 +1593,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
                                                       mainwindow->powerlinefreq);
         if(newsignalcomp->ecg_filter == NULL)
         {
-          sprintf(str2, "A memory allocation error occurred when creating an ECG filter.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "A memory allocation error occurred when creating an ECG filter.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           free(newsignalcomp);
@@ -1607,12 +1601,12 @@ void UI_LoadMontagewindow::LoadButtonClicked()
           return;
         }
 
-        strcpy(newsignalcomp->signallabel_bu, newsignalcomp->signallabel);
+        strlcpy(newsignalcomp->signallabel_bu, newsignalcomp->signallabel, 512);
         newsignalcomp->signallabellen_bu = newsignalcomp->signallabellen;
-        strcpy(newsignalcomp->signallabel, "HR");
+        strlcpy(newsignalcomp->signallabel, "HR", 512);
         newsignalcomp->signallabellen = strlen(newsignalcomp->signallabel);
-        strcpy(newsignalcomp->physdimension_bu, newsignalcomp->physdimension);
-        strcpy(newsignalcomp->physdimension, "bpm");
+        strlcpy(newsignalcomp->physdimension_bu, newsignalcomp->physdimension, 9);
+        strlcpy(newsignalcomp->physdimension, "bpm", 9);
       }
 
       xml_go_up(xml_hdl);
@@ -1625,7 +1619,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_goto_nth_element_inside(xml_hdl, "type", 0))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           free(newsignalcomp);
@@ -1634,7 +1628,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         }
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           free(newsignalcomp);
@@ -1649,7 +1643,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         {
           if(xml_goto_nth_element_inside(xml_hdl, "crossoverfreq", 0))
           {
-            sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+            snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
             QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
             messagewindow.exec();
             free(newsignalcomp);
@@ -1658,7 +1652,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
           }
           if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
           {
-            sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+            snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
             QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
             messagewindow.exec();
             free(newsignalcomp);
@@ -1679,7 +1673,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
           if(newsignalcomp->zratio_filter == NULL)
           {
-            sprintf(str2, "A memory allocation error occurred when creating a Z-ratio filter.\nFile: %s line: %i", __FILE__, __LINE__);
+            snprintf(str2, 512, "A memory allocation error occurred when creating a Z-ratio filter.\nFile: %s line: %i", __FILE__, __LINE__);
             QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
             messagewindow.exec();
             free(newsignalcomp);
@@ -1687,13 +1681,13 @@ void UI_LoadMontagewindow::LoadButtonClicked()
             return;
           }
 
-          strcpy(newsignalcomp->signallabel_bu, newsignalcomp->signallabel);
+          strlcpy(newsignalcomp->signallabel_bu, newsignalcomp->signallabel, 512);
           newsignalcomp->signallabellen_bu = newsignalcomp->signallabellen;
-          strcpy(newsignalcomp->signallabel, "Z-ratio ");
-          strcat(newsignalcomp->signallabel, newsignalcomp->signallabel_bu);
+          strlcpy(newsignalcomp->signallabel, "Z-ratio ", 512);
+          strlcat(newsignalcomp->signallabel, newsignalcomp->signallabel_bu, 512);
           newsignalcomp->signallabellen = strlen(newsignalcomp->signallabel);
-          strcpy(newsignalcomp->physdimension_bu, newsignalcomp->physdimension);
-          strcpy(newsignalcomp->physdimension, "");
+          strlcpy(newsignalcomp->physdimension_bu, newsignalcomp->physdimension, 9);
+          strlcpy(newsignalcomp->physdimension, "", 9);
 
           xml_go_up(xml_hdl);
         }
@@ -1708,7 +1702,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_goto_nth_element_inside(xml_hdl, "hasruler", 0))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           free(newsignalcomp);
@@ -1717,7 +1711,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         }
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           free(newsignalcomp);
@@ -1740,7 +1734,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
           {
             if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
             {
-              sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+              snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
               QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
               messagewindow.exec();
               free(newsignalcomp);
@@ -1761,7 +1755,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
           {
           if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
           {
-            sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+            snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
             QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
             messagewindow.exec();
             free(newsignalcomp);
@@ -1782,7 +1776,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
           {
             if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
             {
-              sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+              snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
               QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
               messagewindow.exec();
               free(newsignalcomp);
@@ -1819,7 +1813,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
   {
     if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
-      sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+      snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
       messagewindow.exec();
       xml_close(xml_hdl);
@@ -1847,7 +1841,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     {
       if(xml_goto_nth_element_inside(xml_hdl, "signalnum", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         xml_close(xml_hdl);
@@ -1857,7 +1851,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           xml_close(xml_hdl);
@@ -1871,7 +1865,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "amp", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         xml_close(xml_hdl);
@@ -1881,7 +1875,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           xml_close(xml_hdl);
@@ -1901,7 +1895,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           xml_close(xml_hdl);
@@ -1915,7 +1909,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "wheel", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         xml_close(xml_hdl);
@@ -1925,7 +1919,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           xml_close(xml_hdl);
@@ -1939,7 +1933,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "span", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         xml_close(xml_hdl);
@@ -1949,7 +1943,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           xml_close(xml_hdl);
@@ -1963,7 +1957,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "center", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         xml_close(xml_hdl);
@@ -1973,7 +1967,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           xml_close(xml_hdl);
@@ -1987,7 +1981,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "log", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         xml_close(xml_hdl);
@@ -1997,7 +1991,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           xml_close(xml_hdl);
@@ -2011,7 +2005,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "sqrt", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         xml_close(xml_hdl);
@@ -2021,7 +2015,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           xml_close(xml_hdl);
@@ -2035,7 +2029,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "colorbar", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         xml_close(xml_hdl);
@@ -2045,7 +2039,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           xml_close(xml_hdl);
@@ -2059,7 +2053,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "maxvalue", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         xml_close(xml_hdl);
@@ -2069,7 +2063,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           xml_close(xml_hdl);
@@ -2083,7 +2077,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "maxvalue_sqrt", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         xml_close(xml_hdl);
@@ -2093,7 +2087,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           xml_close(xml_hdl);
@@ -2107,7 +2101,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "maxvalue_vlog", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         xml_close(xml_hdl);
@@ -2117,7 +2111,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           xml_close(xml_hdl);
@@ -2131,7 +2125,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "maxvalue_sqrt_vlog", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         xml_close(xml_hdl);
@@ -2141,7 +2135,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           xml_close(xml_hdl);
@@ -2155,7 +2149,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "minvalue_vlog", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         xml_close(xml_hdl);
@@ -2165,7 +2159,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           xml_close(xml_hdl);
@@ -2179,7 +2173,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(xml_goto_nth_element_inside(xml_hdl, "minvalue_sqrt_vlog", 0))
       {
-        sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+        snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
         messagewindow.exec();
         xml_close(xml_hdl);
@@ -2189,7 +2183,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
         {
-          sprintf(str2, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
+          snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
           messagewindow.exec();
           xml_close(xml_hdl);
@@ -2217,7 +2211,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
   if(mainwindow->files_open == 1)
   {
-    strcpy(&mainwindow->recent_file_mtg_path[0][0], mtg_path);
+    strlcpy(&mainwindow->recent_file_mtg_path[0][0], mtg_path, MAX_PATH_LENGTH);
   }
 
   mainwindow->timescale_doubler = round_125_cat(mainwindow->pagetime);

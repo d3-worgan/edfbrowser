@@ -76,7 +76,7 @@ UI_Mainwindow::UI_Mainwindow()
 
   QApplication::setFont(*myfont);
 
-  sprintf(str, "font: %ipx;", font_size);
+  snprintf(str, 1024, "font: %ipx;", font_size);
   setStyleSheet(str);
 #endif
 
@@ -193,7 +193,7 @@ UI_Mainwindow::UI_Mainwindow()
   maxdftblocksize = 1000;
 
   import_annotations_var = (import_annotations_var_block *)calloc(1, sizeof(struct import_annotations_var_block));
-  strcpy(import_annotations_var->separator, "tab");
+  strlcpy(import_annotations_var->separator, "tab", 4);
   import_annotations_var->format = 1;
   import_annotations_var->onsettimeformat = 0;
   import_annotations_var->onsetcolumn = 1;
@@ -247,7 +247,7 @@ UI_Mainwindow::UI_Mainwindow()
   raw2edf_var.offset = 0;
   raw2edf_var.skipblocksize = 0;
   raw2edf_var.skipbytes = 1;
-  strcpy(raw2edf_var.phys_dim, "uV");
+  strlcpy(raw2edf_var.phys_dim, "uV", 16);
 
   annot_filter = (struct annot_filter_struct *)calloc(1, sizeof(struct annot_filter_struct));
   annot_filter->tmin = 1000;
@@ -1022,32 +1022,32 @@ UI_Mainwindow::UI_Mainwindow()
 
   if(QCoreApplication::arguments().size()>1)
   {
-    strcpy(tmp_str, QCoreApplication::arguments().at(1).toLocal8Bit().data());
+    strlcpy(tmp_str, QCoreApplication::arguments().at(1).toLocal8Bit().data(), MAX_PATH_LENGTH);
 
     if((strlen(tmp_str) > 2) && (!strncmp(tmp_str, "--", 2)))
     {
-      strcpy(option_str, tmp_str);
+      strlcpy(option_str, tmp_str, MAX_PATH_LENGTH);
 
       cmdlineoption++;
     }
     else
     {
-      strcpy(path, tmp_str);
+      strlcpy(path, tmp_str, MAX_PATH_LENGTH);
 
       cmdlineargument++;
     }
 
     if(QCoreApplication::arguments().size()>2)
     {
-      strcpy(tmp_str, QCoreApplication::arguments().at(2).toLocal8Bit().data());
+      strlcpy(tmp_str, QCoreApplication::arguments().at(2).toLocal8Bit().data(), MAX_PATH_LENGTH);
 
       if(!cmdlineargument)
       {
-        strcpy(path, tmp_str);
+        strlcpy(path, tmp_str, MAX_PATH_LENGTH);
       }
       else
       {
-        strcpy(montagepath, tmp_str);
+        strlcpy(montagepath, tmp_str, MAX_PATH_LENGTH);
       }
 
       cmdlineargument++;
@@ -1056,7 +1056,7 @@ UI_Mainwindow::UI_Mainwindow()
       {
         if(QCoreApplication::arguments().size()>3)
         {
-          strcpy(montagepath, QCoreApplication::arguments().at(3).toLocal8Bit().data());
+          strlcpy(montagepath, QCoreApplication::arguments().at(3).toLocal8Bit().data(), MAX_PATH_LENGTH);
 
           cmdlineargument++;
         }
