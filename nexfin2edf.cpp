@@ -127,7 +127,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
             file_size;
 
   char txt_string[2048],
-       path[512],
+       path[MAX_PATH_LENGTH],
        outputfilename[MAX_PATH_LENGTH],
        line[2048],
        scratchpad[128],
@@ -190,17 +190,17 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
 
   if(file_type==100)
   {
-    strcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "CSV files (*_100.csv *_100.CSV)").toLocal8Bit().data());
+    strlcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "CSV files (*_100.csv *_100.CSV)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
 
   if(file_type==103)
   {
-    strcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "BIN files (*_103.bin *_103.BIN)").toLocal8Bit().data());
+    strlcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "BIN files (*_103.bin *_103.BIN)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
 
   if(file_type==32)
   {
-    strcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "BIN files (*_032.bin *_032.BIN)").toLocal8Bit().data());
+    strlcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "BIN files (*_032.bin *_032.BIN)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
 
   if(!strcmp(path, ""))
@@ -305,70 +305,70 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
 
       if(!strcmp(line, "IBI"))
       {
-        strcpy(labels[edfsignals], "IBI             ");
-        strcpy(phys_dim[edfsignals], "s       ");
-        strcpy(phys_min[edfsignals], "-31.744 ");
-        strcpy(phys_max[edfsignals], "31.744  ");
+        strlcpy(labels[edfsignals], "IBI             ", 17);
+        strlcpy(phys_dim[edfsignals], "s       ", 9);
+        strlcpy(phys_min[edfsignals], "-31.744 ", 9);
+        strlcpy(phys_max[edfsignals], "31.744  ", 9);
         sensitivity[edfsignals] = 1000.0;
         ok = 1;
       }
 
       if(!strcmp(line, "HR"))
       {
-        strcpy(labels[edfsignals], "HR              ");
-        strcpy(phys_dim[edfsignals], "bpm     ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "HR              ", 17);
+        strlcpy(phys_dim[edfsignals], "bpm     ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
 
       if(!strcmp(line, "LVET"))
       {
-        strcpy(labels[edfsignals], "LVET            ");
-        strcpy(phys_dim[edfsignals], "s       ");
-        strcpy(phys_min[edfsignals], "-10     ");
-        strcpy(phys_max[edfsignals], "10      ");
+        strlcpy(labels[edfsignals], "LVET            ", 17);
+        strlcpy(phys_dim[edfsignals], "s       ", 9);
+        strlcpy(phys_min[edfsignals], "-10     ", 9);
+        strlcpy(phys_max[edfsignals], "10      ", 9);
         sensitivity[edfsignals] = 3174.4;
         ok = 1;
       }
 
       if(!strcmp(line, "HRS"))
       {
-        strcpy(labels[edfsignals], "HRS             ");
-        strcpy(phys_dim[edfsignals], "mmHg    ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "HRS             ", 17);
+        strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
 
       if(!strcmp(line, "Sys"))
       {
-        strcpy(labels[edfsignals], "Sys             ");
-        strcpy(phys_dim[edfsignals], "mmHg    ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "Sys             ", 17);
+        strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
 
       if(!strcmp(line, "Dia"))
       {
-        strcpy(labels[edfsignals], "Dia             ");
-        strcpy(phys_dim[edfsignals], "mmHg    ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "Dia             ", 17);
+        strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
 
       if(!strcmp(line, "MAP"))
       {
-        strcpy(labels[edfsignals], "MAP             ");
-        strcpy(phys_dim[edfsignals], "mmHg    ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
+        strlcpy(labels[edfsignals], "MAP             ", 17);
+        strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
+        strlcpy(phys_min[edfsignals], "-1024   ", 9);
+        strlcpy(phys_max[edfsignals], "1024    ", 9);
         sensitivity[edfsignals] = 31.0;
         ok = 1;
       }
@@ -424,7 +424,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
     }
   }
 
-  p = sprintf(patientname, "%s", PatientnameLineEdit->text().toLatin1().data());
+  p = snprintf(patientname, 81, "%s", PatientnameLineEdit->text().toLatin1().data());
   latin1_to_ascii(patientname, p);
   for( ; p<80; p++)
   {
@@ -432,7 +432,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
   }
   patientname[80] = 0;
 
-  p = sprintf(recording, "%s", RecordingLineEdit->text().toLatin1().data());
+  p = snprintf(recording, 81, "%s", RecordingLineEdit->text().toLatin1().data());
   latin1_to_ascii(recording, p);
   for( ; p<80; p++)
   {
@@ -440,7 +440,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
   }
   recording[80] = 0;
 
-  sprintf(datetime,
+  snprintf(datetime, 128,
           "%02i.%02i.%02i%02i.%02i.%02i",
           StartDatetimeedit->date().day(),
           StartDatetimeedit->date().month(),
@@ -455,17 +455,17 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
 
   get_filename_from_path(outputfilename, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(outputfilename);
-  strcat(outputfilename, ".edf");
+  strlcat(outputfilename, ".edf", MAX_PATH_LENGTH);
 
   path[0] = 0;
   if(recent_savedir[0]!=0)
   {
-    strcpy(path, recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, recent_savedir, MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
-  strcat(path, outputfilename);
+  strlcat(path, outputfilename, MAX_PATH_LENGTH);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "EDF files (*.edf *.EDF)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(path), "EDF files (*.edf *.EDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {

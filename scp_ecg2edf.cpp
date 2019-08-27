@@ -39,8 +39,6 @@
 
 UI_SCPECG2EDFwindow::UI_SCPECG2EDFwindow(char *recent_dir, char *save_dir)
 {
-  char txt_string[2048];
-
   recent_opendir = recent_dir;
   recent_savedir = save_dir;
 
@@ -65,8 +63,7 @@ UI_SCPECG2EDFwindow::UI_SCPECG2EDFwindow(char *recent_dir, char *save_dir)
   textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
-  sprintf(txt_string, "SCP-ECG to EDF+ converter.\n");
-  textEdit1->append(txt_string);
+  textEdit1->append("SCP-ECG to EDF+ converter.\n");
 
   crc_ccitt_init();
 
@@ -119,7 +116,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   scp_ecg.ref_beat_subtract = 0;
   scp_ecg.avm_ratio = 1;
 
-  strcpy(input_filename, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "SCP files (*.scp *.SCP)").toLocal8Bit().data());
+  strlcpy(input_filename, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "SCP files (*.scp *.SCP)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(input_filename, ""))
   {
@@ -985,11 +982,11 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
 //////////////////// create EDF file ////////////////////////////////
 
-  strcpy(edf_filename, input_filename);
+  strlcpy(edf_filename, input_filename, MAX_PATH_LENGTH);
 
   remove_extension_from_filename(edf_filename);
 
-  strcat(edf_filename, ".edf");
+  strlcat(edf_filename, ".edf", MAX_PATH_LENGTH);
 
   hdl = edfopen_file_writeonly(edf_filename, EDFLIB_FILETYPE_EDFPLUS, scp_ecg.chns);
 
@@ -1020,7 +1017,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       goto EXIT_5;
     }
 
-    lead_label_lookup(lp[i].label, scratchpad);
+    lead_label_lookup(lp[i].label, scratchpad, MAX_PATH_LENGTH);
 
     if(edf_set_label(hdl, i, scratchpad))
     {
@@ -1047,9 +1044,9 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     }
   }
 
-  strcpy(scratchpad, pat_dat.first_name);
-  strcat(scratchpad, " ");
-  strcat(scratchpad, pat_dat.last_name);
+  strlcpy(scratchpad, pat_dat.first_name, MAX_PATH_LENGTH);
+  strlcat(scratchpad, " ", MAX_PATH_LENGTH);
+  strlcat(scratchpad, pat_dat.last_name, MAX_PATH_LENGTH);
   remove_trailing_spaces(scratchpad);
 
   if(edf_set_patientname(hdl, scratchpad))
@@ -1083,15 +1080,15 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
   edf_set_patientcode(hdl, pat_dat.pat_id);
 
-  strcpy(scratchpad, pat_dat.device_model);
-  strcat(scratchpad, " ");
-  strcat(scratchpad, pat_dat.device_ident);
+  strlcpy(scratchpad, pat_dat.device_model, MAX_PATH_LENGTH);
+  strlcat(scratchpad, " ", MAX_PATH_LENGTH);
+  strlcat(scratchpad, pat_dat.device_ident, MAX_PATH_LENGTH);
 
   edf_set_equipment(hdl, scratchpad);
 
-  strcpy(scratchpad, pat_dat.manufacturer);
-  strcat(scratchpad, " ");
-  strcat(scratchpad, pat_dat.device_serial);
+  strlcpy(scratchpad, pat_dat.manufacturer, MAX_PATH_LENGTH);
+  strlcat(scratchpad, " ", MAX_PATH_LENGTH);
+  strlcat(scratchpad, pat_dat.device_serial, MAX_PATH_LENGTH);
 
   edf_set_recording_additional(hdl, scratchpad);
 
@@ -1383,7 +1380,7 @@ int UI_SCPECG2EDFwindow::read_section_header(int n, FILE *inputfile, long long o
 
   if(check_crc(inputfile, offset + 2, sp[n].section_length - 2LL, sp[n].crc, block))
   {
-    sprintf(str, "CRC-error in section %i\n", n);
+    snprintf(str, 256, "CRC-error in section %i\n", n);
     textEdit1->append(str);
     return -1;
   }
@@ -1450,7 +1447,7 @@ inline unsigned char UI_SCPECG2EDFwindow::reverse_bitorder(unsigned char byte)
 }
 
 
-void UI_SCPECG2EDFwindow::lead_label_lookup(unsigned char idx, char *label)
+void UI_SCPECG2EDFwindow::lead_label_lookup(unsigned char idx, char *label, int destlen)
 {
   char scp_labels[256][9]={"unspec.", "I", "II", "V1", "V2", "V3", "V4", "V5", "V6", "V7",
                            "V2R", "V3R", "V4R", "V5R", "V6R", "V7R", "X", "Y", "Z", "CC5",
@@ -1481,11 +1478,11 @@ void UI_SCPECG2EDFwindow::lead_label_lookup(unsigned char idx, char *label)
 
   if(idx > 184)
   {
-    strcpy(label, "unknown");
+    strlcpy(label, "unknown", destlen);
   }
   else
   {
-    strcpy(label, scp_labels[idx]);
+    strlcpy(label, scp_labels[idx], destlen);
   }
 }
 

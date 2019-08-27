@@ -93,10 +93,10 @@ void UI_SaveMontagewindow::SaveButtonClicked()
   if(mainwindow->files_open==1)  n = 0;
   else  n = filelist->currentRow();
 
-  strcpy(mtg_path, mainwindow->recent_montagedir);
-  strcat(mtg_path, "/my_montage.mtg");
+  strlcpy(mtg_path, mainwindow->recent_montagedir, MAX_PATH_LENGTH);
+  strlcat(mtg_path, "/my_montage.mtg", MAX_PATH_LENGTH);
 
-  strcpy(mtg_path, QFileDialog::getSaveFileName(0, "Save montage", QString::fromLocal8Bit(mtg_path), "Montage files (*.mtg *.MTG)").toLocal8Bit().data());
+  strlcpy(mtg_path, QFileDialog::getSaveFileName(0, "Save montage", QString::fromLocal8Bit(mtg_path), "Montage files (*.mtg *.MTG)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(mtg_path, ""))
   {
@@ -107,7 +107,7 @@ void UI_SaveMontagewindow::SaveButtonClicked()
   {
     if(strcmp(mtg_path + strlen(mtg_path) - 4, ".mtg"))
     {
-      strcat(mtg_path, ".mtg");
+      strlcat(mtg_path, ".mtg", MAX_PATH_LENGTH);
     }
   }
 
@@ -351,7 +351,7 @@ void UI_SaveMontagewindow::SaveButtonClicked()
 
   if(mainwindow->files_open == 1)
   {
-    strcpy(&mainwindow->recent_file_mtg_path[0][0], mtg_path);
+    strlcpy(&mainwindow->recent_file_mtg_path[0][0], mtg_path, MAX_PATH_LENGTH);
   }
 
   if(SaveMontageDialog!=NULL) SaveMontageDialog->close();

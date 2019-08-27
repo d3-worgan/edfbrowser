@@ -185,7 +185,7 @@ unsigned short crc_ccitt(const unsigned char *, int, unsigned short);
 
 inline unsigned char reverse_bitorder(unsigned char);
 
-void lead_label_lookup(unsigned char, char *);
+void lead_label_lookup(unsigned char, char *, int);
 
 int get_patient_data(FILE *);
 

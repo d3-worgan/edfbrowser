@@ -207,11 +207,11 @@ void UI_ReduceSignalsWindow::spinBox1changed(int value)
   milliSec /= 10000LL;
   if(days)
   {
-    sprintf(scratchpad, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(scratchpad, 256, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
   else
   {
-    sprintf(scratchpad, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(scratchpad, 256, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
   label4->setText(scratchpad);
 }
@@ -241,11 +241,11 @@ void UI_ReduceSignalsWindow::spinBox2changed(int value)
   milliSec /= 10000LL;
   if(days)
   {
-    sprintf(scratchpad, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(scratchpad, 256, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
   else
   {
-    sprintf(scratchpad, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(scratchpad, 256, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
   label5->setText(scratchpad);
 }
@@ -288,13 +288,13 @@ void UI_ReduceSignalsWindow::radioButton1Toggled(bool checked)
     {
       label4->setText("0d 0:00:00.000");
 
-      sprintf(scratchpad, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+      snprintf(scratchpad, 256, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
     }
     else
     {
       label4->setText("0:00:00.000");
 
-      sprintf(scratchpad, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+      snprintf(scratchpad, 256, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
     }
 
     label5->setText(scratchpad);
@@ -450,7 +450,7 @@ void UI_ReduceSignalsWindow::SelectFileButton()
 
   edfhdr = mainwindow->edfheaderlist[file_num];
 
-  strcpy(inputpath, edfhdr->filename);
+  strlcpy(inputpath, edfhdr->filename, MAX_PATH_LENGTH);
 
   inputfile = edfhdr->file_hdl;
   if(inputfile==NULL)
@@ -516,7 +516,7 @@ void UI_ReduceSignalsWindow::SelectFileButton()
           snprintf(str, 256, "%i  (", j);
           convert_to_metric_suffix(str + strlen(str), edfhdr->edfparam[i].sf_f / j, 3);
           remove_trailing_zeros(str);
-          strcat(str, "Hz)");
+          strlcat(str, "Hz)", 256);
           ((QComboBox *)(SignalsTablewidget->cellWidget(i, 1)))->addItem(str, QVariant(j));
         }
       }
@@ -575,11 +575,11 @@ void UI_ReduceSignalsWindow::SelectFileButton()
   milliSec /= 10000LL;
   if(days)
   {
-    sprintf(txt_string, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(txt_string, 2048, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
   else
   {
-    sprintf(txt_string, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(txt_string, 2048, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
   label5->setText(txt_string);
 }
@@ -822,23 +822,23 @@ void UI_ReduceSignalsWindow::StartConversion()
   outputpath[0] = 0;
   if(recent_savedir[0]!=0)
   {
-    strcpy(outputpath, recent_savedir);
-    strcat(outputpath, "/");
+    strlcpy(outputpath, recent_savedir, MAX_PATH_LENGTH);
+    strlcat(outputpath, "/", MAX_PATH_LENGTH);
   }
   len = strlen(outputpath);
   get_filename_from_path(outputpath + len, inputpath, MAX_PATH_LENGTH - len);
   remove_extension_from_filename(outputpath);
   if(edfhdr->edf)
   {
-    strcat(outputpath, "_reduced.edf");
+    strlcat(outputpath, "_reduced.edf", MAX_PATH_LENGTH);
 
-    strcpy(outputpath, QFileDialog::getSaveFileName(0, "Save file", QString::fromLocal8Bit(outputpath), "EDF files (*.edf *.EDF)").toLocal8Bit().data());
+    strlcpy(outputpath, QFileDialog::getSaveFileName(0, "Save file", QString::fromLocal8Bit(outputpath), "EDF files (*.edf *.EDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
   else
   {
-    strcat(outputpath, "_reduced.bdf");
+    strlcat(outputpath, "_reduced.bdf", MAX_PATH_LENGTH);
 
-    strcpy(outputpath, QFileDialog::getSaveFileName(0, "Save file", QString::fromLocal8Bit(outputpath), "BDF files (*.bdf *.BDF)").toLocal8Bit().data());
+    strlcpy(outputpath, QFileDialog::getSaveFileName(0, "Save file", QString::fromLocal8Bit(outputpath), "BDF files (*.bdf *.BDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
 
   if(!strcmp(outputpath, ""))
@@ -876,7 +876,7 @@ void UI_ReduceSignalsWindow::StartConversion()
   {
     if(scratchpad[98] != 'X')
     {
-      sprintf(scratchpad + 98, "%02i-%s-%04i", dts.day, dts.month_str, dts.year);
+      snprintf(scratchpad + 98, 256 - 98, "%02i-%s-%04i", dts.day, dts.month_str, dts.year);
 
       scratchpad[109] = ' ';
     }
@@ -1376,9 +1376,9 @@ void UI_ReduceSignalsWindow::helpbuttonpressed()
 #ifdef Q_OS_WIN32
   char p_path[MAX_PATH_LENGTH];
 
-  strcpy(p_path, "file:///");
-  strcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
-  strcat(p_path, "\\EDFbrowser\\manual.html#Reduce_signals");
+  strlcpy(p_path, "file:///", MAX_PATH_LENGTH);
+  strlcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcat(p_path, "\\EDFbrowser\\manual.html#Reduce_signals", MAX_PATH_LENGTH);
   QDesktopServices::openUrl(QUrl(p_path));
 #endif
 }

@@ -105,39 +105,42 @@ void xml_fnwrite_encode_entity(FILE *file, const char *str, int n)
 }
 
 
-void xml_strcpy_encode_entity(char *dest, const char *src)
+void xml_strlcpy_encode_entity(char *dest, const char *src, int len)
 {
-  *dest = 0;
+  int p=0;
 
   for(; *src; src++)
   {
+    if((len - p) < 7)  break;
+
     switch(*src)
     {
-      case '<'  : strcpy(dest, "&lt;");
-                  dest += 4;
+      case '<'  : strcpy(dest + p, "&lt;");
+                  p += 4;
                   break;
 
-      case '>'  : strcpy(dest, "&gt;");
-                  dest += 4;
+      case '>'  : strcpy(dest + p, "&gt;");
+                  p += 4;
                   break;
 
-      case '&'  : strcpy(dest, "&amp;");
-                  dest += 5;
+      case '&'  : strcpy(dest + p, "&amp;");
+                  p += 5;
                   break;
 
-      case '\'' : strcpy(dest, "&apos;");
-                  dest += 6;
+      case '\'' : strcpy(dest + p, "&apos;");
+                  p += 6;
                   break;
 
-      case '\"' : strcpy(dest, "&quot;");
-                  dest += 6;
+      case '\"' : strcpy(dest + p, "&quot;");
+                  p += 6;
                   break;
 
-      default   : *dest = *src;
-                  *(++dest) = 0;
+      default   : dest[p++] = *src;
                   break;
     }
   }
+
+  dest[p] = 0;
 }
 
 
@@ -204,14 +207,25 @@ int xml_strncpy_encode_entity(char *dest, const char *src, int n)
 }
 
 
-void xml_strcpy_decode_entity(char *dest, const char *src)
+void xml_strlcpy_decode_entity(char *dest, const char *src, int destlen)
 {
   int i, len, p=0;
+
+  if(destlen < 1)  return;
+
+  destlen--;
 
   len = strlen(src);
 
   for(i=0; i<len; i++)
   {
+    if(i == destlen)
+    {
+      dest[i] = 0;
+
+      break;
+    }
+
     if((i + p) < (len - 4))
     {
       if(!strncmp(src + i + p, "&lt;", 4))

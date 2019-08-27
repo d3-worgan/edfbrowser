@@ -919,7 +919,7 @@ void UI_OptionsDialog::ApplyButton2Clicked()
     {
       if(((QDoubleSpinBox *)(colorBarTable->cellWidget(row - 1, 1)))->value() >= ((QDoubleSpinBox *)(colorBarTable->cellWidget(row, 1)))->value())
       {
-        sprintf(str, "Row %i must have a higher frequency than row %i", row + 1, row);
+        snprintf(str, 256, "Row %i must have a higher frequency than row %i", row + 1, row);
 
         QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
         messagewindow.exec();
@@ -1580,10 +1580,10 @@ void UI_OptionsDialog::saveColorSchemaButtonClicked()
 
   FILE *colorfile;
 
-  strcpy(path, mainwindow->recent_colordir);
-  strcat(path, "/my_colorschema.color");
+  strlcpy(path, mainwindow->recent_colordir, MAX_PATH_LENGTH);
+  strlcat(path, "/my_colorschema.color", MAX_PATH_LENGTH);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Save colorschema", QString::fromLocal8Bit(path), "Colorschema files (*.color *.COLOR)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Save colorschema", QString::fromLocal8Bit(path), "Colorschema files (*.color *.COLOR)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -1594,7 +1594,7 @@ void UI_OptionsDialog::saveColorSchemaButtonClicked()
   {
     if(strcmp(path + strlen(path) - 6, ".color"))
     {
-      strcat(path, ".color");
+      strlcat(path, ".color", MAX_PATH_LENGTH);
     }
   }
 
@@ -1727,7 +1727,7 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
   struct xml_handle *xml_hdl;
 
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Load colorschema", QString::fromLocal8Bit(mainwindow->recent_colordir), "Montage files (*.color *.COLOR)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Load colorschema", QString::fromLocal8Bit(mainwindow->recent_colordir), "Montage files (*.color *.COLOR)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -1739,7 +1739,7 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
   xml_hdl = xml_get_handle(path);
   if(xml_hdl==NULL)
   {
-    sprintf(scratchpad, "Can not open colorschema:\n%s", path);
+    snprintf(scratchpad, 2048, "Can not open colorschema:\n%s", path);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(scratchpad));
     messagewindow.exec();
     return;

@@ -85,9 +85,9 @@ int xml_get_attribute_of_element(struct xml_handle *, const char *, char *, int)
 int xml_get_name_of_element(struct xml_handle *, char *, int);
 void xml_fwrite_encode_entity(FILE *, const char *);
 void xml_fnwrite_encode_entity(FILE *, const char *, int);
-void xml_strcpy_encode_entity(char *, const char *);
+void xml_strlcpy_encode_entity(char *, const char *, int);
 int xml_strncpy_encode_entity(char *, const char *, int);
-void xml_strcpy_decode_entity(char *, const char *);
+void xml_strlcpy_decode_entity(char *, const char *, int);
 int xml_strncpy_decode_entity(char *, const char *, int);
 
 

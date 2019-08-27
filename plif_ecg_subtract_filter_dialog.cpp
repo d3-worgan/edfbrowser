@@ -100,7 +100,7 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
       continue;
     }
 
-    strcpy(str, mainwindow->signalcomp[i]->edfhdr->edfparam[mainwindow->signalcomp[i]->edfsignal[0]].physdimension);
+    strlcpy(str, mainwindow->signalcomp[i]->edfhdr->edfparam[mainwindow->signalcomp[i]->edfsignal[0]].physdimension, 256);
 
     remove_trailing_spaces(str);
 
@@ -203,13 +203,13 @@ void UI_PLIF_ECG_filter_dialog::ApplyButtonClicked()
     if((sf % plf) || (!sf))
     {
       err = 1;
-      sprintf(str, "Samplefrequency (%iHz) is not an integer multiple of the powerline frequency (%iHz)", sf, plf);
+      snprintf(str, 256, "Samplefrequency (%iHz) is not an integer multiple of the powerline frequency (%iHz)", sf, plf);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
       messagewindow.exec();
       break;
     }
 
-    strcpy(str, mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].physdimension);
+    strlcpy(str, mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].physdimension, 256);
 
     remove_trailing_spaces(str);
 
@@ -280,9 +280,9 @@ void UI_PLIF_ECG_filter_dialog::helpbuttonpressed()
 #ifdef Q_OS_WIN32
   char p_path[MAX_PATH_LENGTH];
 
-  strcpy(p_path, "file:///");
-  strcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
-  strcat(p_path, "\\EDFbrowser\\manual.html#ECG_PLIF_filter");
+  strlcpy(p_path, "file:///", MAX_PATH_LENGTH);
+  strlcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcat(p_path, "\\EDFbrowser\\manual.html#ECG_PLIF_filter", MAX_PATH_LENGTH);
   QDesktopServices::openUrl(QUrl(p_path));
 #endif
 }

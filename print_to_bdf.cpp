@@ -68,7 +68,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   char path[MAX_PATH_LENGTH],
        scratchpad[4096],
-       datrecduration[16],
+       datrecduration[32],
        *viewbuf;
 
   double frequency,
@@ -239,11 +239,11 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   if(integer_sf)
   {
-    sprintf(datrecduration, "%f", 1.0 / smpl_rate_divider);
+    snprintf(datrecduration, 32, "%f", 1.0 / smpl_rate_divider);
 
     remove_trailing_zeros(datrecduration);
 
-    strcat(datrecduration, "        ");
+    strlcat(datrecduration, "        ", 32);
 
     duration = TIME_DIMENSION / smpl_rate_divider;
 
@@ -253,15 +253,15 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
   path[0] = 0;
   if(mainwindow->recent_savedir[0]!=0)
   {
-    strcpy(path, mainwindow->recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, mainwindow->recent_savedir, MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
   len = strlen(path);
   get_filename_from_path(path + len, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename, MAX_PATH_LENGTH - len);
   remove_extension_from_filename(path);
-  strcat(path, "_screenprint.bdf");
+  strlcat(path, "_screenprint.bdf", MAX_PATH_LENGTH);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Print to BDF", QString::fromLocal8Bit(path), "BDF files (*.bdf *.BDF)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Print to BDF", QString::fromLocal8Bit(path), "BDF files (*.bdf *.BDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -519,8 +519,8 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   for(i=0; i<signalcomps; i++)
   {
-    strcpy(scratchpad, signalcomp[i]->signallabel);
-    strcat(scratchpad, "                ");
+    strlcpy(scratchpad, signalcomp[i]->signallabel, 4096);
+    strlcat(scratchpad, "                ", 4096);
     if(fwrite(scratchpad, 16, 1, outputfile)!=1)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while writing to outputfile.");
@@ -559,8 +559,8 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   for(i=0; i<signalcomps; i++)
   {
-    strcpy(scratchpad, signalcomp[i]->physdimension);
-    strcat(scratchpad, "        ");
+    strlcpy(scratchpad, signalcomp[i]->physdimension, 4096);
+    strlcat(scratchpad, "        ", 4096);
     if(fwrite(scratchpad, 8, 1, outputfile)!=1)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while writing to outputfile.");
@@ -756,8 +756,8 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   for(i=0; i<signalcomps; i++)
   {
-    strcpy(scratchpad, signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].prefilter);
-    strcat(scratchpad, "                                                                                ");
+    strlcpy(scratchpad, signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].prefilter, 4096);
+    strlcat(scratchpad, "                                                                                ", 4096);
     for(p = strlen(scratchpad) - 1; p>=0; p--)
     {
       if(scratchpad[p]!=' ')  break;
@@ -767,7 +767,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
     if(signalcomp[i]->spike_filter)
     {
-      p += sprintf(scratchpad + p, "Spike:%f", signalcomp[i]->spike_filter->velocity);
+      p += snprintf(scratchpad + p, 4096 - p, "Spike:%f", signalcomp[i]->spike_filter->velocity);
 
       for(k=(p-1); k>0; k--)
       {
@@ -784,12 +784,12 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
     {
       if(signalcomp[i]->filter[j]->is_LPF == 1)
       {
-        p += sprintf(scratchpad + p, "LP:%f", signalcomp[i]->filter[j]->cutoff_frequency);
+        p += snprintf(scratchpad + p, 4096 - p, "LP:%f", signalcomp[i]->filter[j]->cutoff_frequency);
       }
 
       if(signalcomp[i]->filter[j]->is_LPF == 0)
       {
-        p += sprintf(scratchpad + p, "HP:%f", signalcomp[i]->filter[j]->cutoff_frequency);
+        p += snprintf(scratchpad + p, 4096 - p, "HP:%f", signalcomp[i]->filter[j]->cutoff_frequency);
       }
 
       for(k=(p-1); k>0; k--)
@@ -800,7 +800,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
       if(scratchpad[k]=='.')  scratchpad[k] = 0;
       else  scratchpad[k+1] = 0;
 
-      strcat(scratchpad, "Hz ");
+      strlcat(scratchpad, "Hz ", 4096);
 
       p = strlen(scratchpad);
 
@@ -817,27 +817,27 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
       if(type == 0)
       {
-        p += sprintf(scratchpad + p, "HP:%f", frequency);
+        p += snprintf(scratchpad + p, 4096 - p, "HP:%f", frequency);
       }
 
       if(type == 1)
       {
-        p += sprintf(scratchpad + p, "LP:%f", frequency);
+        p += snprintf(scratchpad + p, 4096 - p, "LP:%f", frequency);
       }
 
       if(type == 2)
       {
-        p += sprintf(scratchpad + p, "N:%f", frequency);
+        p += snprintf(scratchpad + p, 4096 - p, "N:%f", frequency);
       }
 
       if(type == 3)
       {
-        p += sprintf(scratchpad + p, "BP:%f", frequency);
+        p += snprintf(scratchpad + p, 4096 - p, "BP:%f", frequency);
       }
 
       if(type == 4)
       {
-        p += sprintf(scratchpad + p, "BS:%f", frequency);
+        p += snprintf(scratchpad + p, 4096 - p, "BS:%f", frequency);
       }
 
       for(k=(p-1); k>0; k--)
@@ -852,7 +852,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
       if((type == 3) || (type == 4))
       {
-        p += sprintf(scratchpad + p, "-%f", frequency2);
+        p += snprintf(scratchpad + p, 4096 - p, "-%f", frequency2);
 
         for(k=(p-1); k>0; k--)
         {
@@ -863,7 +863,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
         else  scratchpad[k+1] = 0;
       }
 
-      strcat(scratchpad, "Hz ");
+      strlcat(scratchpad, "Hz ", 4096);
 
       p = strlen(scratchpad);
 
@@ -874,12 +874,12 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
     {
       if(signalcomp[i]->ravg_filter_type[j] == 0)
       {
-        p += sprintf(scratchpad + p, "HP:%iSmpls ", signalcomp[i]->ravg_filter[j]->size);
+        p += snprintf(scratchpad + p, 4096 - p, "HP:%iSmpls ", signalcomp[i]->ravg_filter[j]->size);
       }
 
       if(signalcomp[i]->ravg_filter_type[j] == 1)
       {
-        p += sprintf(scratchpad + p, "LP:%iSmpls ", signalcomp[i]->ravg_filter[j]->size);
+        p += snprintf(scratchpad + p, 4096 - p, "LP:%iSmpls ", signalcomp[i]->ravg_filter[j]->size);
       }
 
       p = strlen(scratchpad);
@@ -889,17 +889,17 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
     if(signalcomp[i]->fir_filter != NULL)
     {
-      p += sprintf(scratchpad + p, "FIR ");
+      p += snprintf(scratchpad + p, 4096 - p, "FIR ");
     }
 
     if(signalcomp[i]->ecg_filter != NULL)
     {
-      p += sprintf(scratchpad + p, "ECG:HR ");
+      p += snprintf(scratchpad + p, 4096 - p, "ECG:HR ");
     }
 
     if(signalcomp[i]->zratio_filter != NULL)
     {
-      p += sprintf(scratchpad + p, "Z-ratio ");
+      p += snprintf(scratchpad + p, 4096 - p, "Z-ratio ");
     }
 
     for(;p<81; p++)

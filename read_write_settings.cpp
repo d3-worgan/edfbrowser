@@ -112,15 +112,15 @@ void UI_Mainwindow::read_color_settings()
   cfg_path[0] = 0;
 
 #ifdef Q_OS_WIN32
-  strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
-  strcat(cfg_path, "\\");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "\\settings.xml");
+  strlcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcat(cfg_path, "\\", MAX_PATH_LENGTH);
+  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
+  strlcat(cfg_path, "\\settings.xml", MAX_PATH_LENGTH);
 #else
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "/settings.xml");
+  strlcpy(cfg_path, getenv("HOME"), MAX_PATH_LENGTH);
+  strlcat(cfg_path, "/.", MAX_PATH_LENGTH);
+  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
+  strlcat(cfg_path, "/settings.xml", MAX_PATH_LENGTH);
 #endif
 
   xml_hdl = xml_get_handle(cfg_path);
@@ -302,15 +302,15 @@ void UI_Mainwindow::read_recent_file_settings()
   QAction *act;
 
 #ifdef Q_OS_WIN32
-  strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
-  strcat(cfg_path, "\\");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "\\settings.xml");
+  strlcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcat(cfg_path, "\\", MAX_PATH_LENGTH);
+  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
+  strlcat(cfg_path, "\\settings.xml", MAX_PATH_LENGTH);
 #else
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "/settings.xml");
+  strlcpy(cfg_path, getenv("HOME"), MAX_PATH_LENGTH);
+  strlcat(cfg_path, "/.", MAX_PATH_LENGTH);
+  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
+  strlcat(cfg_path, "/settings.xml", MAX_PATH_LENGTH);
 #endif
 
   xml_hdl = xml_get_handle(cfg_path);
@@ -499,15 +499,15 @@ void UI_Mainwindow::read_general_settings()
   cfg_path[0] = 0;
 
 #ifdef Q_OS_WIN32
-  strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
-  strcat(cfg_path, "\\");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "\\settings.xml");
+  strlcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcat(cfg_path, "\\", MAX_PATH_LENGTH);
+  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
+  strlcat(cfg_path, "\\settings.xml", MAX_PATH_LENGTH);
 #else
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "/settings.xml");
+  strlcpy(cfg_path, getenv("HOME"), MAX_PATH_LENGTH);
+  strlcat(cfg_path, "/.", MAX_PATH_LENGTH);
+  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
+  strlcat(cfg_path, "/settings.xml", MAX_PATH_LENGTH);
 #endif
 
   xml_hdl = xml_get_handle(cfg_path);
@@ -1837,17 +1837,17 @@ void UI_Mainwindow::write_settings()
   cfg_path[0] = 0;
 
 #ifdef Q_OS_WIN32
-  strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
-  strcat(cfg_path, "\\");
-  strcat(cfg_path, PROGRAM_NAME);
+  strlcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcat(cfg_path, "\\", MAX_PATH_LENGTH);
+  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
   mkdir(cfg_path);
-  strcat(cfg_path, "\\settings.xml");
+  strlcat(cfg_path, "\\settings.xml", MAX_PATH_LENGTH);
 #else
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
+  strlcpy(cfg_path, getenv("HOME"), MAX_PATH_LENGTH);
+  strlcat(cfg_path, "/.", MAX_PATH_LENGTH);
+  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
   mkdir(cfg_path,  S_IRWXU);
-  strcat(cfg_path, "/settings.xml");
+  strlcat(cfg_path, "/settings.xml", MAX_PATH_LENGTH);
 #endif
 
   cfgfile = fopeno(cfg_path, "wb");
@@ -2092,7 +2092,7 @@ void UI_Mainwindow::write_settings()
 
     fprintf(cfgfile, "      <datastartline>%i</datastartline>\n", import_annotations_var->datastartline);
 
-    xml_strcpy_encode_entity(str, import_annotations_var->separator);
+    xml_strlcpy_encode_entity(str, import_annotations_var->separator, 1024);
 
     fprintf(cfgfile, "      <separator>%s</separator>\n", str);
 
@@ -2102,7 +2102,7 @@ void UI_Mainwindow::write_settings()
 
     fprintf(cfgfile, "      <manualdescription>%i</manualdescription>\n", import_annotations_var->manualdescription);
 
-    xml_strcpy_encode_entity(str, import_annotations_var->description);
+    xml_strlcpy_encode_entity(str, import_annotations_var->description, 1024);
 
     fprintf(cfgfile, "      <description>%s</description>\n", str);
 
@@ -2176,7 +2176,7 @@ void UI_Mainwindow::write_settings()
 
     fprintf(cfgfile, "      <skipbytes>%i</skipbytes>\n", raw2edf_var.skipbytes);
 
-    xml_strcpy_encode_entity(str, raw2edf_var.phys_dim);
+    xml_strlcpy_encode_entity(str, raw2edf_var.phys_dim, 1024);
 
     fprintf(cfgfile, "      <phys_dim>%s</phys_dim>\n", str);
 

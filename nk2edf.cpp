@@ -43,8 +43,6 @@
 
 UI_NK2EDFwindow::UI_NK2EDFwindow(char *recent_dir)
 {
-  char txt_string[2048];
-
   recent_opendir = recent_dir;
 
   myobjectDialog = new QDialog;
@@ -73,8 +71,7 @@ UI_NK2EDFwindow::UI_NK2EDFwindow(char *recent_dir)
   textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
-  sprintf(txt_string, "Nihon Kohden to EDF(+) converter.\n");
-  textEdit1->append(txt_string);
+  textEdit1->append("Nihon Kohden to EDF(+) converter.\n");
 
   QObject::connect(pushButton1, SIGNAL(clicked()), this, SLOT(SelectFileButton()));
   QObject::connect(pushButton2, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
@@ -122,7 +119,7 @@ void UI_NK2EDFwindow::SelectFileButton()
 
   total_elapsed_time = 0;
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "EEG files (*.eeg *.EEG)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "EEG files (*.eeg *.EEG)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -193,12 +190,12 @@ void UI_NK2EDFwindow::SelectFileButton()
   {
     strncpy(logfilepath, path, MAX_PATH_LENGTH);
     remove_extension_from_filename(logfilepath);
-    strcat(logfilepath, ".LOG");
+    strlcat(logfilepath, ".LOG", MAX_PATH_LENGTH);
     logfile = fopeno(logfilepath, "rb");
     if(logfile==NULL)
     {
       remove_extension_from_filename(logfilepath);
-      strcat(logfilepath, ".log");
+      strlcat(logfilepath, ".log", MAX_PATH_LENGTH);
       logfile = fopeno(logfilepath, "rb");
       if(logfile==NULL)
       {
@@ -351,12 +348,12 @@ void UI_NK2EDFwindow::SelectFileButton()
 
     strncpy(pntfilepath, path, MAX_PATH_LENGTH);
     remove_extension_from_filename(logfilepath);
-    strcat(logfilepath, ".PNT");
+    strlcat(logfilepath, ".PNT", MAX_PATH_LENGTH);
     pntfile = fopeno(pntfilepath, "rb");
     if(pntfile==NULL)
     {
       remove_extension_from_filename(logfilepath);
-      strcat(logfilepath, ".pnt");
+      strlcat(logfilepath, ".pnt", MAX_PATH_LENGTH);
       pntfile = fopeno(pntfilepath, "rb");
       if(pntfile==NULL)
       {
@@ -404,62 +401,62 @@ void UI_NK2EDFwindow::SelectFileButton()
 
   for(i=0; i<256; i++)
   {
-    strcpy(labels[i], "-               ");
+    strlcpy(labels[i], "-               ", 17);
   }
 
-  strcpy(labels[0],   "EEG FP1         ");
-  strcpy(labels[1],   "EEG FP2         ");
-  strcpy(labels[2],   "EEG F3          ");
-  strcpy(labels[3],   "EEG F4          ");
-  strcpy(labels[4],   "EEG C3          ");
-  strcpy(labels[5],   "EEG C4          ");
-  strcpy(labels[6],   "EEG P3          ");
-  strcpy(labels[7],   "EEG P4          ");
-  strcpy(labels[8],   "EEG O1          ");
-  strcpy(labels[9],   "EEG O2          ");
-  strcpy(labels[10],  "EEG F7          ");
-  strcpy(labels[11],  "EEG F8          ");
-  strcpy(labels[12],  "EEG T3          ");
-  strcpy(labels[13],  "EEG T4          ");
-  strcpy(labels[14],  "EEG T5          ");
-  strcpy(labels[15],  "EEG T6          ");
-  strcpy(labels[16],  "EEG FZ          ");
-  strcpy(labels[17],  "EEG CZ          ");
-  strcpy(labels[18],  "EEG PZ          ");
-  strcpy(labels[19],  "EEG E           ");
-  strcpy(labels[20],  "EEG PG1         ");
-  strcpy(labels[21],  "EEG PG2         ");
-  strcpy(labels[22],  "EEG A1          ");
-  strcpy(labels[23],  "EEG A2          ");
-  strcpy(labels[24],  "EEG T1          ");
-  strcpy(labels[25],  "EEG T2          ");
+  strlcpy(labels[0],   "EEG FP1         ", 17);
+  strlcpy(labels[1],   "EEG FP2         ", 17);
+  strlcpy(labels[2],   "EEG F3          ", 17);
+  strlcpy(labels[3],   "EEG F4          ", 17);
+  strlcpy(labels[4],   "EEG C3          ", 17);
+  strlcpy(labels[5],   "EEG C4          ", 17);
+  strlcpy(labels[6],   "EEG P3          ", 17);
+  strlcpy(labels[7],   "EEG P4          ", 17);
+  strlcpy(labels[8],   "EEG O1          ", 17);
+  strlcpy(labels[9],   "EEG O2          ", 17);
+  strlcpy(labels[10],  "EEG F7          ", 17);
+  strlcpy(labels[11],  "EEG F8          ", 17);
+  strlcpy(labels[12],  "EEG T3          ", 17);
+  strlcpy(labels[13],  "EEG T4          ", 17);
+  strlcpy(labels[14],  "EEG T5          ", 17);
+  strlcpy(labels[15],  "EEG T6          ", 17);
+  strlcpy(labels[16],  "EEG FZ          ", 17);
+  strlcpy(labels[17],  "EEG CZ          ", 17);
+  strlcpy(labels[18],  "EEG PZ          ", 17);
+  strlcpy(labels[19],  "EEG E           ", 17);
+  strlcpy(labels[20],  "EEG PG1         ", 17);
+  strlcpy(labels[21],  "EEG PG2         ", 17);
+  strlcpy(labels[22],  "EEG A1          ", 17);
+  strlcpy(labels[23],  "EEG A2          ", 17);
+  strlcpy(labels[24],  "EEG T1          ", 17);
+  strlcpy(labels[25],  "EEG T2          ", 17);
   for(i=26; i<35; i++)
   {
-    sprintf(labels[i], "EEG X%i          ", i - 25);
+    snprintf(labels[i], 17, "EEG X%i          ", i - 25);
   }
-  strcpy(labels[35],  "EEG X10         ");
-  strcpy(labels[36],  "EEG X11         ");
+  strlcpy(labels[35],  "EEG X10         ", 17);
+  strlcpy(labels[36],  "EEG X11         ", 17);
   for(i=42; i<74; i++)
   {
-    sprintf(labels[i], "DC%02i            ", i - 41);
+    snprintf(labels[i], 17, "DC%02i            ", i - 41);
   }
-  strcpy(labels[74],  "EEG BN1         ");
-  strcpy(labels[75],  "EEG BN2         ");
-  strcpy(labels[76],  "EEG Mark1       ");
-  strcpy(labels[77],  "EEG Mark2       ");
-  strcpy(labels[100], "EEG X12/BP1     ");
-  strcpy(labels[101], "EEG X13/BP2     ");
-  strcpy(labels[102], "EEG X14/BP3     ");
-  strcpy(labels[103], "EEG X15/BP4     ");
+  strlcpy(labels[74],  "EEG BN1         ", 17);
+  strlcpy(labels[75],  "EEG BN2         ", 17);
+  strlcpy(labels[76],  "EEG Mark1       ", 17);
+  strlcpy(labels[77],  "EEG Mark2       ", 17);
+  strlcpy(labels[100], "EEG X12/BP1     ", 17);
+  strlcpy(labels[101], "EEG X13/BP2     ", 17);
+  strlcpy(labels[102], "EEG X14/BP3     ", 17);
+  strlcpy(labels[103], "EEG X15/BP4     ", 17);
   for(i=104; i<188; i++)
   {
-    sprintf(labels[i], "EEG X%i         ", i - 88);
+    snprintf(labels[i], 17, "EEG X%i         ", i - 88);
   }
   for(i=188; i<254; i++)
   {
-    sprintf(labels[i], "EEG X%i        ", i - 88);
+    snprintf(labels[i], 17, "EEG X%i        ", i - 88);
   }
-  strcpy(labels[255], "Z               ");
+  strlcpy(labels[255], "Z               ", 17);
 
   if(read_21e_file(path))
   {
@@ -541,9 +538,10 @@ void UI_NK2EDFwindow::SelectFileButton()
 
    /********************************************************************/
 
-      strcpy(outputpath, path);
-      if(edfplus)  sprintf(outputpath + strlen(path) - 4, "_%u-%u+.edf", i + 1, j + 1);
-      else  sprintf(outputpath + strlen(path) - 4, "_%u-%u.edf", i + 1, j + 1);
+      strlcpy(outputpath, path, MAX_PATH_LENGTH);
+      remove_extension_from_filename(outputpath);
+      if(edfplus)  snprintf(outputpath + strlen(outputpath), MAX_PATH_LENGTH - strlen(outputpath), "_%u-%u+.edf", i + 1, j + 1);
+      else  snprintf(outputpath + strlen(outputpath), MAX_PATH_LENGTH - strlen(outputpath), "_%u-%u.edf", i + 1, j + 1);
 
       outputfile = fopeno(outputpath, "wb");
       if(outputfile==NULL)
@@ -807,31 +805,31 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       temp = atoi(scratchpad);
       switch(temp)
       {
-        case  1 : strcpy(scratchpad, "JAN");
+        case  1 : strlcpy(scratchpad, "JAN", 256);
                   break;
-        case  2 : strcpy(scratchpad, "FEB");
+        case  2 : strlcpy(scratchpad, "FEB", 256);
                   break;
-        case  3 : strcpy(scratchpad, "MAR");
+        case  3 : strlcpy(scratchpad, "MAR", 256);
                   break;
-        case  4 : strcpy(scratchpad, "APR");
+        case  4 : strlcpy(scratchpad, "APR", 256);
                   break;
-        case  5 : strcpy(scratchpad, "MAY");
+        case  5 : strlcpy(scratchpad, "MAY", 256);
                   break;
-        case  6 : strcpy(scratchpad, "JUN");
+        case  6 : strlcpy(scratchpad, "JUN", 256);
                   break;
-        case  7 : strcpy(scratchpad, "JUL");
+        case  7 : strlcpy(scratchpad, "JUL", 256);
                   break;
-        case  8 : strcpy(scratchpad, "AUG");
+        case  8 : strlcpy(scratchpad, "AUG", 256);
                   break;
-        case  9 : strcpy(scratchpad, "SEP");
+        case  9 : strlcpy(scratchpad, "SEP", 256);
                   break;
-        case 10 : strcpy(scratchpad, "OCT");
+        case 10 : strlcpy(scratchpad, "OCT", 256);
                   break;
-        case 11 : strcpy(scratchpad, "NOV");
+        case 11 : strlcpy(scratchpad, "NOV", 256);
                   break;
-        case 12 : strcpy(scratchpad, "DEC");
+        case 12 : strlcpy(scratchpad, "DEC", 256);
                   break;
-        default : strcpy(scratchpad, "JAN");
+        default : strlcpy(scratchpad, "JAN", 256);
                   error = 1;
                   break;
       }
@@ -985,31 +983,31 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       temp = atoi(scratchpad);
       switch(temp)
       {
-        case  1 : strcpy(scratchpad, "JAN");
+        case  1 : strlcpy(scratchpad, "JAN", 256);
                   break;
-        case  2 : strcpy(scratchpad, "FEB");
+        case  2 : strlcpy(scratchpad, "FEB", 256);
                   break;
-        case  3 : strcpy(scratchpad, "MAR");
+        case  3 : strlcpy(scratchpad, "MAR", 256);
                   break;
-        case  4 : strcpy(scratchpad, "APR");
+        case  4 : strlcpy(scratchpad, "APR", 256);
                   break;
-        case  5 : strcpy(scratchpad, "MAY");
+        case  5 : strlcpy(scratchpad, "MAY", 256);
                   break;
-        case  6 : strcpy(scratchpad, "JUN");
+        case  6 : strlcpy(scratchpad, "JUN", 256);
                   break;
-        case  7 : strcpy(scratchpad, "JUL");
+        case  7 : strlcpy(scratchpad, "JUL", 256);
                   break;
-        case  8 : strcpy(scratchpad, "AUG");
+        case  8 : strlcpy(scratchpad, "AUG", 256);
                   break;
-        case  9 : strcpy(scratchpad, "SEP");
+        case  9 : strlcpy(scratchpad, "SEP", 256);
                   break;
-        case 10 : strcpy(scratchpad, "OCT");
+        case 10 : strlcpy(scratchpad, "OCT", 256);
                   break;
-        case 11 : strcpy(scratchpad, "NOV");
+        case 11 : strlcpy(scratchpad, "NOV", 256);
                   break;
-        case 12 : strcpy(scratchpad, "DEC");
+        case 12 : strlcpy(scratchpad, "DEC", 256);
                   break;
-        default : strcpy(scratchpad, "JAN");
+        default : strlcpy(scratchpad, "JAN", 256);
                   break;
       }
       if(fwrite(scratchpad, 3, 1, outputfile)!=1)
@@ -1352,7 +1350,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       {
         annotations = buf + (i * record_size) + (raster * channels);
         memset(annotations, 0, ANNOT_TRACKSIZE);
-        p = sprintf(annotations, "%+i.%i", seconds, deci_seconds);
+        p = snprintf(annotations, ANNOT_TRACKSIZE, "%+i.%i", seconds, deci_seconds);
         annotations[p++] = 20;
         annotations[p++] = 20;
         for( ;n_log_processed < n_logs; n_log_processed++)
@@ -1369,7 +1367,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
             if(elapsed_time<(record_duration / 10))
             {
               p++;
-              p += sprintf(annotations + p, "%+i", elapsed_time);
+              p += snprintf(annotations + p, ANNOT_TRACKSIZE - p, "%+i", elapsed_time);
               if(read_subevents)
               {
                 annotations[p] = '.';
@@ -1455,12 +1453,12 @@ int UI_NK2EDFwindow::read_21e_file(char *e21filepath)
 
 
   remove_extension_from_filename(e21filepath);
-  strcat(e21filepath, ".21E");
+  strlcat(e21filepath, ".21E", MAX_PATH_LENGTH);
   inputfile = fopeno(e21filepath, "rb");
   if(inputfile==NULL)
   {
     remove_extension_from_filename(e21filepath);
-    strcat(e21filepath, ".21e");
+    strlcat(e21filepath, ".21e", MAX_PATH_LENGTH);
     inputfile = fopeno(e21filepath, "rb");
     if(inputfile==NULL)
     {
@@ -1519,17 +1517,17 @@ int UI_NK2EDFwindow::read_21e_file(char *e21filepath)
             {
               strncpy(scratchpad, electrode_name, 16);
 
-              strcat(scratchpad, "                ");
+              strlcat(scratchpad, "                ", 64);
 
               latin1_to_ascii(scratchpad, 16);
 
               scratchpad[16] = 0;
 
-              strcpy(labels[idx], scratchpad);
+              strlcpy(labels[idx], scratchpad, 17);
             }
             else
             {
-              strcpy(labels[idx], "-               ");
+              strlcpy(labels[idx], "-               ", 17);
             }
           }
         }

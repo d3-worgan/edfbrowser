@@ -282,7 +282,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
   skipbytes = skipbytesSpinbox->value();
   raw2edf_var->skipbytes = skipbytes;
 
-  strcpy(raw2edf_var->phys_dim, PhysicalDimensionLineEdit->text().toLatin1().data());
+  strlcpy(raw2edf_var->phys_dim, PhysicalDimensionLineEdit->text().toLatin1().data(), 16);
   remove_leading_spaces(raw2edf_var->phys_dim);
   remove_trailing_spaces(raw2edf_var->phys_dim);
 
@@ -300,7 +300,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
     return;
   }
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Open data file", QString::fromLocal8Bit(recent_opendir), "All files (*)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Open data file", QString::fromLocal8Bit(recent_opendir), "All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -318,7 +318,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
   }
 
   remove_extension_from_filename(path);
-  strcat(path, ".edf");
+  strlcat(path, ".edf", MAX_PATH_LENGTH);
 
   hdl = edfopen_file_writeonly(path, EDFLIB_FILETYPE_EDFPLUS, chns);
 
@@ -426,7 +426,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
   for(i=0; i<chns; i++)
   {
-    sprintf(str, "ch. %i", i + 1);
+    snprintf(str, 1024, "ch. %i", i + 1);
 
     if(edf_set_label(hdl, i, str))
     {
@@ -625,7 +625,7 @@ END_1:
   fclose(inputfile);
   free(buf);
 
-  sprintf(str, "A new EDF file has been created:\n\n%.980s", path);
+  snprintf(str, 1024, "A new EDF file has been created:\n\n%.980s", path);
   QMessageBox messagewindow(QMessageBox::Information, "Ready", str);
   messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
   messagewindow.exec();
@@ -659,19 +659,19 @@ void UI_RAW2EDFapp::savebuttonpressed()
 
   raw2edf_var->skipbytes = skipbytesSpinbox->value();
 
-  strcpy(raw2edf_var->phys_dim, PhysicalDimensionLineEdit->text().toLatin1().data());
+  strlcpy(raw2edf_var->phys_dim, PhysicalDimensionLineEdit->text().toLatin1().data(), 16);
   remove_leading_spaces(raw2edf_var->phys_dim);
   remove_trailing_spaces(raw2edf_var->phys_dim);
 
   path[0] = 0;
   if(recent_savedir[0]!=0)
   {
-    strcpy(path, recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, recent_savedir, MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
-  strcat(path, "binary_to_edf.template");
+  strlcat(path, "binary_to_edf.template", MAX_PATH_LENGTH);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Save parameters", QString::fromLocal8Bit(path), "Template files (*.template *.TEMPLATE)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Save parameters", QString::fromLocal8Bit(path), "Template files (*.template *.TEMPLATE)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -708,7 +708,7 @@ void UI_RAW2EDFapp::savebuttonpressed()
 
   fprintf(outputfile, "  <skipbytes>%i</skipbytes>\n", raw2edf_var->skipbytes);
 
-  xml_strcpy_encode_entity(str, raw2edf_var->phys_dim);
+  xml_strlcpy_encode_entity(str, raw2edf_var->phys_dim, 128);
 
   fprintf(outputfile, "  <phys_dim>%s</phys_dim>\n", str);
 
@@ -726,7 +726,7 @@ void UI_RAW2EDFapp::loadbuttonpressed()
 
   struct xml_handle *xml_hdl;
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Load parameters", QString::fromLocal8Bit(recent_opendir), "Template files (*.template *.TEMPLATE)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Load parameters", QString::fromLocal8Bit(recent_opendir), "Template files (*.template *.TEMPLATE)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -973,9 +973,9 @@ void UI_RAW2EDFapp::helpbuttonpressed()
 #ifdef Q_OS_WIN32
   char p_path[MAX_PATH_LENGTH];
 
-  strcpy(p_path, "file:///");
-  strcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
-  strcat(p_path, "\\EDFbrowser\\manual.html#Binary_to_EDF");
+  strlcpy(p_path, "file:///", MAX_PATH_LENGTH);
+  strlcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcat(p_path, "\\EDFbrowser\\manual.html#Binary_to_EDF", MAX_PATH_LENGTH);
   QDesktopServices::openUrl(QUrl(p_path));
 #endif
 }
