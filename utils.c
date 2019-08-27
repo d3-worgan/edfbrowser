@@ -1497,18 +1497,20 @@ void bintoascii(char *str)
 
 void bintohex(char *str)
 {
-  int i, len;
+  int i, len, newlen;
 
   char scratchpad[16];
 
-  len = strlen(str) / 8;
+  len = strlen(str);
 
-  for(i=0; i<len; i++)
+  newlen = len / 8;
+
+  for(i=0; i<newlen; i++)
   {
     strncpy(scratchpad, str + (i * 8), 8);
     scratchpad[8] = 0;
 
-    sprintf(str + (i * 2), "%02x", (unsigned int)strtol(scratchpad, NULL, 2));
+    snprintf(str + (i * 2), len, "%02x", (unsigned int)strtol(scratchpad, NULL, 2));
   }
 
   str[i * 2] = 0;
