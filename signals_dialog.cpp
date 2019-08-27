@@ -201,7 +201,7 @@ void UI_Signalswindow::DisplayCompButtonClicked()
 
   for(i=0; i<n; i++)
   {
-    strcpy(str, compositionlist->item(i)->text().toLatin1().data());
+    strlcpy(str, compositionlist->item(i)->text().toLatin1().data(), 512);
 
     for(j=0; j<newsignalcomp->edfhdr->edfsignals; j++)
     {
@@ -214,20 +214,20 @@ void UI_Signalswindow::DisplayCompButtonClicked()
         if(str[3]=='-')
         {
           newsignalcomp->factor[i] = -(newsignalcomp->factor[i]);
-          strcat(newsignalcomp->signallabel, "- ");
+          strlcat(newsignalcomp->signallabel, "- ", 512);
         }
         else
         {
           if(i)
           {
-            strcat(newsignalcomp->signallabel, "+ ");
+            strlcat(newsignalcomp->signallabel, "+ ", 512);
           }
         }
-        strcpy(str2, newsignalcomp->edfhdr->edfparam[j].label);
+        strlcpy(str2, newsignalcomp->edfhdr->edfparam[j].label, 128);
         strip_types_from_label(str2);
-        strcat(newsignalcomp->signallabel, str2);
+        strlcat(newsignalcomp->signallabel, str2, 512);
         remove_trailing_spaces(newsignalcomp->signallabel);
-        strcat(newsignalcomp->signallabel, " ");
+        strlcat(newsignalcomp->signallabel, " ", 512);
 
         if(newsignalcomp->edfhdr->edfparam[j].bitvalue < 0.0)
         {
@@ -241,7 +241,7 @@ void UI_Signalswindow::DisplayCompButtonClicked()
   remove_trailing_spaces(newsignalcomp->signallabel);
   newsignalcomp->signallabellen = strlen(newsignalcomp->signallabel);
 
-  strcpy(newsignalcomp->physdimension, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension);
+  strlcpy(newsignalcomp->physdimension, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension, 9);
   remove_trailing_spaces(newsignalcomp->physdimension);
 
   mainwindow->signalcomp[mainwindow->signalcomps] = newsignalcomp;
@@ -311,7 +311,7 @@ void UI_Signalswindow::DisplayButtonClicked()
     }
     newsignalcomp->sensitivity[0] = newsignalcomp->edfhdr->edfparam[s].bitvalue / ((double)newsignalcomp->voltpercm * mainwindow->pixelsizefactor);
 
-    strcpy(newsignalcomp->signallabel, newsignalcomp->edfhdr->edfparam[s].label);
+    strlcpy(newsignalcomp->signallabel, newsignalcomp->edfhdr->edfparam[s].label, 256);
     strip_types_from_label(newsignalcomp->signallabel);
     remove_trailing_spaces(newsignalcomp->signallabel);
 
@@ -319,7 +319,7 @@ void UI_Signalswindow::DisplayButtonClicked()
 
     newsignalcomp->signallabellen = strlen(newsignalcomp->signallabel);
 
-    strcpy(newsignalcomp->physdimension, newsignalcomp->edfhdr->edfparam[s].physdimension);
+    strlcpy(newsignalcomp->physdimension, newsignalcomp->edfhdr->edfparam[s].physdimension, 9);
     remove_trailing_spaces(newsignalcomp->physdimension);
 
     mainwindow->signalcomp[mainwindow->signalcomps] = newsignalcomp;
@@ -430,7 +430,7 @@ void UI_Signalswindow::AddButtonClicked()
     }
     else
     {
-      strcpy(physdimension, mainwindow->edfheaderlist[row]->edfparam[s].physdimension);
+      strlcpy(physdimension, mainwindow->edfheaderlist[row]->edfparam[s].physdimension, 64);
     }
 
     if(bitvalue!=0.0)
@@ -459,7 +459,7 @@ void UI_Signalswindow::AddButtonClicked()
     for(j=0; j<k; j++)
     {
       item = compositionlist->item(j);
-      strcpy(str, item->text().toLatin1().data());
+      strlcpy(str, item->text().toLatin1().data(), 256);
       if(!strncmp(mainwindow->edfheaderlist[row]->edfparam[s].label, str + 5, 16))
       {
         if(str[3]=='+')
@@ -482,11 +482,11 @@ void UI_Signalswindow::AddButtonClicked()
     else
     {
       snprintf(str, 200, "%-2i + ", row + 1);
-      strcat(str, mainwindow->edfheaderlist[row]->edfparam[s].label);
-      strcat(str, " x1 ");
+      strlcat(str, mainwindow->edfheaderlist[row]->edfparam[s].label, 256);
+      strlcat(str, " x1 ", 256);
       convert_to_metric_suffix(str + strlen(str), mainwindow->edfheaderlist[row]->edfparam[s].sf_f, 3);
       remove_trailing_zeros(str);
-      strcat(str, "Hz");
+      strlcat(str, "Hz", 256);
       item = new QListWidgetItem;
       item->setData(Qt::UserRole, QVariant(s));
       item->setText(str);
@@ -562,7 +562,7 @@ void UI_Signalswindow::SubtractButtonClicked()
     }
     else
     {
-      strcpy(physdimension, mainwindow->edfheaderlist[row]->edfparam[s].physdimension);
+      strlcpy(physdimension, mainwindow->edfheaderlist[row]->edfparam[s].physdimension, 64);
     }
 
     if(bitvalue!=0.0)
@@ -591,7 +591,7 @@ void UI_Signalswindow::SubtractButtonClicked()
     for(j=0; j<k; j++)
     {
       item = compositionlist->item(j);
-      strcpy(str, item->text().toLatin1().data());
+      strlcpy(str, item->text().toLatin1().data(), 256);
       if(!strncmp(mainwindow->edfheaderlist[row]->edfparam[s].label, str + 5, 16))
       {
         if(str[3]=='-')
@@ -611,11 +611,11 @@ void UI_Signalswindow::SubtractButtonClicked()
     else
     {
       snprintf(str, 200, "%-2i - ", row + 1);
-      strcat(str, mainwindow->edfheaderlist[row]->edfparam[s].label);
-      strcat(str, " x1 ");
+      strlcat(str, mainwindow->edfheaderlist[row]->edfparam[s].label, 256);
+      strlcat(str, " x1 ", 256);
       convert_to_metric_suffix(str + strlen(str), mainwindow->edfheaderlist[row]->edfparam[s].sf_f, 3);
       remove_trailing_zeros(str);
-      strcat(str, "Hz");
+      strlcat(str, "Hz", 256);
       item = new QListWidgetItem;
       item->setData(Qt::UserRole, QVariant(s));
       item->setText(str);
@@ -647,21 +647,21 @@ void UI_Signalswindow::show_signals(int row)
 
   if((mainwindow->edfheaderlist[row]->edfplus)||(mainwindow->edfheaderlist[row]->bdfplus))
   {
-    strcpy(str, "Subject    ");
-    strcat(str, mainwindow->edfheaderlist[row]->plus_patient_name);
-    strcat(str, "  ");
-    strcat(str, mainwindow->edfheaderlist[row]->plus_birthdate);
-    strcat(str, "  ");
-    strcat(str, mainwindow->edfheaderlist[row]->plus_patientcode);
+    strlcpy(str, "Subject    ", 256);
+    strlcat(str, mainwindow->edfheaderlist[row]->plus_patient_name, 256);
+    strlcat(str, "  ", 256);
+    strlcat(str, mainwindow->edfheaderlist[row]->plus_birthdate, 256);
+    strlcat(str, "  ", 256);
+    strlcat(str, mainwindow->edfheaderlist[row]->plus_patientcode, 256);
     label1->setText(str);
-    strcpy(str, "Recording  ");
-    strcat(str, mainwindow->edfheaderlist[row]->plus_admincode);
+    strlcpy(str, "Recording  ", 256);
+    strlcat(str, mainwindow->edfheaderlist[row]->plus_admincode, 256);
     label2->setText(str);
   }
   else
   {
-    strcpy(str, "Subject    ");
-    strcat(str, mainwindow->edfheaderlist[row]->patient);
+    strlcpy(str, "Subject    ", 256);
+    strlcat(str, mainwindow->edfheaderlist[row]->patient, 256);
     len = strlen(str);
     for(j=0; j<len; j++)
     {
@@ -671,8 +671,8 @@ void UI_Signalswindow::show_signals(int row)
       }
     }
     label1->setText(str);
-    strcpy(str, "Recording  ");
-    strcat(str, mainwindow->edfheaderlist[row]->recording);
+    strlcpy(str, "Recording  ", 256);
+    strlcat(str, mainwindow->edfheaderlist[row]->recording, 256);
     len = strlen(str);
     for(j=0; j<len; j++)
     {
@@ -700,7 +700,7 @@ void UI_Signalswindow::show_signals(int row)
 
   label3->setText(str);
 
-  strcpy(str, "Duration   ");
+  strlcpy(str, "Duration   ", 256);
   file_duration = mainwindow->edfheaderlist[row]->long_data_record_duration * mainwindow->edfheaderlist[row]->datarecords;
   if((file_duration / TIME_DIMENSION) / 10)
   {
@@ -745,11 +745,11 @@ void UI_Signalswindow::show_signals(int row)
     }
 
     snprintf(str, 256, "%-3i ", i + 1);
-    strcat(str, mainwindow->edfheaderlist[row]->edfparam[i].label);
-    strcat(str, "   ");
+    strlcat(str, mainwindow->edfheaderlist[row]->edfparam[i].label, 256);
+    strlcat(str, "   ", 256);
     convert_to_metric_suffix(str + strlen(str), mainwindow->edfheaderlist[row]->edfparam[i].sf_f, 6);
     remove_trailing_zeros(str);
-    strcat(str, "Hz");
+    strlcat(str, "Hz", 256);
     item = new QListWidgetItem;
     item->setText(str);
     item->setData(Qt::UserRole, QVariant(i));

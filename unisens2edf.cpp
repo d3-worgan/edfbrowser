@@ -65,8 +65,6 @@
 
 UI_UNISENS2EDFwindow::UI_UNISENS2EDFwindow(char *recent_dir, char *save_dir)
 {
-  char txt_string[2048];
-
   recent_opendir = recent_dir;
   recent_savedir = save_dir;
 
@@ -91,8 +89,7 @@ UI_UNISENS2EDFwindow::UI_UNISENS2EDFwindow(char *recent_dir, char *save_dir)
   textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
-  sprintf(txt_string, "Unisens to EDF+ converter.\n");
-  textEdit1->append(txt_string);
+  textEdit1->append("Unisens to EDF+ converter.\n");
 
   QObject::connect(pushButton1, SIGNAL(clicked()), this,           SLOT(SelectFileButton()));
   QObject::connect(pushButton2, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
@@ -129,7 +126,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
   struct xml_handle *xml_hdl;
 
 
-  strcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "XML files (*.xml *.XML)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "XML files (*.xml *.XML)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -142,12 +139,12 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
   if(xml_hdl == NULL)
   {
-    sprintf(scratchpad, "Error, can not open file:\n%s\n", path);
+    snprintf(scratchpad, 2048, "Error, can not open file:\n%s\n", path);
     textEdit1->append(QString::fromLocal8Bit(scratchpad));
     return;
   }
 
-  sprintf(scratchpad, "Processing file:\n%s", path);
+  snprintf(scratchpad, 2048, "Processing file:\n%s", path);
   textEdit1->append(QString::fromLocal8Bit(scratchpad));
 
   char_encoding = xml_hdl->encoding;
@@ -469,13 +466,13 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
     get_directory_from_path(binfilepath, path, MAX_PATH_LENGTH);
 
-    strcat(binfilepath, "/");
-    strcat(binfilepath, binfilename[file_cnt]);
+    strlcat(binfilepath, "/", MAX_PATH_LENGTH);
+    strlcat(binfilepath, binfilename[file_cnt], MAX_PATH_LENGTH);
 
     binfile[file_cnt] = fopeno(binfilepath, "rb");
     if(binfile[file_cnt] == NULL)
     {
-      sprintf(scratchpad, "Error, can not open file:\n%s\n", binfilepath);
+      snprintf(scratchpad, 2048, "Error, can not open file:\n%s\n", binfilepath);
       textEdit1->append(QString::fromLocal8Bit(scratchpad));
       xml_close(xml_hdl);
       for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
@@ -662,13 +659,13 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
     get_directory_from_path(binfilepath, path, MAX_PATH_LENGTH);
 
-    strcat(binfilepath, "/");
-    strcat(binfilepath, binfilename[file_cnt]);
+    strlcat(binfilepath, "/", MAX_PATH_LENGTH);
+    strlcat(binfilepath, binfilename[file_cnt], MAX_PATH_LENGTH);
 
     binfile[file_cnt] = fopeno(binfilepath, "rb");
     if(binfile[file_cnt] == NULL)
     {
-      sprintf(scratchpad, "Error, can not open binary file:\n%s", binfilepath);
+      snprintf(scratchpad, 2048, "Error, can not open binary file:\n%s", binfilepath);
       textEdit1->append(QString::fromLocal8Bit(scratchpad));
       xml_close(xml_hdl);
       for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
@@ -932,16 +929,16 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
   outputfilename[0] = 0;
   if(recent_savedir[0]!=0)
   {
-    strcpy(outputfilename, recent_savedir);
-    strcat(outputfilename, "/");
+    strlcpy(outputfilename, recent_savedir, MAX_PATH_LENGTH);
+    strlcat(outputfilename, "/", MAX_PATH_LENGTH);
   }
-  strcat(outputfilename, str_measurementId);
+  strlcat(outputfilename, str_measurementId, MAX_PATH_LENGTH);
   remove_extension_from_filename(outputfilename);
   if(bdf == 1)
   {
-    strcat(outputfilename, ".bdf");
+    strlcat(outputfilename, ".bdf", MAX_PATH_LENGTH);
 
-    strcpy(outputfilename, QFileDialog::getSaveFileName(0, "Select outputfile", QString::fromLocal8Bit(outputfilename), "BDF files (*.bdf *.BDF)").toLocal8Bit().data());
+    strlcpy(outputfilename, QFileDialog::getSaveFileName(0, "Select outputfile", QString::fromLocal8Bit(outputfilename), "BDF files (*.bdf *.BDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
     if(!strcmp(outputfilename, ""))
     {
@@ -956,9 +953,9 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
   }
   else
   {
-    strcat(outputfilename, ".edf");
+    strlcat(outputfilename, ".edf", MAX_PATH_LENGTH);
 
-    strcpy(outputfilename, QFileDialog::getSaveFileName(0, "Select outputfile", QString::fromLocal8Bit(outputfilename), "EDF files (*.edf *.EDF)").toLocal8Bit().data());
+    strlcpy(outputfilename, QFileDialog::getSaveFileName(0, "Select outputfile", QString::fromLocal8Bit(outputfilename), "EDF files (*.edf *.EDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
     if(!strcmp(outputfilename, ""))
     {
@@ -1757,14 +1754,14 @@ int UI_UNISENS2EDFwindow::get_events_from_csv_files(int max_files, int edf_hdl, 
   {
     get_directory_from_path(csvfilepath, path, MAX_PATH_LENGTH);
 
-    strcat(csvfilepath, "/");
-    strcat(csvfilepath, evtfilename[k]);
+    strlcat(csvfilepath, "/", MAX_PATH_LENGTH);
+    strlcat(csvfilepath, evtfilename[k], MAX_PATH_LENGTH);
 
     csvfile = fopeno(csvfilepath, "rb");
     if(csvfile == NULL)
     {
       progress.reset();
-      sprintf(scratchpad, "Error, can not open csv file:\n%s\n", evtfilename[k]);
+      snprintf(scratchpad, 2048, "Error, can not open csv file:\n%s\n", evtfilename[k]);
       textEdit1->append(QString::fromLocal8Bit(scratchpad));
       return 1;
     }
@@ -1900,13 +1897,13 @@ int UI_UNISENS2EDFwindow::count_events_from_csv_files(int max_files, const char 
   {
     get_directory_from_path(csvfilepath, path, MAX_PATH_LENGTH);
 
-    strcat(csvfilepath, "/");
-    strcat(csvfilepath, evtfilename[k]);
+    strlcat(csvfilepath, "/", MAX_PATH_LENGTH);
+    strlcat(csvfilepath, evtfilename[k], MAX_PATH_LENGTH);
 
     csvfile = fopeno(csvfilepath, "rb");
     if(csvfile == NULL)
     {
-      sprintf(scratchpad, "Error, can not open csv file:\n%s\n", evtfilename[k]);
+      snprintf(scratchpad, 2048, "Error, can not open csv file:\n%s\n", evtfilename[k]);
       textEdit1->append(QString::fromLocal8Bit(scratchpad));
       return 1;
     }
@@ -1963,11 +1960,11 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
 
   if(xml_get_attribute_of_element(xml_hdl, "unit", str, 255) < 0)
   {
-    strcpy(physdim[file_nr], "X");
+    strlcpy(physdim[file_nr], "X", 9);
   }
   else if(strlen(str) < 1)
     {
-      strcpy(physdim[file_nr], "X");
+      strlcpy(physdim[file_nr], "X", 9);
     }
     else if(char_encoding == 1)  // Latin-1
       {
@@ -2196,7 +2193,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
                       }
                       else
                       {
-                        snprintf(scratchpad, 2047, "Error, unsupported combination of datatype: %s and csv file\n", str);
+                        snprintf(scratchpad, 2048, "Error, unsupported combination of datatype: %s and csv file\n", str);
                         textEdit1->append(scratchpad);
                         return 1;
                       }
@@ -2333,7 +2330,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
                           }
                           else
                           {
-                            snprintf(scratchpad, 2047, "Error, unsupported combination of datatype: %s and binary file\n", str);
+                            snprintf(scratchpad, 2048, "Error, unsupported combination of datatype: %s and binary file\n", str);
                             textEdit1->append(scratchpad);
                             return 1;
                           }

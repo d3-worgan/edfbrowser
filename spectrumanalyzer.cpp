@@ -141,7 +141,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   remove_trailing_zeros(signallabel);
 
-  strcpy(physdimension, signalcomp->physdimension);
+  strlcpy(physdimension, signalcomp->physdimension, 9);
 
   SpectrumDialog = new QDialog();
   SpectrumDialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -171,7 +171,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   {
     if(mainwindow->spectrum_vlog)
     {
-      sprintf(str, "log10(%s)", physdimension);
+      snprintf(str, 2048, "log10(%s)", physdimension);
 
       curve1->setV_label(str);
     }
@@ -184,11 +184,11 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   {
     if(mainwindow->spectrum_vlog)
     {
-      sprintf(str, "log10((%s)^2/Hz)", physdimension);
+      snprintf(str, 2048, "log10((%s)^2/Hz)", physdimension);
     }
     else
     {
-      sprintf(str, "(%s)^2/Hz", physdimension);
+      snprintf(str, 2048, "(%s)^2/Hz", physdimension);
     }
 
     curve1->setV_label(str);
@@ -549,12 +549,12 @@ void UI_FreqSpectrumWindow::print_to_txt()
   path[0] = 0;
   if(mainwindow->recent_savedir[0]!=0)
   {
-    strcpy(path, mainwindow->recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, mainwindow->recent_savedir, MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
-  strcat(path, "spectrum.txt");
+  strlcat(path, "spectrum.txt", MAX_PATH_LENGTH);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Export to text (ASCII)", QString::fromLocal8Bit(path), "Text files (*.txt *.TXT)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Export to text (ASCII)", QString::fromLocal8Bit(path), "Text files (*.txt *.TXT)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -572,9 +572,7 @@ void UI_FreqSpectrumWindow::print_to_txt()
     return;
   }
 
-  sprintf(str, "FFT Power Spectral Density log10(Power/%fHz)\n", freqstep);
-  remove_trailing_zeros(str);
-  fprintf(outputfile, "%s", str);
+  fprintf(outputfile, "FFT Power Spectral Density (Power/%fHz)\n", freqstep);
   if(signalcomp->alias[0] != 0)
   {
     fprintf(outputfile, "Signal: %s\n", signalcomp->alias);
@@ -583,33 +581,43 @@ void UI_FreqSpectrumWindow::print_to_txt()
   {
     fprintf(outputfile, "Signal: %s\n", signalcomp->signallabel);
   }
-  sprintf(str, "FFT blocksize: %i\n", fft_data->dft_sz);
+  fprintf(outputfile, "FFT blocksize: %i\n", fft_data->dft_sz);
   switch(fft_data->wndw_type)
   {
-    case FFT_WNDW_TYPE_RECT                  : sprintf(str, "FFT window function: None\n");
+    case FFT_WNDW_TYPE_RECT                  : fprintf(outputfile, "FFT window function: None\n");
             break;
-    case FFT_WNDW_TYPE_HAMMING               : sprintf(str, "FFT window function: Hamming\n");
+    case FFT_WNDW_TYPE_HAMMING               : fprintf(outputfile, "FFT window function: Hamming\n");
             break;
-    case FFT_WNDW_TYPE_4TERM_BLACKMANHARRIS  : sprintf(str, "FFT window function: 4-term Blackman-Harris\n");
+    case FFT_WNDW_TYPE_4TERM_BLACKMANHARRIS  : fprintf(outputfile, "FFT window function: 4-term Blackman-Harris\n");
             break;
-    case FFT_WNDW_TYPE_7TERM_BLACKMANHARRIS  : sprintf(str, "FFT window function: 7-term Blackman-Harris\n");
+    case FFT_WNDW_TYPE_7TERM_BLACKMANHARRIS  : fprintf(outputfile, "FFT window function: 7-term Blackman-Harris\n");
             break;
-    case FFT_WNDW_TYPE_NUTTALL3B             : sprintf(str, "FFT window function: Nuttall3b\n");
+    case FFT_WNDW_TYPE_NUTTALL3B             : fprintf(outputfile, "FFT window function: Nuttall3b\n");
             break;
-    case FFT_WNDW_TYPE_NUTTALL4C             : sprintf(str, "FFT window function: Nuttall4c\n");
+    case FFT_WNDW_TYPE_NUTTALL4C             : fprintf(outputfile, "FFT window function: Nuttall4c\n");
             break;
-    case FFT_WNDW_TYPE_HANN                  : sprintf(str, "FFT window function: Hann\n");
+    case FFT_WNDW_TYPE_HANN                  : fprintf(outputfile, "FFT window function: Hann\n");
             break;
-    case FFT_WNDW_TYPE_HFT223D               : sprintf(str, "FFT window function: HFT223D\n");
+    case FFT_WNDW_TYPE_HFT223D               : fprintf(outputfile, "FFT window function: HFT223D\n");
             break;
   }
-  sprintf(str + strlen(str), "Overlap: %i %%\n", overlap);
-  sprintf(str + strlen(str), "FFT resolution: %f Hz\n", freqstep);
-  sprintf(str + strlen(str), "Data Samples: %i\n", fft_data->sz_in);
-  sprintf(str + strlen(str), "Power Samples: %i\n", fft_data->sz_out);
-  sprintf(str + strlen(str), "Samplefrequency: %f Hz\n", signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f);
-  remove_trailing_zeros(str);
-  fprintf(outputfile, "%s", str);
+  switch(overlap)
+  {
+    case 1 : fprintf(outputfile, "Overlap: 0 %%\n");
+             break;
+    case 2 : fprintf(outputfile, "Overlap: 50 %%\n");
+             break;
+    case 3 : fprintf(outputfile, "Overlap: 67 %%\n");
+             break;
+    case 4 : fprintf(outputfile, "Overlap: 75 %%\n");
+             break;
+    case 5 : fprintf(outputfile, "Overlap: 80 %%\n");
+             break;
+  }
+  fprintf(outputfile, "FFT resolution: %f Hz\n", freqstep);
+  fprintf(outputfile, "Data Samples: %i\n", fft_data->sz_in);
+  fprintf(outputfile, "Power Samples: %i\n", fft_data->sz_out);
+  fprintf(outputfile, "Samplefrequency: %f Hz\n", signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f);
 
   for(i=0; i<fft_data->sz_out; i++)
   {
@@ -651,13 +659,13 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
   {
     mainwindow->spectrum_sqrt = 1;
 
-    sprintf(str, "Amplitude Spectrum %s", signallabel);
+    snprintf(str, 2048, "Amplitude Spectrum %s", signallabel);
 
     SpectrumDialog->setWindowTitle(str);
 
     if(mainwindow->spectrum_vlog)
     {
-      sprintf(str, "log10(%s)", physdimension);
+      snprintf(str, 2048, "log10(%s)", physdimension);
 
       curve1->setV_label(str);
     }
@@ -670,17 +678,17 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
   {
     mainwindow->spectrum_sqrt = 0;
 
-    sprintf(str, "Power Spectral Density %s", signallabel);
+    snprintf(str, 2048, "Power Spectral Density %s", signallabel);
 
     SpectrumDialog->setWindowTitle(str);
 
     if(mainwindow->spectrum_vlog)
     {
-      sprintf(str, "log10((%s)^2/Hz)", physdimension);
+      snprintf(str, 2048, "log10((%s)^2/Hz)", physdimension);
     }
     else
     {
-      sprintf(str, "(%s)^2/Hz", physdimension);
+      snprintf(str, 2048, "(%s)^2/Hz", physdimension);
     }
 
     curve1->setV_label(str);
@@ -761,16 +769,16 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
 
   curve1->setH_RulerValues(start_freq, max_freq);
 
-  strcpy(str, "Center ");
+  strlcpy(str, "Center ", 2048);
   convert_to_metric_suffix(str + strlen(str), start_freq + ((max_freq - start_freq) / 2.0), 3);
   remove_trailing_zeros(str);
-  strcat(str, "Hz");
+  strlcat(str, "Hz", 2048);
   centerLabel->setText(str);
 
-  strcpy(str, "Span ");
+  strlcpy(str, "Span ", 2048);
   convert_to_metric_suffix(str + strlen(str), max_freq - start_freq, 3);
   remove_trailing_zeros(str);
-  strcat(str, "Hz");
+  strlcat(str, "Hz", 2048);
   spanLabel->setText(str);
 }
 
@@ -1224,7 +1232,7 @@ void UI_FreqSpectrumWindow::thr_finished_func()
   {
     QApplication::restoreOverrideCursor();
 
-    sprintf(str,
+    snprintf(str, 4096,
             "The system was not able to provide enough resources (memory) to perform the requested action. (%i)",
             malloc_err);
 
@@ -1238,10 +1246,10 @@ void UI_FreqSpectrumWindow::thr_finished_func()
     return;
   }
 
-  strcpy(str, "FFT resolution: ");
+  strlcpy(str, "FFT resolution: ", 4096);
   convert_to_metric_suffix(str + strlen(str), freqstep, 3);
   remove_trailing_zeros(str);
-  sprintf(str + strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks_processed, fft_data->dft_sz);
+  snprintf(str + strlen(str), 4096 - strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks_processed, fft_data->dft_sz);
 
   curve1->setUpperLabel1(str);
 

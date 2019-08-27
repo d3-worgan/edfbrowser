@@ -457,9 +457,9 @@ void UI_SignalChooser::signalDelete()
 
       mainwindow->signalcomp[sigcomp_nr]->ecg_filter = NULL;
 
-      strcpy(mainwindow->signalcomp[sigcomp_nr]->signallabel, mainwindow->signalcomp[sigcomp_nr]->signallabel_bu);
+      strlcpy(mainwindow->signalcomp[sigcomp_nr]->signallabel, mainwindow->signalcomp[sigcomp_nr]->signallabel_bu, 512);
       mainwindow->signalcomp[sigcomp_nr]->signallabellen = mainwindow->signalcomp[sigcomp_nr]->signallabellen_bu;
-      strcpy(mainwindow->signalcomp[sigcomp_nr]->physdimension, mainwindow->signalcomp[sigcomp_nr]->physdimension_bu);
+      strlcpy(mainwindow->signalcomp[sigcomp_nr]->physdimension, mainwindow->signalcomp[sigcomp_nr]->physdimension_bu, 512);
     }
 
     for(j=0; j<mainwindow->signalcomp[sigcomp_nr]->fidfilter_cnt; j++)

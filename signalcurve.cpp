@@ -594,12 +594,12 @@ void SignalCurve::print_to_ascii()
   path[0] = 0;
   if(recent_savedir[0]!=0)
   {
-    strcpy(path, recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, recent_savedir, SC_MAX_PATH_LEN);
+    strlcat(path, "/", SC_MAX_PATH_LEN);
   }
-  strcat(path, "curve.csv");
+  strlcat(path, "curve.csv", SC_MAX_PATH_LEN);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Print to ASCII / CSV", QString::fromLocal8Bit(path), "ASCII / CSV files (*.csv *.CSV *.txt *.TXT)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Print to ASCII / CSV", QString::fromLocal8Bit(path), "ASCII / CSV files (*.csv *.CSV *.txt *.TXT)").toLocal8Bit().data(), SC_MAX_PATH_LEN);
 
   if(!strcmp(path, ""))
   {
@@ -656,12 +656,12 @@ void SignalCurve::print_to_postscript()
   path[0] = 0;
   if(recent_savedir[0]!=0)
   {
-    strcpy(path, recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, recent_savedir, SC_MAX_PATH_LEN);
+    strlcat(path, "/", SC_MAX_PATH_LEN);
   }
-  strcat(path, "curve.ps");
+  strlcat(path, "curve.ps", SC_MAX_PATH_LEN);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Print to PostScript", QString::fromLocal8Bit(path), "PostScript files (*.ps *.PS)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Print to PostScript", QString::fromLocal8Bit(path), "PostScript files (*.ps *.PS)").toLocal8Bit().data(), SC_MAX_PATH_LEN);
 
   if(!strcmp(path, ""))
   {
@@ -699,12 +699,12 @@ void SignalCurve::print_to_pdf()
   path[0] = 0;
   if(recent_savedir[0]!=0)
   {
-    strcpy(path, recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, recent_savedir, SC_MAX_PATH_LEN);
+    strlcat(path, "/", SC_MAX_PATH_LEN);
   }
-  strcat(path, "curve.pdf");
+  strlcat(path, "curve.pdf", SC_MAX_PATH_LEN);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Print to PDF", QString::fromLocal8Bit(path), "PDF files (*.pdf *.PDF)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Print to PDF", QString::fromLocal8Bit(path), "PDF files (*.pdf *.PDF)").toLocal8Bit().data(), SC_MAX_PATH_LEN);
 
   if(!strcmp(path, ""))
   {
@@ -744,12 +744,12 @@ void SignalCurve::print_to_image()
   path[0] = 0;
   if(recent_savedir[0]!=0)
   {
-    strcpy(path, recent_savedir);
-    strcat(path, "/");
+    strlcpy(path, recent_savedir, SC_MAX_PATH_LEN);
+    strlcat(path, "/", SC_MAX_PATH_LEN);
   }
-  strcat(path, "curve.png");
+  strlcat(path, "curve.png", SC_MAX_PATH_LEN);
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Print to Image", QString::fromLocal8Bit(path), "PNG files (*.png *.PNG)").toLocal8Bit().data());
+  strlcpy(path, QFileDialog::getSaveFileName(0, "Print to Image", QString::fromLocal8Bit(path), "PNG files (*.png *.PNG)").toLocal8Bit().data(), SC_MAX_PATH_LEN);
 
   if(!strcmp(path, ""))
   {
@@ -1332,7 +1332,7 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
     snprintf(str, 128, "%f", crosshair_1_value);
     painter->drawText((crosshair_1_x_position + 8) * p_factor, (crosshair_1_y_position - 10) * p_factor, str);
     convert_to_metric_suffix(str, crosshair_1_value_2, 3);
-    strcat(str, h_label);
+    strlcat(str, h_label, 128);
     painter->drawText((crosshair_1_x_position + 8) * p_factor, (crosshair_1_y_position + 10) * p_factor, str);
   }
 
@@ -1692,10 +1692,10 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
                           (Qt::GlobalColor)spectrum_color->color[0]);
       }
 
-      strcpy(str, spectrum_color->label[0]);
+      strlcpy(str, spectrum_color->label[0], 128);
       if(spectrum_color->method == 0)
       {
-        sprintf(str + strlen(str), " (%.1f%%)", (spectrum_color->value[0] * 100.0) / sum_colorbar_value);
+        snprintf(str + strlen(str), 128 - strlen(str), " (%.1f%%)", (spectrum_color->value[0] * 100.0) / sum_colorbar_value);
       }
       painter->setPen(Qt::lightGray);
       painter->drawText(10, 20, str);
@@ -1717,10 +1717,10 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
                             (Qt::GlobalColor)spectrum_color->color[i]);
         }
 
-        strcpy(str, spectrum_color->label[i]);
+        strlcpy(str, spectrum_color->label[i], 128);
         if(spectrum_color->method == 0)
         {
-          sprintf(str + strlen(str), " (%.1f%%)", (spectrum_color->value[i] * 100.0) / sum_colorbar_value);
+          snprintf(str + strlen(str), 128 - strlen(str), " (%.1f%%)", (spectrum_color->value[i] * 100.0) / sum_colorbar_value);
         }
         painter->setPen(Qt::lightGray);
         painter->drawText((spectrum_color->freq[i-1] - h_ruler_startvalue) * pixelsPerUnit + 10, 20 + ((i%2) * 20), str);
@@ -1729,7 +1729,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
     if(spectrum_color->method == 0)
     {
-      sprintf(str, "Total Power: %.1f", sum_colorbar_value);
+      snprintf(str, 128, "Total Power: %.1f", sum_colorbar_value);
       painter->drawText(curve_w - 200, 20 + ((i%2) * 20), str);
     }
   }
@@ -2181,7 +2181,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
     painter->drawText(crosshair_1_x_position + 8, crosshair_1_y_position - 10, str);
     painter->fillRect(crosshair_1_x_position + 6, crosshair_1_y_position - 3, 60, 16, BackgroundColor);
     convert_to_metric_suffix(str, crosshair_1_value_2, 3);
-    strcat(str, h_label);
+    strlcat(str, h_label, 128);
     painter->drawText(crosshair_1_x_position + 8, crosshair_1_y_position + 10, str);
   }
 

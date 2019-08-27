@@ -94,8 +94,8 @@ void UI_Mainwindow::start_stop_video()
     return;
   }
 
-  strcpy(videopath, QFileDialog::getOpenFileName(this, "Select media file", QString::fromLocal8Bit(recent_opendir),
-                                                 "Video and audio files (*)").toLocal8Bit().data());
+  strlcpy(videopath, QFileDialog::getOpenFileName(this, "Select media file", QString::fromLocal8Bit(recent_opendir),
+                                                 "Video and audio files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(videopath, ""))
   {
@@ -159,7 +159,7 @@ void UI_Mainwindow::start_stop_video()
 
     port = (time(NULL) % 1000) + 3000 + process_start_retries;
 
-    sprintf(str, "localhost:%i", port);
+    snprintf(str, 4096, "localhost:%i", port);
 
     video_process = new QProcess(0);
 
@@ -167,7 +167,7 @@ void UI_Mainwindow::start_stop_video()
 
     qstr = QDir::toNativeSeparators(QString::fromLocal8Bit(videopath));
 
-    strcpy(videopath, qstr.toLocal8Bit().data());
+    strlcpy(videopath, qstr.toLocal8Bit().data(), MAX_PATH_LENGTH);
 
     arguments << "-I" << "rc" << "--rc-host" << str << "--rc-quiet" << "--video-on-top" << "--width" << "150" << "--height" << "150" << "--ignore-config";
 
@@ -235,7 +235,7 @@ void UI_Mainwindow::start_stop_video()
       {
         err = vlc_sock->error();
 
-        sprintf(str, "   \n Cannot connect to the video player via localhost loopback port (error %i) \n   ", err);
+        snprintf(str, 4096, "   \n Cannot connect to the video player via localhost loopback port (error %i) \n   ", err);
 
         msgbox.setWindowTitle("Error");
         msgbox.setStandardButtons(QMessageBox::Close);
@@ -407,11 +407,11 @@ void UI_Mainwindow::video_poll_timer_func()
         }
         else
         {
-          strcpy(buf, "add ");
+          strlcpy(buf, "add ", 4096);
 
-          strcat(buf, videopath);
+          strlcat(buf, videopath, 4096);
 
-          strcat(buf, "\n");
+          strlcat(buf, "\n", 4096);
 
           mpr_write(buf);
 
@@ -555,7 +555,7 @@ void UI_Mainwindow::video_player_faster()
 
   video_player->speed *= 2;
 
-  sprintf(str, "rate %i\n", video_player->speed);
+  snprintf(str, 512, "rate %i\n", video_player->speed);
 
   mpr_write(str);
 }
@@ -579,7 +579,7 @@ void UI_Mainwindow::video_player_slower()
 
   video_player->speed /= 2;
 
-  sprintf(str, "rate %i\n", video_player->speed);
+  snprintf(str, 512, "rate %i\n", video_player->speed);
 
   mpr_write(str);
 }
@@ -595,7 +595,7 @@ void UI_Mainwindow::video_player_seek(int sec)
 
   if(sec < 0)  sec = 0;
 
-  sprintf(str, "seek %i\n", sec);
+  snprintf(str, 512, "seek %i\n", sec);
 
   mpr_write(str);
 
@@ -733,15 +733,13 @@ void UI_Mainwindow::vlc_sock_error(QAbstractSocket::SocketError)
 
   if(video_player->status == VIDEO_STATUS_STOPPED)  return;
 
-  strncpy(str2, vlc_sock->errorString().toLatin1().data(), 1023);
-
-  str2[1023] = 0;
+  strlcpy(str2, vlc_sock->errorString().toLatin1().data(), 1024);
 
   stop_video_generic(0);
 
-  strcpy(str, " \n The socked that connects to the mediaplayer reported an error: \n \n ");
+  strlcpy(str, " \n The socked that connects to the mediaplayer reported an error: \n \n ", 2048);
 
-  strcat(str, str2);
+  strlcat(str, str2, 2048);
 
   QMessageBox msgbox(QMessageBox::Critical, "Error", str);
   msgbox.exec();
@@ -755,15 +753,13 @@ void UI_Mainwindow::video_process_error(QProcess::ProcessError)
 
   if(video_player->status == VIDEO_STATUS_STOPPED)  return;
 
-  strncpy(str2, video_process->errorString().toLatin1().data(), 1023);
-
-  str2[1023] = 0;
+  strlcpy(str2, video_process->errorString().toLatin1().data(), 1024);
 
   stop_video_generic(0);
 
-  strcpy(str, " \n The process that runs the mediaplayer reported an error: \n \n ");
+  strlcpy(str, " \n The process that runs the mediaplayer reported an error: \n \n ", 2048);
 
-  strcat(str, str2);
+  strlcat(str, str2, 2048);
 
   QMessageBox msgbox(QMessageBox::Critical, "Error", str);
   msgbox.exec();

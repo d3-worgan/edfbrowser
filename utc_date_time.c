@@ -109,31 +109,31 @@ void date_time_to_utc(long long *seconds, struct date_time_struct date_time)
 
   switch(date_time.month)
   {
-    case  1 : strcpy(date_time.month_str, "JAN");
+    case  1 : strlcpy(date_time.month_str, "JAN", 4);
               break;
-    case  2 : strcpy(date_time.month_str, "FEB");
+    case  2 : strlcpy(date_time.month_str, "FEB", 4);
               break;
-    case  3 : strcpy(date_time.month_str, "MAR");
+    case  3 : strlcpy(date_time.month_str, "MAR", 4);
               break;
-    case  4 : strcpy(date_time.month_str, "APR");
+    case  4 : strlcpy(date_time.month_str, "APR", 4);
               break;
-    case  5 : strcpy(date_time.month_str, "MAY");
+    case  5 : strlcpy(date_time.month_str, "MAY", 4);
               break;
-    case  6 : strcpy(date_time.month_str, "JUN");
+    case  6 : strlcpy(date_time.month_str, "JUN", 4);
               break;
-    case  7 : strcpy(date_time.month_str, "JUL");
+    case  7 : strlcpy(date_time.month_str, "JUL", 4);
               break;
-    case  8 : strcpy(date_time.month_str, "AUG");
+    case  8 : strlcpy(date_time.month_str, "AUG", 4);
               break;
-    case  9 : strcpy(date_time.month_str, "SEP");
+    case  9 : strlcpy(date_time.month_str, "SEP", 4);
               break;
-    case 10 : strcpy(date_time.month_str, "OCT");
+    case 10 : strlcpy(date_time.month_str, "OCT", 4);
               break;
-    case 11 : strcpy(date_time.month_str, "NOV");
+    case 11 : strlcpy(date_time.month_str, "NOV", 4);
               break;
-    case 12 : strcpy(date_time.month_str, "DEC");
+    case 12 : strlcpy(date_time.month_str, "DEC", 4);
               break;
-    default : strcpy(date_time.month_str, "ERR");
+    default : strlcpy(date_time.month_str, "ERR", 4);
               break;
   }
 }
@@ -358,31 +358,31 @@ void utc_to_date_time(long long seconds, struct date_time_struct *date_time)
 
   switch(date_time->month)
   {
-    case  1 : strcpy(date_time->month_str, "JAN");
+    case  1 : strlcpy(date_time->month_str, "JAN", 4);
               break;
-    case  2 : strcpy(date_time->month_str, "FEB");
+    case  2 : strlcpy(date_time->month_str, "FEB", 4);
               break;
-    case  3 : strcpy(date_time->month_str, "MAR");
+    case  3 : strlcpy(date_time->month_str, "MAR", 4);
               break;
-    case  4 : strcpy(date_time->month_str, "APR");
+    case  4 : strlcpy(date_time->month_str, "APR", 4);
               break;
-    case  5 : strcpy(date_time->month_str, "MAY");
+    case  5 : strlcpy(date_time->month_str, "MAY", 4);
               break;
-    case  6 : strcpy(date_time->month_str, "JUN");
+    case  6 : strlcpy(date_time->month_str, "JUN", 4);
               break;
-    case  7 : strcpy(date_time->month_str, "JUL");
+    case  7 : strlcpy(date_time->month_str, "JUL", 4);
               break;
-    case  8 : strcpy(date_time->month_str, "AUG");
+    case  8 : strlcpy(date_time->month_str, "AUG", 4);
               break;
-    case  9 : strcpy(date_time->month_str, "SEP");
+    case  9 : strlcpy(date_time->month_str, "SEP", 4);
               break;
-    case 10 : strcpy(date_time->month_str, "OCT");
+    case 10 : strlcpy(date_time->month_str, "OCT", 4);
               break;
-    case 11 : strcpy(date_time->month_str, "NOV");
+    case 11 : strlcpy(date_time->month_str, "NOV", 4);
               break;
-    case 12 : strcpy(date_time->month_str, "DEC");
+    case 12 : strlcpy(date_time->month_str, "DEC", 4);
               break;
-    default : strcpy(date_time->month_str, "ERR");
+    default : strlcpy(date_time->month_str, "ERR", 4);
               break;
   }
 }

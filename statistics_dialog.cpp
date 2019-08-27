@@ -135,8 +135,8 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
     curve1->setDashBoardEnabled(false);
     if(job_src == STAT_JOB_SRC_ANNOT)
     {
-      strcpy(stat_str, "Distribution ");
-      strcat(stat_str, annot->annotation);
+      strlcpy(stat_str, "Distribution ", 2048);
+      strlcat(stat_str, annot->annotation, 2048);
       curve1->setUpperLabel1(stat_str);
     }
     else
@@ -197,7 +197,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
     {
       if(signalcomp->alias[0] != 0)
       {
-        sprintf(stat_str, "Signal:  %s\n\nSamples:   0\n\nSum:       0 %s\n\nMean:      0 %s\n\nRMS:       0 %s\n\nMRS:       0 %s\n\nZero crossings:  0\n\nFrequency:  0 Hz",
+        snprintf(stat_str, 2048, "Signal:  %s\n\nSamples:   0\n\nSum:       0 %s\n\nMean:      0 %s\n\nRMS:       0 %s\n\nMRS:       0 %s\n\nZero crossings:  0\n\nFrequency:  0 Hz",
                 signalcomp->alias,
                 signalcomp->physdimension,
                 signalcomp->physdimension,
@@ -206,7 +206,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
       }
       else
       {
-        sprintf(stat_str, "Signal:  %s\n\nSamples:   0\n\nSum:       0 %s\n\nMean:      0 %s\n\nRMS:       0 %s\n\nMRS:       0 %s\n\nZero crossings:  0\n\nFrequency:  0 Hz",
+        snprintf(stat_str, 2048, "Signal:  %s\n\nSamples:   0\n\nSum:       0 %s\n\nMean:      0 %s\n\nRMS:       0 %s\n\nMRS:       0 %s\n\nZero crossings:  0\n\nFrequency:  0 Hz",
                 signalcomp->signallabel,
                 signalcomp->physdimension,
                 signalcomp->physdimension,
@@ -218,7 +218,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
     {
       if(signalcomp->alias[0] != 0)
       {
-        sprintf(stat_str, "Signal:  %s\n\nSamples:   %i\n\nSum:       %f %s\n\nMean:      %f %s\n\nRMS:       %f %s\n\nMRS:       %f %s\n\nZero crossings:  %i\n\nFrequency:  %f Hz",
+        snprintf(stat_str, 2048, "Signal:  %s\n\nSamples:   %i\n\nSum:       %f %s\n\nMean:      %f %s\n\nRMS:       %f %s\n\nMRS:       %f %s\n\nZero crossings:  %i\n\nFrequency:  %f Hz",
                 signalcomp->alias,
                 signalcomp->stat_cnt,
                 signalcomp->stat_sum * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue,
@@ -235,7 +235,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
       }
       else
       {
-        sprintf(stat_str, "Signal:  %s\n\nSamples:   %i\n\nSum:       %f %s\n\nMean:      %f %s\n\nRMS:       %f %s\n\nMRS:       %f %s\n\nZero crossings:  %i\n\nFrequency:  %f Hz",
+        snprintf(stat_str, 2048, "Signal:  %s\n\nSamples:   %i\n\nSum:       %f %s\n\nMean:      %f %s\n\nRMS:       %f %s\n\nMRS:       %f %s\n\nZero crossings:  %i\n\nFrequency:  %f Hz",
                 signalcomp->signallabel,
                 signalcomp->stat_cnt,
                 signalcomp->stat_sum * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue,
@@ -312,14 +312,14 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
 
     if(beat_cnt < 3)
     {
-      sprintf(stat_str, "Not enough beats.");
+      snprintf(stat_str, 2048, "Not enough beats.");
     }
     else
     {
       err = ecg_get_hr_statistics(beat_interval_list, beat_cnt, &hr_stat);
       if(err)
       {
-        sprintf(stat_str, "Error %i occurred at line %i in file %s.", err, __LINE__, __FILE__);
+        snprintf(stat_str, 2048, "Error %i occurred at line %i in file %s.", err, __LINE__, __FILE__);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", stat_str);
         messagewindow.exec();
         return;
@@ -408,7 +408,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
 //
 //       free(buf_bpm);
 
-      sprintf(stat_str,
+      snprintf(stat_str, 2048,
               "Heart Rate\n\n"
               "Beats:    %3i\n\n"
               "Mean RR:  %3.1f ms\n\n"
@@ -499,7 +499,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
   {
     free(beat_interval_list);
 
-    strcpy(mainwindow->toolbar_stats.annot_label, annot->annotation);
+    strlcpy(mainwindow->toolbar_stats.annot_label, annot->annotation, MAX_ANNOTATION_LEN + 1);
 
     mainwindow->toolbar_stats.annot_list = annot_list;
 

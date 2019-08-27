@@ -90,38 +90,38 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
 
     if(mainwindow->signalcomp[i]->alias[0] != 0)
     {
-      strcpy(txtbuf, "alias: ");
-      strcat(txtbuf, mainwindow->signalcomp[i]->alias);
-      strcat(txtbuf, "   ");
+      strlcpy(txtbuf, "alias: ", 2048);
+      strlcat(txtbuf, mainwindow->signalcomp[i]->alias, 2048);
+      strlcat(txtbuf, "   ", 2048);
     }
 
     for(j=0; j<mainwindow->signalcomp[i]->num_of_signals; j++)
     {
-      sprintf(txtbuf + strlen(txtbuf), "%+ix %s",
+      snprintf(txtbuf + strlen(txtbuf), 2048 - strlen(txtbuf), "%+ix %s",
               mainwindow->signalcomp[i]->factor[j],
               mainwindow->signalcomp[i]->edfhdr->edfparam[mainwindow->signalcomp[i]->edfsignal[j]].label);
 
       remove_trailing_spaces(txtbuf);
 
-      strcat(txtbuf, "   ");
+      strlcat(txtbuf, "   ", 2048);
     }
 
     if(mainwindow->signalcomp[i]->polarity == -1)
     {
-      strcat(txtbuf, "Inverted: yes");
+      strlcat(txtbuf, "Inverted: yes", 2048);
     }
 
     signalItem = new QStandardItem(txtbuf);
 
     parentItem->appendRow(signalItem);
 
-    sprintf(txtbuf, "amplitude: %f", mainwindow->signalcomp[i]->voltpercm);
+    snprintf(txtbuf, 2048, "amplitude: %f", mainwindow->signalcomp[i]->voltpercm);
 
-    strcat(txtbuf, mainwindow->signalcomp[i]->physdimension);
+    strlcat(txtbuf, mainwindow->signalcomp[i]->physdimension, 2048);
 
     remove_trailing_spaces(txtbuf);
 
-    sprintf(txtbuf + strlen(txtbuf), "/cm offset: %f%s",
+    snprintf(txtbuf + strlen(txtbuf), 2048 - strlen(txtbuf), "/cm offset: %f%s",
             mainwindow->signalcomp[i]->screen_offset * mainwindow->pixelsizefactor * mainwindow->signalcomp[i]->voltpercm,
             mainwindow->signalcomp[i]->physdimension);
 
@@ -129,59 +129,59 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
 
     remove_trailing_spaces(txtbuf);
 
-    strcat(txtbuf, "  color: ");
+    strlcat(txtbuf, "  color: ", 2048);
 
     switch(mainwindow->signalcomp[i]->color)
     {
-      case Qt::white       : strcat(txtbuf, "white");
+      case Qt::white       : strlcat(txtbuf, "white", 2048);
                              signalItem->setIcon(QIcon(":/images/white_icon_16x16"));
                              break;
-      case Qt::black       : strcat(txtbuf, "black");
+      case Qt::black       : strlcat(txtbuf, "black", 2048);
                              signalItem->setIcon(QIcon(":/images/black_icon_16x16"));
                              break;
-      case Qt::red         : strcat(txtbuf, "red");
+      case Qt::red         : strlcat(txtbuf, "red", 2048);
                              signalItem->setIcon(QIcon(":/images/red_icon_16x16"));
                              break;
-      case Qt::darkRed     : strcat(txtbuf, "dark red");
+      case Qt::darkRed     : strlcat(txtbuf, "dark red", 2048);
                              signalItem->setIcon(QIcon(":/images/darkred_icon_16x16"));
                              break;
-      case Qt::green       : strcat(txtbuf, "green");
+      case Qt::green       : strlcat(txtbuf, "green", 2048);
                              signalItem->setIcon(QIcon(":/images/green_icon_16x16"));
                              break;
-      case Qt::darkGreen   : strcat(txtbuf, "dark green");
+      case Qt::darkGreen   : strlcat(txtbuf, "dark green", 2048);
                              signalItem->setIcon(QIcon(":/images/darkgreen_icon_16x16"));
                              break;
-      case Qt::blue        : strcat(txtbuf, "blue");
+      case Qt::blue        : strlcat(txtbuf, "blue", 2048);
                              signalItem->setIcon(QIcon(":/images/blue_icon_16x16"));
                              break;
-      case Qt::darkBlue    : strcat(txtbuf, "dark blue");
+      case Qt::darkBlue    : strlcat(txtbuf, "dark blue", 2048);
                              signalItem->setIcon(QIcon(":/images/darkblue_icon_16x16"));
                              break;
-      case Qt::cyan        : strcat(txtbuf, "cyan");
+      case Qt::cyan        : strlcat(txtbuf, "cyan", 2048);
                              signalItem->setIcon(QIcon(":/images/cyan_icon_16x16"));
                              break;
-      case Qt::darkCyan    : strcat(txtbuf, "dark cyan");
+      case Qt::darkCyan    : strlcat(txtbuf, "dark cyan", 2048);
                              signalItem->setIcon(QIcon(":/images/darkcyan_icon_16x16"));
                              break;
-      case Qt::magenta     : strcat(txtbuf, "magenta");
+      case Qt::magenta     : strlcat(txtbuf, "magenta", 2048);
                              signalItem->setIcon(QIcon(":/images/magenta_icon_16x16"));
                              break;
-      case Qt::darkMagenta : strcat(txtbuf, "dark magenta");
+      case Qt::darkMagenta : strlcat(txtbuf, "dark magenta", 2048);
                              signalItem->setIcon(QIcon(":/images/darkmagenta_icon_16x16"));
                              break;
-      case Qt::yellow      : strcat(txtbuf, "yellow");
+      case Qt::yellow      : strlcat(txtbuf, "yellow", 2048);
                              signalItem->setIcon(QIcon(":/images/yellow_icon_16x16"));
                              break;
-      case Qt::darkYellow  : strcat(txtbuf, "dark yellow");
+      case Qt::darkYellow  : strlcat(txtbuf, "dark yellow", 2048);
                              signalItem->setIcon(QIcon(":/images/darkyellow_icon_16x16"));
                              break;
-      case Qt::gray        : strcat(txtbuf, "gray");
+      case Qt::gray        : strlcat(txtbuf, "gray", 2048);
                              signalItem->setIcon(QIcon(":/images/gray_icon_16x16"));
                              break;
-      case Qt::darkGray    : strcat(txtbuf, "dark gray");
+      case Qt::darkGray    : strlcat(txtbuf, "dark gray", 2048);
                              signalItem->setIcon(QIcon(":/images/darkgray_icon_16x16"));
                              break;
-      case Qt::lightGray   : strcat(txtbuf, "light gray");
+      case Qt::lightGray   : strlcat(txtbuf, "light gray", 2048);
                              signalItem->setIcon(QIcon(":/images/lightgray_icon_16x16"));
                              break;
     }
@@ -196,11 +196,11 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
 
     if(mainwindow->signalcomp[i]->spike_filter)
     {
-      sprintf(txtbuf, "Spike: %.8f", mainwindow->signalcomp[i]->spike_filter_velocity);
+      snprintf(txtbuf, 2048, "Spike: %.8f", mainwindow->signalcomp[i]->spike_filter_velocity);
 
       remove_trailing_zeros(txtbuf);
 
-      sprintf(txtbuf + strlen(txtbuf), " %s/0.5mSec.  Hold-off: %i mSec.",
+      snprintf(txtbuf + strlen(txtbuf), 2048 - strlen(txtbuf), " %s/0.5mSec.  Hold-off: %i mSec.",
               mainwindow->signalcomp[i]->physdimension,
               mainwindow->signalcomp[i]->spike_filter_holdoff);
 
@@ -211,12 +211,12 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
     {
       if(mainwindow->signalcomp[i]->filter[j]->is_LPF == 1)
       {
-        sprintf(txtbuf, "LPF: %fHz", mainwindow->signalcomp[i]->filter[j]->cutoff_frequency);
+        snprintf(txtbuf, 2048, "LPF: %fHz", mainwindow->signalcomp[i]->filter[j]->cutoff_frequency);
       }
 
       if(mainwindow->signalcomp[i]->filter[j]->is_LPF == 0)
       {
-        sprintf(txtbuf, "HPF: %fHz", mainwindow->signalcomp[i]->filter[j]->cutoff_frequency);
+        snprintf(txtbuf, 2048, "HPF: %fHz", mainwindow->signalcomp[i]->filter[j]->cutoff_frequency);
       }
 
       remove_trailing_zeros(txtbuf);
@@ -228,12 +228,12 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
     {
       if(mainwindow->signalcomp[i]->ravg_filter_type[j] == 0)
       {
-        sprintf(txtbuf, "highpass moving average %i smpls", mainwindow->signalcomp[i]->ravg_filter[j]->size);
+        snprintf(txtbuf, 2048, "highpass moving average %i smpls", mainwindow->signalcomp[i]->ravg_filter[j]->size);
       }
 
       if(mainwindow->signalcomp[i]->ravg_filter_type[j] == 1)
       {
-        sprintf(txtbuf, "lowpass moving average %i smpls", mainwindow->signalcomp[i]->ravg_filter[j]->size);
+        snprintf(txtbuf, 2048, "lowpass moving average %i smpls", mainwindow->signalcomp[i]->ravg_filter[j]->size);
       }
 
       filterItem->appendRow(new QStandardItem(txtbuf));
@@ -257,17 +257,17 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
       {
         if(model == 0)
         {
-          sprintf(txtbuf, "highpass Butterworth %fHz %ith order", frequency, order);
+          snprintf(txtbuf, 2048, "highpass Butterworth %fHz %ith order", frequency, order);
         }
 
         if(model == 1)
         {
-          sprintf(txtbuf, "highpass Chebyshev %fHz %ith order %fdB ripple", frequency, order, ripple);
+          snprintf(txtbuf, 2048, "highpass Chebyshev %fHz %ith order %fdB ripple", frequency, order, ripple);
         }
 
         if(model == 2)
         {
-          sprintf(txtbuf, "highpass Bessel %fHz %ith order", frequency, order);
+          snprintf(txtbuf, 2048, "highpass Bessel %fHz %ith order", frequency, order);
         }
       }
 
@@ -275,40 +275,40 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
       {
         if(model == 0)
         {
-          sprintf(txtbuf, "lowpass Butterworth %fHz %ith order", frequency, order);
+          snprintf(txtbuf, 2048, "lowpass Butterworth %fHz %ith order", frequency, order);
         }
 
         if(model == 1)
         {
-          sprintf(txtbuf, "lowpass Chebyshev %fHz %ith order %fdB ripple", frequency, order, ripple);
+          snprintf(txtbuf, 2048, "lowpass Chebyshev %fHz %ith order %fdB ripple", frequency, order, ripple);
         }
 
         if(model == 2)
         {
-          sprintf(txtbuf, "lowpass Bessel %fHz %ith order", frequency, order);
+          snprintf(txtbuf, 2048, "lowpass Bessel %fHz %ith order", frequency, order);
         }
       }
 
       if(type == 2)
       {
-        sprintf(txtbuf, "notch %fHz Q-factor %i", frequency, order);
+        snprintf(txtbuf, 2048, "notch %fHz Q-factor %i", frequency, order);
       }
 
       if(type == 3)
       {
         if(model == 0)
         {
-          sprintf(txtbuf, "bandpass Butterworth %f-%fHz %ith order", frequency, frequency2, order);
+          snprintf(txtbuf, 2048, "bandpass Butterworth %f-%fHz %ith order", frequency, frequency2, order);
         }
 
         if(model == 1)
         {
-          sprintf(txtbuf, "bandpass Chebyshev %f-%fHz %ith order %fdB ripple", frequency, frequency2, order, ripple);
+          snprintf(txtbuf, 2048, "bandpass Chebyshev %f-%fHz %ith order %fdB ripple", frequency, frequency2, order, ripple);
         }
 
         if(model == 2)
         {
-          sprintf(txtbuf, "bandpass Bessel %f-%fHz %ith order", frequency, frequency2, order);
+          snprintf(txtbuf, 2048, "bandpass Bessel %f-%fHz %ith order", frequency, frequency2, order);
         }
       }
 
@@ -316,17 +316,17 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
       {
         if(model == 0)
         {
-          sprintf(txtbuf, "bandstop Butterworth %f-%fHz %ith order", frequency, frequency2, order);
+          snprintf(txtbuf, 2048, "bandstop Butterworth %f-%fHz %ith order", frequency, frequency2, order);
         }
 
         if(model == 1)
         {
-          sprintf(txtbuf, "bandstop Chebyshev %f-%fHz %ith order %fdB ripple", frequency, frequency2, order, ripple);
+          snprintf(txtbuf, 2048, "bandstop Chebyshev %f-%fHz %ith order %fdB ripple", frequency, frequency2, order, ripple);
         }
 
         if(model == 2)
         {
-          sprintf(txtbuf, "bandstop Bessel %f-%fHz %ith order", frequency, frequency2, order);
+          snprintf(txtbuf, 2048, "bandstop Bessel %f-%fHz %ith order", frequency, frequency2, order);
         }
       }
 
@@ -339,7 +339,7 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
     {
       n_taps = fir_filter_size(mainwindow->signalcomp[i]->fir_filter);
 
-      sprintf(txtbuf, "Custom FIR filter with %i taps", n_taps);
+      snprintf(txtbuf, 2048, "Custom FIR filter with %i taps", n_taps);
 
       firfilterItem = new QStandardItem(txtbuf);
 
@@ -347,7 +347,7 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
 
       for(k=0; k<n_taps; k++)
       {
-        sprintf(txtbuf, " %.20f ", fir_filter_tap(k, mainwindow->signalcomp[i]->fir_filter));
+        snprintf(txtbuf, 2048, " %.20f ", fir_filter_tap(k, mainwindow->signalcomp[i]->fir_filter));
 
         firfilterItem->appendRow(new QStandardItem(txtbuf));
       }
@@ -355,14 +355,14 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
 
     if(mainwindow->signalcomp[i]->ecg_filter != NULL)
     {
-      sprintf(txtbuf, "ECG heartrate detection");
+      snprintf(txtbuf, 2048, "ECG heartrate detection");
 
       filterItem->appendRow(new QStandardItem(txtbuf));
     }
 
     if(mainwindow->signalcomp[i]->plif_ecg_filter != NULL)
     {
-      sprintf(txtbuf, "Powerline interference removal: %iHz",
+      snprintf(txtbuf, 2048, "Powerline interference removal: %iHz",
               (mainwindow->signalcomp[i]->plif_ecg_subtract_filter_plf * 10) + 50);
 
       filterItem->appendRow(new QStandardItem(txtbuf));
@@ -370,13 +370,13 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
 
     if(mainwindow->signalcomp[i]->zratio_filter != NULL)
     {
-      sprintf(txtbuf, "Z-ratio  cross-over frequency is %.1f Hz", mainwindow->signalcomp[i]->zratio_crossoverfreq);
+      snprintf(txtbuf, 2048, "Z-ratio  cross-over frequency is %.1f Hz", mainwindow->signalcomp[i]->zratio_crossoverfreq);
 
       filterItem->appendRow(new QStandardItem(txtbuf));
     }
   }
 
-  sprintf(txtbuf, "timescale: %f seconds", (double)mainwindow->pagetime / (double)TIME_DIMENSION);
+  snprintf(txtbuf, 2048, "timescale: %f seconds", (double)mainwindow->pagetime / (double)TIME_DIMENSION);
   remove_trailing_zeros(txtbuf);
   parentItem->appendRow(new QStandardItem(txtbuf));
 
