@@ -70,12 +70,12 @@ UI_BIOSEMI2BDFPLUSwindow::UI_BIOSEMI2BDFPLUSwindow(QWidget *w_parent)
   {
     label1[i] = new QLabel(myobjectDialog);
     label1[i]->setGeometry(20, 50 + (i * 30), 20, 25);
-    sprintf(str, "%i", i + 1);
+    snprintf(str, 128, "%i", i + 1);
     label1[i]->setText(str);
 
     lineEdit1[i] = new QLineEdit(myobjectDialog);
     lineEdit1[i]->setGeometry(70, 50 + (i * 30), 120, 25);
-    sprintf(str, "Trigger Input %i", i + 1);
+    snprintf(str, 128, "Trigger Input %i", i + 1);
     lineEdit1[i]->setText(str);
     lineEdit1[i]->setMaxLength(16);
   }
@@ -158,7 +158,7 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
   {
     if(!lineEdit1[i]->text().length())
     {
-      sprintf(str, "Trigger Input label %i is empty!", i + 1);
+      snprintf(str, 2048, "Trigger Input label %i is empty!", i + 1);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
       messagewindow.exec();
       return;
@@ -173,7 +173,7 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
       {
         if(!strcmp(lineEdit1[i]->text().toLocal8Bit().data(), lineEdit1[j]->text().toLocal8Bit().data()))
         {
-          sprintf(str, "Trigger Input labels %i and %i are the same!", i + 1, j + 1);
+          snprintf(str, 2048, "Trigger Input labels %i and %i are the same!", i + 1, j + 1);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
           messagewindow.exec();
           return;
@@ -586,7 +586,7 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
                   }
                   if(!strcmp(annot_ptr->annotation, triggerlabel[j]))
                   {
-                    sprintf(str, "%.4f", (double)((datarecords * EDFLIB_TIME_DIMENSION) + ((long long)i * status_sample_duration) - annot_ptr->onset) / (double)EDFLIB_TIME_DIMENSION);
+                    snprintf(str, 2048, "%.4f", (double)((datarecords * EDFLIB_TIME_DIMENSION) + ((long long)i * status_sample_duration) - annot_ptr->onset) / (double)EDFLIB_TIME_DIMENSION);
                     str[15] = 0;
                     strlcpy(annot_ptr->duration, str, MAX_ANNOTATION_LEN_II + 1);
                     annot_ptr->long_duration = edfplus_annotation_get_long_from_number(str);
@@ -633,7 +633,7 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
                   }
                   if(!strcmp(annot_ptr->annotation, triggerlabel[j]))
                   {
-                    sprintf(str, "%.4f", (double)((datarecords * EDFLIB_TIME_DIMENSION) + ((long long)i * status_sample_duration) - annot_ptr->onset) / (double)EDFLIB_TIME_DIMENSION);
+                    snprintf(str, 2048, "%.4f", (double)((datarecords * EDFLIB_TIME_DIMENSION) + ((long long)i * status_sample_duration) - annot_ptr->onset) / (double)EDFLIB_TIME_DIMENSION);
                     str[15] = 0;
                     strlcpy(annot_ptr->duration, str, MAX_ANNOTATION_LEN_II + 1);
                     break;

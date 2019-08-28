@@ -935,7 +935,7 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
         continue;
       }
 
-      convert_to_metric_suffix(str, (double)i / (double)p_multiplier, 4);
+      convert_to_metric_suffix(str, (double)i / (double)p_multiplier, 4, 128);
 
       remove_trailing_zeros(str);
 
@@ -1331,7 +1331,7 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
 
     snprintf(str, 128, "%f", crosshair_1_value);
     painter->drawText((crosshair_1_x_position + 8) * p_factor, (crosshair_1_y_position - 10) * p_factor, str);
-    convert_to_metric_suffix(str, crosshair_1_value_2, 3);
+    convert_to_metric_suffix(str, crosshair_1_value_2, 3, 128);
     strlcat(str, h_label, 128);
     painter->drawText((crosshair_1_x_position + 8) * p_factor, (crosshair_1_y_position + 10) * p_factor, str);
   }
@@ -1479,7 +1479,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
         continue;
       }
 
-      convert_to_metric_suffix(str, (double)lk / (double)p_multiplier, 4);
+      convert_to_metric_suffix(str, (double)lk / (double)p_multiplier, 4, 128);
 
       remove_trailing_zeros(str);
 
@@ -2180,7 +2180,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
     snprintf(str, 128, "%f", crosshair_1_value);
     painter->drawText(crosshair_1_x_position + 8, crosshair_1_y_position - 10, str);
     painter->fillRect(crosshair_1_x_position + 6, crosshair_1_y_position - 3, 60, 16, BackgroundColor);
-    convert_to_metric_suffix(str, crosshair_1_value_2, 3);
+    convert_to_metric_suffix(str, crosshair_1_value_2, 3, 128);
     strlcat(str, h_label, 128);
     painter->drawText(crosshair_1_x_position + 8, crosshair_1_y_position + 10, str);
   }

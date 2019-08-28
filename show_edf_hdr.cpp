@@ -570,8 +570,8 @@ void UI_EDFhdrwindow::show_params(int row)
     ql->setMargin(margin);
     ql->setTextInteractionFlags(Qt::TextSelectableByMouse);
     signallist->setCellWidget(i, 0, ql);
-    convert_to_metric_suffix(str, mainwindow->edfheaderlist[row]->edfparam[i].sf_f, 3);
-    strcat(str, "Hz");
+    convert_to_metric_suffix(str, mainwindow->edfheaderlist[row]->edfparam[i].sf_f, 3, 512);
+    strlcat(str, "Hz", 512);
     remove_trailing_zeros(str);
     ql = new QLabel(str);
     ql->setMargin(margin);

@@ -846,7 +846,7 @@ void UI_headerEditorWindow::read_header()
     scratchpad[8] = 0;
     if(atoi(scratchpad) < 1)
     {
-      sprintf(str, "Samples per record of signal %i is less than 1.\n"
+      snprintf(str, 256, "Samples per record of signal %i is less than 1.\n"
                    "Can not fix this file.", i + 1);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
       messagewindow.exec();
@@ -915,7 +915,7 @@ void UI_headerEditorWindow::save_hdr()
     return;
   }
 
-  sprintf(scratchpad, "%02i.%02i.%02i%02i.%02i.%02i",
+  snprintf(scratchpad, 256, "%02i.%02i.%02i%02i.%02i.%02i",
           startTimeDate->date().day(),
           startTimeDate->date().month(),
           startTimeDate->date().year() % 100,
@@ -1635,7 +1635,7 @@ int UI_headerEditorWindow::calculate_chars_left_name(const QString &)
   lineEdit4->setCursorPosition(cursorposition[1]);
   lineEdit5->setCursorPosition(cursorposition[2]);
 
-  sprintf(str, "Characters left:  %i", n);
+  snprintf(str, 128, "Characters left:  %i", n);
 
   charsleft1Label->setText(str);
 
@@ -1703,7 +1703,7 @@ int UI_headerEditorWindow::calculate_chars_left_recording(const QString &)
   lineEdit8->setCursorPosition(cursorposition[2]);
   lineEdit9->setCursorPosition(cursorposition[3]);
 
-  sprintf(str, "Characters left:  %i", n);
+  snprintf(str, 128, "Characters left:  %i", n);
 
   charsleft2Label->setText(str);
 

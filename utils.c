@@ -1803,11 +1803,13 @@ double round_down_step125(double val, double *ratio)
 }
 
 
-int convert_to_metric_suffix(char *buf, double value, int decimals)
+int convert_to_metric_suffix(char *dest, double value, int decimals, int sz)
 {
   double ltmp;
 
   char suffix=' ';
+
+  if(sz < 1)  return 0;
 
   if(value < 0)
   {
@@ -1871,21 +1873,21 @@ int convert_to_metric_suffix(char *buf, double value, int decimals)
   {
     switch(decimals)
     {
-      case 0: return sprintf(buf, "%.0f%c", ltmp, suffix);
+      case 0: return snprintf(dest, sz, "%.0f%c", ltmp, suffix);
               break;
-      case 1: return sprintf(buf, "%.1f%c", ltmp, suffix);
+      case 1: return snprintf(dest, sz, "%.1f%c", ltmp, suffix);
               break;
-      case 2: return sprintf(buf, "%.2f%c", ltmp, suffix);
+      case 2: return snprintf(dest, sz, "%.2f%c", ltmp, suffix);
               break;
-      case 3: return sprintf(buf, "%.3f%c", ltmp, suffix);
+      case 3: return snprintf(dest, sz, "%.3f%c", ltmp, suffix);
               break;
-      case 4: return sprintf(buf, "%.4f%c", ltmp, suffix);
+      case 4: return snprintf(dest, sz, "%.4f%c", ltmp, suffix);
               break;
-      case 5: return sprintf(buf, "%.5f%c", ltmp, suffix);
+      case 5: return snprintf(dest, sz, "%.5f%c", ltmp, suffix);
               break;
-      case 6: return sprintf(buf, "%.6f%c", ltmp, suffix);
+      case 6: return snprintf(dest, sz, "%.6f%c", ltmp, suffix);
               break;
-      default: return sprintf(buf, "%.3f%c", ltmp, suffix);
+      default: return snprintf(dest, sz, "%.3f%c", ltmp, suffix);
               break;
     }
   }
@@ -1894,18 +1896,18 @@ int convert_to_metric_suffix(char *buf, double value, int decimals)
   {
     switch(decimals)
     {
-      case 0: return sprintf(buf, "%.0f%c", ltmp * -1, suffix);
+      case 0: return snprintf(dest, sz, "%.0f%c", ltmp * -1, suffix);
               break;
-      case 1: return sprintf(buf, "%.1f%c", ltmp * -1, suffix);
+      case 1: return snprintf(dest, sz, "%.1f%c", ltmp * -1, suffix);
               break;
-      case 2: return sprintf(buf, "%.2f%c", ltmp * -1, suffix);
+      case 2: return snprintf(dest, sz, "%.2f%c", ltmp * -1, suffix);
               break;
-      default: return sprintf(buf, "%.3f%c", ltmp * -1, suffix);
+      default: return snprintf(dest, sz, "%.3f%c", ltmp * -1, suffix);
               break;
     }
   }
 
-  strcpy(buf, "0");
+  strlcpy(dest, "0", sz);
 
   return 1;
 }
@@ -2131,7 +2133,42 @@ char * strtok_r_e(char *str, const char *delim, char **saveptr)
 }
 
 
-/* sz is size of destination, returns length of string in dest */
+/* sz is size of destination, returns length of string in dest.
+ * This is different than the official BSD implementation!
+ * From the BSD man-page:
+ * "The strlcpy() and strlcat() functions return the total length of
+ * the string they tried to create. For strlcpy() that means the
+ * length of src. For strlcat() that means the initial length of dst
+ * plus the length of src. While this may seem somewhat confusing,
+ * it was done to make truncation detection simple."
+ */
+int strlcpy(char *dst, const char *src, int sz)
+{
+  int srclen;
+
+  sz--;
+
+  srclen = strlen(src);
+
+  if(srclen > sz)  srclen = sz;
+
+  memcpy(dst, src, srclen);
+
+  dst[srclen] = 0;
+
+  return srclen;
+}
+
+
+/* sz is size of destination, returns length of string in dest.
+ * This is different than the official BSD implementation!
+ * From the BSD man-page:
+ * "The strlcpy() and strlcat() functions return the total length of
+ * the string they tried to create. For strlcpy() that means the
+ * length of src. For strlcat() that means the initial length of dst
+ * plus the length of src. While this may seem somewhat confusing,
+ * it was done to make truncation detection simple."
+ */
 int strlcat(char *dst, const char *src, int sz)
 {
   int srclen,
@@ -2155,23 +2192,8 @@ int strlcat(char *dst, const char *src, int sz)
 }
 
 
-/* sz is size of destination, returns length of string in dest */
-int strlcpy(char *dst, const char *src, int sz)
-{
-  int srclen;
 
-  sz--;
 
-  srclen = strlen(src);
-
-  if(srclen > sz)  srclen = sz;
-
-  memcpy(dst, src, srclen);
-
-  dst[srclen] = 0;
-
-  return srclen;
-}
 
 
 

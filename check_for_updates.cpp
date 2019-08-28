@@ -115,7 +115,7 @@ void Check_for_updates::replyFinished()
     return;
   }
 
-  sprintf(buf, PROGRAM_VERSION);
+  snprintf(buf, 128, PROGRAM_VERSION);
 
   buf[1] = buf[0];
 

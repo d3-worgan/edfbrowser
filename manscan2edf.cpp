@@ -182,7 +182,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
     for(i=0; i<MAXSIGNALS; i++)
     {
-      sprintf(segment_properties->label[i], "ch.%i", i + 1);
+      snprintf(segment_properties->label[i], 17, "ch.%i", i + 1);
       segment_properties->gain[i] = 1.0;
     }
 
@@ -542,7 +542,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
     if(segment_properties->hpf > 0.0001)
     {
-      sprintf(scratchpad + strlen(scratchpad), "HP:%f", segment_properties->hpf);
+      snprintf(scratchpad + strlen(scratchpad), MAX_PATH_LENGTH - strlen(scratchpad), "HP:%f", segment_properties->hpf);
 
       remove_trailing_zeros(scratchpad);
 
@@ -551,7 +551,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
     if(segment_properties->lpf > 0.0001)
     {
-      sprintf(scratchpad + strlen(scratchpad), "LP:%f", segment_properties->lpf);
+      snprintf(scratchpad + strlen(scratchpad), MAX_PATH_LENGTH - strlen(scratchpad), "LP:%f", segment_properties->lpf);
 
       remove_trailing_zeros(scratchpad);
 

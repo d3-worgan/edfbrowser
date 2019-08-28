@@ -115,23 +115,23 @@ void xml_strlcpy_encode_entity(char *dest, const char *src, int len)
 
     switch(*src)
     {
-      case '<'  : strcpy(dest + p, "&lt;");
+      case '<'  : strlcpy(dest + p, "&lt;", len - p);
                   p += 4;
                   break;
 
-      case '>'  : strcpy(dest + p, "&gt;");
+      case '>'  : strlcpy(dest + p, "&gt;", len - p);
                   p += 4;
                   break;
 
-      case '&'  : strcpy(dest + p, "&amp;");
+      case '&'  : strlcpy(dest + p, "&amp;", len - p);
                   p += 5;
                   break;
 
-      case '\'' : strcpy(dest + p, "&apos;");
+      case '\'' : strlcpy(dest + p, "&apos;", len - p);
                   p += 6;
                   break;
 
-      case '\"' : strcpy(dest + p, "&quot;");
+      case '\"' : strlcpy(dest + p, "&quot;", len - p);
                   p += 6;
                   break;
 
@@ -165,35 +165,35 @@ int xml_strncpy_encode_entity(char *dest, const char *src, int n)
 
     if(*src == '<')
     {
-      strcpy(dest + i, "&lt;");
+      strlcpy(dest + i, "&lt;", n - i);
       i += 4;
       continue;
     }
 
     if(*src == '>')
     {
-      strcpy(dest + i, "&gt;");
+      strlcpy(dest + i, "&gt;", n - i);
       i += 4;
       continue;
     }
 
     if(*src == '&')
     {
-      strcpy(dest + i, "&amp;");
+      strlcpy(dest + i, "&amp;", n - i);
       i += 5;
       continue;
     }
 
     if(*src == '\'')
     {
-      strcpy(dest + i, "&apos;");
+      strlcpy(dest + i, "&apos;", n - i);
       i += 6;
       continue;
     }
 
     if(*src == '\"')
     {
-      strcpy(dest + i, "&quot;");
+      strlcpy(dest + i, "&quot;", n - i);
       i += 6;
       continue;
     }

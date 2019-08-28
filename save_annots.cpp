@@ -205,7 +205,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
   }
   else
   {
-    sprintf(scratchpad, "X X X X ");
+    strlcpy(scratchpad, "X X X X ", 256);
     if(fread(scratchpad + 8, 80, 1, inputfile)!=1)
     {
       free(readbuf);
@@ -218,7 +218,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
       free(annot_buf);
       return 3;
     }
-    sprintf(scratchpad, "Startdate X X X X ");
+    strlcpy(scratchpad, "Startdate X X X X ", 256);
     if(fread(scratchpad + 18, 80, 1, inputfile)!=1)
     {
       free(readbuf);
@@ -260,7 +260,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
   fprintf(outputfile, "%-8i", datarecords);
   snprintf(scratchpad, 256, "%.12f", hdr->data_record_duration);
   remove_trailing_zeros(scratchpad);
-  strcat(scratchpad, "         ");
+  strlcat(scratchpad, "         ", 256);
   if((!strncmp(scratchpad, "0.", 2)) && (scratchpad[8] != ' '))
   {
     scratchpad[9] = 0;
@@ -565,12 +565,12 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
           {
             annot_buf[p++] = 21;
 
-            p += sprintf(annot_buf + p, "%s", annot_ptr->duration);
+            p += snprintf(annot_buf + p, annot_recordsize + 10 - p, "%s", annot_ptr->duration);
           }
 
           annot_buf[p++] = 20;
 
-          p += sprintf(annot_buf + p, "%s", annot_ptr->annotation);
+          p += snprintf(annot_buf + p, annot_recordsize + 10 - p, "%s", annot_ptr->annotation);
 
           annot_buf[p++] = 20;
           annot_buf[p++] = 0;

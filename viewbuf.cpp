@@ -782,21 +782,21 @@ void UI_Mainwindow::setup_viewbuf()
       l_temp += edfheaderlist[sel_viewtime]->utc_starttime;
       utc_to_date_time(l_temp, &date_time_str);
 
-      snprintf(viewtime_string, 32, "%2i-%s ", date_time_str.day, date_time_str.month_str);
+      snprintf(viewtime_string, 128, "%2i-%s ", date_time_str.day, date_time_str.month_str);
     }
 
     if((edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset)>=0LL)
     {
       if(viewtime_indicator_type > 0)
       {
-        snprintf(viewtime_string + strlen(viewtime_string), 32, "%2i:%02i:%02i.%04i (",
+        snprintf(viewtime_string + strlen(viewtime_string), 128 - strlen(viewtime_string), "%2i:%02i:%02i.%04i (",
                 (int)((((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_DIMENSION)/ 3600LL) % 24LL),
                 (int)((((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_DIMENSION) % 3600LL) / 60LL),
                 (int)(((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_DIMENSION) % 60LL),
                 (int)(((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) % TIME_DIMENSION) / 1000LL));
       }
 
-      snprintf(viewtime_string + strlen(viewtime_string), 32, "%i:%02i:%02i.%04i",
+      snprintf(viewtime_string + strlen(viewtime_string), 128 - strlen(viewtime_string), "%i:%02i:%02i.%04i",
               (int)((edfheaderlist[sel_viewtime]->viewtime / TIME_DIMENSION)/ 3600LL),
               (int)(((edfheaderlist[sel_viewtime]->viewtime / TIME_DIMENSION) % 3600LL) / 60LL),
               (int)((edfheaderlist[sel_viewtime]->viewtime / TIME_DIMENSION) % 60LL),
@@ -804,7 +804,7 @@ void UI_Mainwindow::setup_viewbuf()
 
       if(viewtime_indicator_type > 0)
       {
-        sprintf(viewtime_string + strlen(viewtime_string), ")");
+        snprintf(viewtime_string + strlen(viewtime_string), 128 - strlen(viewtime_string), ")");
       }
     }
     else
@@ -817,7 +817,7 @@ void UI_Mainwindow::setup_viewbuf()
 
       if(viewtime_indicator_type > 0)
       {
-        snprintf(viewtime_string + strlen(viewtime_string), 32, "%2i:%02i:%02i.%04i (",
+        snprintf(viewtime_string + strlen(viewtime_string), 128 - strlen(viewtime_string), "%2i:%02i:%02i.%04i (",
                 (int)((((l_temp) / TIME_DIMENSION)/ 3600LL) % 24LL),
                 (int)((((l_temp) / TIME_DIMENSION) % 3600LL) / 60LL),
                 (int)(((l_temp) / TIME_DIMENSION) % 60LL),
@@ -826,7 +826,7 @@ void UI_Mainwindow::setup_viewbuf()
 
       l_temp = -edfheaderlist[sel_viewtime]->viewtime;
 
-      snprintf(viewtime_string + strlen(viewtime_string), 32, "-%i:%02i:%02i.%04i",
+      snprintf(viewtime_string + strlen(viewtime_string), 128 - strlen(viewtime_string), "-%i:%02i:%02i.%04i",
               (int)((l_temp / TIME_DIMENSION)/ 3600LL),
               (int)(((l_temp / TIME_DIMENSION) % 3600LL) / 60LL),
               (int)((l_temp / TIME_DIMENSION) % 60LL),
@@ -834,13 +834,13 @@ void UI_Mainwindow::setup_viewbuf()
 
       if(viewtime_indicator_type > 0)
       {
-        sprintf(viewtime_string + strlen(viewtime_string), ")");
+        snprintf(viewtime_string + strlen(viewtime_string), 128 - strlen(viewtime_string), ")");
       }
     }
 
     if(pagetime >= (3600LL * TIME_DIMENSION))
     {
-      snprintf(pagetime_string, 32, "%i:%02i:%02i.%04i",
+      snprintf(pagetime_string, 64, "%i:%02i:%02i.%04i",
               ((int)(pagetime / TIME_DIMENSION)) / 3600,
               (((int)(pagetime / TIME_DIMENSION)) % 3600) / 60,
               ((int)(pagetime / TIME_DIMENSION)) % 60,
@@ -848,22 +848,22 @@ void UI_Mainwindow::setup_viewbuf()
     }
     else if(pagetime >= (60LL * TIME_DIMENSION))
       {
-        snprintf(pagetime_string, 32, "%i:%02i.%04i",
+        snprintf(pagetime_string, 64, "%i:%02i.%04i",
                 ((int)(pagetime / TIME_DIMENSION)) / 60,
                 ((int)(pagetime / TIME_DIMENSION)) % 60,
                 (int)((pagetime % TIME_DIMENSION) / 1000LL));
       }
       else if(pagetime >= TIME_DIMENSION)
       {
-        snprintf(pagetime_string, 32, "%i.%04i sec",
+        snprintf(pagetime_string, 64, "%i.%04i sec",
                 (int)(pagetime / TIME_DIMENSION),
                 (int)((pagetime % TIME_DIMENSION) / 1000LL));
       }
       else
       {
-        convert_to_metric_suffix(pagetime_string, (double)pagetime / TIME_DIMENSION, 3);
+        convert_to_metric_suffix(pagetime_string, (double)pagetime / TIME_DIMENSION, 3, 64);
 
-        strcat(pagetime_string, "S");
+        strlcat(pagetime_string, "S", 64);
       }
 
     remove_trailing_zeros(viewtime_string);

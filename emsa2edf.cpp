@@ -912,12 +912,12 @@ void UI_EMSA2EDFwindow::SelectFileButton()
       p = buf + (i * record_size) + (raster * channels);
       if(datrecduris1)
       {
-        len = sprintf(p, "%+i", seconds);
+        len = snprintf(p, 32, "%+i", seconds);
         seconds++;
       }
       else
       {
-        len = sprintf(p, "%+i.%i", seconds, deci_seconds);
+        len = snprintf(p, 32, "%+i.%i", seconds, deci_seconds);
         if(++deci_seconds>9)
         {
           deci_seconds = 0;
@@ -929,14 +929,14 @@ void UI_EMSA2EDFwindow::SelectFileButton()
       if(annots_written<annot_cnt)
       {
         p[len++] = 0;
-        len += sprintf(p + len, "%+i", logbuf[annots_written].onset);
+        len += snprintf(p + len, 32, "%+i", logbuf[annots_written].onset);
         if(logbuf[annots_written].duration)
         {
           p[len++] = 21;
-          len += sprintf(p + len, "%i", logbuf[annots_written].duration);
+          len += snprintf(p + len, 32, "%i", logbuf[annots_written].duration);
         }
         p[len++] = 20;
-        len += sprintf(p + len, "%s", logbuf[annots_written].description);
+        len += snprintf(p + len, 32, "%s", logbuf[annots_written].description);
         p[len++] = 20;
         annots_written++;
       }

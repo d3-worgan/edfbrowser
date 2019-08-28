@@ -46,6 +46,32 @@ extern "C" {
 #include <ctype.h>
 #include <math.h>
 
+/************************* BANNED ************************/
+
+#define BANNED(func) sorry_##func##_is_a_banned_function
+
+#undef strcpy
+#define strcpy(x,y) BANNED(strcpy)
+#undef strcat
+#define strcat(x,y) BANNED(strcat)
+/*
+#undef strncpy
+#define strncpy(x,y,n) BANNED(strncpy)
+#undef strncat
+#define strncat(x,y,n) BANNED(strncat)
+*/
+#undef sprintf
+#undef vsprintf
+#ifdef HAVE_VARIADIC_MACROS
+#define sprintf(...) BANNED(sprintf)
+#define vsprintf(...) BANNED(vsprintf)
+#else
+#define sprintf(buf,fmt,arg) BANNED(sprintf)
+#define vsprintf(buf,fmt,arg) BANNED(vsprintf)
+#endif
+
+/*********************************************************/
+
 
 void remove_trailing_spaces(char *);
 void remove_leading_spaces(char *);
@@ -90,8 +116,8 @@ void asciitobin(char *, const char *);  /* destination must have eight times the
 void hextobin(char *, const char *);    /* destination must have four times the size of source! */
 
 /* Converts a double to Giga/Mega/Kilo/milli/micro/etc. */
-/* int is number of decimals. Result is written into the string argument */
-int convert_to_metric_suffix(char *, double, int);
+/* int is number of decimals and size of destination. Result is written into the string argument */
+int convert_to_metric_suffix(char *, double, int, int);
 
 double round_up_step125(double, double *);      /* Rounds the value up to 1-2-5 steps */
 double round_down_step125(double, double *);    /* Rounds the value down to 1-2-5 steps */
@@ -103,8 +129,17 @@ int dblcmp(double, double);  /* returns 0 when equal */
 
 int base64_dec(const void *, void *, int);
 
-int strlcat(char *, const char *, int);
+/* sz is size of destination, returns length of string in dest.
+ * This is different than the official BSD implementation!
+ * From the BSD man-page:
+ * "The strlcpy() and strlcat() functions return the total length of
+ * the string they tried to create. For strlcpy() that means the
+ * length of src. For strlcat() that means the initial length of dst
+ * plus the length of src. While this may seem somewhat confusing,
+ * it was done to make truncation detection simple."
+ */
 int strlcpy(char *, const char *, int);
+int strlcat(char *, const char *, int);
 
 #ifdef __cplusplus
 } /* extern "C" */

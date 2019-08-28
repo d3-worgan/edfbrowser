@@ -770,13 +770,13 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
   curve1->setH_RulerValues(start_freq, max_freq);
 
   strlcpy(str, "Center ", 2048);
-  convert_to_metric_suffix(str + strlen(str), start_freq + ((max_freq - start_freq) / 2.0), 3);
+  convert_to_metric_suffix(str + strlen(str), start_freq + ((max_freq - start_freq) / 2.0), 3, 2048 - strlen(str));
   remove_trailing_zeros(str);
   strlcat(str, "Hz", 2048);
   centerLabel->setText(str);
 
   strlcpy(str, "Span ", 2048);
-  convert_to_metric_suffix(str + strlen(str), max_freq - start_freq, 3);
+  convert_to_metric_suffix(str + strlen(str), max_freq - start_freq, 3, 2048 - strlen(str));
   remove_trailing_zeros(str);
   strlcat(str, "Hz", 2048);
   spanLabel->setText(str);
@@ -1247,7 +1247,7 @@ void UI_FreqSpectrumWindow::thr_finished_func()
   }
 
   strlcpy(str, "FFT resolution: ", 4096);
-  convert_to_metric_suffix(str + strlen(str), freqstep, 3);
+  convert_to_metric_suffix(str + strlen(str), freqstep, 3, 4096 - strlen(str));
   remove_trailing_zeros(str);
   snprintf(str + strlen(str), 4096 - strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks_processed, fft_data->dft_sz);
 

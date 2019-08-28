@@ -2258,7 +2258,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
         else
         {
-          convert_to_metric_suffix(str3, (double)crosshair_1.time_relative / TIME_DIMENSION, 3);
+          convert_to_metric_suffix(str3, (double)crosshair_1.time_relative / TIME_DIMENSION, 3, 128);
 
           snprintf(string + strlen(string), 32, " (%.26sS)", str3);
         }
@@ -2344,7 +2344,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
         else
         {
-          convert_to_metric_suffix(str3, (double)crosshair_2.time_relative / TIME_DIMENSION, 3);
+          convert_to_metric_suffix(str3, (double)crosshair_2.time_relative / TIME_DIMENSION, 3, 128);
 
           snprintf(string + strlen(string), 32, " (%.26sS)", str3);
         }
@@ -2366,7 +2366,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
         else
         {
-          convert_to_metric_suffix(str3, (double)l_time / TIME_DIMENSION, 3);
+          convert_to_metric_suffix(str3, (double)l_time / TIME_DIMENSION, 3, 128);
 
           snprintf(string, 32, "delta %.24sS", str3);
         }
