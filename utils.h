@@ -138,8 +138,12 @@ int base64_dec(const void *, void *, int);
  * plus the length of src. While this may seem somewhat confusing,
  * it was done to make truncation detection simple."
  */
+#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
+/* nothing here */
+#else
 int strlcpy(char *, const char *, int);
 int strlcat(char *, const char *, int);
+#endif
 
 #ifdef __cplusplus
 } /* extern "C" */

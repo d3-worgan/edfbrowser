@@ -2142,6 +2142,9 @@ char * strtok_r_e(char *str, const char *delim, char **saveptr)
  * plus the length of src. While this may seem somewhat confusing,
  * it was done to make truncation detection simple."
  */
+#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
+/* nothing here */
+#else
 int strlcpy(char *dst, const char *src, int sz)
 {
   int srclen;
@@ -2160,15 +2163,6 @@ int strlcpy(char *dst, const char *src, int sz)
 }
 
 
-/* sz is size of destination, returns length of string in dest.
- * This is different than the official BSD implementation!
- * From the BSD man-page:
- * "The strlcpy() and strlcat() functions return the total length of
- * the string they tried to create. For strlcpy() that means the
- * length of src. For strlcat() that means the initial length of dst
- * plus the length of src. While this may seem somewhat confusing,
- * it was done to make truncation detection simple."
- */
 int strlcat(char *dst, const char *src, int sz)
 {
   int srclen,
@@ -2190,7 +2184,7 @@ int strlcat(char *dst, const char *src, int sz)
 
   return (dstlen + srclen);
 }
-
+#endif
 
 
 
