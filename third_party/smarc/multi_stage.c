@@ -24,11 +24,10 @@
 
 
 #include "multi_stage.h"
-#include "malloc.h"
-#include "string.h"
-#include "stdlib.h"
-#include "stdio.h"
-#include "math.h"
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
 #include "remez_lp.h"
 
 int find_pgcd(int a, int b) {
