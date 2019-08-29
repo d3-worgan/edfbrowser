@@ -167,9 +167,9 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   for(hf=0, integer_sf=1, i=0; i<signalcomps; i++)
   {
-    if(signalcomp[i]->edfhdr->edfparam[0].sf_int)
+    if(signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].sf_int)
     {
-      if(signalcomp[i]->edfhdr->edfparam[0].sf_int >= 10000)
+      if(signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].sf_int >= 10000)
       {
         hf = 1;
       }
@@ -201,7 +201,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
     {
       for(i=0; i<signalcomps; i++)
       {
-        if(signalcomp[i]->edfhdr->edfparam[0].sf_int % smpl_div_arr[j])
+        if(signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].sf_int % smpl_div_arr[j])
         {
           break;
         }
