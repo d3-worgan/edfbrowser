@@ -48,6 +48,9 @@ extern "C" {
 
 /************************* BANNED ************************/
 
+#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__) || defined(__FreeBSD__)
+/* nothing */
+#else
 #define BANNED(func) sorry_##func##_is_a_banned_function
 
 #undef strcpy
@@ -68,6 +71,8 @@ extern "C" {
 #else
 #define sprintf(buf,fmt,arg) BANNED(sprintf)
 #define vsprintf(buf,fmt,arg) BANNED(vsprintf)
+#endif
+
 #endif
 
 /*********************************************************/

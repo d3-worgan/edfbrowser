@@ -1722,8 +1722,8 @@ void UI_headerEditorWindow::helpbuttonpressed()
 
   strlcpy(p_path, "file:///", MAX_PATH_LENGTH);
   strlcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH);
-  strlcat(p_path, "\\EDFbrowser\\manual.html#Header_editor");
-  QDesktopServices::openUrl(QUrl(p_path), MAX_PATH_LENGTH);
+  strlcat(p_path, "\\EDFbrowser\\manual.html#Header_editor", MAX_PATH_LENGTH);
+  QDesktopServices::openUrl(QUrl(p_path));
 #endif
 }
 
