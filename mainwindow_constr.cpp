@@ -1115,7 +1115,7 @@ UI_Mainwindow::UI_Mainwindow()
     messagewindow.exec();
   }
 
-  if(edflib_version() != 115)
+  if(edflib_version() != 116)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "There's a version problem with EDFlib.\n"
                                                               "Can not continue.");
