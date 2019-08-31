@@ -2142,7 +2142,7 @@ char * strtok_r_e(char *str, const char *delim, char **saveptr)
  * plus the length of src. While this may seem somewhat confusing,
  * it was done to make truncation detection simple."
  */
-#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
+#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__) || defined(__FreeBSD__)
 /* nothing here */
 #else
 int strlcpy(char *dst, const char *src, int sz)
