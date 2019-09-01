@@ -17,6 +17,8 @@
 //	portable (unlike the JIT option).
 //
 
+#pragma GCC diagnostic ignored "-Wpointer-sign"
+
 typedef struct Run {
    int magic;		// Magic: 0x64966325
    int buf_size;	// Length of working buffer required in doubles
@@ -187,7 +189,6 @@ filter_step(void *fbuf, double iir) {
    return iir;
 }
 
-
 //
 //	Create an instance of a filter, ready to run.  This returns a
 //	void* handle, and a function to call to execute the filter.
@@ -237,7 +238,7 @@ fid_run_new(FidFilter *filt, double (**funcpp)(void *,double)) {
    while (filt->len) {
       int n_iir, n_fir, cnt;
       double *iir, *fir;
-      double adj;
+      double adj=1.0;
       if (filt->typ == 'F' && filt->len == 1) {
 	 gain *= filt->val[0];
 	 filt= FFNEXT(filt);
@@ -474,5 +475,7 @@ void
 fid_run_free(void *run) {
    free(run);
 }
+
+#pragma GCC diagnostic warning "-Wpointer-sign"
 
 // END //

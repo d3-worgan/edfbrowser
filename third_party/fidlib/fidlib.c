@@ -294,6 +294,10 @@ extern FidFilter *mkfilter(char *, ...);
 //	Support code
 //
 
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wpointer-sign"
+
+
 static void (*error_handler)(char *err)= 0;
 
 static void
@@ -318,7 +322,7 @@ strdupf(char *fmt, ...) {
    int len;
    va_start(ap, fmt);
    len= vsnprintf(buf, sizeof(buf), fmt, ap);
-   if (len < 0 || len >= sizeof(buf)-1)
+   if (len < 0 || len >= (int)sizeof(buf)-1)
       error("strdupf exceeded buffer");
    rv= strdup(buf);
    if (!rv) error("Out of memory");
@@ -702,7 +706,7 @@ stack_filter(int order, int n_head, int n_val, ...) {
 
    // Check length
    len= ((char*)p)-((char*)q);
-   if (len != FFCSIZE(n_head-1, n_val))
+   if (len != (int)FFCSIZE(n_head-1, n_val))
       error("Internal error; bad call to stack_filter(); length mismatch (%d,%d)",
 	    len, FFCSIZE(n_head-1, n_val));
 
@@ -1625,7 +1629,7 @@ fid_design_coef(double *coef, int n_coef, char *spec, double rate,
    int a, len;
    int cnt= 0;
    double gain= 1.0;
-   double *iir, *fir, iir_adj;
+   double *iir, *fir, iir_adj=1.0;
    static double const_one= 1;
    int n_iir, n_fir;
    int iir_cbm, fir_cbm;
@@ -2284,6 +2288,9 @@ fid_parse(double rate, char **pp, FidFilter **ffp) {
       typ= 0;
       continue;
    }
+
+#pragma GCC diagnostic warning "-Wunused-parameter"
+#pragma GCC diagnostic warning "-Wpointer-sign"
 
 #undef INCBUF
 #undef ERR
