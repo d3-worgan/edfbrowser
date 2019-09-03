@@ -142,6 +142,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   linear_interpol = 0;
 
+  auto_update_annot_onset = 0;
+
   toolbar_stats.sz = 0;
   toolbar_stats.active = 0;
   toolbar_stats.annot_label[0] = 0;

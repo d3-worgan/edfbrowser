@@ -162,6 +162,7 @@ QLabel         *label1,
                *label4_10,
                *label4_11,
                *label4_12,
+               *label4_13,
                *label2_2,
                *label2_4,
                *label1_3,
@@ -196,6 +197,7 @@ QCheckBox      *checkbox1,
                *checkbox4_4,
                *checkbox4_5,
                *checkbox4_6,
+               *checkbox4_7,
                *checkbox2_1,
                *checkbox2_2;
 
@@ -239,6 +241,7 @@ void checkbox4_3Clicked(int);
 void checkbox4_4Clicked(int);
 void checkbox4_5Clicked(int);
 void checkbox4_6Clicked(int);
+void checkbox4_7Clicked(int);
 void ApplyButtonClicked();
 void colorBarButtonClicked(SpecialButton *);
 void DefaultButton2Clicked();

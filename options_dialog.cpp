@@ -748,6 +748,28 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   QObject::connect(checkbox4_6, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_6Clicked(int)));
 
+  label4_13 = new QLabel(tab4);
+  label4_13->setGeometry(20, 575, 310, 25);
+  label4_13->setText("Auto update annotation-editor onsettime");
+  label4_13->setToolTip("Enabling this option will automatically update the onsettime field of the annotation-editor\n"
+                        "when scrolling and a cross-hair is active.");
+
+  checkbox4_7 = new QCheckBox(tab4);
+  checkbox4_7->setGeometry(325, 578, 20, 20);
+  checkbox4_7->setTristate(false);
+  checkbox4_7->setToolTip("Enabling this option will automatically update the onsettime field of the annotation-editor\n"
+                          "when scrolling and a cross-hair is active.");
+  if(mainwindow->auto_update_annot_onset)
+  {
+    checkbox4_7->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox4_7->setCheckState(Qt::Unchecked);
+  }
+
+  QObject::connect(checkbox4_7, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_7Clicked(int)));
+
   tabholder->addTab(tab4, "Other");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1322,6 +1344,20 @@ void UI_OptionsDialog::checkbox4_6Clicked(int state)
   }
 
   mainwindow->setup_viewbuf();
+}
+
+
+void UI_OptionsDialog::checkbox4_7Clicked(int state)
+{
+  if(state==Qt::Checked)
+  {
+    mainwindow->auto_update_annot_onset = 1;
+  }
+
+  if(state==Qt::Unchecked)
+  {
+    mainwindow->auto_update_annot_onset = 0;
+  }
 }
 
 

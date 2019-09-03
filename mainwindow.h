@@ -240,6 +240,7 @@ public:
       viewtime_indicator_type,
       mainwindow_title_type,
       linear_interpol,
+      auto_update_annot_onset,
       average_period,
       font_size;
 

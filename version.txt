@@ -1,5 +1,13 @@
 
 
+ version 1.70      to be defined
+ --------------
+
+ - Added an option in the settings dialog to enable an automatic update of the onsettime field
+   of the annotation editor when scrolling and a cross-hair is active.
+
+
+
  version 1.69      September 2, 2019
  --------------
 
