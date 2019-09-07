@@ -1,6 +1,6 @@
 
 
- version 1.70      to be defined
+ version 1.70      September 7, 2019
  --------------
 
  - Added an option in the settings dialog to enable an automatic update of the onsettime field
