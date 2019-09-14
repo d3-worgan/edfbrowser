@@ -47,6 +47,7 @@
 #define FFT_WNDW_TYPE_NUTTALL4C               5
 #define FFT_WNDW_TYPE_HANN                    6
 #define FFT_WNDW_TYPE_HFT223D                 7
+#define FFT_WNDW_TYPE_HFT95                   8
 
 
 #ifdef __cplusplus

@@ -41,7 +41,7 @@ struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int
   if(buf_size < 4)  return NULL;
   if(dft_size < 4)  return NULL;
   if(dft_size & 1)  dft_size--;
-  if((window_type < 0) || (window_type > 7))  return NULL;
+  if((window_type < 0) || (window_type > 8))  return NULL;
   if((overlap < 1) || (overlap > 5))  return NULL;
 
   st = (struct fft_wrap_settings_struct *)calloc(1, sizeof(struct fft_wrap_settings_struct));
@@ -291,13 +291,21 @@ static void window_func(const double *src, double *dest, double *coef, int sz, i
                     - (0.324954578e-2 * cos((14.0 * M_PI * i) / (sz - 1))) + (0.13801040e-3 * cos((16.0 * M_PI * i) / (sz - 1))) - (0.132725e-5 * cos((18.0 * M_PI * i) / (sz - 1)));  /* 9-term HFT223D */
                   }
                 }
-                else
-                {
-                  for(i=0; i<sz2; i++)
-                  {
-                    coef[i] = 0;
+                else if(type == FFT_WNDW_TYPE_HFT95)
+                  {  /* Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including a comprehensive list of window functions and some new at-top windows Max Planck Institute */
+                    for(i=0; i<sz2; i++)
+                    {
+                      coef[i] = 1.0 - (1.9383379 * cos((2.0 * M_PI * i) / (sz - 1))) + (1.3045202 * cos((4.0 * M_PI * i) / (sz - 1)))
+                      - (0.4028270 * cos((6.0 * M_PI * i) / (sz - 1))) + (0.0350665 * cos((8.0 * M_PI * i) / (sz - 1)));
+                    }
                   }
-                }
+                  else
+                  {
+                    for(i=0; i<sz2; i++)
+                    {
+                      coef[i] = 0;
+                    }
+                  }
 
     set_gain_unity(coef, sz2);
   }

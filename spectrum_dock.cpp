@@ -224,6 +224,7 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   windowBox->addItem("Nuttall4c");
   windowBox->addItem("Hann");
   windowBox->addItem("HFT223D");
+  windowBox->addItem("HFT95");
   windowBox->setCurrentIndex(window_type);
   windowBox->setToolTip("Window");
 
