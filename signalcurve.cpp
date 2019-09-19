@@ -1031,7 +1031,14 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
         continue;
       }
 
-      q_str.setNum((double)i / (double)p2_multiplier, 'f', precision);
+      if((precision == 0) && (max_value > 1000.0))
+      {
+        q_str.setNum((double)i / (double)p2_multiplier, 'e', precision);
+      }
+      else
+      {
+        q_str.setNum((double)i / (double)p2_multiplier, 'f', precision);
+      }
 
       p2_tmp = (double)(i - p2_ruler_startvalue) * p2_pixels_per_unit;
 
@@ -1594,7 +1601,14 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
         continue;
       }
 
-      q_str.setNum((double)lk / (double)p2_multiplier, 'f', precision);
+      if((precision == 0) && (max_value > 1000.0))
+      {
+        q_str.setNum((double)lk / (double)p2_multiplier, 'e', precision);
+      }
+      else
+      {
+        q_str.setNum((double)lk / (double)p2_multiplier, 'f', precision);
+      }
 
       p2_tmp = (double)(lk - p2_ruler_startvalue) * p2_pixels_per_unit;
 
