@@ -6,6 +6,10 @@
  - Added an option in the settings dialog to enable to assign varying colors to traces
    when adding traces to the screen.
 
+ - Spectrumanalyzer: switch to exponential notation in case of big numbers.
+
+ - Spectrum Analyzer: added window type "HFT95".
+
 
 
  version 1.70      September 7, 2019
