@@ -37,6 +37,17 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
+  smp_per_record = 0;
+
+  last_default_color = 0;
+
+  default_color_list[0] = Qt::yellow;
+  default_color_list[1] = Qt::green;
+  default_color_list[2] = Qt::red;
+  default_color_list[3] = Qt::cyan;
+  default_color_list[4] = Qt::magenta;
+  default_color_list[5] = Qt::blue;
+
   SignalsDialog = new QDialog;
 
   SignalsDialog->setMinimumSize(800, 500);
@@ -124,8 +135,6 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
   compositionlist->setSelectionBehavior(QAbstractItemView::SelectRows);
   compositionlist->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-  smp_per_record = 0;
-
   QObject::connect(CloseButton,       SIGNAL(clicked()),                SignalsDialog, SLOT(close()));
   QObject::connect(SelectAllButton,   SIGNAL(clicked()),                this,          SLOT(SelectAllButtonClicked()));
   QObject::connect(HelpButton,        SIGNAL(clicked()),                this,          SLOT(HelpButtonClicked()));
@@ -195,7 +204,15 @@ void UI_Signalswindow::DisplayCompButtonClicked()
   newsignalcomp->edfhdr = mainwindow->edfheaderlist[newsignalcomp->filenum];
   newsignalcomp->file_duration = newsignalcomp->edfhdr->long_data_record_duration * newsignalcomp->edfhdr->datarecords;
   newsignalcomp->voltpercm = mainwindow->default_amplitude;
-  newsignalcomp->color = curve_color;
+  if(mainwindow->use_diverse_signal_colors)
+  {
+    newsignalcomp->color = default_color_list[last_default_color++];
+    last_default_color %= 6;
+  }
+  else
+  {
+    newsignalcomp->color = curve_color;
+  }
   newsignalcomp->hasruler = 0;
   newsignalcomp->polarity = 1;
 
@@ -297,7 +314,15 @@ void UI_Signalswindow::DisplayButtonClicked()
     newsignalcomp->edfhdr = mainwindow->edfheaderlist[newsignalcomp->filenum];
     newsignalcomp->file_duration = newsignalcomp->edfhdr->long_data_record_duration * newsignalcomp->edfhdr->datarecords;
     newsignalcomp->voltpercm = mainwindow->default_amplitude;
-    newsignalcomp->color = curve_color;
+    if(mainwindow->use_diverse_signal_colors)
+    {
+      newsignalcomp->color = default_color_list[last_default_color++];
+      last_default_color %= 6;
+    }
+    else
+    {
+      newsignalcomp->color = curve_color;
+    }
     newsignalcomp->hasruler = 0;
     newsignalcomp->polarity = 1;
 

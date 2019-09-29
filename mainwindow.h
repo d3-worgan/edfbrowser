@@ -242,7 +242,8 @@ public:
       linear_interpol,
       auto_update_annot_onset,
       average_period,
-      font_size;
+      font_size,
+      use_diverse_signal_colors;
 
   unsigned long long pagetime,
                      maxfilesize_to_readin_annotations;

@@ -1,5 +1,13 @@
 
 
+ version 1.71      to be defined
+ --------------
+
+ - Added an option in the settings dialog to enable to assign varying colors to traces
+   when adding traces to the screen.
+
+
+
  version 1.70      September 7, 2019
  --------------
 

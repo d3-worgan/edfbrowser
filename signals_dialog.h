@@ -102,7 +102,9 @@ private:
   SpecialButton *ColorButton;
 
   int smp_per_record,
-      curve_color;
+      curve_color,
+      default_color_list[32],
+      last_default_color;
 
   char physdimension[64];
 
