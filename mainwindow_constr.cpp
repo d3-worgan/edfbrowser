@@ -230,6 +230,14 @@ UI_Mainwindow::UI_Mainwindow()
 
   spectrum_vlog = 0;
 
+  spectrum_window = 0;
+
+  spectrum_blocksize_predefined = 0;
+
+  spectrum_blocksize_userdefined = 200;
+
+  spectrum_overlap = 0;
+
   spectrumdock_sqrt = 0;
 
   spectrumdock_vlog = 0;

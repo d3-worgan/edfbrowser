@@ -289,6 +289,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   dftsz_box->addItem("Blocksize: 5000000");
   dftsz_box->addItem("Blocksize: 8388608");
   dftsz_box->addItem("Blocksize: 10000000");
+  dftsz_box->setCurrentIndex(mainwindow->spectrum_blocksize_predefined);
 
   windowBox = new QComboBox;
   windowBox->setMinimumSize(70, 25);
@@ -303,13 +304,23 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   windowBox->addItem("HFT95");
   windowBox->setCurrentIndex(window_type);
   windowBox->setToolTip("Window");
+  windowBox->setCurrentIndex(mainwindow->spectrum_window);
 
   dftsz_spinbox = new QSpinBox;
   dftsz_spinbox->setMinimumSize(70, 25);
   dftsz_spinbox->setMinimum(10);
   dftsz_spinbox->setMaximum(1000);
   dftsz_spinbox->setSingleStep(2);
-  dftsz_spinbox->setValue(dftblocksize);
+  if(mainwindow->spectrum_blocksize_predefined)
+  {
+    dftsz_spinbox->setValue(dftsz_range[mainwindow->spectrum_blocksize_predefined]);
+
+    dftsz_spinbox->setEnabled(false);
+  }
+  else
+  {
+    dftsz_spinbox->setValue(mainwindow->spectrum_blocksize_userdefined);
+  }
 
   overlap_box = new QComboBox;
   overlap_box->setMinimumSize(70, 25);
@@ -318,6 +329,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   overlap_box->addItem("Overlap: 67%");
   overlap_box->addItem("Overlap: 75%");
   overlap_box->addItem("Overlap: 80%");
+  overlap_box->setCurrentIndex(mainwindow->spectrum_overlap);
 
   vlayout3 = new QVBoxLayout;
   vlayout3->addStretch(100);
@@ -429,6 +441,8 @@ void UI_FreqSpectrumWindow::windowBox_changed(int idx)
 
   if(window_type == idx)  return;
 
+  mainwindow->spectrum_window = idx;
+
   window_type = idx;
 
   busy = 1;
@@ -465,6 +479,8 @@ void UI_FreqSpectrumWindow::dftsz_value_changed(int new_val)
 
 void UI_FreqSpectrumWindow::dftsz_box_changed(int idx)
 {
+  mainwindow->spectrum_blocksize_predefined = idx;
+
   if(idx)
   {
     if(dftsz_range[idx] > samples)
@@ -503,6 +519,8 @@ void UI_FreqSpectrumWindow::overlap_box_changed(int idx)
   if(busy)  return;
 
   if(overlap == (idx + 1))  return;
+
+  mainwindow->spectrum_overlap = idx;
 
   overlap = idx + 1;
 
