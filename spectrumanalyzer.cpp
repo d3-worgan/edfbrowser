@@ -306,20 +306,29 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   windowBox->setToolTip("Window");
   windowBox->setCurrentIndex(mainwindow->spectrum_window);
 
+  window_type = mainwindow->spectrum_window;
+
   dftsz_spinbox = new QSpinBox;
   dftsz_spinbox->setMinimumSize(70, 25);
   dftsz_spinbox->setMinimum(10);
-  dftsz_spinbox->setMaximum(1000);
   dftsz_spinbox->setSingleStep(2);
   if(mainwindow->spectrum_blocksize_predefined)
   {
+    dftsz_spinbox->setMaximum(10000000);
+
     dftsz_spinbox->setValue(dftsz_range[mainwindow->spectrum_blocksize_predefined]);
+
+    dftblocksize = dftsz_range[mainwindow->spectrum_blocksize_predefined];
 
     dftsz_spinbox->setEnabled(false);
   }
   else
   {
+    dftsz_spinbox->setMaximum(1000);
+
     dftsz_spinbox->setValue(mainwindow->spectrum_blocksize_userdefined);
+
+    dftblocksize = mainwindow->spectrum_blocksize_userdefined;
   }
 
   overlap_box = new QComboBox;
@@ -330,6 +339,8 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   overlap_box->addItem("Overlap: 75%");
   overlap_box->addItem("Overlap: 80%");
   overlap_box->setCurrentIndex(mainwindow->spectrum_overlap);
+
+  overlap = mainwindow->spectrum_overlap + 1;
 
   vlayout3 = new QVBoxLayout;
   vlayout3->addStretch(100);
