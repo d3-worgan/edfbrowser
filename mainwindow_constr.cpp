@@ -238,9 +238,19 @@ UI_Mainwindow::UI_Mainwindow()
 
   spectrum_overlap = 0;
 
+  spectrumdock_bw = 0;
+
   spectrumdock_sqrt = 0;
 
   spectrumdock_vlog = 0;
+
+  spectrum_window = 0;
+
+  spectrumdock_blocksize_predefined = 0;
+
+  spectrumdock_blocksize_userdefined = 200;
+
+  spectrumdock_overlap = 0;
 
   spectrumdock_colorbars = 0;
 
