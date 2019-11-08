@@ -134,6 +134,7 @@ HEADERS += fft_wrap.h
 HEADERS += ecg_statistics.h
 HEADERS += fir_filter.h
 HEADERS += fir_filter_dialog.h
+HEADERS += ishne2edf.h
 
 HEADERS += third_party/fidlib/fidlib.h
 HEADERS += third_party/fidlib/fidmkf.h
@@ -240,6 +241,7 @@ SOURCES += fft_wrap.c
 SOURCES += ecg_statistics.c
 SOURCES += fir_filter.c
 SOURCES += fir_filter_dialog.cpp
+SOURCES += ishne2edf.cpp
 
 SOURCES += third_party/fidlib/fidlib.c
 
