@@ -10,6 +10,8 @@
 
  - Spectrum Analyzer: added window type "HFT95".
 
+ - Converters: added a ISHNE Holter ECG to EDF converter.
+
 
 
  version 1.70      September 7, 2019

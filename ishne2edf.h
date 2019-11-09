@@ -58,10 +58,7 @@
 #include "mainwindow.h"
 #include "utils.h"
 #include "edflib.h"
-#include "xml.h"
 
-
-#define ISHNE_MAX_CHNS 12
 
 
 class UI_Mainwindow;
@@ -89,27 +86,6 @@ char *recent_opendir,
      *recent_savedir;
 
 void enable_widgets(bool);
-
-int chan_cnt,
-    chan_offset[ISHNE_MAX_CHNS],
-    chan_bits[ISHNE_MAX_CHNS],
-    chan_units_per_mv[ISHNE_MAX_CHNS],
-    chan_duration[ISHNE_MAX_CHNS],
-    chan_sample_freq[ISHNE_MAX_CHNS],
-    chan_decoded_len[ISHNE_MAX_CHNS],
-    chan_sf_div,
-    chan_sf,
-    chan_sf_block,
-    subject_gender;
-
-char chan_format[ISHNE_MAX_CHNS][17],
-     chan_name[ISHNE_MAX_CHNS][17],
-     *chan_data_in[ISHNE_MAX_CHNS],
-     *chan_data_out[ISHNE_MAX_CHNS],
-     start_date_time[64],
-     subject_name[512],
-     device_name[512];
-
 
 private slots:
 

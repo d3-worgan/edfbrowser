@@ -254,6 +254,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   spectrumdock_colorbars = 0;
 
+  spectrumdock_window = 0;
+
   z_score_var.crossoverfreq = 7.5;
   z_score_var.z_threshold = 0.0;
   z_score_var.zscore_page_len = 30;
@@ -774,6 +776,7 @@ UI_Mainwindow::UI_Mainwindow()
   toolsmenu->addAction("Convert Biox CB-1305-C to EDF", this, SLOT(convert_biox_to_edf()));
   toolsmenu->addAction("Convert FM Audio ECG to EDF", this, SLOT(convert_fm_audio_to_edf()));
   toolsmenu->addAction("Convert Mortara ECG XML to EDF", this, SLOT(convert_mortara_to_edf()));
+  toolsmenu->addAction("Convert ISHNE ECG to EDF", this, SLOT(convert_ishne_to_edf()));
   toolsmenu->addAction("Convert Binary/raw data to EDF", this, SLOT(convert_binary_to_edf()));
   toolsmenu->addSeparator();
   toolsmenu->addAction("Options", this, SLOT(show_options_dialog()));

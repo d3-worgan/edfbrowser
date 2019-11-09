@@ -172,6 +172,7 @@
 #include "plif_ecg_subtract_filter_dialog.h"
 #include "export_filtered_signals.h"
 #include "fir_filter_dialog.h"
+#include "ishne2edf.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -577,6 +578,7 @@ private slots:
   void convert_wave_to_edf();
   void convert_fm_audio_to_edf();
   void convert_mortara_to_edf();
+  void convert_ishne_to_edf();
   void convert_nexfin_to_edf();
   void edfd_converter();
   void slider_moved(int);

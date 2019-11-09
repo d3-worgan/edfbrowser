@@ -625,6 +625,12 @@ void UI_Mainwindow::convert_mortara_to_edf()
 }
 
 
+void UI_Mainwindow::convert_ishne_to_edf()
+{
+  UI_IshneEDFwindow ishne2edf(this, recent_opendir, recent_savedir);
+}
+
+
 void UI_Mainwindow::convert_nexfin_to_edf()
 {
   UI_NEXFIN2EDFwindow nexfin2edf(recent_opendir, recent_savedir);
