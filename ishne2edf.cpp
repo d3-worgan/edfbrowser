@@ -64,6 +64,8 @@ UI_IshneEDFwindow::UI_IshneEDFwindow(QWidget *w_parent, char *recent_dir, char *
   pushButton2->setGeometry(480, 430, 100, 25);
   pushButton2->setText("Close");
 
+  crc_ccitt_init();
+
   QObject::connect(pushButton1, SIGNAL(clicked()), this,           SLOT(SelectFileButton()));
   QObject::connect(pushButton2, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
 
@@ -244,6 +246,12 @@ struct
   if(file_sz < (unsigned int)(ecg_block_offset + (ecg_smpl_sz * chns * 2)))
   {
     textEdit1->append("Error, file size is less than file size based on header parameters.");
+    goto OUT_EXIT;
+  }
+
+  if(check_crc(inputfile, var_block_offset + var_block_sz))
+  {
+    textEdit1->append("CRC error, file header is corrupt.");
     goto OUT_EXIT;
   }
 
@@ -567,11 +575,90 @@ OUT_EXIT:
 }
 
 
-void UI_IshneEDFwindow::enable_widgets(bool toggle)
+int UI_IshneEDFwindow::check_crc(FILE *inputfile, int len)
 {
-  pushButton1->setEnabled(toggle);
-  pushButton2->setEnabled(toggle);
+  unsigned short crc=0xFFFF, crc2=0x0000;
+
+  unsigned char *buf=NULL;
+
+  buf = (unsigned char *)malloc(len);
+  if(buf == NULL)
+  {
+    return -99;
+  }
+
+  rewind(inputfile);
+
+  if(fread(buf, len, 1, inputfile) != 1)
+  {
+    free(buf);
+    return -88;
+  }
+
+  crc2 = *((unsigned short *)(buf + 8));
+
+  crc = crc_ccitt(buf + 10, len - 10, crc);
+
+//  printf("crc: %04X   crc2: %04X\n", crc, crc2);
+
+  if(crc != crc2)
+  {
+    free(buf);
+    return -1;
+  }
+
+  free(buf);
+
+  return 0;
 }
+
+
+unsigned short UI_IshneEDFwindow::crc_ccitt(const unsigned char *message, int nbytes, unsigned short remainder)
+{
+  int byte;
+
+  unsigned char data;
+
+  for(byte=0; byte<nbytes; byte++)  /* Divide the message by the polynomial, a byte at a time. */
+  {
+    data = message[byte] ^ (remainder >> 8);
+
+    remainder = crc_ccitt_table[data] ^ (remainder << 8);
+  }
+
+  return remainder;  /* The final remainder is the CRC. */
+}
+
+
+void UI_IshneEDFwindow::crc_ccitt_init(void)
+{
+  int dividend;
+
+  unsigned short remainder;
+
+  unsigned char bit;
+
+  for(dividend=0; dividend<256; dividend++)  /* Compute the remainder of each possible dividend. */
+  {
+    remainder = dividend << 8;  /* Start with the dividend followed by zeros. */
+
+    for(bit=8; bit>0; bit--)  /* Perform modulo-2 division, a bit at a time. */
+    {
+      if(remainder & 32768)  /* Try to divide the current data bit. */
+      {
+        remainder = (remainder << 1) ^ 0x1021;  /* polynomial */
+      }
+      else
+      {
+        remainder = (remainder << 1);
+      }
+    }
+
+    crc_ccitt_table[dividend] = remainder;  /* Store the result into the table. */
+  }
+}
+
+
 
 
 

@@ -85,7 +85,13 @@ QPushButton   *pushButton1,
 char *recent_opendir,
      *recent_savedir;
 
-void enable_widgets(bool);
+unsigned short crc_ccitt_table[256];
+
+void crc_ccitt_init(void);
+
+unsigned short crc_ccitt(const unsigned char *, int, unsigned short);
+
+int check_crc(FILE *, int);
 
 private slots:
 
