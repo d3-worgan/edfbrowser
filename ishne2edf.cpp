@@ -101,8 +101,8 @@ int i, j,
        scratchpad[4096]={""},
        tmp_str[128]={""};
 
-  const char *lead_label[20]={"Unknown","Generic bipolar","X bipolar","Y bipolar","Z bipolar","I","II","III","IV","V",
-                              "VI","V1","V2","V3","V4","V5","V6","ES","AS","AI"};
+  const char *lead_label[20]={"Unknown","Generic bipolar","X bipolar","Y bipolar","Z bipolar","I","II","III","aVR","aVL",
+                              "aVF","V1","V2","V3","V4","V5","V6","ES","AS","AI"};
 
   FILE *inputfile=NULL;
 
