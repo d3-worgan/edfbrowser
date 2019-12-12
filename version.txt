@@ -12,6 +12,8 @@
 
  - Converters: added a ISHNE Holter ECG to EDF converter.
 
+ - Videoplayer: fixed a bug that could cause a wrong synchronization between the video and the EDF file.
+
 
 
  version 1.70      September 7, 2019
