@@ -1244,7 +1244,14 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   startline = DatastartSpinbox->value();
 
-  descr_column = DescriptionColumnSpinBox->value() - 1;
+  if(manualdescription)
+  {
+    descr_column = -1;
+  }
+  else
+  {
+    descr_column = DescriptionColumnSpinBox->value() - 1;
+  }
 
   onset_column = OnsetColumnSpinBox->value() - 1;
 
@@ -1422,7 +1429,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 #ifdef IMPORT_ANNOTS_DEBUG
     printf("  line %i\n", line_nr);
 #endif
-    if(onset_is_set && descr_is_set)
+    if(onset_is_set && (descr_is_set || manualdescription))
     {
       if((!ignore_consecutive) || strcmp(description, last_description))
       {
