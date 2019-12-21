@@ -1,6 +1,6 @@
 
 
- version 1.71      to be defined
+ version 1.71      December 21, 2019
  --------------
 
  - Added an option in the settings dialog to enable to assign varying colors to traces
