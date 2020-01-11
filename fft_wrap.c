@@ -352,7 +352,11 @@ static void set_gain_unity(double *arr, int sz)
 }
 
 
-static double bessi0(double x)  /* http://jean-pierre.moreau.pagesperso-orange.fr/c_bessel.html */
+/*
+ * zero order, first kind, modified Bessel function
+ * http://jean-pierre.moreau.pagesperso-orange.fr/c_bessel.html
+ */
+static double bessi0(double x)
 {
   double y,p1,p2,p3,p4,p5,p6,p7,q1,q2,q3,q4,q5,q6,q7,q8,q9,ax,bx;
 
