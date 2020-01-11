@@ -48,6 +48,7 @@
 #define FFT_WNDW_TYPE_HANN                    6
 #define FFT_WNDW_TYPE_HFT223D                 7
 #define FFT_WNDW_TYPE_HFT95                   8
+#define FFT_WNDW_TYPE_KAISER_A3               9
 
 
 #ifdef __cplusplus
