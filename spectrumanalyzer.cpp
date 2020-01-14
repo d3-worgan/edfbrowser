@@ -302,7 +302,10 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   windowBox->addItem("Hann");
   windowBox->addItem("HFT223D");
   windowBox->addItem("HFT95");
-  windowBox->addItem("Kaiser");
+  windowBox->addItem("Kaiser2");
+  windowBox->addItem("Kaiser3");
+  windowBox->addItem("Kaiser4");
+  windowBox->addItem("Kaiser5");
   windowBox->setCurrentIndex(window_type);
   windowBox->setToolTip("Window");
   windowBox->setCurrentIndex(mainwindow->spectrum_window);
@@ -633,7 +636,13 @@ void UI_FreqSpectrumWindow::print_to_txt()
             break;
     case FFT_WNDW_TYPE_HFT95                 : fprintf(outputfile, "FFT window function: HFT95\n");
             break;
-    case FFT_WNDW_TYPE_KAISER_A3             : fprintf(outputfile, "FFT window function: Kaiser\n");
+    case FFT_WNDW_TYPE_KAISER_A2             : fprintf(outputfile, "FFT window function: Kaiser2\n");
+            break;
+    case FFT_WNDW_TYPE_KAISER_A3             : fprintf(outputfile, "FFT window function: Kaiser3\n");
+            break;
+    case FFT_WNDW_TYPE_KAISER_A4             : fprintf(outputfile, "FFT window function: Kaiser4\n");
+            break;
+    case FFT_WNDW_TYPE_KAISER_A5             : fprintf(outputfile, "FFT window function: Kaiser5\n");
             break;
   }
   switch(overlap)

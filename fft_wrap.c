@@ -42,7 +42,7 @@ struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int
   if(buf_size < 4)  return NULL;
   if(dft_size < 4)  return NULL;
   if(dft_size & 1)  dft_size--;
-  if((window_type < 0) || (window_type > 9))  return NULL;
+  if((window_type < 0) || (window_type > 12))  return NULL;
   if((overlap < 1) || (overlap > 5))  return NULL;
 
   st = (struct fft_wrap_settings_struct *)calloc(1, sizeof(struct fft_wrap_settings_struct));
@@ -300,20 +300,41 @@ static void window_func(const double *src, double *dest, double *coef, int sz, i
                       - (0.4028270 * cos((6.0 * M_PI * i) / (sz - 1))) + (0.0350665 * cos((8.0 * M_PI * i) / (sz - 1)));
                     }
                   }
-                  else if(type == FFT_WNDW_TYPE_KAISER_A3)
-                    {  /* https://en.wikipedia.org/wiki/Window_function */
+                  else if(type == FFT_WNDW_TYPE_KAISER_A2)
+                    {  /* Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including a comprehensive list of window functions and some new at-top windows Max Planck Institute */
                       for(i=0; i<sz2; i++)
                       {
-                        coef[i] = (bessi0(M_PI * 3.0 * sqrt(1.0 - ((((2.0 * i) / (double)sz) - 1.0) * (((2.0 * i) / (double)sz) - 1.0))))) / (bessi0(M_PI * 3.0));
+                        coef[i] = (bessi0(M_PI * 2.0 * sqrt(1.0 - ((((2.0 * i) / (double)sz) - 1.0) * (((2.0 * i) / (double)sz) - 1.0))))) / (bessi0(M_PI * 2.0));
                       }
                     }
-                    else
-                    {
-                      for(i=0; i<sz2; i++)
-                      {
-                        coef[i] = 0;
+                    else if(type == FFT_WNDW_TYPE_KAISER_A3)
+                      {  /* Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including a comprehensive list of window functions and some new at-top windows Max Planck Institute */
+                        for(i=0; i<sz2; i++)
+                        {
+                          coef[i] = (bessi0(M_PI * 3.0 * sqrt(1.0 - ((((2.0 * i) / (double)sz) - 1.0) * (((2.0 * i) / (double)sz) - 1.0))))) / (bessi0(M_PI * 3.0));
+                        }
                       }
-                    }
+                      else if(type == FFT_WNDW_TYPE_KAISER_A4)
+                        {  /* Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including a comprehensive list of window functions and some new at-top windows Max Planck Institute */
+                          for(i=0; i<sz2; i++)
+                          {
+                            coef[i] = (bessi0(M_PI * 4.0 * sqrt(1.0 - ((((2.0 * i) / (double)sz) - 1.0) * (((2.0 * i) / (double)sz) - 1.0))))) / (bessi0(M_PI * 4.0));
+                          }
+                        }
+                        else if(type == FFT_WNDW_TYPE_KAISER_A5)
+                          {  /* Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including a comprehensive list of window functions and some new at-top windows Max Planck Institute */
+                            for(i=0; i<sz2; i++)
+                            {
+                              coef[i] = (bessi0(M_PI * 5.0 * sqrt(1.0 - ((((2.0 * i) / (double)sz) - 1.0) * (((2.0 * i) / (double)sz) - 1.0))))) / (bessi0(M_PI * 5.0));
+                            }
+                          }
+                          else
+                          {
+                            for(i=0; i<sz2; i++)
+                            {
+                              coef[i] = 0;
+                            }
+                          }
 
     set_gain_unity(coef, sz2);
   }
