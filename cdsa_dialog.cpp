@@ -37,6 +37,12 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
 
   signalcomp = signal_comp;
 
+  sf = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_int;
+  if(!sf)
+  {
+    sf = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f + 0.5;
+  }
+
   myobjectDialog = new QDialog;
 
   myobjectDialog->setMinimumSize(600, 480);
@@ -45,20 +51,157 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-//   pushButton1 = new QPushButton(myobjectDialog);
-//   pushButton1->setGeometry(20, 430, 100, 25);
-//   pushButton1->setText("Select File");
-//
-//   pushButton2 = new QPushButton(myobjectDialog);
-//   pushButton2->setGeometry(480, 430, 100, 25);
-//   pushButton2->setText("Close");
+  windowlen_label = new QLabel(myobjectDialog);
+  windowlen_label->setGeometry(20, 20, 150, 25);
+  windowlen_label->setText("Segment length");
 
-//   QObject::connect(pushButton1, SIGNAL(clicked()), this,           SLOT(SelectFileButton()));
-//   QObject::connect(pushButton2, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
+  windowlen_spinbox = new QSpinBox(myobjectDialog);
+  windowlen_spinbox->setGeometry(170, 20, 100, 25);
+  windowlen_spinbox->setSuffix(" sec");
+  windowlen_spinbox->setMinimum(5);
+  windowlen_spinbox->setMaximum(300);
+
+  blocklen_label = new QLabel(myobjectDialog);
+  blocklen_label->setGeometry(20, 65, 150, 25);
+  blocklen_label->setText("Block length");
+
+  blocklen_spinbox = new QSpinBox(myobjectDialog);
+  blocklen_spinbox->setGeometry(170, 65, 100, 25);
+  blocklen_spinbox->setSuffix(" sec");
+  blocklen_spinbox->setMinimum(1);
+  blocklen_spinbox->setMaximum(10);
+
+  pix_per_hz_label = new QLabel(myobjectDialog);
+  pix_per_hz_label->setGeometry(20, 110, 150, 25);
+  pix_per_hz_label->setText("Pixels per bin");
+
+  pix_per_hz_spinbox = new QSpinBox(myobjectDialog);
+  pix_per_hz_spinbox->setGeometry(170, 110, 100, 25);
+  pix_per_hz_spinbox->setSuffix(" px");
+  pix_per_hz_spinbox->setMinimum(1);
+  pix_per_hz_spinbox->setMaximum(10);
+
+  overlap_label = new QLabel(myobjectDialog);
+  overlap_label->setGeometry(20, 155, 150, 25);
+  overlap_label->setText("Overlap");
+
+  overlap_combobox = new QComboBox(myobjectDialog);
+  overlap_combobox->setGeometry(170, 155, 100, 25);
+  overlap_combobox->addItem(" 0 %");
+  overlap_combobox->addItem("50 %");
+  overlap_combobox->addItem("67 %");
+  overlap_combobox->addItem("75 %");
+  overlap_combobox->addItem("80 %");
+
+  windowfunc_label = new QLabel(myobjectDialog);
+  windowfunc_label->setGeometry(20, 200, 150, 25);
+  windowfunc_label->setText("Window");
+
+  windowfunc_combobox = new QComboBox(myobjectDialog);
+  windowfunc_combobox->setGeometry(170, 200, 100, 25);
+  windowfunc_combobox->addItem("Rectangular");
+  windowfunc_combobox->addItem("Hamming");
+  windowfunc_combobox->addItem("4-term Blackman-Harris");
+  windowfunc_combobox->addItem("7-term Blackman-Harris");
+  windowfunc_combobox->addItem("Nuttall3b");
+  windowfunc_combobox->addItem("Nuttall4c");
+  windowfunc_combobox->addItem("Hann");
+  windowfunc_combobox->addItem("HFT223D");
+  windowfunc_combobox->addItem("HFT95");
+  windowfunc_combobox->addItem("Kaiser2");
+  windowfunc_combobox->addItem("Kaiser3");
+  windowfunc_combobox->addItem("Kaiser4");
+  windowfunc_combobox->addItem("Kaiser5");
+
+  min_hz_label = new QLabel(myobjectDialog);
+  min_hz_label->setGeometry(20, 245, 150, 25);
+  min_hz_label->setText("Min. freq.");
+
+  min_hz_spinbox = new QSpinBox(myobjectDialog);
+  min_hz_spinbox->setGeometry(170, 245, 100, 25);
+  min_hz_spinbox->setSuffix(" Hz");
+  min_hz_spinbox->setMinimum(0);
+  min_hz_spinbox->setMaximum((sf / 2) - 1);
+
+  max_hz_label = new QLabel(myobjectDialog);
+  max_hz_label->setGeometry(20, 290, 150, 25);
+  max_hz_label->setText("Max. freq.");
+
+  max_hz_spinbox = new QSpinBox(myobjectDialog);
+  max_hz_spinbox->setGeometry(170, 290, 100, 25);
+  max_hz_spinbox->setSuffix(" Hz");
+  max_hz_spinbox->setMinimum(1);
+  max_hz_spinbox->setMaximum(sf / 2);
+
+  close_button = new QPushButton(myobjectDialog);
+  close_button->setGeometry(20, 435, 100, 25);
+  close_button->setText("Close");
+
+  default_button = new QPushButton(myobjectDialog);
+  default_button->setGeometry(250, 435, 100, 25);
+  default_button->setText("Default");
+
+  start_button = new QPushButton(myobjectDialog);
+  start_button->setGeometry(480, 435, 100, 25);
+  start_button->setText("Start");
+
+  default_button_clicked();
+
+  QObject::connect(close_button, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
+
+  if(sf >= 60)
+  {
+    QObject::connect(default_button, SIGNAL(clicked()),         this, SLOT(default_button_clicked()));
+    QObject::connect(start_button,   SIGNAL(clicked()),         this, SLOT(start_button_clicked()));
+    QObject::connect(min_hz_spinbox, SIGNAL(valueChanged(int)), this, SLOT(min_hz_spinbox_changed(int)));
+    QObject::connect(max_hz_spinbox, SIGNAL(valueChanged(int)), this, SLOT(max_hz_spinbox_changed(int)));
+  }
 
   myobjectDialog->exec();
 }
 
+
+void UI_cdsa_window::min_hz_spinbox_changed(int value)
+{
+  QObject::blockSignals(true);
+
+  if(max_hz_spinbox->value() <= value)
+  {
+    max_hz_spinbox->setValue(value + 1);
+  }
+
+  QObject::blockSignals(false);
+}
+
+
+void UI_cdsa_window::max_hz_spinbox_changed(int value)
+{
+  QObject::blockSignals(true);
+
+  if(min_hz_spinbox->value() >= value)
+  {
+    min_hz_spinbox->setValue(value - 1);
+  }
+
+  QObject::blockSignals(false);
+}
+
+
+void UI_cdsa_window::default_button_clicked()
+{
+  windowlen_spinbox->setValue(30);
+  blocklen_spinbox->setValue(1);
+  pix_per_hz_spinbox->setValue(2);
+  overlap_combobox->setCurrentIndex(4);
+  windowfunc_combobox->setCurrentIndex(9);
+  min_hz_spinbox->setValue(1);
+  max_hz_spinbox->setValue(30);
+}
+
+
+void UI_cdsa_window::start_button_clicked()
+{
+}
 
 
 

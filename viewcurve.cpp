@@ -3715,6 +3715,16 @@ void ViewCurve::cdsa_button()
     return;
   }
 
+  if(mainwindow->signalcomp[signal_nr]->ecg_filter != NULL)
+  {
+    return;
+  }
+
+  if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].sf_int < 60)
+  {
+    return;
+  }
+
   UI_cdsa_window wndw(mainwindow, mainwindow->signalcomp[signal_nr]);
 }
 

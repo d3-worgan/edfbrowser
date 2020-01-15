@@ -49,6 +49,8 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QTextEdit>
+#include <QSpinBox>
+#include <QComboBox>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -58,6 +60,7 @@
 #include "mainwindow.h"
 #include "utils.h"
 #include "edflib.h"
+#include "filteredblockread.h"
 
 
 
@@ -75,16 +78,39 @@ public:
 
 private:
 
+  int sf;
+
   struct signalcompblock *signalcomp;
 
   QDialog       *myobjectDialog;
 
-//   QPushButton   *pushButton1,
-//                 *pushButton2;
+  QLabel        *windowlen_label,
+                *blocklen_label,
+                *overlap_label,
+                *windowfunc_label,
+                *pix_per_hz_label,
+                *min_hz_label,
+                *max_hz_label;
+
+  QSpinBox      *windowlen_spinbox,
+                *blocklen_spinbox,
+                *pix_per_hz_spinbox,
+                *min_hz_spinbox,
+                *max_hz_spinbox;
+
+  QComboBox     *overlap_combobox,
+                *windowfunc_combobox;
+
+  QPushButton   *close_button,
+                *start_button,
+                *default_button;
 
 private slots:
 
-//   void SelectFileButton();
+  void start_button_clicked();
+  void default_button_clicked();
+  void min_hz_spinbox_changed(int);
+  void max_hz_spinbox_changed(int);
 
 };
 
