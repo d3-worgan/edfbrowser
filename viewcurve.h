@@ -72,6 +72,7 @@
 #include "statistics_dialog.h"
 #include "z_score_dialog.h"
 #include "z_ratio_filter.h"
+#include "cdsa_dialog.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -223,7 +224,8 @@ private:
               *sidemenuButton10,
               *sidemenuButton11,
               *sidemenuButton12,
-              *sidemenuButton13;
+              *sidemenuButton13,
+              *sidemenuButton14;
 
   QDoubleSpinBox *ScaleBox,
                  *ScaleBox2;
@@ -276,6 +278,7 @@ protected slots:
   void signalInvert();
   void strip_types_from_label(char *);
   void sidemenu_close();
+  void cdsa_button();
 
 protected:
   void paintEvent(QPaintEvent *);

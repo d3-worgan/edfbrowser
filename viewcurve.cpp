@@ -3555,8 +3555,8 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
 
   sidemenu = new QDialog(this);
 
-  sidemenu->setMinimumSize(190, 515);
-  sidemenu->setMaximumSize(190, 515);
+  sidemenu->setMinimumSize(190, 545);
+  sidemenu->setMaximumSize(190, 545);
   sidemenu->setWindowTitle("Signal");
   sidemenu->setModal(true);
   sidemenu->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -3661,7 +3661,11 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
 
   sidemenuButton13 = new QPushButton(sidemenu);
   sidemenuButton13->setGeometry(45, 485, 100, 25);
-  sidemenuButton13->setText("Close");
+  sidemenuButton13->setText("CDSA");
+
+  sidemenuButton14 = new QPushButton(sidemenu);
+  sidemenuButton14->setGeometry(45, 515, 100, 25);
+  sidemenuButton14->setText("Close");
 
   QObject::connect(ScaleBox,          SIGNAL(valueChanged(double)),     this,     SLOT(ScaleBoxChanged(double)));
   QObject::connect(ScaleBox2,         SIGNAL(valueChanged(double)),     this,     SLOT(ScaleBox2Changed(double)));
@@ -3677,7 +3681,8 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   QObject::connect(sidemenuButton10,  SIGNAL(clicked()),                this,     SLOT(AdjustFilterButton()));
   QObject::connect(sidemenuButton11,  SIGNAL(clicked()),                this,     SLOT(StatisticsButton()));
   QObject::connect(sidemenuButton12,  SIGNAL(clicked()),                this,     SLOT(ECGdetectButton()));
-  QObject::connect(sidemenuButton13,  SIGNAL(clicked()),                this,     SLOT(sidemenu_close()));
+  QObject::connect(sidemenuButton13,  SIGNAL(clicked()),                this,     SLOT(cdsa_button()));
+  QObject::connect(sidemenuButton14,  SIGNAL(clicked()),                this,     SLOT(sidemenu_close()));
   QObject::connect(AliasLineEdit,     SIGNAL(returnPressed()),          this,     SLOT(sidemenu_close()));
 
   sidemenu->exec();
@@ -3703,16 +3708,22 @@ void ViewCurve::sidemenu_close()
 }
 
 
-void ViewCurve::signalInvert()
+void ViewCurve::cdsa_button()
 {
-  sidemenu->close();
-
-  if(!mainwindow->signalcomps)
+  if(signal_nr >= mainwindow->signalcomps)
   {
     return;
   }
 
-  if(signal_nr>(mainwindow->signalcomps - 1))
+  UI_cdsa_window wndw(mainwindow, mainwindow->signalcomp[signal_nr]);
+}
+
+
+void ViewCurve::signalInvert()
+{
+  sidemenu->close();
+
+  if(signal_nr >= mainwindow->signalcomps)
   {
     return;
   }
@@ -3733,12 +3744,7 @@ void ViewCurve::ECGdetectButton()
 
   sidemenu->close();
 
-  if(!mainwindow->signalcomps)
-  {
-    return;
-  }
-
-  if(signal_nr>(mainwindow->signalcomps - 1))
+  if(signal_nr >= mainwindow->signalcomps)
   {
     return;
   }
@@ -3808,12 +3814,7 @@ void ViewCurve::AdjustFilterButton()
 {
   sidemenu->close();
 
-  if(!mainwindow->signalcomps)
-  {
-    return;
-  }
-
-  if(signal_nr>(mainwindow->signalcomps - 1))
+  if(signal_nr >= mainwindow->signalcomps)
   {
     return;
   }
@@ -3831,17 +3832,8 @@ void ViewCurve::AdjustFilterButton()
 
 void ViewCurve::StatisticsButton()
 {
-  if(!mainwindow->signalcomps)
+  if(signal_nr >= mainwindow->signalcomps)
   {
-    sidemenu->close();
-
-    return;
-  }
-
-  if(signal_nr>(mainwindow->signalcomps - 1))
-  {
-    sidemenu->close();
-
     return;
   }
 
@@ -3854,6 +3846,11 @@ void ViewCurve::StatisticsButton()
 void ViewCurve::FreqSpecButton()
 {
   int i, j;
+
+  if(signal_nr >= mainwindow->signalcomps)
+  {
+    return;
+  }
 
   for(i=0; i<MAXSPECTRUMDIALOGS; i++)
   {
@@ -3897,6 +3894,11 @@ void ViewCurve::FreqSpecButton()
 void ViewCurve::Z_scoringButton()
 {
   int i, j;
+
+  if(signal_nr >= mainwindow->signalcomps)
+  {
+    return;
+  }
 
   if(mainwindow->signalcomp[signal_nr]->ecg_filter != NULL)
   {
@@ -3973,17 +3975,8 @@ void ViewCurve::FittopaneButton()
   signalcomps = mainwindow->signalcomps;
   signalcomp = mainwindow->signalcomp;
 
-  if(!signalcomps)
+  if(signal_nr >= mainwindow->signalcomps)
   {
-    sidemenu->close();
-
-    return;
-  }
-
-  if(signal_nr>(signalcomps - 1))
-  {
-    sidemenu->close();
-
     return;
   }
 
@@ -4018,6 +4011,11 @@ void ViewCurve::ColorButton()
 {
   int color;
 
+  if(signal_nr >= mainwindow->signalcomps)
+  {
+    return;
+  }
+
   sidemenu->hide();
 
   UI_ColorMenuDialog colormenudialog(&color, this);
@@ -4040,6 +4038,11 @@ void ViewCurve::ColorButton()
 
 void ViewCurve::ScaleBox2Changed(double value)
 {
+  if(signal_nr >= mainwindow->signalcomps)
+  {
+    return;
+  }
+
   mainwindow->signalcomp[signal_nr]->screen_offset = -(value / (mainwindow->pixelsizefactor * mainwindow->signalcomp[signal_nr]->voltpercm));
 
   drawCurve_stage_1();
@@ -4052,6 +4055,11 @@ void ViewCurve::ScaleBoxChanged(double value)
   int i;
 
   double original_value;
+
+  if(signal_nr >= mainwindow->signalcomps)
+  {
+    return;
+  }
 
   if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].bitvalue < 0.0)
   {
@@ -4078,17 +4086,8 @@ void ViewCurve::RemovefilterButton()
 {
   int j;
 
-  if(!mainwindow->signalcomps)
+  if(signal_nr >= mainwindow->signalcomps)
   {
-    sidemenu->close();
-
-    return;
-  }
-
-  if(signal_nr>(mainwindow->signalcomps - 1))
-  {
-    sidemenu->close();
-
     return;
   }
 
@@ -4158,17 +4157,8 @@ void ViewCurve::RemovesignalButton()
 {
   int i, j, p;
 
-  if(!mainwindow->signalcomps)
+  if(signal_nr >= mainwindow->signalcomps)
   {
-    sidemenu->close();
-
-    return;
-  }
-
-  if(signal_nr>(mainwindow->signalcomps - 1))
-  {
-    sidemenu->close();
-
     return;
   }
 
@@ -4335,6 +4325,10 @@ void ViewCurve::RulerButton()
 {
   int i;
 
+  if(signal_nr >= mainwindow->signalcomps)
+  {
+    return;
+  }
 
   crosshair_1.moving = 0;
   crosshair_2.moving = 0;
@@ -4407,6 +4401,11 @@ void ViewCurve::CrosshairButton()
 {
   int i;
 
+  if(signal_nr >= mainwindow->signalcomps)
+  {
+    return;
+  }
+
   if(!crosshair_1.active)
   {
     for(i=0; i<mainwindow->signalcomps; i++)
@@ -4462,7 +4461,10 @@ void ViewCurve::next_crosshair_triggered()
 {
   int i, n=0;
 
-  if(!mainwindow->signalcomps)  return;
+  if(signal_nr >= mainwindow->signalcomps)
+  {
+    return;
+  }
 
   for(i=0; i<mainwindow->signalcomps; i++)
   {
