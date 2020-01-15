@@ -58,9 +58,11 @@ private:
 
   int datarecord_cnt,
       samples_per_datrec,
-      skip_filters;
+      skip_filters,
+      smpl_mode;
 
-  long long total_samples;
+  long long total_samples,
+            samples_in_file;
 
   char *readbuf;
 
@@ -69,7 +71,7 @@ private:
 
 
 public:
-  double * init_signalcomp(struct signalcompblock *, int, int);
+  double * init_signalcomp(struct signalcompblock *, int, int, int mode=0);
   int process_signalcomp(int);
   long long samples_in_buf(void);
   FilteredBlockReadClass();

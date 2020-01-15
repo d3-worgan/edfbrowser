@@ -29,7 +29,7 @@
 #include "filteredblockread.h"
 
 
-double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signalcomp, int i_datarecord_cnt, int skip_f)
+double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signalcomp, int datarecord_or_smpls_cnt, int skip_f, int mode)
 {
   skip_filters = skip_f;
 
@@ -60,19 +60,42 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
     return NULL;
   }
 
-  datarecord_cnt = i_datarecord_cnt;
-
-  if((datarecord_cnt > hdr->datarecords) || (datarecord_cnt < 1))
-  {
-    datarecord_cnt = -1;
-    total_samples = -1LL;
-
-    return NULL;
-  }
+  smpl_mode = mode;
 
   samples_per_datrec = hdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
 
-  total_samples = (long long)samples_per_datrec * (long long)datarecord_cnt;
+  samples_in_file = (long long)hdr->datarecords * (long long)samples_per_datrec;
+
+  if(smpl_mode)
+  {
+    total_samples = datarecord_or_smpls_cnt;
+
+    datarecord_cnt = total_samples / samples_per_datrec;
+
+    if(total_samples % samples_per_datrec)  datarecord_cnt++;
+
+    if((datarecord_cnt > hdr->datarecords) || (total_samples < 1))
+    {
+      datarecord_cnt = -1;
+      total_samples = -1LL;
+
+      return NULL;
+    }
+  }
+  else
+  {
+    datarecord_cnt = datarecord_or_smpls_cnt;
+
+    if((datarecord_cnt > hdr->datarecords) || (datarecord_cnt < 1))
+    {
+      datarecord_cnt = -1;
+      total_samples = -1LL;
+
+      return NULL;
+    }
+
+    total_samples = (long long)samples_per_datrec * (long long)datarecord_cnt;
+  }
 
   if(processed_samples_buf != NULL)
   {
@@ -130,23 +153,17 @@ FilteredBlockReadClass::FilteredBlockReadClass()
 
 FilteredBlockReadClass::~FilteredBlockReadClass()
 {
-  if(processed_samples_buf != NULL)
-  {
-    free(processed_samples_buf);
-  }
+  free(processed_samples_buf);
 
-  if(readbuf != NULL)
-  {
-    free(readbuf);
-  }
+  free(readbuf);
 }
 
 
-int FilteredBlockReadClass::process_signalcomp(int datarecord_start)
+int FilteredBlockReadClass::process_signalcomp(int datarecord_or_sample_start)
 {
-  int j, k;
+  int j, k, datarecord_start;
 
-  long long s;
+  long long s, s_end, sample_start, s_off=0;
 
   double dig_value=0.0,
          f_tmp=0.0;
@@ -165,14 +182,39 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_start)
     return -1;
   }
 
-  if((datarecord_start < 0) || (datarecord_start >= hdr->datarecords))
+  if(smpl_mode)
   {
-    return -2;
-  }
+    sample_start = datarecord_or_sample_start;
 
-  if(datarecord_cnt > (hdr->datarecords - datarecord_start))
+    if((sample_start < 0) || (sample_start >= samples_in_file))
+    {
+      return -2;
+    }
+
+    if(total_samples > (samples_in_file - sample_start))
+    {
+      return -3;
+    }
+
+    datarecord_start = sample_start / (long long)samples_per_datrec;
+
+    s_off = sample_start % (long long)samples_per_datrec;
+  }
+  else
   {
-    return -3;
+    datarecord_start = datarecord_or_sample_start;
+
+    if((datarecord_start < 0) || (datarecord_start >= hdr->datarecords))
+    {
+      return -2;
+    }
+
+    if(datarecord_cnt > (hdr->datarecords - datarecord_start))
+    {
+      return -3;
+    }
+
+    sample_start = (long long)datarecord_cnt * (long long)samples_per_datrec;
   }
 
   if(fseeko(inputfile, ((long long)hdr->hdrsize) + (((long long)datarecord_start) * ((long long) hdr->recordsize)), SEEK_SET) == -1LL)
@@ -190,7 +232,9 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_start)
     return -6;
   }
 
-  for(s=0; s<total_samples; s++)
+  s_end = total_samples + s_off;
+
+  for(s=s_off; s<s_end; s++)
   {
     dig_value = 0.0;
 

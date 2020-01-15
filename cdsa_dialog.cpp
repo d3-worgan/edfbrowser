@@ -253,7 +253,6 @@ void UI_cdsa_window::default_button_clicked()
 void UI_cdsa_window::start_button_clicked()
 {
   int i, err,
-      datrecs_in_segment,
       smpls_in_segment,
       segments_in_recording,
       segmentlen,
@@ -262,9 +261,13 @@ void UI_cdsa_window::start_button_clicked()
       overlap,
       window_func;
 
+  long long samples_in_file;
+
   char str[1024]={""};
 
   struct fft_wrap_settings_struct *dft;
+
+  samples_in_file = (long long)signalcomp->edfhdr->datarecords * (long long)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
 
   segmentlen = segmentlen_spinbox->value();
 
@@ -274,13 +277,15 @@ void UI_cdsa_window::start_button_clicked()
 
   overlap = overlap_combobox->currentIndex() + 1;
 
-  datrecs_in_segment = (segmentlen * TIME_DIMENSION) / signalcomp->edfhdr->long_data_record_duration;
+  smpls_in_segment = sf * segmentlen;
 
-  segments_in_recording = signalcomp->edfhdr->datarecords / datrecs_in_segment;
+  smpl_in_block = sf * blocklen;
+
+  segments_in_recording = samples_in_file / (long long)smpls_in_segment;
 
   FilteredBlockReadClass fbr;
 
-  smplbuf = fbr.init_signalcomp(signalcomp, datrecs_in_segment, 0);
+  smplbuf = fbr.init_signalcomp(signalcomp, smpls_in_segment, 0, 1);
   if(smplbuf == NULL)
   {
     snprintf(str, 1024, "Internal error in file %s line %i", __FILE__, __LINE__);
@@ -288,10 +293,6 @@ void UI_cdsa_window::start_button_clicked()
     messagewindow.exec();
     return;
   }
-
-  smpls_in_segment = fbr.samples_in_buf();
-
-  smpl_in_block = sf * blocklen;
 
   dft = fft_wrap_create(smplbuf, smpls_in_segment, smpl_in_block, window_func, overlap);
   if(dft == NULL)
@@ -304,7 +305,7 @@ void UI_cdsa_window::start_button_clicked()
 
   for(i=0; i<segments_in_recording; i++)
   {
-    err = fbr.process_signalcomp(datrecs_in_segment);
+    err = fbr.process_signalcomp(i * smpls_in_segment);
     if(err)
     {
       snprintf(str, 1024, "Internal error %i in file %s line %i", err, __FILE__, __LINE__);
