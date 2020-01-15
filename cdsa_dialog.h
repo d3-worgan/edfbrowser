@@ -61,6 +61,7 @@
 #include "utils.h"
 #include "edflib.h"
 #include "filteredblockread.h"
+#include "fft_wrap.h"
 
 
 
@@ -80,11 +81,13 @@ private:
 
   int sf;
 
+  double *smplbuf;
+
   struct signalcompblock *signalcomp;
 
   QDialog       *myobjectDialog;
 
-  QLabel        *windowlen_label,
+  QLabel        *segmentlen_label,
                 *blocklen_label,
                 *overlap_label,
                 *windowfunc_label,
@@ -93,7 +96,7 @@ private:
                 *max_hz_label,
                 *max_pwr_label;
 
-  QSpinBox      *windowlen_spinbox,
+  QSpinBox      *segmentlen_spinbox,
                 *blocklen_spinbox,
                 *pix_per_hz_spinbox,
                 *min_hz_spinbox,
@@ -112,7 +115,7 @@ private slots:
 
   void start_button_clicked();
   void default_button_clicked();
-  void windowlen_spinbox_changed(int);
+  void segmentlen_spinbox_changed(int);
   void blocklen_spinbox_changed(int);
   void min_hz_spinbox_changed(int);
   void max_hz_spinbox_changed(int);

@@ -53,15 +53,15 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  windowlen_label = new QLabel(myobjectDialog);
-  windowlen_label->setGeometry(20, 20, 150, 25);
-  windowlen_label->setText("Segment length");
+  segmentlen_label = new QLabel(myobjectDialog);
+  segmentlen_label->setGeometry(20, 20, 150, 25);
+  segmentlen_label->setText("Segment length");
 
-  windowlen_spinbox = new QSpinBox(myobjectDialog);
-  windowlen_spinbox->setGeometry(170, 20, 100, 25);
-  windowlen_spinbox->setSuffix(" sec");
-  windowlen_spinbox->setMinimum(5);
-  windowlen_spinbox->setMaximum(300);
+  segmentlen_spinbox = new QSpinBox(myobjectDialog);
+  segmentlen_spinbox->setGeometry(170, 20, 100, 25);
+  segmentlen_spinbox->setSuffix(" sec");
+  segmentlen_spinbox->setMinimum(5);
+  segmentlen_spinbox->setMaximum(300);
 
   blocklen_label = new QLabel(myobjectDialog);
   blocklen_label->setGeometry(20, 65, 150, 25);
@@ -169,19 +169,19 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
 
   if(sf >= 60)
   {
-    QObject::connect(default_button,    SIGNAL(clicked()),         this, SLOT(default_button_clicked()));
-    QObject::connect(start_button,      SIGNAL(clicked()),         this, SLOT(start_button_clicked()));
-    QObject::connect(windowlen_spinbox, SIGNAL(valueChanged(int)), this, SLOT(windowlen_spinbox_changed(int)));
-    QObject::connect(blocklen_spinbox,  SIGNAL(valueChanged(int)), this, SLOT(blocklen_spinbox_changed(int)));
-    QObject::connect(min_hz_spinbox,    SIGNAL(valueChanged(int)), this, SLOT(min_hz_spinbox_changed(int)));
-    QObject::connect(max_hz_spinbox,    SIGNAL(valueChanged(int)), this, SLOT(max_hz_spinbox_changed(int)));
+    QObject::connect(default_button,     SIGNAL(clicked()),         this, SLOT(default_button_clicked()));
+    QObject::connect(start_button,       SIGNAL(clicked()),         this, SLOT(start_button_clicked()));
+    QObject::connect(segmentlen_spinbox, SIGNAL(valueChanged(int)), this, SLOT(segmentlen_spinbox_changed(int)));
+    QObject::connect(blocklen_spinbox,   SIGNAL(valueChanged(int)), this, SLOT(blocklen_spinbox_changed(int)));
+    QObject::connect(min_hz_spinbox,     SIGNAL(valueChanged(int)), this, SLOT(min_hz_spinbox_changed(int)));
+    QObject::connect(max_hz_spinbox,     SIGNAL(valueChanged(int)), this, SLOT(max_hz_spinbox_changed(int)));
   }
 
   myobjectDialog->exec();
 }
 
 
-void UI_cdsa_window::windowlen_spinbox_changed(int value)
+void UI_cdsa_window::segmentlen_spinbox_changed(int value)
 {
   QObject::blockSignals(true);
 
@@ -198,9 +198,9 @@ void UI_cdsa_window::blocklen_spinbox_changed(int value)
 {
   QObject::blockSignals(true);
 
-  if(windowlen_spinbox->value() < (value * 3))
+  if(segmentlen_spinbox->value() < (value * 3))
   {
-    windowlen_spinbox->setValue(value * 3);
+    segmentlen_spinbox->setValue(value * 3);
   }
 
   QObject::blockSignals(false);
@@ -237,7 +237,7 @@ void UI_cdsa_window::default_button_clicked()
 {
   QObject::blockSignals(true);
 
-  windowlen_spinbox->setValue(30);
+  segmentlen_spinbox->setValue(30);
   blocklen_spinbox->setValue(2);
   pix_per_hz_spinbox->setValue(2);
   overlap_combobox->setCurrentIndex(4);
@@ -252,6 +252,75 @@ void UI_cdsa_window::default_button_clicked()
 
 void UI_cdsa_window::start_button_clicked()
 {
+  int i, err,
+      datrecs_in_segment,
+      smpls_in_segment,
+      segments_in_recording,
+      segmentlen,
+      blocklen,
+      smpl_in_block,
+      overlap,
+      window_func;
+
+  char str[1024]={""};
+
+  struct fft_wrap_settings_struct *dft;
+
+  segmentlen = segmentlen_spinbox->value();
+
+  blocklen = blocklen_spinbox->value();
+
+  window_func = windowfunc_combobox->currentIndex();
+
+  overlap = overlap_combobox->currentIndex() + 1;
+
+  datrecs_in_segment = (segmentlen * TIME_DIMENSION) / signalcomp->edfhdr->long_data_record_duration;
+
+  segments_in_recording = signalcomp->edfhdr->datarecords / datrecs_in_segment;
+
+  FilteredBlockReadClass fbr;
+
+  smplbuf = fbr.init_signalcomp(signalcomp, datrecs_in_segment, 0);
+  if(smplbuf == NULL)
+  {
+    snprintf(str, 1024, "Internal error in file %s line %i", __FILE__, __LINE__);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    messagewindow.exec();
+    return;
+  }
+
+  smpls_in_segment = fbr.samples_in_buf();
+
+  smpl_in_block = sf * blocklen;
+
+  dft = fft_wrap_create(smplbuf, smpls_in_segment, smpl_in_block, window_func, overlap);
+  if(dft == NULL)
+  {
+    snprintf(str, 1024, "Internal error in file %s line %i", __FILE__, __LINE__);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    messagewindow.exec();
+    return;
+  }
+
+  for(i=0; i<segments_in_recording; i++)
+  {
+    err = fbr.process_signalcomp(datrecs_in_segment);
+    if(err)
+    {
+      snprintf(str, 1024, "Internal error %i in file %s line %i", err, __FILE__, __LINE__);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+      messagewindow.exec();
+      return;
+    }
+
+    fft_wrap_run(dft);
+  }
+
+
+
+
+
+  free_fft_wrap(dft);
 }
 
 
