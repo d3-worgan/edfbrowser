@@ -3722,6 +3722,15 @@ void ViewCurve::cdsa_button()
 
   if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].sf_int < 60)
   {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Samplefrequency must be at least 60Hz and must be an integer value.");
+    messagewindow.exec();
+    return;
+  }
+
+  if(mainwindow->signalcomp[signal_nr]->edfhdr->recording_len_sec < 600)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Recording length must be at least 10 minutes.");
+    messagewindow.exec();
     return;
   }
 

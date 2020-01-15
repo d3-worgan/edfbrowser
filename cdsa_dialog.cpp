@@ -169,13 +169,41 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
 
   if(sf >= 60)
   {
-    QObject::connect(default_button, SIGNAL(clicked()),         this, SLOT(default_button_clicked()));
-    QObject::connect(start_button,   SIGNAL(clicked()),         this, SLOT(start_button_clicked()));
-    QObject::connect(min_hz_spinbox, SIGNAL(valueChanged(int)), this, SLOT(min_hz_spinbox_changed(int)));
-    QObject::connect(max_hz_spinbox, SIGNAL(valueChanged(int)), this, SLOT(max_hz_spinbox_changed(int)));
+    QObject::connect(default_button,    SIGNAL(clicked()),         this, SLOT(default_button_clicked()));
+    QObject::connect(start_button,      SIGNAL(clicked()),         this, SLOT(start_button_clicked()));
+    QObject::connect(windowlen_spinbox, SIGNAL(valueChanged(int)), this, SLOT(windowlen_spinbox_changed(int)));
+    QObject::connect(blocklen_spinbox,  SIGNAL(valueChanged(int)), this, SLOT(blocklen_spinbox_changed(int)));
+    QObject::connect(min_hz_spinbox,    SIGNAL(valueChanged(int)), this, SLOT(min_hz_spinbox_changed(int)));
+    QObject::connect(max_hz_spinbox,    SIGNAL(valueChanged(int)), this, SLOT(max_hz_spinbox_changed(int)));
   }
 
   myobjectDialog->exec();
+}
+
+
+void UI_cdsa_window::windowlen_spinbox_changed(int value)
+{
+  QObject::blockSignals(true);
+
+  if(blocklen_spinbox->value() > (value / 3))
+  {
+    blocklen_spinbox->setValue(value / 3);
+  }
+
+  QObject::blockSignals(false);
+}
+
+
+void UI_cdsa_window::blocklen_spinbox_changed(int value)
+{
+  QObject::blockSignals(true);
+
+  if(windowlen_spinbox->value() < (value * 3))
+  {
+    windowlen_spinbox->setValue(value * 3);
+  }
+
+  QObject::blockSignals(false);
 }
 
 
@@ -207,14 +235,18 @@ void UI_cdsa_window::max_hz_spinbox_changed(int value)
 
 void UI_cdsa_window::default_button_clicked()
 {
+  QObject::blockSignals(true);
+
   windowlen_spinbox->setValue(30);
-  blocklen_spinbox->setValue(1);
+  blocklen_spinbox->setValue(2);
   pix_per_hz_spinbox->setValue(2);
   overlap_combobox->setCurrentIndex(4);
   windowfunc_combobox->setCurrentIndex(9);
   min_hz_spinbox->setValue(1);
   max_hz_spinbox->setValue(30);
   max_pwr_spinbox->setValue(50.0);
+
+  QObject::blockSignals(false);
 }
 
 

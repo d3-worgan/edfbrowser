@@ -112,6 +112,8 @@ private slots:
 
   void start_button_clicked();
   void default_button_clicked();
+  void windowlen_spinbox_changed(int);
+  void blocklen_spinbox_changed(int);
   void min_hz_spinbox_changed(int);
   void max_hz_spinbox_changed(int);
 
