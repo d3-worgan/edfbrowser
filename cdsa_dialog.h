@@ -90,13 +90,16 @@ private:
                 *windowfunc_label,
                 *pix_per_hz_label,
                 *min_hz_label,
-                *max_hz_label;
+                *max_hz_label,
+                *max_pwr_label;
 
   QSpinBox      *windowlen_spinbox,
                 *blocklen_spinbox,
                 *pix_per_hz_spinbox,
                 *min_hz_spinbox,
                 *max_hz_spinbox;
+
+  QDoubleSpinBox *max_pwr_spinbox;
 
   QComboBox     *overlap_combobox,
                 *windowfunc_combobox;

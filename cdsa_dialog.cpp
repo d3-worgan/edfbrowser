@@ -33,6 +33,8 @@
 
 UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal_comp)
 {
+  char str[128]={""};
+
   mainwindow = (UI_Mainwindow *)w_parent;
 
   signalcomp = signal_comp;
@@ -133,6 +135,22 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   max_hz_spinbox->setMinimum(1);
   max_hz_spinbox->setMaximum(sf / 2);
 
+  max_pwr_label = new QLabel(myobjectDialog);
+  max_pwr_label->setGeometry(20, 335, 150, 25);
+  max_pwr_label->setText("Max. power");
+
+  strlcpy(str, " ", 128);
+  strlcat(str, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 128);
+  remove_trailing_spaces(str);
+  strlcat(str, "^2", 128);
+
+  max_pwr_spinbox = new QDoubleSpinBox(myobjectDialog);
+  max_pwr_spinbox->setGeometry(170, 335, 150, 25);
+  max_pwr_spinbox->setSuffix(str);
+  max_pwr_spinbox->setDecimals(3);
+  max_pwr_spinbox->setMinimum(0.001);
+  max_pwr_spinbox->setMaximum(10000.0);
+
   close_button = new QPushButton(myobjectDialog);
   close_button->setGeometry(20, 435, 100, 25);
   close_button->setText("Close");
@@ -196,6 +214,7 @@ void UI_cdsa_window::default_button_clicked()
   windowfunc_combobox->setCurrentIndex(9);
   min_hz_spinbox->setValue(1);
   max_hz_spinbox->setValue(30);
+  max_pwr_spinbox->setValue(50.0);
 }
 
 
