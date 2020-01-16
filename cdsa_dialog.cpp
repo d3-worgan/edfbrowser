@@ -39,8 +39,6 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
 
   long long samples_in_file;
 
-  pxm = NULL;
-
   mainwindow = (UI_Mainwindow *)w_parent;
 
   signalcomp = signal_comp;
@@ -74,6 +72,7 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
     samples_in_file = 300;
   }
   segmentlen_spinbox->setMaximum((int)samples_in_file);
+  segmentlen_spinbox->setValue(mainwindow->cdsa_segmentlen);
 
   blocklen_label = new QLabel(myobjectDialog);
   blocklen_label->setGeometry(20, 65, 150, 25);
@@ -84,6 +83,7 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   blocklen_spinbox->setSuffix(" sec");
   blocklen_spinbox->setMinimum(1);
   blocklen_spinbox->setMaximum(10);
+  blocklen_spinbox->setValue(mainwindow->cdsa_blocklen);
 
   overlap_label = new QLabel(myobjectDialog);
   overlap_label->setGeometry(20, 110, 150, 25);
@@ -96,6 +96,7 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   overlap_combobox->addItem("67 %");
   overlap_combobox->addItem("75 %");
   overlap_combobox->addItem("80 %");
+  overlap_combobox->setCurrentIndex(mainwindow->cdsa_overlap -1);
 
   windowfunc_label = new QLabel(myobjectDialog);
   windowfunc_label->setGeometry(20, 155, 150, 25);
@@ -116,6 +117,7 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   windowfunc_combobox->addItem("Kaiser3");
   windowfunc_combobox->addItem("Kaiser4");
   windowfunc_combobox->addItem("Kaiser5");
+  windowfunc_combobox->setCurrentIndex(mainwindow->cdsa_window_func);
 
   min_hz_label = new QLabel(myobjectDialog);
   min_hz_label->setGeometry(20, 200, 150, 25);
@@ -126,6 +128,7 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   min_hz_spinbox->setSuffix(" Hz");
   min_hz_spinbox->setMinimum(0);
   min_hz_spinbox->setMaximum((sf / 2) - 1);
+  min_hz_spinbox->setValue(mainwindow->cdsa_min_hz);
 
   max_hz_label = new QLabel(myobjectDialog);
   max_hz_label->setGeometry(20, 245, 150, 25);
@@ -136,6 +139,7 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   max_hz_spinbox->setSuffix(" Hz");
   max_hz_spinbox->setMinimum(1);
   max_hz_spinbox->setMaximum(sf / 2);
+  max_hz_spinbox->setValue(mainwindow->cdsa_max_hz);
 
   max_pwr_label = new QLabel(myobjectDialog);
   max_pwr_label->setGeometry(20, 290, 150, 25);
@@ -151,6 +155,7 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   max_pwr_spinbox->setDecimals(3);
   max_pwr_spinbox->setMinimum(0.001);
   max_pwr_spinbox->setMaximum(10000.0);
+  max_pwr_spinbox->setValue(mainwindow->cdsa_max_pwr);
 
   log_label = new QLabel(myobjectDialog);
   log_label->setGeometry(20, 335, 150, 25);
@@ -159,7 +164,14 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   log_checkbox = new QCheckBox(myobjectDialog);
   log_checkbox->setGeometry(170, 335, 20, 25);
   log_checkbox->setTristate(false);
-  log_checkbox->setCheckState(Qt::Unchecked);
+  if(mainwindow->cdsa_log)
+  {
+    log_checkbox->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    log_checkbox->setCheckState(Qt::Unchecked);
+  }
 
   close_button = new QPushButton(myobjectDialog);
   close_button->setGeometry(20, 435, 100, 25);
@@ -172,8 +184,6 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   start_button = new QPushButton(myobjectDialog);
   start_button->setGeometry(480, 435, 100, 25);
   start_button->setText("Start");
-
-  default_button_clicked();
 
   QObject::connect(close_button, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
 
@@ -193,7 +203,6 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
 
 UI_cdsa_window::~UI_cdsa_window()
 {
-  delete pxm;
 }
 
 
@@ -262,6 +271,15 @@ void UI_cdsa_window::default_button_clicked()
   max_pwr_spinbox->setValue(50.0);
   log_checkbox->setCheckState(Qt::Unchecked);
 
+  mainwindow->cdsa_segmentlen = 30;
+  mainwindow->cdsa_blocklen = 2;
+  mainwindow->cdsa_overlap = 5;
+  mainwindow->cdsa_window_func = 9;
+  mainwindow->cdsa_min_hz = 1;
+  mainwindow->cdsa_max_hz = 30;
+  mainwindow->cdsa_max_pwr = 50;
+  mainwindow->cdsa_log = 0;
+
   QObject::blockSignals(false);
 }
 
@@ -285,13 +303,17 @@ void UI_cdsa_window::start_button_clicked()
   int rgb_map[1021][3],
       rgb_idx;
 
-  double v_scale, d_tmp;
+  double v_scale,
+         d_tmp,
+         *smplbuf=NULL;
 
   struct fft_wrap_settings_struct *dft;
 
   QLabel *cdsa_label=NULL;
 
   QDockWidget *cdsa_dock=NULL;
+
+  QPixmap *pxm=NULL;
 
   for(i=0; i<256; i++)
   {
@@ -325,16 +347,21 @@ void UI_cdsa_window::start_button_clicked()
   {
     log_density = 1;
   }
+  mainwindow->cdsa_log = log_density;
 
   samples_in_file = (long long)signalcomp->edfhdr->datarecords * (long long)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
 
   segmentlen = segmentlen_spinbox->value();
+  mainwindow->cdsa_segmentlen = segmentlen;
 
   blocklen = blocklen_spinbox->value();
+  mainwindow->cdsa_blocklen = blocklen;
 
   h_min = min_hz_spinbox->value();
+  mainwindow->cdsa_min_hz = h_min;
 
   h_max = max_hz_spinbox->value();
+  mainwindow->cdsa_max_hz = h_max;
 
   if(log_density)
   {
@@ -344,10 +371,13 @@ void UI_cdsa_window::start_button_clicked()
   {
     v_scale = 1020.0 / max_pwr_spinbox->value();
   }
+  mainwindow->cdsa_max_pwr = max_pwr_spinbox->value();
 
   window_func = windowfunc_combobox->currentIndex();
+  mainwindow->cdsa_window_func = window_func;
 
   overlap = overlap_combobox->currentIndex() + 1;
+  mainwindow->cdsa_overlap = overlap;
 
   smpls_in_segment = sf * segmentlen;
 
@@ -392,6 +422,8 @@ void UI_cdsa_window::start_button_clicked()
 
   for(i=0; i<segments_in_recording; i++)
   {
+    qApp->processEvents();
+
     err = fbr.process_signalcomp(i * smpls_in_segment);
     if(err)
     {
@@ -453,6 +485,8 @@ void UI_cdsa_window::start_button_clicked()
   cdsa_label = new QLabel(cdsa_dock);
   cdsa_label->setScaledContents(true);
   cdsa_label->setPixmap(*pxm);
+  cdsa_label->setMinimumHeight(100);
+  cdsa_label->setMinimumWidth(100);
 
   cdsa_dock->setWidget(cdsa_label);
 
@@ -460,6 +494,8 @@ void UI_cdsa_window::start_button_clicked()
 
   delete pxm;
   pxm = NULL;
+
+  myobjectDialog->close();
 }
 
 

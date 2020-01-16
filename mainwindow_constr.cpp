@@ -256,6 +256,15 @@ UI_Mainwindow::UI_Mainwindow()
 
   spectrumdock_window = 0;
 
+  cdsa_segmentlen = 30;
+  cdsa_blocklen = 2;
+  cdsa_overlap = 5;
+  cdsa_window_func = 9;
+  cdsa_min_hz = 1;
+  cdsa_max_hz = 30;
+  cdsa_max_pwr = 50;
+  cdsa_log = 0;
+
   z_score_var.crossoverfreq = 7.5;
   z_score_var.z_threshold = 0.0;
   z_score_var.zscore_page_len = 30;

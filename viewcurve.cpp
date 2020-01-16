@@ -3710,6 +3710,8 @@ void ViewCurve::sidemenu_close()
 
 void ViewCurve::cdsa_button()
 {
+  sidemenu->close();
+
   if(signal_nr >= mainwindow->signalcomps)
   {
     return;

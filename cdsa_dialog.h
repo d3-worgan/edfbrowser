@@ -86,8 +86,6 @@ private:
 
   int sf;
 
-  double *smplbuf;
-
   struct signalcompblock *signalcomp;
 
   QDialog       *myobjectDialog;
@@ -116,8 +114,6 @@ private:
   QPushButton   *close_button,
                 *start_button,
                 *default_button;
-
-  QPixmap       *pxm;
 
 private slots:
 
