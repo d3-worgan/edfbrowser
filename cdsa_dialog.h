@@ -99,8 +99,7 @@ private:
                 *pix_per_hz_label,
                 *min_hz_label,
                 *max_hz_label,
-                *max_pwr_label,
-                *cdsa_label;
+                *max_pwr_label;
 
   QSpinBox      *segmentlen_spinbox,
                 *blocklen_spinbox,
@@ -130,9 +129,14 @@ private slots:
 
 };
 
-
-
-
 #endif
+
+
+
+
+
+
+
+
 
 

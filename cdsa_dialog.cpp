@@ -144,7 +144,6 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   strlcpy(str, " ", 128);
   strlcat(str, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 128);
   remove_trailing_spaces(str);
-//  strlcat(str, "^2", 128);
 
   max_pwr_spinbox = new QDoubleSpinBox(myobjectDialog);
   max_pwr_spinbox->setGeometry(170, 335, 150, 25);
@@ -164,8 +163,6 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   start_button = new QPushButton(myobjectDialog);
   start_button->setGeometry(480, 435, 100, 25);
   start_button->setText("Start");
-
-  cdsa_label = new QLabel;
 
   default_button_clicked();
 
@@ -282,7 +279,7 @@ void UI_cdsa_window::start_button_clicked()
 
   struct fft_wrap_settings_struct *dft;
 
-  QColor pxm_color;
+  QLabel *cdsa_label=NULL;
 
   QDockWidget *cdsa_dock=NULL;
 
@@ -370,11 +367,14 @@ void UI_cdsa_window::start_button_clicked()
     return;
   }
 
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
   for(i=0; i<segments_in_recording; i++)
   {
     err = fbr.process_signalcomp(i * smpls_in_segment);
     if(err)
     {
+      QApplication::restoreOverrideCursor();
       snprintf(str, 1024, "Internal error %i in file %s line %i", err, __FILE__, __LINE__);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
       messagewindow.exec();
@@ -393,13 +393,13 @@ void UI_cdsa_window::start_button_clicked()
 
       if(rgb_idx < 0)  rgb_idx = 0;
 
-      pxm_color.setRgb(rgb_map[rgb_idx][0], rgb_map[rgb_idx][1], rgb_map[rgb_idx][2]);
-
-      painter.setPen(pxm_color);
+      painter.setPen(QColor(rgb_map[rgb_idx][0], rgb_map[rgb_idx][1], rgb_map[rgb_idx][2]));
 
       painter.drawPoint(i, (h - 1) - j);
     }
   }
+
+  QApplication::restoreOverrideCursor();
 
   free_fft_wrap(dft);
 
@@ -409,14 +409,20 @@ void UI_cdsa_window::start_button_clicked()
 
   cdsa_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-  cdsa_dock->setAllowedAreas(Qt::BottomDockWidgetArea);
+  cdsa_dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+
+  cdsa_label = new QLabel(cdsa_dock);
+  cdsa_label->setScaledContents(true);
+  cdsa_label->setPixmap(*pxm);
 
   cdsa_dock->setWidget(cdsa_label);
 
-  cdsa_label->setPixmap(*pxm);
-
   mainwindow->addDockWidget(Qt::BottomDockWidgetArea, cdsa_dock, Qt::Horizontal);
 }
+
+
+
+
 
 
 
