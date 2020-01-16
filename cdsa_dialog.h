@@ -96,14 +96,13 @@ private:
                 *blocklen_label,
                 *overlap_label,
                 *windowfunc_label,
-                *pix_per_hz_label,
+                *log_label,
                 *min_hz_label,
                 *max_hz_label,
                 *max_pwr_label;
 
   QSpinBox      *segmentlen_spinbox,
                 *blocklen_spinbox,
-                *pix_per_hz_spinbox,
                 *min_hz_spinbox,
                 *max_hz_spinbox;
 
@@ -111,6 +110,8 @@ private:
 
   QComboBox     *overlap_combobox,
                 *windowfunc_combobox;
+
+  QCheckBox     *log_checkbox;
 
   QPushButton   *close_button,
                 *start_button,

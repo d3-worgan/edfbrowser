@@ -31,6 +31,8 @@
 
 
 
+
+
 UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal_comp)
 {
   char str[128]={""};
@@ -75,22 +77,12 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   blocklen_spinbox->setMinimum(1);
   blocklen_spinbox->setMaximum(10);
 
-  pix_per_hz_label = new QLabel(myobjectDialog);
-  pix_per_hz_label->setGeometry(20, 110, 150, 25);
-  pix_per_hz_label->setText("Pixels per bin");
-
-  pix_per_hz_spinbox = new QSpinBox(myobjectDialog);
-  pix_per_hz_spinbox->setGeometry(170, 110, 100, 25);
-  pix_per_hz_spinbox->setSuffix(" px");
-  pix_per_hz_spinbox->setMinimum(1);
-  pix_per_hz_spinbox->setMaximum(10);
-
   overlap_label = new QLabel(myobjectDialog);
-  overlap_label->setGeometry(20, 155, 150, 25);
+  overlap_label->setGeometry(20, 110, 150, 25);
   overlap_label->setText("Overlap");
 
   overlap_combobox = new QComboBox(myobjectDialog);
-  overlap_combobox->setGeometry(170, 155, 100, 25);
+  overlap_combobox->setGeometry(170, 110, 100, 25);
   overlap_combobox->addItem(" 0 %");
   overlap_combobox->addItem("50 %");
   overlap_combobox->addItem("67 %");
@@ -98,11 +90,11 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   overlap_combobox->addItem("80 %");
 
   windowfunc_label = new QLabel(myobjectDialog);
-  windowfunc_label->setGeometry(20, 200, 150, 25);
+  windowfunc_label->setGeometry(20, 155, 150, 25);
   windowfunc_label->setText("Window");
 
   windowfunc_combobox = new QComboBox(myobjectDialog);
-  windowfunc_combobox->setGeometry(170, 200, 100, 25);
+  windowfunc_combobox->setGeometry(170, 155, 100, 25);
   windowfunc_combobox->addItem("Rectangular");
   windowfunc_combobox->addItem("Hamming");
   windowfunc_combobox->addItem("4-term Blackman-Harris");
@@ -118,27 +110,27 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   windowfunc_combobox->addItem("Kaiser5");
 
   min_hz_label = new QLabel(myobjectDialog);
-  min_hz_label->setGeometry(20, 245, 150, 25);
+  min_hz_label->setGeometry(20, 200, 150, 25);
   min_hz_label->setText("Min. freq.");
 
   min_hz_spinbox = new QSpinBox(myobjectDialog);
-  min_hz_spinbox->setGeometry(170, 245, 100, 25);
+  min_hz_spinbox->setGeometry(170, 200, 100, 25);
   min_hz_spinbox->setSuffix(" Hz");
   min_hz_spinbox->setMinimum(0);
   min_hz_spinbox->setMaximum((sf / 2) - 1);
 
   max_hz_label = new QLabel(myobjectDialog);
-  max_hz_label->setGeometry(20, 290, 150, 25);
+  max_hz_label->setGeometry(20, 245, 150, 25);
   max_hz_label->setText("Max. freq.");
 
   max_hz_spinbox = new QSpinBox(myobjectDialog);
-  max_hz_spinbox->setGeometry(170, 290, 100, 25);
+  max_hz_spinbox->setGeometry(170, 245, 100, 25);
   max_hz_spinbox->setSuffix(" Hz");
   max_hz_spinbox->setMinimum(1);
   max_hz_spinbox->setMaximum(sf / 2);
 
   max_pwr_label = new QLabel(myobjectDialog);
-  max_pwr_label->setGeometry(20, 335, 150, 25);
+  max_pwr_label->setGeometry(20, 290, 150, 25);
   max_pwr_label->setText("Max. level");
 
   strlcpy(str, " ", 128);
@@ -146,11 +138,20 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   remove_trailing_spaces(str);
 
   max_pwr_spinbox = new QDoubleSpinBox(myobjectDialog);
-  max_pwr_spinbox->setGeometry(170, 335, 150, 25);
+  max_pwr_spinbox->setGeometry(170, 290, 150, 25);
   max_pwr_spinbox->setSuffix(str);
   max_pwr_spinbox->setDecimals(3);
   max_pwr_spinbox->setMinimum(0.001);
   max_pwr_spinbox->setMaximum(10000.0);
+
+  log_label = new QLabel(myobjectDialog);
+  log_label->setGeometry(20, 335, 150, 25);
+  log_label->setText("Logarithmic");
+
+  log_checkbox = new QCheckBox(myobjectDialog);
+  log_checkbox->setGeometry(170, 335, 20, 25);
+  log_checkbox->setTristate(false);
+  log_checkbox->setCheckState(Qt::Unchecked);
 
   close_button = new QPushButton(myobjectDialog);
   close_button->setGeometry(20, 435, 100, 25);
@@ -246,12 +247,12 @@ void UI_cdsa_window::default_button_clicked()
 
   segmentlen_spinbox->setValue(30);
   blocklen_spinbox->setValue(2);
-  pix_per_hz_spinbox->setValue(2);
   overlap_combobox->setCurrentIndex(4);
   windowfunc_combobox->setCurrentIndex(9);
   min_hz_spinbox->setValue(1);
   max_hz_spinbox->setValue(30);
   max_pwr_spinbox->setValue(50.0);
+  log_checkbox->setCheckState(Qt::Unchecked);
 
   QObject::blockSignals(false);
 }
@@ -266,7 +267,8 @@ void UI_cdsa_window::start_button_clicked()
       blocklen,
       smpl_in_block,
       overlap,
-      window_func;
+      window_func,
+      log_density=0;
 
   long long samples_in_file;
 
@@ -275,7 +277,7 @@ void UI_cdsa_window::start_button_clicked()
   int rgb_map[1021][3],
       rgb_idx;
 
-  double v_scale;
+  double v_scale, d_tmp;
 
   struct fft_wrap_settings_struct *dft;
 
@@ -311,6 +313,11 @@ void UI_cdsa_window::start_button_clicked()
     rgb_map[i][2] = 0;
   }
 
+  if(log_checkbox->checkState() == true)
+  {
+    log_density = 1;
+  }
+
   samples_in_file = (long long)signalcomp->edfhdr->datarecords * (long long)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
 
   segmentlen = segmentlen_spinbox->value();
@@ -321,7 +328,14 @@ void UI_cdsa_window::start_button_clicked()
 
   h_max = max_hz_spinbox->value();
 
-  v_scale = 1020.0 / max_pwr_spinbox->value();
+  if(log_density)
+  {
+    v_scale = 1020.0 / log10(max_pwr_spinbox->value());
+  }
+  else
+  {
+    v_scale = 1020.0 / max_pwr_spinbox->value();
+  }
 
   window_func = windowfunc_combobox->currentIndex();
 
@@ -356,7 +370,6 @@ void UI_cdsa_window::start_button_clicked()
   pxm->fill(Qt::black);
 
   QPainter painter(pxm);
-  painter.setPen(Qt::red);
 
   dft = fft_wrap_create(smplbuf, smpls_in_segment, smpl_in_block, window_func, overlap);
   if(dft == NULL)
@@ -387,7 +400,23 @@ void UI_cdsa_window::start_button_clicked()
 
     for(j=0; j<h; j++)
     {
-      rgb_idx = sqrt((dft->buf_out[j + h_min] * v_scale) / dft->dft_sz);
+      if(log_density)
+      {
+        d_tmp = sqrt((dft->buf_out[j + h_min]) / dft->dft_sz);
+
+        if(d_tmp < 1E-13)
+        {
+          rgb_idx = log10(1E-13) * v_scale;
+        }
+        else
+        {
+          rgb_idx = log10(d_tmp) * v_scale;
+        }
+      }
+      else
+      {
+        rgb_idx = sqrt((dft->buf_out[j + h_min]) / dft->dft_sz) * v_scale;
+      }
 
       if(rgb_idx > 1020)  rgb_idx = 1020;
 
@@ -398,6 +427,8 @@ void UI_cdsa_window::start_button_clicked()
       painter.drawPoint(i, (h - 1) - j);
     }
   }
+
+  painter.end();
 
   QApplication::restoreOverrideCursor();
 
@@ -418,6 +449,9 @@ void UI_cdsa_window::start_button_clicked()
   cdsa_dock->setWidget(cdsa_label);
 
   mainwindow->addDockWidget(Qt::BottomDockWidgetArea, cdsa_dock, Qt::Horizontal);
+
+  delete pxm;
+  pxm = NULL;
 }
 
 
