@@ -3727,9 +3727,9 @@ void ViewCurve::cdsa_button()
     return;
   }
 
-  if(mainwindow->signalcomp[signal_nr]->edfhdr->recording_len_sec < 600)
+  if(mainwindow->signalcomp[signal_nr]->edfhdr->recording_len_sec < 30)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Recording length must be at least 10 minutes.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Recording length must be at least 30 seconds.");
     messagewindow.exec();
     return;
   }

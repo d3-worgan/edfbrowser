@@ -37,6 +37,8 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
 {
   char str[128]={""};
 
+  long long samples_in_file;
+
   pxm = NULL;
 
   mainwindow = (UI_Mainwindow *)w_parent;
@@ -48,6 +50,8 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   {
     sf = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f + 0.5;
   }
+
+  samples_in_file = (long long)signalcomp->edfhdr->datarecords * (long long)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
 
   myobjectDialog = new QDialog;
 
@@ -65,7 +69,11 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   segmentlen_spinbox->setGeometry(170, 20, 100, 25);
   segmentlen_spinbox->setSuffix(" sec");
   segmentlen_spinbox->setMinimum(5);
-  segmentlen_spinbox->setMaximum(300);
+  if(samples_in_file > 300)
+  {
+    samples_in_file = 300;
+  }
+  segmentlen_spinbox->setMaximum((int)samples_in_file);
 
   blocklen_label = new QLabel(myobjectDialog);
   blocklen_label->setGeometry(20, 65, 150, 25);
@@ -313,7 +321,7 @@ void UI_cdsa_window::start_button_clicked()
     rgb_map[i][2] = 0;
   }
 
-  if(log_checkbox->checkState() == true)
+  if(log_checkbox->checkState() == Qt::Checked)
   {
     log_density = 1;
   }
@@ -402,7 +410,7 @@ void UI_cdsa_window::start_button_clicked()
     {
       if(log_density)
       {
-        d_tmp = sqrt((dft->buf_out[j + h_min]) / dft->dft_sz);
+        d_tmp = sqrt(dft->buf_out[j + h_min] / dft->dft_sz);
 
         if(d_tmp < 1E-13)
         {
@@ -415,7 +423,7 @@ void UI_cdsa_window::start_button_clicked()
       }
       else
       {
-        rgb_idx = sqrt((dft->buf_out[j + h_min]) / dft->dft_sz) * v_scale;
+        rgb_idx = sqrt(dft->buf_out[j + h_min] / dft->dft_sz) * v_scale;
       }
 
       if(rgb_idx > 1020)  rgb_idx = 1020;
