@@ -51,6 +51,10 @@
 #include <QTextEdit>
 #include <QSpinBox>
 #include <QComboBox>
+#include <QPainter>
+#include <QPen>
+#include <QColor>
+#include <QDockWidget>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -74,6 +78,7 @@ class UI_cdsa_window : public QObject
 
 public:
   UI_cdsa_window(QWidget *, struct signalcompblock *);
+  ~UI_cdsa_window();
 
   UI_Mainwindow  *mainwindow;
 
@@ -94,7 +99,8 @@ private:
                 *pix_per_hz_label,
                 *min_hz_label,
                 *max_hz_label,
-                *max_pwr_label;
+                *max_pwr_label,
+                *cdsa_label;
 
   QSpinBox      *segmentlen_spinbox,
                 *blocklen_spinbox,
@@ -110,6 +116,8 @@ private:
   QPushButton   *close_button,
                 *start_button,
                 *default_button;
+
+  QPixmap       *pxm;
 
 private slots:
 

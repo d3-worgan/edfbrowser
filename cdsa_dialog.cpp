@@ -35,6 +35,8 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
 {
   char str[128]={""};
 
+  pxm = NULL;
+
   mainwindow = (UI_Mainwindow *)w_parent;
 
   signalcomp = signal_comp;
@@ -137,12 +139,12 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
 
   max_pwr_label = new QLabel(myobjectDialog);
   max_pwr_label->setGeometry(20, 335, 150, 25);
-  max_pwr_label->setText("Max. power");
+  max_pwr_label->setText("Max. level");
 
   strlcpy(str, " ", 128);
   strlcat(str, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 128);
   remove_trailing_spaces(str);
-  strlcat(str, "^2", 128);
+//  strlcat(str, "^2", 128);
 
   max_pwr_spinbox = new QDoubleSpinBox(myobjectDialog);
   max_pwr_spinbox->setGeometry(170, 335, 150, 25);
@@ -163,6 +165,8 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   start_button->setGeometry(480, 435, 100, 25);
   start_button->setText("Start");
 
+  cdsa_label = new QLabel;
+
   default_button_clicked();
 
   QObject::connect(close_button, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
@@ -178,6 +182,12 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   }
 
   myobjectDialog->exec();
+}
+
+
+UI_cdsa_window::~UI_cdsa_window()
+{
+  delete pxm;
 }
 
 
@@ -252,7 +262,7 @@ void UI_cdsa_window::default_button_clicked()
 
 void UI_cdsa_window::start_button_clicked()
 {
-  int i, err,
+  int i, j, w, h, h_min, h_max, err,
       smpls_in_segment,
       segments_in_recording,
       segmentlen,
@@ -265,13 +275,56 @@ void UI_cdsa_window::start_button_clicked()
 
   char str[1024]={""};
 
+  int rgb_map[1021][3],
+      rgb_idx;
+
+  double v_scale;
+
   struct fft_wrap_settings_struct *dft;
+
+  QColor pxm_color;
+
+  QDockWidget *cdsa_dock=NULL;
+
+  for(i=0; i<256; i++)
+  {
+    rgb_map[i][0] = 0;
+    rgb_map[i][1] = i;
+    rgb_map[i][2] = 255;
+  }
+
+  for(i=256; i<511; i++)
+  {
+    rgb_map[i][0] = 0;
+    rgb_map[i][1] = 255;
+    rgb_map[i][2] = rgb_map[i-1][2] - 1;
+  }
+
+  for(i=511; i<766; i++)
+  {
+    rgb_map[i][0] = rgb_map[i-1][0] + 1;
+    rgb_map[i][1] = 255;
+    rgb_map[i][2] = 0;
+  }
+
+  for(i=766; i<1021; i++)
+  {
+    rgb_map[i][0] = 255;
+    rgb_map[i][1] = rgb_map[i-1][1] - 1;
+    rgb_map[i][2] = 0;
+  }
 
   samples_in_file = (long long)signalcomp->edfhdr->datarecords * (long long)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
 
   segmentlen = segmentlen_spinbox->value();
 
   blocklen = blocklen_spinbox->value();
+
+  h_min = min_hz_spinbox->value();
+
+  h_max = max_hz_spinbox->value();
+
+  v_scale = 1020.0 / max_pwr_spinbox->value();
 
   window_func = windowfunc_combobox->currentIndex();
 
@@ -283,6 +336,14 @@ void UI_cdsa_window::start_button_clicked()
 
   segments_in_recording = samples_in_file / (long long)smpls_in_segment;
 
+  w = segments_in_recording;
+
+  h_max *= blocklen;
+
+  h_min *= blocklen;
+
+  h = h_max - h_min;
+
   FilteredBlockReadClass fbr;
 
   smplbuf = fbr.init_signalcomp(signalcomp, smpls_in_segment, 0, 1);
@@ -293,6 +354,12 @@ void UI_cdsa_window::start_button_clicked()
     messagewindow.exec();
     return;
   }
+
+  pxm = new QPixmap(w, h);
+  pxm->fill(Qt::black);
+
+  QPainter painter(pxm);
+  painter.setPen(Qt::red);
 
   dft = fft_wrap_create(smplbuf, smpls_in_segment, smpl_in_block, window_func, overlap);
   if(dft == NULL)
@@ -315,13 +382,40 @@ void UI_cdsa_window::start_button_clicked()
     }
 
     fft_wrap_run(dft);
+
+    dft->buf_out[0] /= 2.0;  // DC!
+
+    for(j=0; j<h; j++)
+    {
+      rgb_idx = sqrt((dft->buf_out[j + h_min] * v_scale) / dft->dft_sz);
+
+      if(rgb_idx > 1020)  rgb_idx = 1020;
+
+      if(rgb_idx < 0)  rgb_idx = 0;
+
+      pxm_color.setRgb(rgb_map[rgb_idx][0], rgb_map[rgb_idx][1], rgb_map[rgb_idx][2]);
+
+      painter.setPen(pxm_color);
+
+      painter.drawPoint(i, (h - 1) - j);
+    }
   }
 
-
-
-
-
   free_fft_wrap(dft);
+
+  snprintf(str, 1024, "Color Density Spectral Array   %s", signalcomp->signallabel);
+
+  cdsa_dock = new QDockWidget(str, mainwindow);
+
+  cdsa_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+
+  cdsa_dock->setAllowedAreas(Qt::BottomDockWidgetArea);
+
+  cdsa_dock->setWidget(cdsa_label);
+
+  cdsa_label->setPixmap(*pxm);
+
+  mainwindow->addDockWidget(Qt::BottomDockWidgetArea, cdsa_dock, Qt::Horizontal);
 }
 
 
