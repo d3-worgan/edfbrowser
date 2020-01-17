@@ -298,8 +298,6 @@ void UI_cdsa_window::start_button_clicked()
 
   long long samples_in_file;
 
-  char str[1024]={""};
-
   int rgb_map[1786][3],
       rgb_idx;
 
@@ -309,11 +307,11 @@ void UI_cdsa_window::start_button_clicked()
 
   struct fft_wrap_settings_struct *dft;
 
-  QLabel *cdsa_label=NULL;
-
-  QDockWidget *cdsa_dock=NULL;
-
   QPixmap *pxm=NULL;
+
+  UI_cdsa_dock *dock=NULL;
+
+  struct cdsa_dock_param_struct dock_param;
 
   for(i=0; i<256; i++)
   {
@@ -419,8 +417,7 @@ void UI_cdsa_window::start_button_clicked()
   smplbuf = fbr.init_signalcomp(signalcomp, smpls_in_segment, 0, 1);
   if(smplbuf == NULL)
   {
-    snprintf(str, 1024, "Internal error in file %s line %i", __FILE__, __LINE__);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Internal error (-1)");
     messagewindow.exec();
     return;
   }
@@ -433,8 +430,7 @@ void UI_cdsa_window::start_button_clicked()
   dft = fft_wrap_create(smplbuf, smpls_in_segment, smpl_in_block, window_func, overlap);
   if(dft == NULL)
   {
-    snprintf(str, 1024, "Internal error in file %s line %i", __FILE__, __LINE__);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Internal error (-2)");
     messagewindow.exec();
     return;
   }
@@ -449,8 +445,7 @@ void UI_cdsa_window::start_button_clicked()
     if(err)
     {
       QApplication::restoreOverrideCursor();
-      snprintf(str, 1024, "Internal error %i in file %s line %i", err, __FILE__, __LINE__);
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Internal error (-3)");
       messagewindow.exec();
       return;
     }
@@ -495,25 +490,18 @@ void UI_cdsa_window::start_button_clicked()
 
   free_fft_wrap(dft);
 
-  snprintf(str, 1024, "Color Density Spectral Array   %s", signalcomp->signallabel);
+  dock_param.signalcomp = signalcomp;
+  dock_param.sf = sf;
+  dock_param.min_hz = mainwindow->cdsa_min_hz;
+  dock_param.max_hz = mainwindow->cdsa_max_hz;
+  dock_param.max_pwr = mainwindow->cdsa_max_pwr;
+  dock_param.log = mainwindow->cdsa_log;
+  dock_param.pxm = pxm;
 
-  cdsa_dock = new QDockWidget(str, mainwindow);
+  dock = new UI_cdsa_dock(mainwindow, dock_param);
 
-  cdsa_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+  Q_UNUSED(dock);
 
-  cdsa_dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
-
-  cdsa_label = new QLabel(cdsa_dock);
-  cdsa_label->setScaledContents(true);
-  cdsa_label->setPixmap(*pxm);
-  cdsa_label->setMinimumHeight(100);
-  cdsa_label->setMinimumWidth(100);
-
-  cdsa_dock->setWidget(cdsa_label);
-
-  mainwindow->addDockWidget(Qt::BottomDockWidgetArea, cdsa_dock, Qt::Horizontal);
-
-  delete pxm;
   pxm = NULL;
 
   myobjectDialog->close();

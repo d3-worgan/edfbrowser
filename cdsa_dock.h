@@ -26,8 +26,8 @@
 */
 
 
-#ifndef UI_CDSAFORM_H
-#define UI_CDSAFORM_H
+#ifndef UI_CDSADOCKFORM_H
+#define UI_CDSADOCKFORM_H
 
 
 #include <QtGlobal>
@@ -48,8 +48,6 @@
 #include <QMessageBox>
 #include <QString>
 #include <QPixmap>
-#include <QDesktopServices>
-#include <QUrl>
 #include <QTextEdit>
 #include <QSpinBox>
 #include <QComboBox>
@@ -68,64 +66,41 @@
 #include "utils.h"
 #include "filteredblockread.h"
 #include "fft_wrap.h"
-#include "cdsa_dock.h"
 
 
 
 class UI_Mainwindow;
 
 
-class UI_cdsa_window : public QObject
+struct cdsa_dock_param_struct
+{
+  struct signalcompblock *signalcomp;
+  int sf;
+  int min_hz;
+  int max_hz;
+  double max_pwr;
+  int log;
+  QPixmap *pxm;
+};
+
+
+class UI_cdsa_dock : public QObject
 {
   Q_OBJECT
 
 public:
-  UI_cdsa_window(QWidget *, struct signalcompblock *);
-  ~UI_cdsa_window();
+  UI_cdsa_dock(QWidget *, struct cdsa_dock_param_struct);
+  ~UI_cdsa_dock();
 
   UI_Mainwindow  *mainwindow;
 
 private:
 
-  int sf;
-
-  struct signalcompblock *signalcomp;
-
-  QDialog       *myobjectDialog;
-
-  QLabel        *segmentlen_label,
-                *blocklen_label,
-                *overlap_label,
-                *windowfunc_label,
-                *log_label,
-                *min_hz_label,
-                *max_hz_label,
-                *max_pwr_label;
-
-  QSpinBox      *segmentlen_spinbox,
-                *blocklen_spinbox,
-                *min_hz_spinbox,
-                *max_hz_spinbox;
-
-  QDoubleSpinBox *max_pwr_spinbox;
-
-  QComboBox     *overlap_combobox,
-                *windowfunc_combobox;
-
-  QCheckBox     *log_checkbox;
-
-  QPushButton   *close_button,
-                *start_button,
-                *default_button;
+  struct cdsa_dock_param_struct param;
 
 private slots:
 
-  void start_button_clicked();
-  void default_button_clicked();
-  void segmentlen_spinbox_changed(int);
-  void blocklen_spinbox_changed(int);
-  void min_hz_spinbox_changed(int);
-  void max_hz_spinbox_changed(int);
+  void cdsa_dock_destroyed(QObject *);
 
 };
 

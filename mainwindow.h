@@ -249,7 +249,6 @@ public:
       cdsa_window_func,
       cdsa_min_hz,
       cdsa_max_hz,
-      cdsa_max_pwr,
       cdsa_log,
       use_threads,
       check_for_updates,
@@ -279,7 +278,8 @@ public:
 
   double pixelsizefactor,
          x_pixelsizefactor,
-         default_amplitude;
+         default_amplitude,
+         cdsa_max_pwr;
 
   struct{
           double crossoverfreq;
