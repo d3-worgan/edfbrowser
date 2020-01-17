@@ -3662,6 +3662,10 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   sidemenuButton13 = new QPushButton(sidemenu);
   sidemenuButton13->setGeometry(45, 485, 100, 25);
   sidemenuButton13->setText("CDSA");
+  if(mainwindow->live_stream_active)
+  {
+    sidemenuButton13->setEnabled(false);
+  }
 
   sidemenuButton14 = new QPushButton(sidemenu);
   sidemenuButton14->setGeometry(45, 515, 100, 25);
