@@ -269,7 +269,7 @@ void UI_cdsa_window::default_button_clicked()
   min_hz_spinbox->setValue(1);
   max_hz_spinbox->setValue(30);
   max_pwr_spinbox->setValue(50.0);
-  log_checkbox->setCheckState(Qt::Unchecked);
+  log_checkbox->setCheckState(Qt::Checked);
 
   mainwindow->cdsa_segmentlen = 30;
   mainwindow->cdsa_blocklen = 2;
@@ -278,7 +278,7 @@ void UI_cdsa_window::default_button_clicked()
   mainwindow->cdsa_min_hz = 1;
   mainwindow->cdsa_max_hz = 30;
   mainwindow->cdsa_max_pwr = 50;
-  mainwindow->cdsa_log = 0;
+  mainwindow->cdsa_log = 1;
 
   QObject::blockSignals(false);
 }
