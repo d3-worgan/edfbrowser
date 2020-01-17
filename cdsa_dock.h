@@ -34,6 +34,7 @@
 #include <QApplication>
 #include <QObject>
 #include <QWidget>
+#include <QFrame>
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
