@@ -300,7 +300,7 @@ void UI_cdsa_window::start_button_clicked()
 
   char str[1024]={""};
 
-  int rgb_map[1276][3],
+  int rgb_map[1531][3],
       rgb_idx;
 
   double v_scale,
@@ -350,6 +350,13 @@ void UI_cdsa_window::start_button_clicked()
     rgb_map[i][2] = 0;
   }
 
+  for(i=1276; i<1531; i++)
+  {
+    rgb_map[i][0] = 255;
+    rgb_map[i][1] = i - 1275;
+    rgb_map[i][2] = i - 1275;
+  }
+
   if(log_checkbox->checkState() == Qt::Checked)
   {
     log_density = 1;
@@ -372,11 +379,11 @@ void UI_cdsa_window::start_button_clicked()
 
   if(log_density)
   {
-    v_scale = 1276.0 / log10(max_pwr_spinbox->value());
+    v_scale = 1530.0 / log10(max_pwr_spinbox->value());
   }
   else
   {
-    v_scale = 1276.0 / max_pwr_spinbox->value();
+    v_scale = 1530.0 / max_pwr_spinbox->value();
   }
   mainwindow->cdsa_max_pwr = max_pwr_spinbox->value();
 
@@ -465,7 +472,7 @@ void UI_cdsa_window::start_button_clicked()
         rgb_idx = sqrt(dft->buf_out[j + h_min] / dft->dft_sz) * v_scale;
       }
 
-      if(rgb_idx > 1275)  rgb_idx = 1275;
+      if(rgb_idx > 1530)  rgb_idx = 1530;
 
       if(rgb_idx < 0)  rgb_idx = 0;
 
