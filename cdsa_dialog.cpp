@@ -435,16 +435,29 @@ void UI_cdsa_window::start_button_clicked()
     return;
   }
 
-  QApplication::setOverrideCursor(Qt::WaitCursor);
+  QProgressDialog progress("Processing...", "Abort", 0, segments_in_recording);
+  progress.setWindowModality(Qt::WindowModal);
+  progress.setMinimumDuration(0);
 
   for(i=0; i<segments_in_recording; i++)
   {
+    progress.setValue(i);
+
     qApp->processEvents();
+
+    if(progress.wasCanceled() == true)
+    {
+      painter.end();
+      progress.reset();
+      free_fft_wrap(dft);
+      delete pxm;
+      return;
+    }
 
     err = fbr.process_signalcomp(i * smpls_in_segment);
     if(err)
     {
-      QApplication::restoreOverrideCursor();
+      progress.reset();
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Internal error (-3)");
       messagewindow.exec();
       return;
@@ -486,7 +499,7 @@ void UI_cdsa_window::start_button_clicked()
 
   painter.end();
 
-  QApplication::restoreOverrideCursor();
+  progress.reset();
 
   free_fft_wrap(dft);
 
