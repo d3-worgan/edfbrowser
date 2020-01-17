@@ -437,7 +437,7 @@ void UI_cdsa_window::start_button_clicked()
 
   QProgressDialog progress("Processing...", "Abort", 0, segments_in_recording);
   progress.setWindowModality(Qt::WindowModal);
-  progress.setMinimumDuration(0);
+  progress.setMinimumDuration(500);
 
   for(i=0; i<segments_in_recording; i++)
   {
