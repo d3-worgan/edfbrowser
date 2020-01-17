@@ -300,7 +300,7 @@ void UI_cdsa_window::start_button_clicked()
 
   char str[1024]={""};
 
-  int rgb_map[1021][3],
+  int rgb_map[1276][3],
       rgb_idx;
 
   double v_scale,
@@ -317,29 +317,36 @@ void UI_cdsa_window::start_button_clicked()
 
   for(i=0; i<256; i++)
   {
-    rgb_map[i][0] = 0;
-    rgb_map[i][1] = i;
+    rgb_map[i][0] = 255 - i;
+    rgb_map[i][1] = 0;
     rgb_map[i][2] = 255;
   }
 
   for(i=256; i<511; i++)
   {
     rgb_map[i][0] = 0;
-    rgb_map[i][1] = 255;
-    rgb_map[i][2] = rgb_map[i-1][2] - 1;
+    rgb_map[i][1] = i - 255;
+    rgb_map[i][2] = 255;
   }
 
   for(i=511; i<766; i++)
   {
-    rgb_map[i][0] = rgb_map[i-1][0] + 1;
+    rgb_map[i][0] = 0;
     rgb_map[i][1] = 255;
-    rgb_map[i][2] = 0;
+    rgb_map[i][2] = 765 - i;
   }
 
   for(i=766; i<1021; i++)
   {
+    rgb_map[i][0] = i - 765;
+    rgb_map[i][1] = 255;
+    rgb_map[i][2] = 0;
+  }
+
+  for(i=1021; i<1276; i++)
+  {
     rgb_map[i][0] = 255;
-    rgb_map[i][1] = rgb_map[i-1][1] - 1;
+    rgb_map[i][1] = 1275 - i;
     rgb_map[i][2] = 0;
   }
 
@@ -365,11 +372,11 @@ void UI_cdsa_window::start_button_clicked()
 
   if(log_density)
   {
-    v_scale = 1020.0 / log10(max_pwr_spinbox->value());
+    v_scale = 1276.0 / log10(max_pwr_spinbox->value());
   }
   else
   {
-    v_scale = 1020.0 / max_pwr_spinbox->value();
+    v_scale = 1276.0 / max_pwr_spinbox->value();
   }
   mainwindow->cdsa_max_pwr = max_pwr_spinbox->value();
 
@@ -458,7 +465,7 @@ void UI_cdsa_window::start_button_clicked()
         rgb_idx = sqrt(dft->buf_out[j + h_min] / dft->dft_sz) * v_scale;
       }
 
-      if(rgb_idx > 1020)  rgb_idx = 1020;
+      if(rgb_idx > 1275)  rgb_idx = 1275;
 
       if(rgb_idx < 0)  rgb_idx = 0;
 
