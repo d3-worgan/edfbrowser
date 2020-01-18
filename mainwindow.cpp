@@ -90,6 +90,16 @@ void UI_Mainwindow::closeEvent(QCloseEvent *cl_event)
       }
     }
 
+    for(i=0; i<MAXCDSADOCKS; i++)
+    {
+      if(cdsa_dock[i] != NULL)
+      {
+        delete cdsa_dock[i];
+
+        cdsa_dock[i] = NULL;
+      }
+    }
+
     for(i=0; i<MAXAVERAGECURVEDIALOGS; i++)
     {
       if(averagecurvedialog[i] != NULL)
@@ -2060,6 +2070,16 @@ void UI_Mainwindow::remove_all_signals()
     }
   }
 
+  for(i=0; i<MAXCDSADOCKS; i++)
+  {
+    if(cdsa_dock[i] != NULL)
+    {
+      delete cdsa_dock[i];
+
+      cdsa_dock[i] = NULL;
+    }
+  }
+
   for(i=0; i<MAXAVERAGECURVEDIALOGS; i++)
   {
     if(averagecurvedialog[i] != NULL)
@@ -2094,6 +2114,8 @@ void UI_Mainwindow::remove_all_signals()
   for(i=0; i<signalcomps; i++)
   {
     free(signalcomp[i]);
+
+    signalcomp[i] = NULL;
   }
 
   signalcomps = 0;
@@ -2169,6 +2191,18 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
           delete spectrumdialog[p - 1];
 
           spectrumdialog[p - 1] = NULL;
+        }
+      }
+
+      for(i=0; i<MAXCDSADOCKS; i++)
+      {
+        p = signalcomp[j]->cdsa_dock[i];
+
+        if(p != 0)
+        {
+          delete cdsa_dock[p - 1];
+
+          cdsa_dock[p - 1] = NULL;
         }
       }
 
@@ -2284,7 +2318,11 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
 
       signalcomp[j]->fidfilter_cnt = 0;
 
+      signalcomp[j]->uid = 0LL;
+
       free(signalcomp[j]);
+
+      signalcomp[j] = NULL;
 
       for(i=j; i<signalcomps - 1; i++)
       {

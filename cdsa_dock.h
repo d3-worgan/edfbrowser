@@ -72,6 +72,7 @@
 
 class UI_Mainwindow;
 
+class simple_tracking_indicator;
 
 struct cdsa_dock_param_struct
 {
@@ -79,6 +80,8 @@ struct cdsa_dock_param_struct
   int sf;
   int min_hz;
   int max_hz;
+  int segment_len;
+  int segments_in_recording;
   double max_pwr;
   int log;
   QPixmap *pxm;
@@ -95,15 +98,52 @@ public:
 
   UI_Mainwindow  *mainwindow;
 
+  QDockWidget *cdsa_dock;
+
 private:
 
   struct cdsa_dock_param_struct param;
 
+  simple_tracking_indicator *trck_indic;
+
+  unsigned long long sigcomp_uid;
+
 private slots:
 
   void cdsa_dock_destroyed(QObject *);
+  void file_pos_changed(long long);
 
 };
+
+
+class simple_tracking_indicator: public QWidget
+{
+  Q_OBJECT
+
+public:
+  simple_tracking_indicator(QWidget *parent=0);
+  ~simple_tracking_indicator();
+
+  QSize sizeHint() const {return minimumSizeHint(); }
+  QSize minimumSizeHint() const {return QSize(5, 5); }
+
+  void set_position(long long);
+  void set_maximum(long long);
+
+public slots:
+
+protected:
+  void paintEvent(QPaintEvent *);
+
+private:
+
+  long long pos, max;
+
+  QFont *trck_font;
+
+  void draw_small_arrow(QPainter *, int, int, int, QColor);
+};
+
 
 #endif
 

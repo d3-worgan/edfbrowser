@@ -86,6 +86,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   setlocale(LC_NUMERIC, "C");
 
+  uid_seq = 1LL;
+
   pixelsizefactor = 0.0294382;
 
   x_pixelsizefactor = 0.0294382;
@@ -161,6 +163,11 @@ UI_Mainwindow::UI_Mainwindow()
   for(i=0; i<MAXSPECTRUMDIALOGS; i++)
   {
     spectrumdialog[i] = NULL;
+  }
+
+  for(i=0; i<MAXCDSADOCKS; i++)
+  {
+    cdsa_dock[i] = NULL;
   }
 
   for(i=0; i<MAXAVERAGECURVEDIALOGS; i++)

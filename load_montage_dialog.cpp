@@ -333,6 +333,8 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       return;
     }
 
+    newsignalcomp->uid = mainwindow->uid_seq++;
+
     if(xml_goto_nth_element_inside(xml_hdl, "num_of_signals", 0))
     {
       snprintf(str2, 512, "There seems to be an error in this montage file.\nFile: %s line: %i", __FILE__, __LINE__);

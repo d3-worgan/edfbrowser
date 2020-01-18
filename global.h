@@ -62,41 +62,42 @@
 #define PROGRAM_BETA_SUFFIX ""
 #define MINIMUM_QT4_VERSION 0x040701
 #define MINIMUM_QT5_VERSION 0x050901
-#define MAXFILES 32
-#define MAXSIGNALS 640
-#define MAXFILTERS 16
+#define MAXFILES (32)
+#define MAXSIGNALS (640)
+#define MAXFILTERS (16)
 #define TIME_DIMENSION (10000000LL)
-#define MAX_ANNOTATION_LEN 512
-#define VIEWTIME_SYNCED_OFFSET 0
-#define VIEWTIME_SYNCED_ABSOLUT 1
-#define VIEWTIME_UNSYNCED 2
-#define VIEWTIME_USER_DEF_SYNCED 3
-#define MAX_PATH_LENGTH 1024
-#define MAX_RECENTFILES 32
-#define MAX_ACTIVE_ANNOT_MARKERS 64
-#define MAXSPECTRUMDIALOGS 32
-#define MAXSPECTRUMDOCKS 8
-#define MAXPREDEFINEDMONTAGES 12
-#define MAXAVERAGECURVEDIALOGS 32
-#define MAXZSCOREDIALOGS 32
-#define MAXZOOMHISTORY 16
+#define MAX_ANNOTATION_LEN (512)
+#define VIEWTIME_SYNCED_OFFSET (0)
+#define VIEWTIME_SYNCED_ABSOLUT (1)
+#define VIEWTIME_UNSYNCED (2)
+#define VIEWTIME_USER_DEF_SYNCED (3)
+#define MAX_PATH_LENGTH (1024)
+#define MAX_RECENTFILES (32)
+#define MAX_ACTIVE_ANNOT_MARKERS (64)
+#define MAXSPECTRUMDIALOGS (32)
+#define MAXSPECTRUMDOCKS (8)
+#define MAXCDSADOCKS (8)
+#define MAXPREDEFINEDMONTAGES (12)
+#define MAXAVERAGECURVEDIALOGS (32)
+#define MAXZSCOREDIALOGS (32)
+#define MAXZOOMHISTORY (16)
 /* 200 bpm x 60 min. x 24 hours x 2 days */
-#define STATISTICS_IVAL_LIST_SZ   576000
+#define STATISTICS_IVAL_LIST_SZ   (576000)
 
 
-#define ANNOT_ID_NK_TRIGGER   0
-#define ANNOT_ID_BS_TRIGGER   1
+#define ANNOT_ID_NK_TRIGGER   (0)
+#define ANNOT_ID_BS_TRIGGER   (1)
 
-#define VIDEO_STATUS_STOPPED      0
-#define VIDEO_STATUS_STARTUP_1    1
-#define VIDEO_STATUS_STARTUP_2    2
-#define VIDEO_STATUS_STARTUP_3    3
-#define VIDEO_STATUS_STARTUP_4    4
-#define VIDEO_STATUS_STARTUP_5    5
-#define VIDEO_STATUS_STARTUP_6    6
-#define VIDEO_STATUS_PLAYING     16
-#define VIDEO_STATUS_PAUSED      17
-#define VIDEO_STATUS_ENDED       18
+#define VIDEO_STATUS_STOPPED      (0)
+#define VIDEO_STATUS_STARTUP_1    (1)
+#define VIDEO_STATUS_STARTUP_2    (2)
+#define VIDEO_STATUS_STARTUP_3    (3)
+#define VIDEO_STATUS_STARTUP_4    (4)
+#define VIDEO_STATUS_STARTUP_5    (5)
+#define VIDEO_STATUS_STARTUP_6    (6)
+#define VIDEO_STATUS_PLAYING     (16)
+#define VIDEO_STATUS_PAUSED      (17)
+#define VIDEO_STATUS_ENDED       (18)
 
 #include "filter.h"
 #include "third_party/fidlib/fidlib.h"
@@ -175,6 +176,7 @@ struct edfhdrblock{
       };
 
 struct signalcompblock{
+        unsigned long long uid;
         int filenum;
         struct edfhdrblock *edfhdr;
         int num_of_signals;
@@ -255,6 +257,7 @@ struct signalcompblock{
         struct zratio_filter_settings *zratio_filter;
         double zratio_crossoverfreq;
         int spectr_dialog[MAXSPECTRUMDIALOGS];
+        int cdsa_dock[MAXCDSADOCKS];
         int avg_dialog[MAXAVERAGECURVEDIALOGS];
         int zscoredialog[MAXZSCOREDIALOGS];
       };

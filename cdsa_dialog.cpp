@@ -309,8 +309,6 @@ void UI_cdsa_window::start_button_clicked()
 
   QPixmap *pxm=NULL;
 
-  UI_cdsa_dock *dock=NULL;
-
   struct cdsa_dock_param_struct dock_param;
 
   for(i=0; i<256; i++)
@@ -510,10 +508,18 @@ void UI_cdsa_window::start_button_clicked()
   dock_param.max_pwr = mainwindow->cdsa_max_pwr;
   dock_param.log = mainwindow->cdsa_log;
   dock_param.pxm = pxm;
+  dock_param.segment_len = segmentlen;
+  dock_param.segments_in_recording = segments_in_recording;
 
-  dock = new UI_cdsa_dock(mainwindow, dock_param);
+  for(i=0; i<MAXCDSADOCKS; i++)
+  {
+    if(mainwindow->cdsa_dock[i] == NULL)
+    {
+      mainwindow->cdsa_dock[i] = new UI_cdsa_dock(mainwindow, dock_param);
 
-  Q_UNUSED(dock);
+      break;
+    }
+  }
 
   pxm = NULL;
 

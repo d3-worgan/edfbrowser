@@ -173,6 +173,7 @@
 #include "export_filtered_signals.h"
 #include "fir_filter_dialog.h"
 #include "ishne2edf.h"
+#include "cdsa_dock.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -187,6 +188,7 @@ class UI_SpectrumDockWindow;
 class UI_FreqSpectrumWindow;
 class UI_AverageCurveWindow;
 class UI_ZScoreWindow;
+class UI_cdsa_dock;
 
 
 class UI_Mainwindow : public QMainWindow
@@ -263,7 +265,8 @@ public:
       use_diverse_signal_colors;
 
   unsigned long long pagetime,
-                     maxfilesize_to_readin_annotations;
+                     maxfilesize_to_readin_annotations,
+                     uid_seq;
 
   char *viewbuf,
        viewtime_string[128],
@@ -323,6 +326,8 @@ public:
 
   UI_FreqSpectrumWindow *spectrumdialog[MAXSPECTRUMDIALOGS];
 
+  UI_cdsa_dock *cdsa_dock[MAXCDSADOCKS];
+
   UI_SpectrumDockWindow *spectrumdock[MAXSPECTRUMDOCKS];
 
   UI_AverageCurveWindow *averagecurvedialog[MAXAVERAGECURVEDIALOGS];
@@ -360,6 +365,8 @@ public:
 
   QLabel       *nav_toolbar_label;
 
+signals:
+     void file_position_changed(long long);
 
 private:
 

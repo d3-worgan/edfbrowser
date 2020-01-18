@@ -199,6 +199,7 @@ void UI_Signalswindow::DisplayCompButtonClicked()
     return;
   }
 
+  newsignalcomp->uid = mainwindow->uid_seq++;
   newsignalcomp->num_of_signals = n;
   newsignalcomp->filenum = filelist->currentRow();
   newsignalcomp->edfhdr = mainwindow->edfheaderlist[newsignalcomp->filenum];
@@ -309,6 +310,7 @@ void UI_Signalswindow::DisplayButtonClicked()
       return;
     }
 
+    newsignalcomp->uid = mainwindow->uid_seq++;
     newsignalcomp->num_of_signals = 1;
     newsignalcomp->filenum = filelist->currentRow();
     newsignalcomp->edfhdr = mainwindow->edfheaderlist[newsignalcomp->filenum];

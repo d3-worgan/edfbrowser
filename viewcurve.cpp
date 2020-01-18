@@ -3712,38 +3712,6 @@ void ViewCurve::sidemenu_close()
 }
 
 
-void ViewCurve::cdsa_button()
-{
-  sidemenu->close();
-
-  if(signal_nr >= mainwindow->signalcomps)
-  {
-    return;
-  }
-
-  if(mainwindow->signalcomp[signal_nr]->ecg_filter != NULL)
-  {
-    return;
-  }
-
-  if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].sf_int < 60)
-  {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Samplefrequency must be at least 60Hz and must be an integer value.");
-    messagewindow.exec();
-    return;
-  }
-
-  if(mainwindow->signalcomp[signal_nr]->edfhdr->recording_len_sec < 30)
-  {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Recording length must be at least 30 seconds.");
-    messagewindow.exec();
-    return;
-  }
-
-  UI_cdsa_window wndw(mainwindow, mainwindow->signalcomp[signal_nr]);
-}
-
-
 void ViewCurve::signalInvert()
 {
   sidemenu->close();
@@ -3912,6 +3880,58 @@ void ViewCurve::FreqSpecButton()
     }
     mainwindow->spectrumdialog[i]->SpectrumDialog->activateWindow();
     mainwindow->spectrumdialog[i]->SpectrumDialog->raise();
+  }
+}
+
+
+void ViewCurve::cdsa_button()
+{
+  int i, j;
+
+  sidemenu->close();
+
+  if(signal_nr >= mainwindow->signalcomps)
+  {
+    return;
+  }
+
+  if(mainwindow->signalcomp[signal_nr]->ecg_filter != NULL)
+  {
+    return;
+  }
+
+  if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].sf_int < 60)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Samplefrequency must be at least 60Hz and must be an integer value.");
+    messagewindow.exec();
+    return;
+  }
+
+  if(mainwindow->signalcomp[signal_nr]->edfhdr->recording_len_sec < 30)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Recording length must be at least 30 seconds.");
+    messagewindow.exec();
+    return;
+  }
+
+  for(i=0; i<MAXCDSADOCKS; i++)
+  {
+    if(mainwindow->cdsa_dock[i] == NULL)
+    {
+      UI_cdsa_window wndw(mainwindow, mainwindow->signalcomp[signal_nr]);
+
+      for(j=0; j<MAXCDSADOCKS; j++)
+      {
+        if(mainwindow->signalcomp[signal_nr]->cdsa_dock[j] == 0)
+        {
+          mainwindow->signalcomp[signal_nr]->cdsa_dock[j] = i + 1;
+
+          break;
+        }
+      }
+
+      break;
+    }
   }
 }
 
@@ -4208,6 +4228,18 @@ void ViewCurve::RemovesignalButton()
     }
   }
 
+  for(i=0; i<MAXCDSADOCKS; i++)
+  {
+    p = mainwindow->signalcomp[signal_nr]->cdsa_dock[i];
+
+    if(p != 0)
+    {
+      delete mainwindow->cdsa_dock[p - 1];
+
+      mainwindow->cdsa_dock[p - 1] = NULL;
+    }
+  }
+
   for(i=0; i<MAXAVERAGECURVEDIALOGS; i++)
   {
     p = mainwindow->signalcomp[signal_nr]->avg_dialog[i];
@@ -4332,6 +4364,8 @@ void ViewCurve::RemovesignalButton()
   mainwindow->signalcomp[signal_nr]->fidfilter_cnt = 0;
 
   free(mainwindow->signalcomp[signal_nr]);
+
+  mainwindow->signalcomp[signal_nr] = NULL;
 
   for(i=signal_nr; i<mainwindow->signalcomps - 1; i++)
   {

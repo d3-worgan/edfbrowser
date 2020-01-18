@@ -886,6 +886,8 @@ void UI_Mainwindow::setup_viewbuf()
 
         record_duration -= pagetime;
 
+        emit file_position_changed(edfheaderlist[sel_viewtime]->viewtime);
+
         if(edfheaderlist[sel_viewtime]->viewtime <= 0)
         {
           positionslider->setValue(0);
