@@ -34,7 +34,8 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
 {
   char str[1024]={""};
 
-  QLabel *cdsa_label=NULL;
+  QLabel *cdsa_label,
+         *ruler_label;
 
   QFrame *frame;
 
@@ -66,9 +67,19 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
   trck_indic = new simple_tracking_indicator;
   trck_indic->set_maximum((long long)param.segments_in_recording * (long long)param.segment_len * 10000000LL);
 
+  srl_indic = new simple_ruler_indicator;
+  srl_indic->set_maximum(param.max_hz);
+  srl_indic->set_minimum(param.min_hz);
+  srl_indic->set_unit("Hz");
+
+  ruler_label = new QLabel;
+  ruler_label->setText("Hz / position");
+
   grid_layout = new QGridLayout(frame);
-  grid_layout->addWidget(cdsa_label, 0, 0);
-  grid_layout->addWidget(trck_indic, 1, 0);
+  grid_layout->addWidget(srl_indic,  0, 0);
+  grid_layout->addWidget(cdsa_label, 0, 1);
+  grid_layout->addWidget(trck_indic, 1, 1);
+  grid_layout->addWidget(ruler_label, 1, 0);
 
   cdsa_dock->setWidget(frame);
 
@@ -188,6 +199,129 @@ void simple_tracking_indicator::draw_small_arrow(QPainter *painter, int xpos, in
 }
 
 
+simple_ruler_indicator::simple_ruler_indicator(QWidget *w_parent) : QWidget(w_parent)
+{
+  setAttribute(Qt::WA_OpaquePaintEvent);
+
+  setFixedWidth(80);
+
+  rlr_font = new QFont;
+#ifdef Q_OS_WIN32
+  rlr_font->setFamily("Tahoma");
+  rlr_font->setPixelSize(11);
+#else
+  rlr_font->setFamily("Arial");
+  rlr_font->setPixelSize(12);
+#endif
+
+  min = 0;
+  max = 100;
+}
+
+
+simple_ruler_indicator::~simple_ruler_indicator()
+{
+  delete rlr_font;
+}
+
+
+void simple_ruler_indicator::set_minimum(int val)
+{
+  min = val;
+}
+
+
+void simple_ruler_indicator::set_maximum(int val)
+{
+  max = val;
+}
+
+
+void simple_ruler_indicator::set_unit(const char *str)
+{
+  strlcpy(unit, str, 32);
+}
+
+
+void simple_ruler_indicator::paintEvent(QPaintEvent *)
+{
+  int i, w, h, range, skip;
+
+  double pixel_per_unit;
+
+  char str[64]={""};
+
+  w = width();
+  h = height();
+
+  QPainter painter(this);
+
+  painter.setFont(*rlr_font);
+
+  painter.fillRect(0, 0, w, h, Qt::lightGray);
+
+  painter.setPen(Qt::black);
+
+  painter.drawLine(w - 4, 0, w - 4, h);
+
+  range = max - min;
+
+  pixel_per_unit = (double)h / (double)range;
+
+  for(skip=1; skip<10000; )
+  {
+    if((skip * pixel_per_unit) > 25)  break;
+
+    switch(skip)
+    {
+      case   1 : skip = 2;
+                 break;
+      case   2 : skip = 5;
+                 break;
+      case   5 : skip = 10;
+                 break;
+      case  10 : skip = 20;
+                 break;
+      case  20 : skip = 50;
+                 break;
+      case  50 : skip = 100;
+                 break;
+      case 100 : skip = 200;
+                 break;
+      case 200 : skip = 500;
+                 break;
+      case 500 : skip = 1000;
+                 break;
+      case 1000 : skip = 2000;
+                 break;
+      case 2000 : skip = 5000;
+                 break;
+      case 5000 : skip = 10000;
+                 break;
+      case 10000 : skip = 20000;
+                 break;
+      case 20000 : skip = 50000;
+                 break;
+      case 50000 : skip = 100000;
+                 break;
+    }
+  }
+
+//   printf("h: %i   min: %i   max: %i   range: %i   pixel_per_unit: %f\n",
+//          h, min, max, range, pixel_per_unit);
+
+  for(i=0; i<=range; i++)
+  {
+    if(!((i + min) % skip))
+    {
+      painter.drawLine(w - 4, h - (int)((pixel_per_unit * i) + 0.5), w - 13, h - (int)((pixel_per_unit * i) + 0.5));
+
+      snprintf(str, 64, "%i", min + i);
+
+      painter.drawText(QRectF(2, h - (int)((pixel_per_unit * i) + 0.5) - 7, 60, 25), Qt::AlignRight | Qt::AlignHCenter, str);
+    }
+  }
+}
 
 
 

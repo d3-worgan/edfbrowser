@@ -57,6 +57,7 @@
 #include <QColor>
 #include <QDockWidget>
 #include <QGridLayout>
+#include <QRectF>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -71,8 +72,10 @@
 
 
 class UI_Mainwindow;
-
 class simple_tracking_indicator;
+class simple_ruler_indicator;
+
+
 
 struct cdsa_dock_param_struct
 {
@@ -105,6 +108,7 @@ private:
   struct cdsa_dock_param_struct param;
 
   simple_tracking_indicator *trck_indic;
+  simple_ruler_indicator    *srl_indic;
 
   unsigned long long sigcomp_uid;
 
@@ -142,6 +146,36 @@ private:
   QFont *trck_font;
 
   void draw_small_arrow(QPainter *, int, int, int, QColor);
+};
+
+
+class simple_ruler_indicator: public QWidget
+{
+  Q_OBJECT
+
+public:
+  simple_ruler_indicator(QWidget *parent=0);
+  ~simple_ruler_indicator();
+
+  QSize sizeHint() const {return minimumSizeHint(); }
+  QSize minimumSizeHint() const {return QSize(5, 5); }
+
+  void set_minimum(int);
+  void set_maximum(int);
+  void set_unit(const char *);
+
+public slots:
+
+protected:
+  void paintEvent(QPaintEvent *);
+
+private:
+
+  char unit[32];
+
+  int min, max;
+
+  QFont *rlr_font;
 };
 
 
