@@ -65,7 +65,7 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
   cdsa_label->setMinimumWidth(100);
 
   trck_indic = new simple_tracking_indicator;
-  trck_indic->set_maximum((long long)param.segments_in_recording * (long long)param.segment_len * 10000000LL);
+  trck_indic->set_maximum(param.segments_in_recording * param.segment_len);
 
   srl_indic = new simple_ruler_indicator;
   srl_indic->set_maximum(param.max_hz);
@@ -124,7 +124,7 @@ void UI_cdsa_dock::file_pos_changed(long long)
 
   if(i == mainwindow->signalcomps)  return;
 
-  trck_indic->set_position(param.signalcomp->edfhdr->viewtime + (mainwindow->pagetime / 2));
+  trck_indic->set_position((int)((param.signalcomp->edfhdr->viewtime + (mainwindow->pagetime / 2)) / 10000000LL));
 }
 
 
@@ -179,7 +179,7 @@ void simple_tracking_indicator::paintEvent(QPaintEvent *)
 
   painter.fillRect(0, 0, w, h, Qt::lightGray);
 
-  draw_small_arrow(&painter, (int)(((double)pos / (double)max) * w), 0, 0, Qt::black);
+  draw_small_arrow(&painter, (int)((((double)pos / (double)max) * w) + 0.5), 0, 0, Qt::black);
 }
 
 
