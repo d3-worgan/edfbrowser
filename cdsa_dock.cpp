@@ -73,6 +73,7 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
   srl_indic->set_unit("Hz");
 
   ruler_label = new QLabel;
+  ruler_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
   ruler_label->setText("Hz / position");
 
   grid_layout = new QGridLayout(frame);
@@ -179,7 +180,6 @@ void simple_tracking_indicator::paintEvent(QPaintEvent *)
   painter.fillRect(0, 0, w, h, Qt::lightGray);
 
   draw_small_arrow(&painter, (int)(((double)pos / (double)max) * w), 0, 0, Qt::black);
-
 }
 
 
@@ -306,9 +306,6 @@ void simple_ruler_indicator::paintEvent(QPaintEvent *)
                  break;
     }
   }
-
-//   printf("h: %i   min: %i   max: %i   range: %i   pixel_per_unit: %f\n",
-//          h, min, max, range, pixel_per_unit);
 
   for(i=0; i<=range; i++)
   {
