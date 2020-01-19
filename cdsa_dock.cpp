@@ -268,7 +268,7 @@ void simple_ruler_indicator::paintEvent(QPaintEvent *)
 
   pixel_per_unit = (double)h / (double)range;
 
-  for(skip=1; skip<10000; )
+  for(skip=1; skip<100000; )
   {
     if((skip * pixel_per_unit) > 25)  break;
 
