@@ -57,24 +57,31 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
 
   frame = new QFrame;
   frame->setFrameStyle(QFrame::NoFrame);
+  frame->setLineWidth(0);
+  frame->setMidLineWidth(0);
+  frame->setContentsMargins(0, 0, 0, 0);
 
   cdsa_label = new QLabel;
   cdsa_label->setScaledContents(true);
   cdsa_label->setPixmap(*param.pxm);
   cdsa_label->setMinimumHeight(100);
   cdsa_label->setMinimumWidth(100);
+  cdsa_label->setContentsMargins(0, 0, 0, 0);
 
   trck_indic = new simple_tracking_indicator;
   trck_indic->set_maximum(param.segments_in_recording * param.segment_len);
+  trck_indic->setContentsMargins(0, 0, 0, 0);
 
   srl_indic = new simple_ruler_indicator;
   srl_indic->set_maximum(param.max_hz);
   srl_indic->set_minimum(param.min_hz);
   srl_indic->set_unit("Hz");
+  srl_indic->setContentsMargins(0, 0, 0, 0);
 
   ruler_label = new QLabel;
   ruler_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
   ruler_label->setText("Hz / position");
+  ruler_label->setContentsMargins(0, 0, 0, 0);
 
   grid_layout = new QGridLayout(frame);
   grid_layout->addWidget(srl_indic,  0, 0);
