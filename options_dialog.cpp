@@ -1776,6 +1776,17 @@ void UI_OptionsDialog::saveColorSchemaButtonClicked()
                   mainwindow->maincurve->annot_duration_color.blue(),
                   mainwindow->maincurve->annot_duration_color.alpha());
 
+  fprintf(colorfile, " <annot_duration_color_selected>\n"
+                  "  <red>%i</red>\n"
+                  "  <green>%i</green>\n"
+                  "  <blue>%i</blue>\n"
+                  "  <alpha>%i</alpha>\n"
+                  " </annot_duration_color_selected>\n",
+                  mainwindow->maincurve->annot_duration_color_selected.red(),
+                  mainwindow->maincurve->annot_duration_color_selected.green(),
+                  mainwindow->maincurve->annot_duration_color_selected.blue(),
+                  mainwindow->maincurve->annot_duration_color_selected.alpha());
+
   fprintf(colorfile, " <signal_color>%i</signal_color>\n",
                   mainwindow->maincurve->signal_color);
 
@@ -1859,6 +1870,8 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
   mainwindow->get_rgbcolor_settings(xml_hdl, "annot_marker_color", 0, &mainwindow->maincurve->annot_marker_color);
 
   mainwindow->get_rgbcolor_settings(xml_hdl, "annot_duration_color", 0, &mainwindow->maincurve->annot_duration_color);
+
+  mainwindow->get_rgbcolor_settings(xml_hdl, "annot_duration_color_selected", 0, &mainwindow->maincurve->annot_duration_color_selected);
 
   if(xml_goto_nth_element_inside(xml_hdl, "signal_color", 0))
   {
@@ -2025,6 +2038,8 @@ void UI_OptionsDialog::update_interface(void)
 
   AnnotDurationButton->setColor(mainwindow->maincurve->annot_duration_color);
 
+  AnnotDurationSelectedButton->setColor(mainwindow->maincurve->annot_duration_color_selected);
+
   if(mainwindow->maincurve->blackwhite_printing)
   {
     checkbox1->setCheckState(Qt::Checked);
@@ -2098,6 +2113,11 @@ void UI_OptionsDialog::loadColorSchema_NK()
   mainwindow->maincurve->annot_duration_color.setBlue(127);
   mainwindow->maincurve->annot_duration_color.setAlpha(32);
 
+  mainwindow->maincurve->annot_duration_color_selected.setRed(127);
+  mainwindow->maincurve->annot_duration_color_selected.setGreen(0);
+  mainwindow->maincurve->annot_duration_color_selected.setBlue(127);
+  mainwindow->maincurve->annot_duration_color_selected.setAlpha(32);
+
   mainwindow->maincurve->signal_color = 2;
 
   mainwindow->maincurve->floating_ruler_color = 7;
@@ -2152,6 +2172,11 @@ void UI_OptionsDialog::loadColorSchema_Dark()
   mainwindow->maincurve->annot_duration_color.setGreen(127);
   mainwindow->maincurve->annot_duration_color.setBlue(127);
   mainwindow->maincurve->annot_duration_color.setAlpha(32);
+
+  mainwindow->maincurve->annot_duration_color_selected.setRed(127);
+  mainwindow->maincurve->annot_duration_color_selected.setGreen(0);
+  mainwindow->maincurve->annot_duration_color_selected.setBlue(127);
+  mainwindow->maincurve->annot_duration_color_selected.setAlpha(32);
 
   mainwindow->maincurve->signal_color = 12;
 
@@ -2221,6 +2246,11 @@ void UI_OptionsDialog::loadColorSchema_blue_gray()
   mainwindow->maincurve->annot_duration_color.setBlue(127);
   mainwindow->maincurve->annot_duration_color.setAlpha(32);
   AnnotDurationButton->setColor(mainwindow->maincurve->annot_duration_color);
+
+  mainwindow->maincurve->annot_duration_color_selected.setRed(127);
+  mainwindow->maincurve->annot_duration_color_selected.setGreen(0);
+  mainwindow->maincurve->annot_duration_color_selected.setBlue(127);
+  mainwindow->maincurve->annot_duration_color_selected.setAlpha(32);
 
   palette.setColor(QPalette::Text, mainwindow->maincurve->text_color);
   palette.setColor(QPalette::Base, mainwindow->maincurve->backgroundcolor);
