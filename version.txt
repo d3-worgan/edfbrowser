@@ -5,6 +5,10 @@
 
  - Spectrum Analyzer: added window type "Kaiser".
 
+ - Added the possibility to show a Color Density Spectral Array (CDSA).
+
+ - Use a different color for an annotations' background when it's selected in the annotations list.
+
 
 
  version 1.71      December 21, 2019
