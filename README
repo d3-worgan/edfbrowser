@@ -8,70 +8,37 @@ Minimum version 4.7.1 or later, preferable 4.8.7
 If you want to use Qt5, it must be version >= 5.9.1.
 For info how to compile Qt5 from source, scroll down.
 
-EDFbrowser is a Linux & GCC & GNU make project. Other tools or compilers are not supported.
+EDFbrowser is a GNU/Linux & GCC & Make project. Other tools or compilers are not supported.
+Requests to support other tools or compilers will be ignored.
 
 
 Introduction
 ============
 
-EDFbrowser is a Qt4 application and uses qmake as part of the build
-process. qmake is part of your Qt4 installation.
+EDFbrowser is a Qt application and uses qmake as part of the build process.
+Qmake is part of your Qt installation.
 
 
 
-Build and run without "installing"
-==================================
+Compiling and installing on Ubuntu Linux and derivatives
+========================================================
 
-You need to have Qt and GCC and Make installed.
-
-Extract the sourcefile and enter the following commands:
-
+sudo apt-get update
+sudo apt-get install g++ make git qtbase5-dev-tools qtbase5-dev qt5-default
+git clone https://gitlab.com/Teuniz/EDFbrowser.git
+cd EDFbrowser
 qmake
-
-make
-
-Now you can run the program.
-
-
-
-Installing
-==========
-
+make -j4
 sudo make install
+edfbrowser
 
 
 
-How to compile
-==============
 
-- Install Git, the GCC compiler and the Qt4 development package:
-  Linux Mint 18: sudo apt-get install git-core libqt4-dev libqt4-core g++
-  openSuse Leap 42.2: sudo zypper in git-core libqt4-devel
-  Fedora 25: sudo dnf install git-core qt-devel gcc-c++
-  Ubuntu 18.04: sudo apt-get install g++ make git-core qtbase5-dev-tools qtbase5-dev qt5-default
+Advanced users (keep in mind, EDFbrowser is NOT a community project, pull requests will be ignored)
+===================================================================================================
 
-- Download the source code:
-  mkdir EDFbrowser_git
-  cd EDFbrowser_git
-  git init
-  git pull https://gitlab.com/Teuniz/EDFbrowser
-
-- Create the makefile:
-  Linux Mint 18: qmake
-  openSuse Leap 42.2: qmake
-  Fedora 25: qmake-qt4
-  Ubuntu: qmake
-
-- Compile the source code and install it:
-  make -j8
-  sudo make install
-
-Now you can run the program by typing: edfbrowser
-
-
-In case you want to use Qt5, the recommended way is not to use the Qt5 libraries that comes with your distro.
-Instead, download and compile the Qt5 source and use that to compile EDFbrowser.
-Here's a step by step list with instructions:
+In case you want to compile EDFbrowser "static" with Qt5, here is a howto:
 
 First, fulfill the requirements for Qt:
 
