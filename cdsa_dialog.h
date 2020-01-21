@@ -58,6 +58,7 @@
 #include <QColor>
 #include <QDockWidget>
 #include <QGridLayout>
+#include <QToolTip>
 
 #include <stdlib.h>
 #include <stdio.h>

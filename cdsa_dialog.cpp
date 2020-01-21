@@ -77,6 +77,7 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   blocklen_label = new QLabel(myobjectDialog);
   blocklen_label->setGeometry(20, 65, 150, 25);
   blocklen_label->setText("Block length");
+  blocklen_label->setToolTip("FFT block length in seconds, affects the FFT resolution");
 
   blocklen_spinbox = new QSpinBox(myobjectDialog);
   blocklen_spinbox->setGeometry(170, 65, 100, 25);
@@ -84,10 +85,12 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   blocklen_spinbox->setMinimum(1);
   blocklen_spinbox->setMaximum(10);
   blocklen_spinbox->setValue(mainwindow->cdsa_blocklen);
+  blocklen_spinbox->setToolTip("FFT block length in seconds, affects the FFT resolution");
 
   overlap_label = new QLabel(myobjectDialog);
   overlap_label->setGeometry(20, 110, 150, 25);
   overlap_label->setText("Overlap");
+  overlap_label->setToolTip("Percentage of an FFT block that will overlap the next FFT block");
 
   overlap_combobox = new QComboBox(myobjectDialog);
   overlap_combobox->setGeometry(170, 110, 100, 25);
@@ -97,10 +100,12 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   overlap_combobox->addItem("75 %");
   overlap_combobox->addItem("80 %");
   overlap_combobox->setCurrentIndex(mainwindow->cdsa_overlap -1);
+  overlap_combobox->setToolTip("Percentage of an FFT block that will overlap the next FFT block");
 
   windowfunc_label = new QLabel(myobjectDialog);
   windowfunc_label->setGeometry(20, 155, 150, 25);
   windowfunc_label->setText("Window");
+  windowfunc_label->setToolTip("Smoothing (taper) function that will be applied before the FFT");
 
   windowfunc_combobox = new QComboBox(myobjectDialog);
   windowfunc_combobox->setGeometry(170, 155, 100, 25);
@@ -118,10 +123,12 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   windowfunc_combobox->addItem("Kaiser4");
   windowfunc_combobox->addItem("Kaiser5");
   windowfunc_combobox->setCurrentIndex(mainwindow->cdsa_window_func);
+  windowfunc_combobox->setToolTip("Smoothing (taper) function that will be applied before the FFT");
 
   min_hz_label = new QLabel(myobjectDialog);
   min_hz_label->setGeometry(20, 200, 150, 25);
   min_hz_label->setText("Min. freq.");
+  min_hz_label->setToolTip("Lowest frequency output (bin) of the FFT that will be used to display the CDSA");
 
   min_hz_spinbox = new QSpinBox(myobjectDialog);
   min_hz_spinbox->setGeometry(170, 200, 100, 25);
@@ -129,10 +136,12 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   min_hz_spinbox->setMinimum(0);
   min_hz_spinbox->setMaximum((sf / 2) - 1);
   min_hz_spinbox->setValue(mainwindow->cdsa_min_hz);
+  min_hz_spinbox->setToolTip("Lowest frequency output (bin) of the FFT that will be used to display the CDSA");
 
   max_hz_label = new QLabel(myobjectDialog);
   max_hz_label->setGeometry(20, 245, 150, 25);
   max_hz_label->setText("Max. freq.");
+  max_hz_label->setToolTip("Highest frequency output (bin) of the FFT that will be used to display the CDSA");
 
   max_hz_spinbox = new QSpinBox(myobjectDialog);
   max_hz_spinbox->setGeometry(170, 245, 100, 25);
@@ -140,10 +149,12 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   max_hz_spinbox->setMinimum(1);
   max_hz_spinbox->setMaximum(sf / 2);
   max_hz_spinbox->setValue(mainwindow->cdsa_max_hz);
+  max_hz_spinbox->setToolTip("Highest frequency output (bin) of the FFT that will be used to display the CDSA");
 
   max_pwr_label = new QLabel(myobjectDialog);
   max_pwr_label->setGeometry(20, 290, 150, 25);
   max_pwr_label->setText("Max. level");
+  max_pwr_label->setToolTip("The highest level that can be displayed (white). Higher levels will clip to white");
 
   strlcpy(str, " ", 128);
   strlcat(str, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 128);
@@ -156,10 +167,12 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   max_pwr_spinbox->setMinimum(0.001);
   max_pwr_spinbox->setMaximum(10000.0);
   max_pwr_spinbox->setValue(mainwindow->cdsa_max_pwr);
+  max_pwr_spinbox->setToolTip("The highest level that can be displayed (white). Higher levels will clip to white");
 
   log_label = new QLabel(myobjectDialog);
   log_label->setGeometry(20, 335, 150, 25);
   log_label->setText("Logarithmic");
+  log_label->setToolTip("Use the base-10 logarithm of the output of the FFT (can be used to increase the dynamic range)");
 
   log_checkbox = new QCheckBox(myobjectDialog);
   log_checkbox->setGeometry(170, 335, 20, 25);
@@ -172,6 +185,7 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   {
     log_checkbox->setCheckState(Qt::Unchecked);
   }
+  log_checkbox->setToolTip("Use the base-10 logarithm of the output of the FFT (can be used to increase the dynamic range)");
 
   close_button = new QPushButton(myobjectDialog);
   close_button->setGeometry(20, 435, 100, 25);
