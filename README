@@ -35,8 +35,8 @@ edfbrowser
 
 
 
-Advanced users (keep in mind, EDFbrowser is NOT a community project, pull requests will be ignored)
-===================================================================================================
+Advanced users (keep in mind, EDFbrowser is NOT a community project, pull/merge requests will be ignored)
+=========================================================================================================
 
 In case you want to compile EDFbrowser "static" with Qt5, here is a howto:
 
