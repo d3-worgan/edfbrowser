@@ -98,6 +98,11 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
   annot_duration_color.setBlue(127);
   annot_duration_color.setAlpha(32);
 
+  annot_duration_color_selected.setRed(127);
+  annot_duration_color_selected.setGreen(0);
+  annot_duration_color_selected.setBlue(127);
+  annot_duration_color_selected.setAlpha(32);
+
   signal_color = 12;
 
   floating_ruler_color = 10;
@@ -1555,13 +1560,27 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
             if((marker_x < w) && (marker_x2 > 0))
             {
-              if(mainwindow->annotations_duration_background_type == 0)
+              if(annot->selected_in_dock)
               {
-                painter->fillRect(marker_x, 0, marker_x2, h, annot_duration_color);
+                if(mainwindow->annotations_duration_background_type == 0)
+                {
+                  painter->fillRect(marker_x, 0, marker_x2, h, annot_duration_color_selected);
+                }
+                else
+                {
+                  painter->fillRect(marker_x, h - 92 + ((j % 3) * 30), marker_x2, 32, annot_duration_color_selected);
+                }
               }
               else
               {
-                painter->fillRect(marker_x, h - 92 + ((j % 3) * 30), marker_x2, 32, annot_duration_color);
+                if(mainwindow->annotations_duration_background_type == 0)
+                {
+                  painter->fillRect(marker_x, 0, marker_x2, h, annot_duration_color);
+                }
+                else
+                {
+                  painter->fillRect(marker_x, h - 92 + ((j % 3) * 30), marker_x2, 32, annot_duration_color);
+                }
               }
             }
           }

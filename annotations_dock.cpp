@@ -1030,7 +1030,11 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
 
   if(n >= sz)  return;
 
+  edfplus_annotation_cancel_all_selected_in_dock(annot_list);
+
   annot = edfplus_annotation_get_item(annot_list, n);
+
+  annot->selected_in_dock = 1;
 
   if(mainwindow->annot_editor_active)
   {

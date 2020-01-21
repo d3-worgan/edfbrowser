@@ -54,6 +54,7 @@ struct annotationblock{
         int hided;
         int hided_in_list;
         unsigned int ident;
+        int selected_in_dock;
        };
 
 struct annotation_list{
@@ -81,6 +82,7 @@ int edfplus_annotation_get_max_annotation_strlen(struct annotation_list *);
 void edfplus_annotation_copy_list(struct annotation_list *, struct annotation_list *);
 long long edfplus_annotation_get_long_from_number(const char *);
 int edfplus_annotation_get_index_at(struct annotation_list *, long long, int);
+void edfplus_annotation_cancel_all_selected_in_dock(struct annotation_list *);
 
 #ifdef __cplusplus
 } /* extern "C" */

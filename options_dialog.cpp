@@ -230,6 +230,10 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   AnnotDurationButton->setGeometry(240, 410, 60, 15);
   AnnotDurationButton->setColor(mainwindow->maincurve->annot_duration_color);
 
+  AnnotDurationSelectedButton = new SpecialButton(tab1);
+  AnnotDurationSelectedButton->setGeometry(340, 410, 60, 15);
+  AnnotDurationSelectedButton->setColor(mainwindow->maincurve->annot_duration_color_selected);
+
   label12_3 = new QLabel(tab1);
   label12_3->setGeometry(20, 435, 200, 25);
   label12_3->setText("Show only at screen bottom");
@@ -330,6 +334,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   QObject::connect(FrColorButton,           SIGNAL(clicked(SpecialButton *)), this, SLOT(FrColorButtonClicked(SpecialButton *)));
   QObject::connect(AnnotMkrButton,          SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotMkrButtonClicked(SpecialButton *)));
   QObject::connect(AnnotDurationButton,     SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotDurationButtonClicked(SpecialButton *)));
+  QObject::connect(AnnotDurationSelectedButton,     SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotDurationSelectedButtonClicked(SpecialButton *)));
   QObject::connect(checkbox1,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox1Clicked(int)));
   QObject::connect(checkbox2,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox2Clicked(int)));
   QObject::connect(checkbox2_1,             SIGNAL(stateChanged(int)),        this, SLOT(checkbox2_1Clicked(int)));
@@ -1631,6 +1636,23 @@ void UI_OptionsDialog::AnnotDurationButtonClicked(SpecialButton *)
     mainwindow->maincurve->annot_duration_color = temp;
 
     AnnotDurationButton->setColor(mainwindow->maincurve->annot_duration_color);
+
+    mainwindow->maincurve->update();
+  }
+}
+
+
+void UI_OptionsDialog::AnnotDurationSelectedButtonClicked(SpecialButton *)
+{
+  QColor temp;
+
+  temp = QColorDialog::getColor(mainwindow->maincurve->annot_duration_color_selected, tab1, "Select Color", QColorDialog::ShowAlphaChannel);
+
+  if(temp.isValid())
+  {
+    mainwindow->maincurve->annot_duration_color_selected = temp;
+
+    AnnotDurationSelectedButton->setColor(mainwindow->maincurve->annot_duration_color_selected);
 
     mainwindow->maincurve->update();
   }

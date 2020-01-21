@@ -163,6 +163,8 @@ void UI_Mainwindow::read_color_settings()
 
   get_rgbcolor_settings(xml_hdl, "annot_duration_color", 0, &maincurve->annot_duration_color);
 
+  get_rgbcolor_settings(xml_hdl, "annot_duration_color_selected", 0, &maincurve->annot_duration_color_selected);
+
   if(xml_goto_nth_element_inside(xml_hdl, "signal_color", 0))
   {
     xml_close(xml_hdl);
@@ -1966,6 +1968,17 @@ void UI_Mainwindow::write_settings()
                     maincurve->annot_duration_color.green(),
                     maincurve->annot_duration_color.blue(),
                     maincurve->annot_duration_color.alpha());
+
+    fprintf(cfgfile, "      <annot_duration_color_selected>\n"
+                    "        <red>%i</red>\n"
+                    "        <green>%i</green>\n"
+                    "        <blue>%i</blue>\n"
+                    "        <alpha>%i</alpha>\n"
+                    "      </annot_duration_color_selected>\n",
+                    maincurve->annot_duration_color_selected.red(),
+                    maincurve->annot_duration_color_selected.green(),
+                    maincurve->annot_duration_color_selected.blue(),
+                    maincurve->annot_duration_color_selected.alpha());
 
     fprintf(cfgfile, "      <signal_color>%i</signal_color>\n",
                     maincurve->signal_color);

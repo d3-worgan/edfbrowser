@@ -414,6 +414,19 @@ int edfplus_annotation_remove_duplicates(struct annotation_list *list)
 }
 
 
+void edfplus_annotation_cancel_all_selected_in_dock(struct annotation_list *list)
+{
+  int i;
+
+  if(list == NULL)  return;
+
+  for(i=0; i<(list->sz); i++)
+  {
+    list->items[i].selected_in_dock = 0;
+  }
+}
+
+
 int edfplus_annotation_get_max_annotation_strlen(struct annotation_list *list)
 {
   int i, j,
