@@ -271,6 +271,7 @@ UI_Mainwindow::UI_Mainwindow()
   cdsa_max_hz = 30;
   cdsa_max_pwr = 20;
   cdsa_log = 1;
+  cdsa_pwr_voltage = 1;
 
   z_score_var.crossoverfreq = 7.5;
   z_score_var.z_threshold = 0.0;

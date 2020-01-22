@@ -88,6 +88,7 @@ struct cdsa_dock_param_struct
   double max_pwr;
   int log;
   QPixmap *pxm;
+  int instance_nr;
 };
 
 
@@ -112,9 +113,12 @@ private:
 
   unsigned long long sigcomp_uid;
 
+  int is_deleted;
+
 private slots:
 
   void cdsa_dock_destroyed(QObject *);
+  void cdsa_dock_visibility_changed(bool);
   void file_pos_changed(long long);
 
 };

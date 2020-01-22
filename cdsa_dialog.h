@@ -81,14 +81,14 @@ class UI_cdsa_window : public QObject
   Q_OBJECT
 
 public:
-  UI_cdsa_window(QWidget *, struct signalcompblock *);
+  UI_cdsa_window(QWidget *, struct signalcompblock *, int);
   ~UI_cdsa_window();
 
   UI_Mainwindow  *mainwindow;
 
 private:
 
-  int sf;
+  int sf, cdsa_instance_nr;
 
   struct signalcompblock *signalcomp;
 
@@ -101,7 +101,8 @@ private:
                 *log_label,
                 *min_hz_label,
                 *max_hz_label,
-                *max_pwr_label;
+                *max_pwr_label,
+                *pwr_voltage_label;
 
   QSpinBox      *segmentlen_spinbox,
                 *blocklen_spinbox,
@@ -113,7 +114,8 @@ private:
   QComboBox     *overlap_combobox,
                 *windowfunc_combobox;
 
-  QCheckBox     *log_checkbox;
+  QCheckBox     *log_checkbox,
+                *pwr_voltage_checkbox;
 
   QPushButton   *close_button,
                 *start_button,

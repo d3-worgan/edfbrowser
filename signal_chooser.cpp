@@ -374,6 +374,18 @@ void UI_SignalChooser::signalDelete()
       }
     }
 
+    for(i=0; i<MAXCDSADOCKS; i++)
+    {
+      p = mainwindow->signalcomp[sigcomp_nr]->cdsa_dock[i];
+
+      if(p != 0)
+      {
+        delete mainwindow->cdsa_dock[p - 1];
+
+        mainwindow->cdsa_dock[p - 1] = NULL;
+      }
+    }
+
     for(i=0; i<MAXAVERAGECURVEDIALOGS; i++)
     {
       p = mainwindow->signalcomp[sigcomp_nr]->avg_dialog[i];

@@ -33,13 +33,15 @@
 
 
 
-UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal_comp)
+UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal_comp, int numb)
 {
   char str[128]={""};
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
   signalcomp = signal_comp;
+
+  cdsa_instance_nr = numb;
 
   sf = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_int;
   if(!sf)
@@ -188,6 +190,24 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   }
   log_checkbox->setToolTip("Use the base-10 logarithm of the output of the FFT (can be used to increase the dynamic range)");
 
+  pwr_voltage_label = new QLabel(myobjectDialog);
+  pwr_voltage_label->setGeometry(20, 380, 150, 25);
+  pwr_voltage_label->setText("Power");
+  pwr_voltage_label->setToolTip("Display power instead of voltage");
+
+  pwr_voltage_checkbox = new QCheckBox(myobjectDialog);
+  pwr_voltage_checkbox->setGeometry(170, 380, 20, 25);
+  pwr_voltage_checkbox->setTristate(false);
+  if(mainwindow->cdsa_pwr_voltage)
+  {
+    pwr_voltage_checkbox->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    pwr_voltage_checkbox->setCheckState(Qt::Unchecked);
+  }
+  pwr_voltage_checkbox->setToolTip("Display power instead of voltage");
+
   close_button = new QPushButton(myobjectDialog);
   close_button->setGeometry(20, 435, 100, 25);
   close_button->setText("Close");
@@ -285,6 +305,7 @@ void UI_cdsa_window::default_button_clicked()
   max_hz_spinbox->setValue(30);
   max_pwr_spinbox->setValue(20.0);
   log_checkbox->setCheckState(Qt::Checked);
+  pwr_voltage_checkbox->setCheckState(Qt::Checked);
 
   mainwindow->cdsa_segmentlen = 30;
   mainwindow->cdsa_blocklen = 2;
@@ -309,7 +330,8 @@ void UI_cdsa_window::start_button_clicked()
       smpl_in_block,
       overlap,
       window_func,
-      log_density=0;
+      log_density=0,
+      power_density=0;
 
   long long samples_in_file;
 
@@ -381,6 +403,12 @@ void UI_cdsa_window::start_button_clicked()
   }
   mainwindow->cdsa_log = log_density;
 
+  if(pwr_voltage_checkbox->checkState() == Qt::Checked)
+  {
+    power_density = 1;
+  }
+  mainwindow->cdsa_pwr_voltage = power_density;
+
   samples_in_file = (long long)signalcomp->edfhdr->datarecords * (long long)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
 
   segmentlen = segmentlen_spinbox->value();
@@ -395,13 +423,27 @@ void UI_cdsa_window::start_button_clicked()
   h_max = max_hz_spinbox->value();
   mainwindow->cdsa_max_hz = h_max;
 
-  if(log_density)
+  if(power_density)
   {
-    v_scale = 1785.0 / log10(max_pwr_spinbox->value());
+    if(log_density)
+    {
+      v_scale = 1785.0 / log10(max_pwr_spinbox->value() * max_pwr_spinbox->value());
+    }
+    else
+    {
+      v_scale = 1785.0 / (max_pwr_spinbox->value() * max_pwr_spinbox->value());
+    }
   }
   else
   {
-    v_scale = 1785.0 / max_pwr_spinbox->value();
+    if(log_density)
+    {
+      v_scale = 1785.0 / log10(max_pwr_spinbox->value());
+    }
+    else
+    {
+      v_scale = 1785.0 / max_pwr_spinbox->value();
+    }
   }
   mainwindow->cdsa_max_pwr = max_pwr_spinbox->value();
 
@@ -482,22 +524,45 @@ void UI_cdsa_window::start_button_clicked()
 
     for(j=0; j<h; j++)
     {
-      if(log_density)
+      if(power_density)
       {
-        d_tmp = sqrt(dft->buf_out[j + h_min] / dft->dft_sz);
-
-        if(d_tmp < 1E-13)
+        if(log_density)
         {
-          rgb_idx = log10(1E-13) * v_scale;
+          d_tmp = dft->buf_out[j + h_min] / dft->dft_sz;
+
+          if(d_tmp < 1E-13)
+          {
+            rgb_idx = log10(1E-13) * v_scale;
+          }
+          else
+          {
+            rgb_idx = log10(d_tmp) * v_scale;
+          }
         }
         else
         {
-          rgb_idx = log10(d_tmp) * v_scale;
+          rgb_idx = (dft->buf_out[j + h_min] / dft->dft_sz) * v_scale;
         }
       }
       else
       {
-        rgb_idx = sqrt(dft->buf_out[j + h_min] / dft->dft_sz) * v_scale;
+        if(log_density)
+        {
+          d_tmp = sqrt(dft->buf_out[j + h_min] / dft->dft_sz);
+
+          if(d_tmp < 1E-13)
+          {
+            rgb_idx = log10(1E-13) * v_scale;
+          }
+          else
+          {
+            rgb_idx = log10(d_tmp) * v_scale;
+          }
+        }
+        else
+        {
+          rgb_idx = sqrt(dft->buf_out[j + h_min] / dft->dft_sz) * v_scale;
+        }
       }
 
       if(rgb_idx > 1785)  rgb_idx = 1785;
@@ -525,16 +590,11 @@ void UI_cdsa_window::start_button_clicked()
   dock_param.pxm = pxm;
   dock_param.segment_len = segmentlen;
   dock_param.segments_in_recording = segments_in_recording;
+  dock_param.instance_nr = cdsa_instance_nr;
 
-  for(i=0; i<MAXCDSADOCKS; i++)
-  {
-    if(mainwindow->cdsa_dock[i] == NULL)
-    {
-      mainwindow->cdsa_dock[i] = new UI_cdsa_dock(mainwindow, dock_param);
+  mainwindow->cdsa_dock[cdsa_instance_nr] = new UI_cdsa_dock(mainwindow, dock_param);
 
-      break;
-    }
-  }
+  signalcomp->cdsa_dock[cdsa_instance_nr] = cdsa_instance_nr + 1;
 
   pxm = NULL;
 

@@ -3905,7 +3905,7 @@ void ViewCurve::FreqSpecButton()
 
 void ViewCurve::cdsa_button()
 {
-  int i, j;
+  int i;
 
   sidemenu->close();
 
@@ -3937,17 +3937,7 @@ void ViewCurve::cdsa_button()
   {
     if(mainwindow->cdsa_dock[i] == NULL)
     {
-      UI_cdsa_window wndw(mainwindow, mainwindow->signalcomp[signal_nr]);
-
-      for(j=0; j<MAXCDSADOCKS; j++)
-      {
-        if(mainwindow->signalcomp[signal_nr]->cdsa_dock[j] == 0)
-        {
-          mainwindow->signalcomp[signal_nr]->cdsa_dock[j] = i + 1;
-
-          break;
-        }
-      }
+      UI_cdsa_window wndw(mainwindow, mainwindow->signalcomp[signal_nr], i);
 
       break;
     }

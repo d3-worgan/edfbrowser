@@ -252,6 +252,7 @@ public:
       cdsa_min_hz,
       cdsa_max_hz,
       cdsa_log,
+      cdsa_pwr_voltage,
       use_threads,
       check_for_updates,
       amplitude_doubler,
