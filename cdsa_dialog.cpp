@@ -164,11 +164,11 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   remove_trailing_spaces(str);
 
   max_pwr_spinbox = new QDoubleSpinBox(myobjectDialog);
-  max_pwr_spinbox->setGeometry(170, 290, 150, 25);
+  max_pwr_spinbox->setGeometry(170, 290, 180, 25);
   max_pwr_spinbox->setSuffix(str);
-  max_pwr_spinbox->setDecimals(3);
-  max_pwr_spinbox->setMinimum(0.001);
-  max_pwr_spinbox->setMaximum(10000.0);
+  max_pwr_spinbox->setDecimals(7);
+  max_pwr_spinbox->setMinimum(0.0000001);
+  max_pwr_spinbox->setMaximum(100000.0);
   max_pwr_spinbox->setValue(mainwindow->cdsa_max_pwr);
   max_pwr_spinbox->setToolTip("The highest level that can be displayed (white). Higher levels will clip to white");
 
