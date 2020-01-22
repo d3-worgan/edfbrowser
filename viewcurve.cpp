@@ -3919,9 +3919,9 @@ void ViewCurve::cdsa_button()
     return;
   }
 
-  if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].sf_int < 60)
+  if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].sf_int < 30)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Samplefrequency must be at least 60Hz and must be an integer value.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Samplefrequency must be at least 30Hz and must be an integer value.");
     messagewindow.exec();
     return;
   }

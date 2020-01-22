@@ -37,8 +37,6 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
 {
   char str[128]={""};
 
-  long long samples_in_file;
-
   mainwindow = (UI_Mainwindow *)w_parent;
 
   signalcomp = signal_comp;
@@ -48,8 +46,6 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   {
     sf = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f + 0.5;
   }
-
-  samples_in_file = (long long)signalcomp->edfhdr->datarecords * (long long)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
 
   myobjectDialog = new QDialog;
 
@@ -62,17 +58,22 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   segmentlen_label = new QLabel(myobjectDialog);
   segmentlen_label->setGeometry(20, 20, 150, 25);
   segmentlen_label->setText("Segment length");
+  segmentlen_label->setToolTip("Time resolution of the CDSA");
 
   segmentlen_spinbox = new QSpinBox(myobjectDialog);
   segmentlen_spinbox->setGeometry(170, 20, 100, 25);
   segmentlen_spinbox->setSuffix(" sec");
   segmentlen_spinbox->setMinimum(5);
-  if(samples_in_file > 300)
+  if(signalcomp->edfhdr->recording_len_sec < 300)
   {
-    samples_in_file = 300;
+    segmentlen_spinbox->setMaximum(signalcomp->edfhdr->recording_len_sec);
   }
-  segmentlen_spinbox->setMaximum((int)samples_in_file);
+  else
+  {
+    segmentlen_spinbox->setMaximum(300);
+  }
   segmentlen_spinbox->setValue(mainwindow->cdsa_segmentlen);
+  segmentlen_spinbox->setToolTip("Time resolution of the CDSA");
 
   blocklen_label = new QLabel(myobjectDialog);
   blocklen_label->setGeometry(20, 65, 150, 25);
@@ -201,7 +202,7 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
 
   QObject::connect(close_button, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
 
-  if(sf >= 60)
+  if(sf >= 30)
   {
     QObject::connect(default_button,     SIGNAL(clicked()),         this, SLOT(default_button_clicked()));
     QObject::connect(start_button,       SIGNAL(clicked()),         this, SLOT(start_button_clicked()));
@@ -282,7 +283,7 @@ void UI_cdsa_window::default_button_clicked()
   windowfunc_combobox->setCurrentIndex(9);
   min_hz_spinbox->setValue(1);
   max_hz_spinbox->setValue(30);
-  max_pwr_spinbox->setValue(50.0);
+  max_pwr_spinbox->setValue(20.0);
   log_checkbox->setCheckState(Qt::Checked);
 
   mainwindow->cdsa_segmentlen = 30;
