@@ -315,6 +315,7 @@ void UI_cdsa_window::default_button_clicked()
   mainwindow->cdsa_max_hz = 30;
   mainwindow->cdsa_max_pwr = 20;
   mainwindow->cdsa_log = 1;
+  mainwindow->cdsa_pwr_voltage = 1;
 
   QObject::blockSignals(false);
 }
