@@ -184,14 +184,14 @@ simple_tracking_indicator::simple_tracking_indicator(QWidget *w_parent) : QWidge
 
   setFixedHeight(16);
 
-  trck_font = new QFont;
-#ifdef Q_OS_WIN32
-  trck_font->setFamily("Tahoma");
-  trck_font->setPixelSize(11);
-#else
-  trck_font->setFamily("Arial");
-  trck_font->setPixelSize(12);
-#endif
+//   trck_font = new QFont;
+// #ifdef Q_OS_WIN32
+//   trck_font->setFamily("Tahoma");
+//   trck_font->setPixelSize(11);
+// #else
+//   trck_font->setFamily("Arial");
+//   trck_font->setPixelSize(12);
+// #endif
 
   pos = 0;
   max = 100;
@@ -214,7 +214,7 @@ void simple_tracking_indicator::set_maximum(long long max_)
 
 simple_tracking_indicator::~simple_tracking_indicator()
 {
-  delete trck_font;
+//  delete trck_font;
 }
 
 
@@ -255,14 +255,14 @@ simple_ruler_indicator::simple_ruler_indicator(QWidget *w_parent) : QWidget(w_pa
 
   setFixedWidth(80);
 
-  rlr_font = new QFont;
-#ifdef Q_OS_WIN32
-  rlr_font->setFamily("Tahoma");
-  rlr_font->setPixelSize(11);
-#else
-  rlr_font->setFamily("Arial");
-  rlr_font->setPixelSize(12);
-#endif
+//   rlr_font = new QFont;
+// #ifdef Q_OS_WIN32
+//   rlr_font->setFamily("Tahoma");
+//   rlr_font->setPixelSize(11);
+// #else
+//   rlr_font->setFamily("Arial");
+//   rlr_font->setPixelSize(12);
+// #endif
 
   min = 0;
   max = 100;
@@ -271,7 +271,7 @@ simple_ruler_indicator::simple_ruler_indicator(QWidget *w_parent) : QWidget(w_pa
 
 simple_ruler_indicator::~simple_ruler_indicator()
 {
-  delete rlr_font;
+//  delete rlr_font;
 }
 
 
@@ -306,7 +306,7 @@ void simple_ruler_indicator::paintEvent(QPaintEvent *)
 
   QPainter painter(this);
 
-  painter.setFont(*rlr_font);
+//  painter.setFont(*rlr_font);
 
   painter.fillRect(0, 0, w, h, Qt::lightGray);
 
