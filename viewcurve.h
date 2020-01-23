@@ -52,6 +52,10 @@
 #include <QMessageBox>
 #include <QString>
 #include <QThread>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QUrl>
+#include <QList>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -197,7 +201,6 @@ public:
   void drawCurve_stage_1(QPainter *painter=NULL, int w_width=0, int w_height=0, int print_linewidth=0);
   void setCrosshair_1_center(void);
 
-
 public slots:
 
   void exec_sidemenu(int);
@@ -289,6 +292,12 @@ protected:
   void mouseReleaseEvent(QMouseEvent *);
   void mouseMoveEvent(QMouseEvent *);
   void wheelEvent(QWheelEvent *);
+  void dragEnterEvent(QDragEnterEvent *);
+  void dropEvent(QDropEvent *);
+
+signals:
+
+  void file_dropped(void);
 };
 
 

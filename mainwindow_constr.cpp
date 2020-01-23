@@ -148,6 +148,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   use_diverse_signal_colors = 0;
 
+  drop_path[0] = 0;
+
   toolbar_stats.sz = 0;
   toolbar_stats.active = 0;
   toolbar_stats.annot_label[0] = 0;
@@ -306,6 +308,8 @@ UI_Mainwindow::UI_Mainwindow()
   dpix = maincurve->logicalDpiX();
 
   dpiy = maincurve->logicalDpiY();
+
+  maincurve->setAcceptDrops(true);
 
   if(auto_dpi)
   {
@@ -1182,6 +1186,8 @@ UI_Mainwindow::UI_Mainwindow()
   {
     update_checker = new Check_for_updates;
   }
+
+  QObject::connect(maincurve, SIGNAL(file_dropped()), this, SLOT(open_new_file()));
 }
 
 

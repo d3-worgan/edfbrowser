@@ -278,7 +278,8 @@ public:
        predefined_mtg_path[MAXPREDEFINEDMONTAGES][MAX_PATH_LENGTH],
        recent_file_mtg_path[MAX_RECENTFILES][MAX_PATH_LENGTH],
        recent_colordir[MAX_PATH_LENGTH],
-       cfg_app_version[17];
+       cfg_app_version[17],
+       drop_path[MAX_PATH_LENGTH];
 
   double pixelsizefactor,
          x_pixelsizefactor,

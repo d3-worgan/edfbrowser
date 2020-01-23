@@ -1451,7 +1451,7 @@ void UI_Mainwindow::open_new_file()
     return;
   }
 
-  if(cmdlineargument == 0)
+  if((cmdlineargument == 0) && (drop_path[0] == 0))
   {
     strlcpy(path, QFileDialog::getOpenFileName(this, "Open file", QString::fromLocal8Bit(recent_opendir), "EDF/BDF files (*.edf *.EDF *.bdf *.BDF *.rec *.REC)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
@@ -1459,6 +1459,13 @@ void UI_Mainwindow::open_new_file()
     {
       return;
     }
+
+    get_directory_from_path(recent_opendir, path, MAX_PATH_LENGTH);
+  }
+
+  if((cmdlineargument == 0) && (drop_path[0] != 0))
+  {
+    strlcpy(path, drop_path, MAX_PATH_LENGTH);
 
     get_directory_from_path(recent_opendir, path, MAX_PATH_LENGTH);
   }

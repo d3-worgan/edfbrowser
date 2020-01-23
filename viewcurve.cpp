@@ -4931,6 +4931,23 @@ void ViewCurve::strip_types_from_label(char *label)
 }
 
 
+void ViewCurve::dragEnterEvent(QDragEnterEvent *e)
+{
+  if(e->mimeData()->hasUrls())
+  {
+    e->acceptProposedAction();
+  }
+}
+
+
+void ViewCurve::dropEvent(QDropEvent *e)
+{
+  if(e->mimeData()->urls().count() < 1)  return;
+
+  strlcpy(mainwindow->drop_path, e->mimeData()->urls().first().toLocalFile().toLocal8Bit().data(), MAX_PATH_LENGTH);
+
+  emit file_dropped();
+}
 
 
 
