@@ -139,7 +139,7 @@ void UI_SignalChooser::load_signalcomps(void)
 
 void UI_SignalChooser::call_sidemenu(QListWidgetItem *)
 {
-  int i;
+  int i, signal_nr2;
 
   if(task == 3) return;
 
@@ -166,6 +166,43 @@ void UI_SignalChooser::call_sidemenu(QListWidgetItem *)
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "The maximum number of docked Power Spectrum windows has been reached.\n"
                                                                 "Close one first.");
       messagewindow.exec();
+    }
+  }
+
+  if(task == 5)
+  {
+    signal_nr2 = list->currentRow();
+
+    if(mainwindow->signalcomp[signal_nr2]->ecg_filter != NULL)
+    {
+      signalchooser_dialog->close();
+      return;
+    }
+
+    if(mainwindow->signalcomp[signal_nr2]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr2]->edfsignal[0]].sf_int < 30)
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Samplefrequency must be at least 30Hz and must be an integer value.");
+      messagewindow.exec();
+      signalchooser_dialog->close();
+      return;
+    }
+
+    if(mainwindow->signalcomp[signal_nr2]->edfhdr->recording_len_sec < 30)
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Recording length must be at least 30 seconds.");
+      messagewindow.exec();
+      signalchooser_dialog->close();
+      return;
+    }
+
+    for(i=0; i<MAXCDSADOCKS; i++)
+    {
+      if(mainwindow->cdsa_dock[i] == NULL)
+      {
+        UI_cdsa_window wndw(mainwindow, mainwindow->signalcomp[signal_nr2], i);
+
+        break;
+      }
     }
   }
 

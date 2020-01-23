@@ -609,6 +609,7 @@ private slots:
   void load_predefined_mtg(QAction *);
   void edit_predefined_montages();
   void show_spectrum_dock();
+  void show_cdsa_dock();
   void page_3cmsec();
   void page_25mmsec();
   void page_50mmsec();

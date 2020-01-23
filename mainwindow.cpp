@@ -1399,6 +1399,14 @@ void UI_Mainwindow::show_spectrum_dock()
 }
 
 
+void UI_Mainwindow::show_cdsa_dock()
+{
+  if(!files_open)  return;
+
+  UI_SignalChooser signalchooserdialog(this, 5);
+}
+
+
 void UI_Mainwindow::open_new_file()
 {
   FILE *newfile;
