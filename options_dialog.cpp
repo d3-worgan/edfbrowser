@@ -164,7 +164,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   label8 = new QLabel(tab1);
   label8->setGeometry(20, 255, 200, 25);
-  label8->setText("Crosshair color");
+  label8->setText("First Crosshair color");
 
   Crh1ColorButton = new SpecialButton(tab1);
   Crh1ColorButton->setGeometry(240, 260, 60, 15);
@@ -172,7 +172,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   label9 = new QLabel(tab1);
   label9->setGeometry(20, 285, 200, 25);
-  label9->setText("2th Crosshair color");
+  label9->setText("Second Crosshair color");
 
   Crh2ColorButton = new SpecialButton(tab1);
   Crh2ColorButton->setGeometry(240, 290, 60, 15);
@@ -225,18 +225,22 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   label12_1 = new QLabel(tab1);
   label12_1->setGeometry(20, 405, 200, 25);
   label12_1->setText("Annotation duration background");
+  label12_1->setToolTip("The second color is used to indicate if it's selected");
 
   AnnotDurationButton = new SpecialButton(tab1);
   AnnotDurationButton->setGeometry(240, 410, 60, 15);
   AnnotDurationButton->setColor(mainwindow->maincurve->annot_duration_color);
+  AnnotDurationButton->setToolTip("The second color is used to indicate if it's selected");
 
   AnnotDurationSelectedButton = new SpecialButton(tab1);
   AnnotDurationSelectedButton->setGeometry(340, 410, 60, 15);
   AnnotDurationSelectedButton->setColor(mainwindow->maincurve->annot_duration_color_selected);
+  AnnotDurationSelectedButton->setToolTip("The second color is used to indicate if it's selected");
 
   label12_3 = new QLabel(tab1);
   label12_3->setGeometry(20, 435, 200, 25);
   label12_3->setText("Show only at screen bottom");
+  label12_3->setToolTip("Show the colored background only at the bottom of the screen");
 
   checkbox2_2 = new QCheckBox(tab1);
   checkbox2_2->setGeometry(200, 438, 20, 20);
@@ -249,6 +253,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox2_2->setCheckState(Qt::Unchecked);
   }
+  checkbox2_2->setToolTip("Show the colored background only at the bottom of the screen");
 
   label14 = new QLabel(tab1);
   label14->setGeometry(20, 465, 200, 25);
