@@ -491,7 +491,7 @@ private:
 
   QSplashScreen *splash;
 
-  QPixmap  *pixmap;
+  QPixmap  *splash_pixmap;
 
   QToolBar *slidertoolbar,
            *navtoolbar;

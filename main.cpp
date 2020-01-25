@@ -26,7 +26,14 @@ int main(int argc, char *argv[])
   QFont sansFont("Noto Sans", 10);
   p.setFont(sansFont);
   p.setPen(Qt::black);
-  p.drawText(250, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_VERSION " " PROGRAM_BETA_SUFFIX "    " THIS_APP_BITS_W);
+  if(!strcmp(PROGRAM_BETA_SUFFIX, ""))
+  {
+    p.drawText(250, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_VERSION "    " THIS_APP_BITS_W);
+  }
+  else
+  {
+    p.drawText(150, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_VERSION " " PROGRAM_BETA_SUFFIX "    " THIS_APP_BITS_W);
+  }
 
   QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
 

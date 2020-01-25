@@ -1172,13 +1172,20 @@ UI_Mainwindow::UI_Mainwindow()
     navtoolbar->setEnabled(false);
   }
 
-  pixmap = new QPixmap(":/images/splash.png");
-  QPainter p(pixmap);
+  splash_pixmap = new QPixmap(":/images/splash.png");
+  QPainter p(splash_pixmap);
   QFont sansFont("Noto Sans", 10);
   p.setFont(sansFont);
   p.setPen(Qt::black);
-  p.drawText(250, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_VERSION " " PROGRAM_BETA_SUFFIX "    " THIS_APP_BITS_W);
-  splash = new QSplashScreen(this, *pixmap, Qt::WindowStaysOnTopHint);
+  if(!strcmp(PROGRAM_BETA_SUFFIX, ""))
+  {
+    p.drawText(250, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_VERSION "    " THIS_APP_BITS_W);
+  }
+  else
+  {
+    p.drawText(150, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_VERSION " " PROGRAM_BETA_SUFFIX "    " THIS_APP_BITS_W);
+  }
+  splash = new QSplashScreen(this, *splash_pixmap, Qt::WindowStaysOnTopHint);
 
   update_checker = NULL;
 

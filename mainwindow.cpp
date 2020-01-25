@@ -31,7 +31,7 @@
 
 UI_Mainwindow::~UI_Mainwindow()
 {
-  delete pixmap;
+  delete splash_pixmap;
   delete splash;
   delete myfont;
   delete monofont;
@@ -1884,7 +1884,7 @@ void UI_Mainwindow::add_signals_dialog()
 
 void UI_Mainwindow::show_splashscreen()
 {
-  splash = new QSplashScreen(this, *pixmap, Qt::WindowStaysOnTopHint);
+  splash = new QSplashScreen(this, *splash_pixmap, Qt::WindowStaysOnTopHint);
 
   splash->show();
 }
