@@ -51,12 +51,6 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
 
   snprintf(str, 1024, "Color Density Spectral Array   %s", param.signalcomp->signallabel);
 
-  cdsa_dock = new QDockWidget(str, mainwindow);
-
-  cdsa_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
-
-  cdsa_dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
-
   frame = new QFrame;
   frame->setFrameStyle(QFrame::NoFrame);
   frame->setLineWidth(0);
@@ -91,13 +85,18 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
   grid_layout->addWidget(trck_indic, 1, 1);
   grid_layout->addWidget(ruler_label, 1, 0);
 
+  cdsa_dock = new QDockWidget(str, mainwindow);
+  cdsa_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+  cdsa_dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+  cdsa_dock->setAttribute(Qt::WA_DeleteOnClose);
   cdsa_dock->setWidget(frame);
 
   mainwindow->addDockWidget(Qt::BottomDockWidgetArea, cdsa_dock, Qt::Horizontal);
 
-//  QObject::connect(cdsa_dock,  SIGNAL(destroyed(QObject *)),             this, SLOT(cdsa_dock_destroyed(QObject *)));
+  QObject::connect(cdsa_dock,  SIGNAL(destroyed(QObject *)),             this, SLOT(cdsa_dock_destroyed(QObject *)));
   QObject::connect(cdsa_dock,  SIGNAL(visibilityChanged(bool)),          this, SLOT(cdsa_dock_visibility_changed(bool)));
   QObject::connect(mainwindow, SIGNAL(file_position_changed(long long)), this, SLOT(file_pos_changed(long long)));
+  QObject::connect(cdsa_dock,  SIGNAL(topLevelChanged(bool)),            this, SLOT(cdsa_dock_toplevel_changed(bool)));
 
   file_pos_changed(0);
 
@@ -107,15 +106,13 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
 
 UI_cdsa_dock::~UI_cdsa_dock()
 {
-  QObject::disconnect(cdsa_dock,  SIGNAL(visibilityChanged(bool)),          this, SLOT(cdsa_dock_visibility_changed(bool)));
-
   if(!is_deleted)
   {
     is_deleted = 1;
 
     mainwindow->removeDockWidget(cdsa_dock);
 
-    cdsa_dock->close();
+    delete cdsa_dock;
 
     param.signalcomp->cdsa_dock[param.instance_nr] = 0;
 
@@ -124,22 +121,16 @@ UI_cdsa_dock::~UI_cdsa_dock()
 }
 
 
-void UI_cdsa_dock::cdsa_dock_destroyed(QObject *)
+void UI_cdsa_dock::cdsa_dock_toplevel_changed(bool)
 {
 }
 
 
-void UI_cdsa_dock::cdsa_dock_visibility_changed(bool visible)
+void UI_cdsa_dock::cdsa_dock_destroyed(QObject *)
 {
-  if(visible == true)  return;
-
   if(!is_deleted)
   {
     is_deleted = 1;
-
-    mainwindow->removeDockWidget(cdsa_dock);
-
-    cdsa_dock->close();
 
     param.signalcomp->cdsa_dock[param.instance_nr] = 0;
 
@@ -147,6 +138,11 @@ void UI_cdsa_dock::cdsa_dock_visibility_changed(bool visible)
   }
 
   delete this;
+}
+
+
+void UI_cdsa_dock::cdsa_dock_visibility_changed(bool)
+{
 }
 
 
@@ -361,6 +357,10 @@ void simple_ruler_indicator::paintEvent(QPaintEvent *)
                  break;
       case 50000 : skip = 100000;
                  break;
+      case 100000 : skip = 200000;
+                 break;
+      case 200000 : skip = 500000;
+                 break;
     }
   }
 
@@ -372,7 +372,7 @@ void simple_ruler_indicator::paintEvent(QPaintEvent *)
 
       snprintf(str, 64, "%i", min + i);
 
-      painter.drawText(QRectF(2, h - (int)((pixel_per_unit * i) + 0.5) - 7, 60, 25), Qt::AlignRight | Qt::AlignHCenter, str);
+      painter.drawText(QRectF(2, h - (int)((pixel_per_unit * i) + 0.5) - 9, 60, 25), Qt::AlignRight | Qt::AlignHCenter, str);
     }
   }
 }
