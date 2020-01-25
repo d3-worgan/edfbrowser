@@ -203,7 +203,9 @@ simple_tracking_indicator::~simple_tracking_indicator()
 
 void simple_tracking_indicator::paintEvent(QPaintEvent *)
 {
-  int w, h;
+  int i, w, h, pos_x, step=0;
+
+  char str[128]={""};
 
   w = width();
   h = height();
@@ -211,6 +213,40 @@ void simple_tracking_indicator::paintEvent(QPaintEvent *)
   QPainter painter(this);
 
   painter.fillRect(0, 0, w, h, Qt::lightGray);
+
+  painter.setPen(Qt::black);
+
+  if(((double)w / (double)max) > 0.02)
+  {
+    step = 1;
+  }
+  else if(((double)w / (double)max) > 0.01)
+    {
+      step = 2;
+    }
+    else if(((double)w / (double)max) > 0.005)
+      {
+        step = 4;
+      }
+
+  if(step)
+  {
+    for(i=0; i<200; i+=step)
+    {
+      pos_x = (((double)(i * 3600) / (double)max) * (double)w) + 0.5;
+
+      if(pos_x > w)
+      {
+        break;
+      }
+
+      painter.drawLine(pos_x, 0, pos_x, h);
+
+      snprintf(str, 128, "%ih", i);
+
+      painter.drawText(pos_x + 4, h - 2, str);
+    }
+  }
 
   draw_small_arrow(&painter, (int)((((double)pos / (double)max) * w) + 0.5), 0, 0, Qt::black);
 }
