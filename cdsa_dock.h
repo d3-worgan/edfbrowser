@@ -118,8 +118,6 @@ private:
 private slots:
 
   void cdsa_dock_destroyed(QObject *);
-  void cdsa_dock_visibility_changed(bool);
-  void cdsa_dock_toplevel_changed(bool);
   void file_pos_changed(long long);
 
 };

@@ -94,9 +94,7 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
   mainwindow->addDockWidget(Qt::BottomDockWidgetArea, cdsa_dock, Qt::Horizontal);
 
   QObject::connect(cdsa_dock,  SIGNAL(destroyed(QObject *)),             this, SLOT(cdsa_dock_destroyed(QObject *)));
-  QObject::connect(cdsa_dock,  SIGNAL(visibilityChanged(bool)),          this, SLOT(cdsa_dock_visibility_changed(bool)));
   QObject::connect(mainwindow, SIGNAL(file_position_changed(long long)), this, SLOT(file_pos_changed(long long)));
-  QObject::connect(cdsa_dock,  SIGNAL(topLevelChanged(bool)),            this, SLOT(cdsa_dock_toplevel_changed(bool)));
 
   file_pos_changed(0);
 
@@ -110,19 +108,12 @@ UI_cdsa_dock::~UI_cdsa_dock()
   {
     is_deleted = 1;
 
-    mainwindow->removeDockWidget(cdsa_dock);
-
-    delete cdsa_dock;
+    cdsa_dock->close();
 
     param.signalcomp->cdsa_dock[param.instance_nr] = 0;
 
     mainwindow->cdsa_dock[param.instance_nr] = NULL;
   }
-}
-
-
-void UI_cdsa_dock::cdsa_dock_toplevel_changed(bool)
-{
 }
 
 
@@ -138,11 +129,6 @@ void UI_cdsa_dock::cdsa_dock_destroyed(QObject *)
   }
 
   delete this;
-}
-
-
-void UI_cdsa_dock::cdsa_dock_visibility_changed(bool)
-{
 }
 
 
