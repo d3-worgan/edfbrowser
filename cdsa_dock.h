@@ -147,8 +147,6 @@ private:
 
   long long pos, max;
 
-  QFont *trck_font;
-
   void draw_small_arrow(QPainter *, int, int, int, QColor);
 };
 
@@ -178,8 +176,6 @@ private:
   char unit[32];
 
   int min, max;
-
-  QFont *rlr_font;
 };
 
 
