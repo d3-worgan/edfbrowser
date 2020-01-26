@@ -1401,7 +1401,7 @@ void UI_Mainwindow::show_spectrum_dock()
 
 void UI_Mainwindow::show_cdsa_dock()
 {
-  if(!files_open)  return;
+  if((!files_open) || live_stream_active)  return;
 
   UI_SignalChooser signalchooserdialog(this, 5);
 }
