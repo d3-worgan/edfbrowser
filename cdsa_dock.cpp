@@ -89,12 +89,14 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
   cdsa_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
   cdsa_dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
   cdsa_dock->setAttribute(Qt::WA_DeleteOnClose);
+  cdsa_dock->setContextMenuPolicy(Qt::CustomContextMenu);
   cdsa_dock->setWidget(frame);
 
   mainwindow->addDockWidget(Qt::BottomDockWidgetArea, cdsa_dock, Qt::Horizontal);
 
-  QObject::connect(cdsa_dock,  SIGNAL(destroyed(QObject *)),             this, SLOT(cdsa_dock_destroyed(QObject *)));
-  QObject::connect(mainwindow, SIGNAL(file_position_changed(long long)), this, SLOT(file_pos_changed(long long)));
+  QObject::connect(cdsa_dock,  SIGNAL(destroyed(QObject *)),               this, SLOT(cdsa_dock_destroyed(QObject *)));
+  QObject::connect(cdsa_dock,  SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextmenu_requested(QPoint)));
+  QObject::connect(mainwindow, SIGNAL(file_position_changed(long long)),   this, SLOT(file_pos_changed(long long)));
 
   file_pos_changed(0);
 
@@ -129,6 +131,66 @@ void UI_cdsa_dock::cdsa_dock_destroyed(QObject *)
   }
 
   delete this;
+}
+
+
+void UI_cdsa_dock::contextmenu_requested(QPoint)
+{
+  int ov_lap[5]={0, 50, 67, 75, 80};
+
+  char str[4096]={"CDSA "},
+       wnd_func[13][32]={"Rectangular",
+                    "Hamming",
+                    "4-term Blackman-Harris",
+                    "7-term Blackman-Harris",
+                    "Nuttall3b",
+                    "Nuttall4c",
+                    "Hann",
+                    "HFT223D",
+                    "HFT95",
+                    "Kaiser2",
+                    "Kaiser3",
+                    "Kaiser4",
+                    "Kaiser5"},
+      yesno[2][32]={"no", "yes"};
+
+  strlcat(str, param.signalcomp->signallabel, 4096);
+
+  QDialog *myobjectDialog = new QDialog;
+  myobjectDialog->setMinimumSize(300, 215);
+  myobjectDialog->setMaximumSize(300, 215);
+  myobjectDialog->setWindowTitle(str);
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
+
+  QLabel *label = new QLabel(myobjectDialog);
+  label->setGeometry(10, 10, 280, 160);
+
+  QPushButton *pushButton1 = new QPushButton(myobjectDialog);
+  pushButton1->setGeometry(180, 180, 100, 25);
+  pushButton1->setText("Close");
+
+  snprintf(str, 4096,
+           "Segment length: %i sec.\n"
+           "Block length: %i sec.\n"
+           "Overlap: %i %%\n"
+           "Window function: %s\n"
+           "Max. level: %f %s\n"
+           "Logarithmic: %s\n"
+           "Power: %s",
+           param.segment_len,
+           param.block_len,
+           ov_lap[param.overlap - 1],
+           wnd_func[param.window_func],
+           param.max_pwr, param.unit,
+           yesno[param.log],
+           yesno[param.power_voltage]);
+
+  label->setText(str);
+
+  QObject::connect(pushButton1, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
+
+  myobjectDialog->exec();
 }
 
 

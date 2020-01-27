@@ -588,10 +588,17 @@ void UI_cdsa_window::start_button_clicked()
   dock_param.max_hz = mainwindow->cdsa_max_hz;
   dock_param.max_pwr = mainwindow->cdsa_max_pwr;
   dock_param.log = mainwindow->cdsa_log;
+  dock_param.block_len = mainwindow->cdsa_blocklen;
+  dock_param.overlap = mainwindow->cdsa_overlap;
+  dock_param.window_func = mainwindow->cdsa_window_func;
+  dock_param.power_voltage = mainwindow->cdsa_pwr_voltage;
   dock_param.pxm = pxm;
   dock_param.segment_len = segmentlen;
   dock_param.segments_in_recording = segments_in_recording;
   dock_param.instance_nr = cdsa_instance_nr;
+
+  strlcpy(dock_param.unit, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 17);
+  remove_trailing_spaces(dock_param.unit);
 
   mainwindow->cdsa_dock[cdsa_instance_nr] = new UI_cdsa_dock(mainwindow, dock_param);
 

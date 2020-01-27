@@ -58,6 +58,7 @@
 #include <QDockWidget>
 #include <QGridLayout>
 #include <QRectF>
+#include <QPoint>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -85,10 +86,15 @@ struct cdsa_dock_param_struct
   int max_hz;
   int segment_len;
   int segments_in_recording;
+  int block_len;
+  int overlap;
+  int window_func;
   double max_pwr;
   int log;
+  int power_voltage;
   QPixmap *pxm;
   int instance_nr;
+  char unit[17];
 };
 
 
@@ -119,6 +125,7 @@ private slots:
 
   void cdsa_dock_destroyed(QObject *);
   void file_pos_changed(long long);
+  void contextmenu_requested(QPoint);
 
 };
 
@@ -169,6 +176,7 @@ public slots:
 
 protected:
   void paintEvent(QPaintEvent *);
+  void contextmenu_requested(QPoint);
 
 private:
 
