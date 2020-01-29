@@ -82,7 +82,6 @@ class UI_cdsa_window : public QObject
 
 public:
   UI_cdsa_window(QWidget *, struct signalcompblock *, int);
-  ~UI_cdsa_window();
 
   UI_Mainwindow  *mainwindow;
 
@@ -134,7 +133,6 @@ private slots:
   void max_hz_spinbox_changed(int);
   void min_pwr_spinbox_changed(int);
   void max_pwr_spinbox_changed(int);
-  void max_voltage_spinbox_changed(double);
   void log_checkbox_changed(int);
 
 };

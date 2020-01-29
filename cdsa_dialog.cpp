@@ -236,6 +236,11 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
     pwr_voltage_checkbox->setCheckState(Qt::Unchecked);
   }
   pwr_voltage_checkbox->setToolTip("Display power instead of voltage");
+  if(mainwindow->cdsa_log)
+  {
+    pwr_voltage_checkbox->setCheckState(Qt::Checked);
+    pwr_voltage_checkbox->setEnabled(false);
+  }
 
   close_button = new QPushButton(myobjectDialog);
   close_button->setGeometry(20, 470, 100, 25);
@@ -261,16 +266,10 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
     QObject::connect(max_hz_spinbox,       SIGNAL(valueChanged(int)),    this, SLOT(max_hz_spinbox_changed(int)));
     QObject::connect(min_pwr_spinbox,      SIGNAL(valueChanged(int)),    this, SLOT(min_pwr_spinbox_changed(int)));
     QObject::connect(max_pwr_spinbox,      SIGNAL(valueChanged(int)),    this, SLOT(max_pwr_spinbox_changed(int)));
-    QObject::connect(max_voltage_spinbox,  SIGNAL(valueChanged(double)), this, SLOT(max_voltage_spinbox_changed(double)));
     QObject::connect(log_checkbox,         SIGNAL(stateChanged(int)),    this, SLOT(log_checkbox_changed(int)));
   }
 
   myobjectDialog->exec();
-}
-
-
-UI_cdsa_window::~UI_cdsa_window()
-{
 }
 
 
@@ -352,11 +351,6 @@ void UI_cdsa_window::max_pwr_spinbox_changed(int value)
 }
 
 
-void UI_cdsa_window::max_voltage_spinbox_changed(double)
-{
-}
-
-
 void UI_cdsa_window::log_checkbox_changed(int state)
 {
   if(state == Qt::Checked)
@@ -365,6 +359,8 @@ void UI_cdsa_window::log_checkbox_changed(int state)
     min_pwr_label->setVisible(true);
     max_pwr_spinbox->setVisible(true);
     min_pwr_spinbox->setVisible(true);
+    pwr_voltage_checkbox->setCheckState(Qt::Checked);
+    pwr_voltage_checkbox->setEnabled(false);
   }
   else
   {
@@ -372,6 +368,7 @@ void UI_cdsa_window::log_checkbox_changed(int state)
     min_pwr_spinbox->setVisible(false);
     min_pwr_label->setVisible(false);
     max_voltage_spinbox->setVisible(true);
+    pwr_voltage_checkbox->setEnabled(true);
   }
 }
 
@@ -396,6 +393,7 @@ void UI_cdsa_window::default_button_clicked()
   max_voltage_spinbox->setValue(20.0);
   log_checkbox->setCheckState(Qt::Checked);
   pwr_voltage_checkbox->setCheckState(Qt::Checked);
+  pwr_voltage_checkbox->setEnabled(false);
 
   mainwindow->cdsa_segmentlen = 30;
   mainwindow->cdsa_blocklen = 2;
