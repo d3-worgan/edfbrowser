@@ -102,14 +102,17 @@ private:
                 *min_hz_label,
                 *max_hz_label,
                 *max_pwr_label,
+                *min_pwr_label,
                 *pwr_voltage_label;
 
   QSpinBox      *segmentlen_spinbox,
                 *blocklen_spinbox,
                 *min_hz_spinbox,
-                *max_hz_spinbox;
+                *max_hz_spinbox,
+                *max_pwr_spinbox,
+                *min_pwr_spinbox;
 
-  QDoubleSpinBox *max_pwr_spinbox;
+  QDoubleSpinBox *max_voltage_spinbox;
 
   QComboBox     *overlap_combobox,
                 *windowfunc_combobox;
@@ -129,6 +132,10 @@ private slots:
   void blocklen_spinbox_changed(int);
   void min_hz_spinbox_changed(int);
   void max_hz_spinbox_changed(int);
+  void min_pwr_spinbox_changed(int);
+  void max_pwr_spinbox_changed(int);
+  void max_voltage_spinbox_changed(double);
+  void log_checkbox_changed(int);
 
 };
 

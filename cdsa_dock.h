@@ -89,12 +89,14 @@ struct cdsa_dock_param_struct
   int block_len;
   int overlap;
   int window_func;
-  double max_pwr;
+  double max_voltage;
+  int max_pwr;
+  int min_pwr;
   int log;
   int power_voltage;
   QPixmap *pxm;
   int instance_nr;
-  char unit[17];
+  char unit[32];
 };
 
 

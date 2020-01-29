@@ -170,7 +170,29 @@ void UI_cdsa_dock::contextmenu_requested(QPoint)
   pushButton1->setGeometry(180, 180, 100, 25);
   pushButton1->setText("Close");
 
-  snprintf(str, 4096,
+  if(param.log)
+  {
+    snprintf(str, 4096,
+           "Segment length: %i sec.\n"
+           "Block length: %i sec.\n"
+           "Overlap: %i %%\n"
+           "Window function: %s\n"
+           "Max. level: %i %s\n"
+           "Min. level: %i %s\n"
+           "Logarithmic: %s\n"
+           "Power: %s",
+           param.segment_len,
+           param.block_len,
+           ov_lap[param.overlap - 1],
+           wnd_func[param.window_func],
+           param.max_pwr, param.unit,
+           param.min_pwr, param.unit,
+           yesno[param.log],
+           yesno[param.power_voltage]);
+  }
+  else
+  {
+    snprintf(str, 4096,
            "Segment length: %i sec.\n"
            "Block length: %i sec.\n"
            "Overlap: %i %%\n"
@@ -182,9 +204,10 @@ void UI_cdsa_dock::contextmenu_requested(QPoint)
            param.block_len,
            ov_lap[param.overlap - 1],
            wnd_func[param.window_func],
-           param.max_pwr, param.unit,
+           param.max_voltage, param.unit,
            yesno[param.log],
            yesno[param.power_voltage]);
+  }
 
   label->setText(str);
 

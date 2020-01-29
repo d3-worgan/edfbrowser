@@ -51,8 +51,8 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
 
   myobjectDialog = new QDialog;
 
-  myobjectDialog->setMinimumSize(600, 480);
-  myobjectDialog->setMaximumSize(600, 480);
+  myobjectDialog->setMinimumSize(600, 525);
+  myobjectDialog->setMaximumSize(600, 525);
   myobjectDialog->setWindowTitle("Color Density Spectral Array");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -163,40 +163,69 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   strlcat(str, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 128);
   remove_trailing_spaces(str);
 
-  max_pwr_spinbox = new QDoubleSpinBox(myobjectDialog);
-  max_pwr_spinbox->setGeometry(170, 290, 180, 25);
+  max_voltage_spinbox = new QDoubleSpinBox(myobjectDialog);
+  max_voltage_spinbox->setGeometry(170, 290, 180, 25);
+  max_voltage_spinbox->setSuffix(str);
+  max_voltage_spinbox->setDecimals(7);
+  max_voltage_spinbox->setMinimum(0.0000001);
+  max_voltage_spinbox->setMaximum(100000.0);
+  max_voltage_spinbox->setValue(mainwindow->cdsa_max_voltage);
+  max_voltage_spinbox->setToolTip("The highest level that can be displayed (white). Higher levels will clip to white");
+
+  strlcpy(str, " dB", 128);
+  strlcat(str, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 128);
+  remove_trailing_spaces(str);
+
+  max_pwr_spinbox = new QSpinBox(myobjectDialog);
+  max_pwr_spinbox->setGeometry(170, 290, 120, 25);
   max_pwr_spinbox->setSuffix(str);
-  max_pwr_spinbox->setDecimals(7);
-  max_pwr_spinbox->setMinimum(0.0000001);
-  max_pwr_spinbox->setMaximum(100000.0);
+  max_pwr_spinbox->setMinimum(-99);
+  max_pwr_spinbox->setMaximum(100);
   max_pwr_spinbox->setValue(mainwindow->cdsa_max_pwr);
   max_pwr_spinbox->setToolTip("The highest level that can be displayed (white). Higher levels will clip to white");
 
+  min_pwr_label = new QLabel(myobjectDialog);
+  min_pwr_label->setGeometry(20, 335, 150, 25);
+  min_pwr_label->setText("Min. level");
+  min_pwr_label->setToolTip("The lowest level that can be displayed (black). Lower levels will clip to black");
+
+  min_pwr_spinbox = new QSpinBox(myobjectDialog);
+  min_pwr_spinbox->setGeometry(170, 335, 120, 25);
+  min_pwr_spinbox->setSuffix(str);
+  min_pwr_spinbox->setMinimum(-100);
+  min_pwr_spinbox->setMaximum(99);
+  min_pwr_spinbox->setValue(mainwindow->cdsa_min_pwr);
+  min_pwr_spinbox->setToolTip("The lowest level that can be displayed (black). Lower levels will clip to black");
+
   log_label = new QLabel(myobjectDialog);
-  log_label->setGeometry(20, 335, 150, 25);
+  log_label->setGeometry(20, 380, 150, 25);
   log_label->setText("Logarithmic");
   log_label->setToolTip("Use the base-10 logarithm of the output of the FFT (can be used to increase the dynamic range)");
 
   log_checkbox = new QCheckBox(myobjectDialog);
-  log_checkbox->setGeometry(170, 335, 20, 25);
+  log_checkbox->setGeometry(170, 380, 20, 25);
   log_checkbox->setTristate(false);
   if(mainwindow->cdsa_log)
   {
+    max_voltage_spinbox->setVisible(false);
     log_checkbox->setCheckState(Qt::Checked);
   }
   else
   {
+    min_pwr_label->setVisible(false);
+    max_pwr_spinbox->setVisible(false);
+    min_pwr_spinbox->setVisible(false);
     log_checkbox->setCheckState(Qt::Unchecked);
   }
   log_checkbox->setToolTip("Use the base-10 logarithm of the output of the FFT (can be used to increase the dynamic range)");
 
   pwr_voltage_label = new QLabel(myobjectDialog);
-  pwr_voltage_label->setGeometry(20, 380, 150, 25);
+  pwr_voltage_label->setGeometry(20, 425, 150, 25);
   pwr_voltage_label->setText("Power");
   pwr_voltage_label->setToolTip("Display power instead of voltage");
 
   pwr_voltage_checkbox = new QCheckBox(myobjectDialog);
-  pwr_voltage_checkbox->setGeometry(170, 380, 20, 25);
+  pwr_voltage_checkbox->setGeometry(170, 425, 20, 25);
   pwr_voltage_checkbox->setTristate(false);
   if(mainwindow->cdsa_pwr_voltage)
   {
@@ -209,27 +238,31 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   pwr_voltage_checkbox->setToolTip("Display power instead of voltage");
 
   close_button = new QPushButton(myobjectDialog);
-  close_button->setGeometry(20, 435, 100, 25);
+  close_button->setGeometry(20, 470, 100, 25);
   close_button->setText("Close");
 
   default_button = new QPushButton(myobjectDialog);
-  default_button->setGeometry(250, 435, 100, 25);
+  default_button->setGeometry(250, 470, 100, 25);
   default_button->setText("Default");
 
   start_button = new QPushButton(myobjectDialog);
-  start_button->setGeometry(480, 435, 100, 25);
+  start_button->setGeometry(480, 470, 100, 25);
   start_button->setText("Start");
 
   QObject::connect(close_button, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
 
   if(sf >= 30)
   {
-    QObject::connect(default_button,     SIGNAL(clicked()),         this, SLOT(default_button_clicked()));
-    QObject::connect(start_button,       SIGNAL(clicked()),         this, SLOT(start_button_clicked()));
-    QObject::connect(segmentlen_spinbox, SIGNAL(valueChanged(int)), this, SLOT(segmentlen_spinbox_changed(int)));
-    QObject::connect(blocklen_spinbox,   SIGNAL(valueChanged(int)), this, SLOT(blocklen_spinbox_changed(int)));
-    QObject::connect(min_hz_spinbox,     SIGNAL(valueChanged(int)), this, SLOT(min_hz_spinbox_changed(int)));
-    QObject::connect(max_hz_spinbox,     SIGNAL(valueChanged(int)), this, SLOT(max_hz_spinbox_changed(int)));
+    QObject::connect(default_button,       SIGNAL(clicked()),            this, SLOT(default_button_clicked()));
+    QObject::connect(start_button,         SIGNAL(clicked()),            this, SLOT(start_button_clicked()));
+    QObject::connect(segmentlen_spinbox,   SIGNAL(valueChanged(int)),    this, SLOT(segmentlen_spinbox_changed(int)));
+    QObject::connect(blocklen_spinbox,     SIGNAL(valueChanged(int)),    this, SLOT(blocklen_spinbox_changed(int)));
+    QObject::connect(min_hz_spinbox,       SIGNAL(valueChanged(int)),    this, SLOT(min_hz_spinbox_changed(int)));
+    QObject::connect(max_hz_spinbox,       SIGNAL(valueChanged(int)),    this, SLOT(max_hz_spinbox_changed(int)));
+    QObject::connect(min_pwr_spinbox,      SIGNAL(valueChanged(int)),    this, SLOT(min_pwr_spinbox_changed(int)));
+    QObject::connect(max_pwr_spinbox,      SIGNAL(valueChanged(int)),    this, SLOT(max_pwr_spinbox_changed(int)));
+    QObject::connect(max_voltage_spinbox,  SIGNAL(valueChanged(double)), this, SLOT(max_voltage_spinbox_changed(double)));
+    QObject::connect(log_checkbox,         SIGNAL(stateChanged(int)),    this, SLOT(log_checkbox_changed(int)));
   }
 
   myobjectDialog->exec();
@@ -293,9 +326,64 @@ void UI_cdsa_window::max_hz_spinbox_changed(int value)
 }
 
 
+void UI_cdsa_window::min_pwr_spinbox_changed(int value)
+{
+  QObject::blockSignals(true);
+
+  if(max_pwr_spinbox->value() <= value)
+  {
+    max_pwr_spinbox->setValue(value + 1);
+  }
+
+  QObject::blockSignals(false);
+}
+
+
+void UI_cdsa_window::max_pwr_spinbox_changed(int value)
+{
+  QObject::blockSignals(true);
+
+  if(min_pwr_spinbox->value() >= value)
+  {
+    min_pwr_spinbox->setValue(value - 1);
+  }
+
+  QObject::blockSignals(false);
+}
+
+
+void UI_cdsa_window::max_voltage_spinbox_changed(double)
+{
+}
+
+
+void UI_cdsa_window::log_checkbox_changed(int state)
+{
+  if(state == Qt::Checked)
+  {
+    max_voltage_spinbox->setVisible(false);
+    min_pwr_label->setVisible(true);
+    max_pwr_spinbox->setVisible(true);
+    min_pwr_spinbox->setVisible(true);
+  }
+  else
+  {
+    max_pwr_spinbox->setVisible(false);
+    min_pwr_spinbox->setVisible(false);
+    min_pwr_label->setVisible(false);
+    max_voltage_spinbox->setVisible(true);
+  }
+}
+
+
 void UI_cdsa_window::default_button_clicked()
 {
   QObject::blockSignals(true);
+
+  min_pwr_label->setVisible(true);
+  max_voltage_spinbox->setVisible(false);
+  max_pwr_spinbox->setVisible(true);
+  min_pwr_spinbox->setVisible(true);
 
   segmentlen_spinbox->setValue(30);
   blocklen_spinbox->setValue(2);
@@ -303,7 +391,9 @@ void UI_cdsa_window::default_button_clicked()
   windowfunc_combobox->setCurrentIndex(9);
   min_hz_spinbox->setValue(1);
   max_hz_spinbox->setValue(30);
-  max_pwr_spinbox->setValue(20.0);
+  max_pwr_spinbox->setValue(26);
+  min_pwr_spinbox->setValue(-10);
+  max_voltage_spinbox->setValue(20.0);
   log_checkbox->setCheckState(Qt::Checked);
   pwr_voltage_checkbox->setCheckState(Qt::Checked);
 
@@ -313,7 +403,9 @@ void UI_cdsa_window::default_button_clicked()
   mainwindow->cdsa_window_func = 9;
   mainwindow->cdsa_min_hz = 1;
   mainwindow->cdsa_max_hz = 30;
-  mainwindow->cdsa_max_pwr = 20;
+  mainwindow->cdsa_max_pwr = 26;
+  mainwindow->cdsa_min_pwr = -10;
+  mainwindow->cdsa_max_voltage = 20.0;
   mainwindow->cdsa_log = 1;
   mainwindow->cdsa_pwr_voltage = 1;
 
@@ -341,7 +433,8 @@ void UI_cdsa_window::start_button_clicked()
 
   double v_scale,
          d_tmp,
-         *smplbuf=NULL;
+         *smplbuf=NULL,
+         log_minimum_offset=0;
 
   struct fft_wrap_settings_struct *dft;
 
@@ -428,25 +521,32 @@ void UI_cdsa_window::start_button_clicked()
   {
     if(log_density)
     {
-      v_scale = 1785.0 / log10(max_pwr_spinbox->value() * max_pwr_spinbox->value());
+      v_scale = 1785.0 / ((max_pwr_spinbox->value() - min_pwr_spinbox->value()) / 20.0);
+
+      log_minimum_offset = min_pwr_spinbox->value() / 20.0;
     }
     else
     {
-      v_scale = 1785.0 / (max_pwr_spinbox->value() * max_pwr_spinbox->value());
+      v_scale = 1785.0 / (max_voltage_spinbox->value() * max_voltage_spinbox->value());
     }
   }
   else
   {
     if(log_density)
     {
-      v_scale = 1785.0 / log10(max_pwr_spinbox->value());
+      v_scale = 1785.0 / ((max_pwr_spinbox->value() - min_pwr_spinbox->value()) / 10.0);
+
+      log_minimum_offset = min_pwr_spinbox->value() / 10.0;
     }
     else
     {
-      v_scale = 1785.0 / max_pwr_spinbox->value();
+      v_scale = 1785.0 / max_voltage_spinbox->value();
     }
   }
+
   mainwindow->cdsa_max_pwr = max_pwr_spinbox->value();
+  mainwindow->cdsa_min_pwr = min_pwr_spinbox->value();
+  mainwindow->cdsa_max_voltage = max_voltage_spinbox->value();
 
   window_func = windowfunc_combobox->currentIndex();
   mainwindow->cdsa_window_func = window_func;
@@ -533,11 +633,11 @@ void UI_cdsa_window::start_button_clicked()
 
           if(d_tmp < 1E-13)
           {
-            rgb_idx = log10(1E-13) * v_scale;
+            rgb_idx = (log10(1E-13) - log_minimum_offset) * v_scale;
           }
           else
           {
-            rgb_idx = log10(d_tmp) * v_scale;
+            rgb_idx = (log10(d_tmp) - log_minimum_offset) * v_scale;
           }
         }
         else
@@ -553,11 +653,11 @@ void UI_cdsa_window::start_button_clicked()
 
           if(d_tmp < 1E-13)
           {
-            rgb_idx = log10(1E-13) * v_scale;
+            rgb_idx = (log10(1E-13) - log_minimum_offset) * v_scale;
           }
           else
           {
-            rgb_idx = log10(d_tmp) * v_scale;
+            rgb_idx = (log10(d_tmp) - log_minimum_offset) * v_scale;
           }
         }
         else
@@ -587,6 +687,8 @@ void UI_cdsa_window::start_button_clicked()
   dock_param.min_hz = mainwindow->cdsa_min_hz;
   dock_param.max_hz = mainwindow->cdsa_max_hz;
   dock_param.max_pwr = mainwindow->cdsa_max_pwr;
+  dock_param.min_pwr = mainwindow->cdsa_min_pwr;
+  dock_param.max_voltage = mainwindow->cdsa_max_voltage;
   dock_param.log = mainwindow->cdsa_log;
   dock_param.block_len = mainwindow->cdsa_blocklen;
   dock_param.overlap = mainwindow->cdsa_overlap;
@@ -597,7 +699,15 @@ void UI_cdsa_window::start_button_clicked()
   dock_param.segments_in_recording = segments_in_recording;
   dock_param.instance_nr = cdsa_instance_nr;
 
-  strlcpy(dock_param.unit, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 17);
+  if(log_density)
+  {
+    strlcpy(dock_param.unit, "dB", 32);
+    strlcat(dock_param.unit, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 32);
+  }
+  else
+  {
+    strlcpy(dock_param.unit, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 32);
+  }
   remove_trailing_spaces(dock_param.unit);
 
   mainwindow->cdsa_dock[cdsa_instance_nr] = new UI_cdsa_dock(mainwindow, dock_param);

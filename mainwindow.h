@@ -253,6 +253,8 @@ public:
       cdsa_max_hz,
       cdsa_log,
       cdsa_pwr_voltage,
+      cdsa_max_pwr,
+      cdsa_min_pwr,
       use_threads,
       check_for_updates,
       amplitude_doubler,
@@ -284,7 +286,7 @@ public:
   double pixelsizefactor,
          x_pixelsizefactor,
          default_amplitude,
-         cdsa_max_pwr;
+         cdsa_max_voltage;
 
   struct{
           double crossoverfreq;
