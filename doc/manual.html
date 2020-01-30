@@ -460,31 +460,32 @@
 <h3><a name="CDSA">Color Density Spectral Array</a></h3>
 
 <p>
-  The Color Density Spectral Array (CDSA) can be enabled by leftclicking on a signallabel and selecting "CDSA".<br>
+  The Color Density Spectral Array (CDSA) can be enabled by leftclicking on a signallabel and selecting "CDSA", or via the Window menu.<br>
   From high to low, the colors are mapped as follows: White, red, yellow, green, cyan, blue, magenta, black.<br>
-  The default settings are usually fine for EEG. If there are to many white parts, increase the Max. level setting.<br>
-  If there are too many black parts, decrease the Max. level setting.<br>
+  The default settings are usually fine for EEG. If there are to many white parts in the CDSA, increase the Max. level setting.<br>
 <br>
   The CDSA will appear as a docked window on the bottom but can also be dragged to the top or can be put in detached mode (floating) where ever you want on your screen.<br>
   Adjust the size of the CDSA window as you prefer.<br>
 <br>
   - Segment length:<br>
-  The recording is divided in blocks with a length equal to the segment length. One segment consist of one measurement.<br>
+  The length of one measurement. The number of segments in the CDSA is: recording duration / segment length.<br>
   All segments together will present a horizontal array of segments.<br>
   - Block length:<br>
   The block length is the window size of the FFT. If the segment length is 30 seconds and the block length is 2 seconds,<br>
   15 FFT's will be performed in one segment (if the the overlap is set to 0%). The output of these 15 FFT's will be averaged.<br>
-  The block length affects the FFT resolution as follows: FFT bin size (Hz) = samplerate / block length.<br>
+  The block length affects the FFT resolution: FFT bin size (Hz) = samplerate / block length.<br>
   Higher block lengths increases the FFT resolution. Lower block lengths increases the signal to noise ratio.<br>
   - Overlap:<br>
   Percentage of an FFT block that will overlap the next FFT block. Increasing this value increases the number of FFT's that will be performed<br>
-  and increases the signal to noise ratio but increases also the computational effort needed.<br>
+  and increases the signal to noise ratio but increases also the computational effort.<br>
   - Window:<br>
   Window is the kind of smoothing (taper) function used to prepare the data before the FFT is performed in order to lower the spectral leakage of the FFT.<br>
   - Min. / Max. frequency:<br>
-  This can be set to only display the frequency range of interest.<br>
+  This can be set to only display the frequency range of interest. Maximum frequency is limited to half the samplingrate (nyquist frequency)<br>
   - Max. level:<br>
-  Maximum level equals the color white used in the CDSA. Adjust and experiment with this setting untill you find the optimal setting.<br>
+  Maximum level equals white. Adjust and experiment with this setting untill you find the optimal setting.<br>
+  - Min. level:<br>
+  Minimum level equals black. Adjust and experiment with this setting untill you find the optimal setting.<br>
   - Logarithmic:<br>
   If checked, it will apply the base-10 logarithm of the output of the FFT in order to increase the dynamic range.<br>
   - Power:<br>

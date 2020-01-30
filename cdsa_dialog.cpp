@@ -179,8 +179,8 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   max_pwr_spinbox = new QSpinBox(myobjectDialog);
   max_pwr_spinbox->setGeometry(170, 290, 120, 25);
   max_pwr_spinbox->setSuffix(str);
-  max_pwr_spinbox->setMinimum(-99);
-  max_pwr_spinbox->setMaximum(100);
+  max_pwr_spinbox->setMinimum(-159);
+  max_pwr_spinbox->setMaximum(160);
   max_pwr_spinbox->setValue(mainwindow->cdsa_max_pwr);
   max_pwr_spinbox->setToolTip("The highest level that can be displayed (white). Higher levels will clip to white");
 
@@ -192,8 +192,8 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   min_pwr_spinbox = new QSpinBox(myobjectDialog);
   min_pwr_spinbox->setGeometry(170, 335, 120, 25);
   min_pwr_spinbox->setSuffix(str);
-  min_pwr_spinbox->setMinimum(-100);
-  min_pwr_spinbox->setMaximum(99);
+  min_pwr_spinbox->setMinimum(-160);
+  min_pwr_spinbox->setMaximum(159);
   min_pwr_spinbox->setValue(mainwindow->cdsa_min_pwr);
   min_pwr_spinbox->setToolTip("The lowest level that can be displayed (black). Lower levels will clip to black");
 
