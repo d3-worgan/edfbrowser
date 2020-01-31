@@ -271,9 +271,9 @@ UI_Mainwindow::UI_Mainwindow()
   cdsa_window_func = 9;
   cdsa_min_hz = 1;
   cdsa_max_hz = 30;
-  cdsa_max_pwr = 26;
-  cdsa_min_pwr = -10;
-  cdsa_max_voltage = 20;
+  cdsa_max_pwr = 13;
+  cdsa_min_pwr = -5;
+  cdsa_max_voltage = 5;
   cdsa_log = 1;
   cdsa_pwr_voltage = 1;
 

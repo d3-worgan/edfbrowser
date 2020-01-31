@@ -76,7 +76,7 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
 
   ruler_label = new QLabel;
   ruler_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-  ruler_label->setText("Hz / position");
+  ruler_label->setText("Hz / Time");
   ruler_label->setContentsMargins(0, 0, 0, 0);
 
   grid_layout = new QGridLayout(frame);
@@ -326,8 +326,8 @@ void simple_tracking_indicator::draw_small_arrow(QPainter *painter, int xpos, in
   if(rot == 0)
   {
     path.moveTo(xpos,      ypos);
-    path.lineTo(xpos - 10, ypos + 15);
-    path.lineTo(xpos + 10, ypos + 15);
+    path.lineTo(xpos - 8, ypos + 15);
+    path.lineTo(xpos + 8, ypos + 15);
     path.lineTo(xpos,      ypos);
 
     painter->fillPath(path, color);
@@ -339,7 +339,7 @@ simple_ruler_indicator::simple_ruler_indicator(QWidget *w_parent) : QWidget(w_pa
 {
   setAttribute(Qt::WA_OpaquePaintEvent);
 
-  setFixedWidth(80);
+  setFixedWidth(60);
 
   min = 0;
   max = 100;
@@ -443,7 +443,7 @@ void simple_ruler_indicator::paintEvent(QPaintEvent *)
 
       snprintf(str, 64, "%i", min + i);
 
-      painter.drawText(QRectF(2, h - (int)((pixel_per_unit * i) + 0.5) - 9, 60, 25), Qt::AlignRight | Qt::AlignHCenter, str);
+      painter.drawText(QRectF(2, h - (int)((pixel_per_unit * i) + 0.5) - 9, 40, 25), Qt::AlignRight | Qt::AlignHCenter, str);
     }
   }
 }

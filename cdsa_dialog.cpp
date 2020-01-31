@@ -35,7 +35,7 @@
 
 UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal_comp, int numb)
 {
-  char str[128]={""};
+  char str[1024]={""};
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
@@ -49,11 +49,13 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
     sf = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f + 0.5;
   }
 
+  snprintf(str, 1024, "Color Density Spectral Array   %s", signalcomp->signallabel);
+
   myobjectDialog = new QDialog;
 
   myobjectDialog->setMinimumSize(600, 525);
   myobjectDialog->setMaximumSize(600, 525);
-  myobjectDialog->setWindowTitle("Color Density Spectral Array");
+  myobjectDialog->setWindowTitle(str);
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
@@ -388,9 +390,9 @@ void UI_cdsa_window::default_button_clicked()
   windowfunc_combobox->setCurrentIndex(9);
   min_hz_spinbox->setValue(1);
   max_hz_spinbox->setValue(30);
-  max_pwr_spinbox->setValue(26);
-  min_pwr_spinbox->setValue(-10);
-  max_voltage_spinbox->setValue(20.0);
+  max_pwr_spinbox->setValue(13);
+  min_pwr_spinbox->setValue(-5);
+  max_voltage_spinbox->setValue(5.0);
   log_checkbox->setCheckState(Qt::Checked);
   pwr_voltage_checkbox->setCheckState(Qt::Checked);
   pwr_voltage_checkbox->setEnabled(false);
@@ -401,9 +403,9 @@ void UI_cdsa_window::default_button_clicked()
   mainwindow->cdsa_window_func = 9;
   mainwindow->cdsa_min_hz = 1;
   mainwindow->cdsa_max_hz = 30;
-  mainwindow->cdsa_max_pwr = 26;
-  mainwindow->cdsa_min_pwr = -10;
-  mainwindow->cdsa_max_voltage = 20.0;
+  mainwindow->cdsa_max_pwr = 13;
+  mainwindow->cdsa_min_pwr = -5;
+  mainwindow->cdsa_max_voltage = 5.0;
   mainwindow->cdsa_log = 1;
   mainwindow->cdsa_pwr_voltage = 1;
 
@@ -519,9 +521,9 @@ void UI_cdsa_window::start_button_clicked()
   {
     if(log_density)
     {
-      v_scale = 1785.0 / ((max_pwr_spinbox->value() - min_pwr_spinbox->value()) / 20.0);
+      v_scale = 1785.0 / ((max_pwr_spinbox->value() - min_pwr_spinbox->value()) / 10.0);
 
-      log_minimum_offset = min_pwr_spinbox->value() / 20.0;
+      log_minimum_offset = min_pwr_spinbox->value() / 10.0;
     }
     else
     {
@@ -532,9 +534,9 @@ void UI_cdsa_window::start_button_clicked()
   {
     if(log_density)
     {
-      v_scale = 1785.0 / ((max_pwr_spinbox->value() - min_pwr_spinbox->value()) / 10.0);
+      v_scale = 1785.0 / ((max_pwr_spinbox->value() - min_pwr_spinbox->value()) / 20.0);
 
-      log_minimum_offset = min_pwr_spinbox->value() / 10.0;
+      log_minimum_offset = min_pwr_spinbox->value() / 20.0;
     }
     else
     {
