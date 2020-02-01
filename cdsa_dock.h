@@ -75,6 +75,7 @@
 class UI_Mainwindow;
 class simple_tracking_indicator;
 class simple_ruler_indicator;
+class simple_color_index;
 
 
 
@@ -117,7 +118,8 @@ private:
   struct cdsa_dock_param_struct param;
 
   simple_tracking_indicator *trck_indic;
-  simple_ruler_indicator    *srl_indic;
+  simple_ruler_indicator     *srl_indic;
+  simple_color_index       *color_indic;
 
   unsigned long long sigcomp_uid;
 
@@ -138,7 +140,6 @@ class simple_tracking_indicator: public QWidget
 
 public:
   simple_tracking_indicator(QWidget *parent=0);
-  ~simple_tracking_indicator();
 
   QSize sizeHint() const {return minimumSizeHint(); }
   QSize minimumSizeHint() const {return QSize(5, 5); }
@@ -159,13 +160,45 @@ private:
 };
 
 
+class simple_color_index: public QWidget
+{
+  Q_OBJECT
+
+public:
+  simple_color_index(QWidget *parent=0);
+
+  QSize sizeHint() const {return minimumSizeHint(); }
+  QSize minimumSizeHint() const {return QSize(5, 5); }
+
+  void set_max_volt(double);
+  void set_max_pwr(int);
+  void set_min_pwr(int);
+  void set_log_enabled(int);
+  void set_unit(const char *);
+
+public slots:
+
+protected:
+  void paintEvent(QPaintEvent *);
+
+private:
+
+  int max_pwr,
+      min_pwr,
+      log;
+
+  double max_volt;
+
+  char unit[32];
+};
+
+
 class simple_ruler_indicator: public QWidget
 {
   Q_OBJECT
 
 public:
   simple_ruler_indicator(QWidget *parent=0);
-  ~simple_ruler_indicator();
 
   QSize sizeHint() const {return minimumSizeHint(); }
   QSize minimumSizeHint() const {return QSize(5, 5); }

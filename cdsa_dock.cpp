@@ -35,7 +35,8 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
   char str[1024]={""};
 
   QLabel *cdsa_label,
-         *ruler_label;
+         *ruler_label,
+         *color_indic_label;
 
   QFrame *frame;
 
@@ -79,11 +80,25 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
   ruler_label->setText("Hz / Time");
   ruler_label->setContentsMargins(0, 0, 0, 0);
 
+  color_indic = new simple_color_index;
+  color_indic->set_max_volt(param.max_voltage);
+  color_indic->set_max_pwr(param.max_pwr);
+  color_indic->set_min_pwr(param.min_pwr);
+  color_indic->set_log_enabled(param.log);
+  color_indic->set_unit(param.unit);
+
+  color_indic_label = new QLabel;
+  color_indic_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+  color_indic_label->setText(param.unit);
+  color_indic_label->setContentsMargins(0, 0, 0, 0);
+
   grid_layout = new QGridLayout(frame);
   grid_layout->addWidget(srl_indic,  0, 0);
   grid_layout->addWidget(cdsa_label, 0, 1);
   grid_layout->addWidget(trck_indic, 1, 1);
   grid_layout->addWidget(ruler_label, 1, 0);
+  grid_layout->addWidget(color_indic, 0, 2);
+  grid_layout->addWidget(color_indic_label, 1, 2);
 
   cdsa_dock = new QDockWidget(str, mainwindow);
   cdsa_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
@@ -263,11 +278,6 @@ void simple_tracking_indicator::set_maximum(long long max_)
 }
 
 
-simple_tracking_indicator::~simple_tracking_indicator()
-{
-}
-
-
 void simple_tracking_indicator::paintEvent(QPaintEvent *)
 {
   int i, w, h, pos_x, step=0;
@@ -335,6 +345,169 @@ void simple_tracking_indicator::draw_small_arrow(QPainter *painter, int xpos, in
 }
 
 
+simple_color_index::simple_color_index(QWidget *w_parent) : QWidget(w_parent)
+{
+  setAttribute(Qt::WA_OpaquePaintEvent);
+
+  setFixedWidth(60);
+
+  max_volt = 100;
+  min_pwr = 0;
+  max_pwr = 100;
+  log = 1;
+  unit[0] = 0;
+}
+
+
+void simple_color_index::set_max_volt(double val)
+{
+  max_volt = val;
+}
+
+
+void simple_color_index::set_max_pwr(int val)
+{
+  max_pwr = val;
+}
+
+
+void simple_color_index::set_min_pwr(int val)
+{
+  min_pwr = val;
+}
+
+
+void simple_color_index::set_log_enabled(int val)
+{
+  log = val;
+}
+
+
+void simple_color_index::set_unit(const char *str)
+{
+  strlcpy(unit, str, 32);
+}
+
+
+void simple_color_index::paintEvent(QPaintEvent *)
+{
+  int i, j, w, h,
+      rgb_map[1786][3],
+      rgb_idx;
+
+  double color_idx_per_pixel;
+
+  char str[32]={""};
+
+  w = width();
+  h = height();
+
+  QPainter painter(this);
+
+  for(i=0; i<256; i++)
+  {
+    rgb_map[i][0] = i;
+    rgb_map[i][1] = 0;
+    rgb_map[i][2] = i;
+  }
+
+  for(i=256; i<511; i++)
+  {
+    rgb_map[i][0] = 510 - i;
+    rgb_map[i][1] = 0;
+    rgb_map[i][2] = 255;
+  }
+
+  for(i=511; i<766; i++)
+  {
+    rgb_map[i][0] = 0;
+    rgb_map[i][1] = i - 510;
+    rgb_map[i][2] = 255;
+  }
+
+  for(i=766; i<1021; i++)
+  {
+    rgb_map[i][0] = 0;
+    rgb_map[i][1] = 255;
+    rgb_map[i][2] = 1020 - i;
+  }
+
+  for(i=1021; i<1276; i++)
+  {
+    rgb_map[i][0] = i - 1020;
+    rgb_map[i][1] = 255;
+    rgb_map[i][2] = 0;
+  }
+
+  for(i=1276; i<1531; i++)
+  {
+    rgb_map[i][0] = 255;
+    rgb_map[i][1] = 1530 - i;
+    rgb_map[i][2] = 0;
+  }
+
+  for(i=1531; i<1786; i++)
+  {
+    rgb_map[i][0] = 255;
+    rgb_map[i][1] = i - 1530;
+    rgb_map[i][2] = i - 1530;
+  }
+
+  painter.fillRect(0, 0, w, h, Qt::lightGray);
+
+  painter.setPen(Qt::black);
+
+  painter.drawRect(5, 8, 15, h - 16);
+
+  if(log)
+  {
+    snprintf(str, 32, "%i", max_pwr);
+
+    painter.drawText(25, 15, str);
+
+    for(i=1; i<7; i++)
+    {
+      snprintf(str, 32, "%.1f", (((max_pwr - min_pwr) / 7.0) * i) + min_pwr);
+
+      painter.drawText(25, h - (4.0 + (i * ((h - 17.0) / 7.0))), str);
+    }
+
+    snprintf(str, 32, "%i", min_pwr);
+
+    painter.drawText(25, h - 5, str);
+  }
+  else
+  {
+    setFixedWidth(80);
+
+    for(i=0; i<8; i++)
+    {
+      snprintf(str, 32, "%.1e", (max_volt / 7.0) * i);
+
+      painter.drawText(25, h - (4.0 + (i * ((h - 17.0) / 7.0))), str);
+    }
+  }
+
+  color_idx_per_pixel = 1785.0 / (h - 11.0);
+
+  for(i=0; i<(h-17); i++)
+  {
+    rgb_idx = ((h - 18) - i) * color_idx_per_pixel;
+
+    if(rgb_idx > 1785)  rgb_idx = 1785;
+
+    if(rgb_idx < 0)  rgb_idx = 0;
+
+    painter.setPen(QColor(rgb_map[rgb_idx][0], rgb_map[rgb_idx][1], rgb_map[rgb_idx][2]));
+
+    for(j=0; j<14; j++)
+    {
+      painter.drawPoint(6 + j, 9 + i);
+    }
+  }
+}
+
+
 simple_ruler_indicator::simple_ruler_indicator(QWidget *w_parent) : QWidget(w_parent)
 {
   setAttribute(Qt::WA_OpaquePaintEvent);
@@ -343,11 +516,6 @@ simple_ruler_indicator::simple_ruler_indicator(QWidget *w_parent) : QWidget(w_pa
 
   min = 0;
   max = 100;
-}
-
-
-simple_ruler_indicator::~simple_ruler_indicator()
-{
 }
 
 
