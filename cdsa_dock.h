@@ -174,6 +174,7 @@ public:
   void set_max_pwr(int);
   void set_min_pwr(int);
   void set_log_enabled(int);
+  void set_pwr_enabled(int);
   void set_unit(const char *);
 
 public slots:
@@ -185,7 +186,8 @@ private:
 
   int max_pwr,
       min_pwr,
-      log;
+      log,
+      pwr;
 
   double max_volt;
 

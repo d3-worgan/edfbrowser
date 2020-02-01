@@ -85,6 +85,7 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
   color_indic->set_max_pwr(param.max_pwr);
   color_indic->set_min_pwr(param.min_pwr);
   color_indic->set_log_enabled(param.log);
+  color_indic->set_pwr_enabled(param.power_voltage);
   color_indic->set_unit(param.unit);
 
   color_indic_label = new QLabel;
@@ -383,6 +384,12 @@ void simple_color_index::set_log_enabled(int val)
 }
 
 
+void simple_color_index::set_pwr_enabled(int val)
+{
+  pwr = val;
+}
+
+
 void simple_color_index::set_unit(const char *str)
 {
   strlcpy(unit, str, 32);
@@ -480,11 +487,23 @@ void simple_color_index::paintEvent(QPaintEvent *)
   {
     setFixedWidth(80);
 
-    for(i=0; i<8; i++)
+    if(pwr)
     {
-      snprintf(str, 32, "%.1e", (max_volt / 7.0) * i);
+      for(i=0; i<8; i++)
+      {
+        snprintf(str, 32, "%.1e", ((max_volt * max_volt) / 7.0) * i);
 
-      painter.drawText(25, h - (4.0 + (i * ((h - 17.0) / 7.0))), str);
+        painter.drawText(25, h - (4.0 + (i * ((h - 17.0) / 7.0))), str);
+      }
+    }
+    else
+    {
+      for(i=0; i<8; i++)
+      {
+        snprintf(str, 32, "%.1e", (max_volt / 7.0) * i);
+
+        painter.drawText(25, h - (4.0 + (i * ((h - 17.0) / 7.0))), str);
+      }
     }
   }
 
