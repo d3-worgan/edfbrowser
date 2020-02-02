@@ -102,7 +102,7 @@ static char annotdescrlist[42][48]=
   "waveform end", "R-on-T premature ventricular contraction"};
 
 
-#define ANNOT_EXT_CNT   (9)
+#define ANNOT_EXT_CNT   (10)
 
 
 static char annotextlist[ANNOT_EXT_CNT][16]=
@@ -115,7 +115,8 @@ static char annotextlist[ANNOT_EXT_CNT][16]=
     ".apn",
     ".st",
     ".pwave",
-    ".marker"
+    ".marker",
+    ".hypn"
   };
 
 
@@ -160,7 +161,9 @@ void UI_MIT2EDFwindow::SelectFileButton()
        *data_inputfile=NULL,
        *annot_inputfile=NULL;
 
-  int i, j, p, len, hdl, *buf;
+  int i, j, k, p, len, hdl, *buf=NULL;
+
+  short *buf16=NULL;
 
   char header_filename[MAX_PATH_LENGTH],
        txt_string[2048],
@@ -169,7 +172,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
        annot_filename[MAX_PATH_LENGTH],
        filename_x[MAX_PATH_LENGTH],
        scratchpad[4096],
-       *charpntr;
+       *charpntr=NULL;
 
   unsigned char a_buf[128],
                 ch_tmp;
@@ -311,9 +314,9 @@ void UI_MIT2EDFwindow::SelectFileButton()
     return;
   }
 
-  mit_hdr.sf = atoi(charpntr + p);
+  mit_hdr.sf_base = atoi(charpntr + p);
 
-  if(mit_hdr.sf < 1)
+  if(mit_hdr.sf_base < 1)
   {
     textEdit1->append("Error, samplefrequency is less than 1 Hz. (error 9)\n");
     fclose(header_inputfile);
@@ -321,7 +324,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
     return;
   }
 
-  if(mit_hdr.sf > 100000)
+  if(mit_hdr.sf_base > 100000)
   {
     textEdit1->append("Error, samplefrequency is more than 100000 Hz. (error 10)\n");
     fclose(header_inputfile);
@@ -329,12 +332,16 @@ void UI_MIT2EDFwindow::SelectFileButton()
     return;
   }
 
-  mit_hdr.smp_period = 1000000000LL / mit_hdr.sf;
+  mit_hdr.smp_period = 1000000000LL / mit_hdr.sf_base;
 
   strlcat(filename_x, ".dat", MAX_PATH_LENGTH);
 
   for(j=0; j<mit_hdr.chns; j++)
   {
+    mit_hdr.sf_frame[j] = mit_hdr.sf_base;
+
+    mit_hdr.smp_period_frame[j] = mit_hdr.smp_period;
+
     mit_hdr.adc_gain[j] = 200.0;
 
     mit_hdr.adc_resolution[j] = 12;
@@ -442,6 +449,46 @@ void UI_MIT2EDFwindow::SelectFileButton()
       }
     }
 
+    for(k=p; k<len; k++)
+    {
+      if((charpntr[k] < '0') || (charpntr[k] > '9'))
+      {
+        break;
+      }
+    }
+
+    mit_hdr.sf_multiple = 0;
+
+    if(charpntr[k] == 'x')
+    {
+      if(mit_hdr.format[j] != 16)
+      {
+        textEdit1->append("Error, found different samplerates and format is not \"16\". (error 176)\n");
+        fclose(header_inputfile);
+        pushButton1->setEnabled(true);
+        return;
+      }
+
+      mit_hdr.sf_multiple = 1;
+
+      k++;
+
+      if((charpntr[k] >= '0') && (charpntr[k] <= '9'))
+      {
+        mit_hdr.sf_frame[j] = mit_hdr.sf_base * atoi(charpntr + k);
+
+        if(mit_hdr.sf_frame[j] < 1)
+        {
+          textEdit1->append("Error, wrong samplerate multiplier in header. (error 177)\n");
+          fclose(header_inputfile);
+          pushButton1->setEnabled(true);
+          return;
+        }
+
+        mit_hdr.smp_period_frame[j] = 1000000000LL / mit_hdr.sf_frame[j];
+      }
+    }
+
     p = ++i;
 
     for(ch_tmp=0; i<len; i++)
@@ -470,7 +517,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
         mit_hdr.adc_gain[j] = atof(charpntr + p);
       }
 
-    if(mit_hdr.adc_gain[j] < 1e-9)  mit_hdr.adc_gain[j] = 200.0;
+    if(abs(mit_hdr.adc_gain[j]) < 1e-9)  mit_hdr.adc_gain[j] = 200.0;
 
     p = ++i;
 
@@ -694,7 +741,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
   fseeko(data_inputfile, 0LL, SEEK_END);
   filesize = ftello(data_inputfile);
-  if(filesize < (mit_hdr.chns * mit_hdr.sf * 45 / 10))
+  if(filesize < (mit_hdr.chns * mit_hdr.sf_base * 45 / 10))  //FIXME
   {
     textEdit1->append("Error, .dat filesize is too small.\n");
     fclose(data_inputfile);
@@ -702,19 +749,26 @@ void UI_MIT2EDFwindow::SelectFileButton()
     return;
   }
 
-  for(mit_hdr.sf_div=10; mit_hdr.sf_div>0; mit_hdr.sf_div--)
+  if(mit_hdr.sf_multiple)
   {
-    if(mit_hdr.sf_div == 9)  continue;
-    if(mit_hdr.sf_div == 7)  continue;
-    if(mit_hdr.sf_div == 6)  continue;
-    if(mit_hdr.sf_div == 3)  continue;
+    mit_hdr.sf_div = 1;
+  }
+  else
+  {
+    for(mit_hdr.sf_div=10; mit_hdr.sf_div>0; mit_hdr.sf_div--)
+    {
+      if(mit_hdr.sf_div == 9)  continue;
+      if(mit_hdr.sf_div == 7)  continue;
+      if(mit_hdr.sf_div == 6)  continue;
+      if(mit_hdr.sf_div == 3)  continue;
 
-    if(!(mit_hdr.sf % mit_hdr.sf_div))  break;
+      if(!(mit_hdr.sf_base % mit_hdr.sf_div))  break;
+    }
   }
 
   if(mit_hdr.sf_div < 1)  mit_hdr.sf_div = 1;
 
-  mit_hdr.sf_block = mit_hdr.sf / mit_hdr.sf_div;
+  mit_hdr.sf_block = mit_hdr.sf_base / mit_hdr.sf_div;
 
   hdl = edfopen_file_writeonly(edf_filename, EDFLIB_FILETYPE_EDFPLUS, mit_hdr.chns);
 
@@ -741,13 +795,27 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
   for(i=0; i<mit_hdr.chns; i++)
   {
-    if(edf_set_samplefrequency(hdl, i, mit_hdr.sf_block))
+    if(mit_hdr.sf_multiple)
     {
-      textEdit1->append("Error: edf_set_samplefrequency()\n");
-      fclose(data_inputfile);
-      edfclose_file(hdl);
-      pushButton1->setEnabled(true);
-      return;
+      if(edf_set_samplefrequency(hdl, i, mit_hdr.sf_frame[i]))
+      {
+        textEdit1->append("Error: edf_set_samplefrequency()\n");
+        fclose(data_inputfile);
+        edfclose_file(hdl);
+        pushButton1->setEnabled(true);
+        return;
+      }
+    }
+    else
+    {
+      if(edf_set_samplefrequency(hdl, i, mit_hdr.sf_block))
+      {
+        textEdit1->append("Error: edf_set_samplefrequency()\n");
+        fclose(data_inputfile);
+        edfclose_file(hdl);
+        pushButton1->setEnabled(true);
+        return;
+      }
     }
   }
 
@@ -844,19 +912,41 @@ void UI_MIT2EDFwindow::SelectFileButton()
     return;
   }
 
-  buf = (int *)malloc(mit_hdr.sf_block * mit_hdr.chns * sizeof(int));
-  if(buf == NULL)
-  {
-    textEdit1->append("Malloc() error (buf)\n");
-    fclose(data_inputfile);
-    edfclose_file(hdl);
-    pushButton1->setEnabled(true);
-    return;
-  }
-
 /////////////////// Start conversion //////////////////////////////////////////
 
-  int k, blocks, tmp1, tmp2, l_end=0, odd_even=0;
+  int blocks, tmp1, tmp2, l_end=0, odd_even=0, datrec_sz=0, datrecs;
+
+  for(i=0; i<mit_hdr.chns; i++)
+  {
+    datrec_sz += (mit_hdr.sf_frame[i] * 2);
+  }
+
+  datrecs = filesize / datrec_sz;
+
+  if((mit_hdr.format[0] == 16) && mit_hdr.sf_multiple)
+  {
+    buf16 = (short *)malloc((datrec_sz / 2) * sizeof(short));
+    if(buf16 == NULL)
+    {
+      textEdit1->append("Malloc() error (buf16)\n");
+      fclose(data_inputfile);
+      edfclose_file(hdl);
+      pushButton1->setEnabled(true);
+      return;
+    }
+  }
+  else
+  {
+    buf = (int *)malloc(mit_hdr.sf_block * mit_hdr.chns * sizeof(int));
+    if(buf == NULL)
+    {
+      textEdit1->append("Malloc() error (buf)\n");
+      fclose(data_inputfile);
+      edfclose_file(hdl);
+      pushButton1->setEnabled(true);
+      return;
+    }
+  }
 
   fseeko(data_inputfile, 0LL, SEEK_SET);
 
@@ -944,7 +1034,54 @@ void UI_MIT2EDFwindow::SelectFileButton()
     }
   }
 
-  if((mit_hdr.format[0] == 16) || (mit_hdr.format[0] == 61))
+  if((mit_hdr.format[0] == 16) && mit_hdr.sf_multiple)
+  {
+    progress.setMaximum(datrecs);
+
+    for(k=0; k<datrecs; k++)
+    {
+      if(!(k % 100))
+      {
+        progress.setValue(k);
+
+        qApp->processEvents();
+
+        if(progress.wasCanceled() == true)
+        {
+          textEdit1->append("Conversion aborted by user.\n");
+          fclose(data_inputfile);
+          edfclose_file(hdl);
+          free(buf);
+          pushButton1->setEnabled(true);
+          return;
+        }
+      }
+
+      if(fread(buf16, datrec_sz, 1, data_inputfile) != 1)
+      {
+        progress.reset();
+        textEdit1->append("A read error occurred during conversion.\n");
+        fclose(data_inputfile);
+        edfclose_file(hdl);
+        free(buf);
+        pushButton1->setEnabled(true);
+        return;
+      }
+
+      if(edf_blockwrite_digital_short_samples(hdl, buf16))
+      {
+        progress.reset();
+        textEdit1->append("A write error occurred during conversion.\n");
+        fclose(data_inputfile);
+        edfclose_file(hdl);
+        free(buf);
+        pushButton1->setEnabled(true);
+        return;
+      }
+    }
+  }
+
+  if(((mit_hdr.format[0] == 16) || (mit_hdr.format[0] == 61)) && (!mit_hdr.sf_multiple))
   {
     if(mit_hdr.format[0] == 16)  l_end = 1;
 
@@ -1083,7 +1220,9 @@ OUT:
 
   free(buf);
 
-  int annot_code, tc, skip, total_annots=0;
+  free(buf16);
+
+  int annot_code, tc, skip, total_annots=0, annot_signal=0;
 
   long long bytes_read;
 
@@ -1148,7 +1287,7 @@ OUT:
           break;
         }
 
-  #pragma GCC diagnostic ignored "-Wstrict-aliasing"
+#pragma GCC diagnostic ignored "-Wstrict-aliasing"
 
         if(*((unsigned short *)a_buf) == 0)  // end of file
         {
@@ -1168,29 +1307,38 @@ OUT:
 
           tc += *((unsigned short *)(a_buf + 2));
         }
-        else if(annot_code == 63)
+        else if(annot_code == 62)
           {
-            skip = *((unsigned short *)a_buf) & 0x3ff;
+            annot_signal = *((unsigned short *)a_buf) & 0x3ff;
 
-            if(skip % 2) skip++;
-          }
-          else if((annot_code >= 0) && (annot_code <= ACMAX))
+            if(annot_signal >= mit_hdr.chns)
             {
-              tc += *((unsigned short *)a_buf) & 0x3ff;
-
-  #pragma GCC diagnostic warning "-Wstrict-aliasing"
-
-              if(annot_code < 42)
-              {
-                edfwrite_annotation_latin1(hdl, ((long long)tc * mit_hdr.smp_period) / 100000LL, -1, annotdescrlist[annot_code]);
-              }
-              else
-              {
-                edfwrite_annotation_latin1(hdl, ((long long)tc * mit_hdr.smp_period) / 100000LL, -1, "user-defined");
-              }
-
-              total_annots++;
+              annot_signal = 0;
             }
+          }
+          else if(annot_code == 63)
+            {
+              skip = *((unsigned short *)a_buf) & 0x3ff;
+
+              if(skip % 2) skip++;
+            }
+            else if((annot_code >= 0) && (annot_code <= ACMAX))
+              {
+                tc += *((unsigned short *)a_buf) & 0x3ff;
+
+#pragma GCC diagnostic warning "-Wstrict-aliasing"
+
+                if(annot_code < 42)
+                {
+                  edfwrite_annotation_latin1(hdl, ((long long)tc * mit_hdr.smp_period_frame[annot_signal]) / 100000LL, -1, annotdescrlist[annot_code]);
+                }
+                else
+                {
+                  edfwrite_annotation_latin1(hdl, ((long long)tc * mit_hdr.smp_period_frame[annot_signal]) / 100000LL, -1, "user-defined");
+                }
+
+                total_annots++;
+              }
 
         if(skip)
         {
