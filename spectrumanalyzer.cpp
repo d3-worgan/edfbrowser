@@ -376,7 +376,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   spanSlider->setMinimum(1);
   spanSlider->setMaximum(1000);
   spanSlider->setValue(1000);
-  spanSlider->setMinimumSize(500, 15);
+  spanSlider->setMinimumSize(600, 15);
 
   spanLabel = new QLabel;
   spanLabel->setText("Span");
@@ -388,7 +388,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   centerSlider->setMinimum(0);
   centerSlider->setMaximum(1000);
   centerSlider->setValue(0);
-  centerSlider->setMinimumSize(500, 15);
+  centerSlider->setMinimumSize(600, 15);
 
   centerLabel = new QLabel;
   centerLabel->setText("Center");
