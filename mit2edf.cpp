@@ -102,10 +102,10 @@ static char annotdescrlist[42][48]=
   "waveform end", "R-on-T premature ventricular contraction"};
 
 
-#define ANNOT_EXT_CNT   (10)
 
+#define ANNOT_EXT_STR_LEN   (16)
 
-static char annotextlist[ANNOT_EXT_CNT][16]=
+static char annotextlist[][ANNOT_EXT_STR_LEN]=
   {
     ".ari",
     ".ecg",
@@ -116,8 +116,9 @@ static char annotextlist[ANNOT_EXT_CNT][16]=
     ".st",
     ".pwave",
     ".marker",
-    ".hypn"
   };
+
+#define ANNOT_EXT_CNT     ((int)(sizeof(annotextlist) / sizeof(char[ANNOT_EXT_STR_LEN])))
 
 
 UI_MIT2EDFwindow::UI_MIT2EDFwindow(char *recent_dir, char *save_dir)
