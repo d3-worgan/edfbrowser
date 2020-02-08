@@ -1,6 +1,6 @@
 
 
- version 1.72      to be defined
+ version 1.72      February 8, 2020
  --------------
 
  - Spectrum Analyzer: added window type "Kaiser".
