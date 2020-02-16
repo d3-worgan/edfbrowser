@@ -1044,9 +1044,11 @@ UI_Mainwindow::UI_Mainwindow()
 
   annotationEditDock = new UI_AnnotationEditwindow(this);
 
-  addDockWidget(Qt::BottomDockWidgetArea, annotationEditDock->dockedit, Qt::Horizontal);
+  addToolBar(Qt::BottomToolBarArea, annotationEditDock->dockedit);
 
   annotationEditDock->dockedit->hide();
+
+  insertToolBarBreak(annotationEditDock->dockedit);
 
   for(i=0; i<MAXSPECTRUMDOCKS; i++)
   {
@@ -1062,7 +1064,7 @@ UI_Mainwindow::UI_Mainwindow()
   setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
   setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
 
-  char tmp_str[MAX_PATH_LENGTH];
+  char tmp_str[MAX_PATH_LENGTH]={""};
 
   cmdlineargument = 0;
 

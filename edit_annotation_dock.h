@@ -47,6 +47,8 @@
 #include <QDoubleSpinBox>
 #include <QComboBox>
 #include <QSpinBox>
+#include <QToolBar>
+#include <QFrame>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -75,7 +77,7 @@ public:
 
   UI_Mainwindow *mainwindow;
 
-  QDockWidget  *dockedit;
+  QToolBar  *dockedit;
 
   void annotEditSetOnset(long long);
 
@@ -92,7 +94,7 @@ private:
   int file_num,
       annot_num;
 
-  QDialog *annot_edit_dialog;
+  QFrame *annot_edit_frame;
 
   QLabel *onsetLabel,
          *durationLabel,

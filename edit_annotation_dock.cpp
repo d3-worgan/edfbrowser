@@ -36,48 +36,48 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(QWidget *w_parent)
 
   file_num = 0;
 
-  dockedit = new QDockWidget("Annotation editor", w_parent);
-  dockedit->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
-  dockedit->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
+  dockedit = new QToolBar("Annotation editor", w_parent);
+  dockedit->setOrientation(Qt::Horizontal);
+  dockedit->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
 
-  annot_edit_dialog = new QDialog;
-  annot_edit_dialog->setMinimumSize(640, 45);
+  annot_edit_frame = new QFrame;
+  annot_edit_frame->setMinimumSize(1050, 45);
 
-  dockedit->setWidget(annot_edit_dialog);
+  dockedit->addWidget(annot_edit_frame);
 
-  descriptionLabel = new QLabel(annot_edit_dialog);
+  descriptionLabel = new QLabel(annot_edit_frame);
   descriptionLabel->setGeometry(10, 10, 78, 25);
   descriptionLabel->setText("Description");
 
-  annot_descript_lineEdit = new QLineEdit(annot_edit_dialog);
+  annot_descript_lineEdit = new QLineEdit(annot_edit_frame);
   annot_descript_lineEdit->setGeometry(90, 10, 150, 25);
 
-  onsetLabel = new QLabel(annot_edit_dialog);
+  onsetLabel = new QLabel(annot_edit_frame);
   onsetLabel->setGeometry(250, 10, 48, 25);
   onsetLabel->setText("Onset");
 
-  posNegTimebox = new QComboBox(annot_edit_dialog);
+  posNegTimebox = new QComboBox(annot_edit_frame);
   posNegTimebox->setGeometry(300, 10, 35, 25);
   posNegTimebox->setEditable(false);
   posNegTimebox->addItem("+");
   posNegTimebox->addItem("-");
 
-  onset_daySpinbox = new QSpinBox(annot_edit_dialog);
+  onset_daySpinbox = new QSpinBox(annot_edit_frame);
   onset_daySpinbox->setGeometry(335, 10, 45, 25);
   onset_daySpinbox->setRange(0, 99);
   onset_daySpinbox->setSingleStep(1);
   onset_daySpinbox->setValue(0);
 
-  onset_timeEdit = new QTimeEdit(annot_edit_dialog);
+  onset_timeEdit = new QTimeEdit(annot_edit_frame);
   onset_timeEdit->setGeometry(380, 10, 100, 25);
   onset_timeEdit->setDisplayFormat("hh:mm:ss.zzz");
   onset_timeEdit->setMinimumTime(QTime(-1, 0, 0, 0));
 
-  durationLabel = new QLabel(annot_edit_dialog);
+  durationLabel = new QLabel(annot_edit_frame);
   durationLabel->setGeometry(490, 10, 58, 25);
   durationLabel->setText("Duration");
 
-  duration_spinbox = new QDoubleSpinBox(annot_edit_dialog);
+  duration_spinbox = new QDoubleSpinBox(annot_edit_frame);
   duration_spinbox->setGeometry(550, 10, 120, 25);
   duration_spinbox->setRange(-1.0, 10000.0);
   duration_spinbox->setSingleStep(1.0);
@@ -85,19 +85,19 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(QWidget *w_parent)
   duration_spinbox->setSuffix(" sec");
   duration_spinbox->setValue(-1.0);
 
-  modifybutton = new QPushButton(annot_edit_dialog);
-  modifybutton->setGeometry(720, 10, 100, 25);
+  modifybutton = new QPushButton(annot_edit_frame);
+  modifybutton->setGeometry(700, 10, 100, 25);
   modifybutton->setText("Modify");
   modifybutton->setEnabled(false);
 
-  deletebutton = new QPushButton(annot_edit_dialog);
-  deletebutton->setGeometry(840, 10, 100, 25);
+  deletebutton = new QPushButton(annot_edit_frame);
+  deletebutton->setGeometry(820, 10, 100, 25);
   deletebutton->setText("Delete");
   deletebutton->setShortcut(QKeySequence::Delete);
   deletebutton->setEnabled(false);
 
-  createbutton = new QPushButton(annot_edit_dialog);
-  createbutton->setGeometry(960, 10, 100, 25);
+  createbutton = new QPushButton(annot_edit_frame);
+  createbutton->setGeometry(940, 10, 100, 25);
   createbutton->setText("Create");
 
   QObject::connect(modifybutton, SIGNAL(clicked()),               this, SLOT(modifyButtonClicked()));
