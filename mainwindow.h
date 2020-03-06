@@ -173,6 +173,7 @@
 #include "fir_filter_dialog.h"
 #include "ishne2edf.h"
 #include "cdsa_dock.h"
+#include "histogram_dialog.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -612,6 +613,7 @@ private slots:
   void edit_predefined_montages();
   void show_spectrum_dock();
   void show_cdsa_dock();
+  void show_histogram();
   void page_3cmsec();
   void page_25mmsec();
   void page_50mmsec();

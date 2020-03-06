@@ -1406,6 +1406,14 @@ void UI_Mainwindow::show_cdsa_dock()
 }
 
 
+void UI_Mainwindow::show_histogram()
+{
+  if((!files_open) || live_stream_active)  return;
+
+  UI_histogram_window histogram_dialog(this, 0);
+}
+
+
 void UI_Mainwindow::open_new_file()
 {
   FILE *newfile;
