@@ -126,6 +126,7 @@ void UI_hypnogram_window::start_button_clicked()
 
   dock_param.file_num = file_num;
 
+
   strlcpy(dock_param.stage_name[0], stage1_edit->text().toLatin1().data(), 32);
   strlcpy(dock_param.stage_name[1], stage2_edit->text().toLatin1().data(), 32);
   strlcpy(dock_param.stage_name[2], stage3_edit->text().toLatin1().data(), 32);
@@ -137,6 +138,18 @@ void UI_hypnogram_window::start_button_clicked()
   strlcpy(dock_param.annot_name[2], annot1_edit->text().toLatin1().data(), 32);
   strlcpy(dock_param.annot_name[3], annot1_edit->text().toLatin1().data(), 32);
   strlcpy(dock_param.annot_name[4], annot1_edit->text().toLatin1().data(), 32);
+
+  strlcpy(mainwindow->hypnogram_stage_name[0], dock_param.stage_name[0], 32);
+  strlcpy(mainwindow->hypnogram_stage_name[1], dock_param.stage_name[1], 32);
+  strlcpy(mainwindow->hypnogram_stage_name[2], dock_param.stage_name[2], 32);
+  strlcpy(mainwindow->hypnogram_stage_name[3], dock_param.stage_name[3], 32);
+  strlcpy(mainwindow->hypnogram_stage_name[4], dock_param.stage_name[4], 32);
+
+  strlcpy(mainwindow->hypnogram_annot_name[0], dock_param.annot_name[0], 32);
+  strlcpy(mainwindow->hypnogram_annot_name[1], dock_param.annot_name[1], 32);
+  strlcpy(mainwindow->hypnogram_annot_name[2], dock_param.annot_name[2], 32);
+  strlcpy(mainwindow->hypnogram_annot_name[3], dock_param.annot_name[3], 32);
+  strlcpy(mainwindow->hypnogram_annot_name[4], dock_param.annot_name[4], 32);
 
   mainwindow->hypnogram_dock[instance_num] = new UI_hypnogram_dock(mainwindow, dock_param);
 

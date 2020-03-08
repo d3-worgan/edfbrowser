@@ -283,7 +283,9 @@ public:
        recent_file_mtg_path[MAX_RECENTFILES][MAX_PATH_LENGTH],
        recent_colordir[MAX_PATH_LENGTH],
        cfg_app_version[17],
-       drop_path[MAX_PATH_LENGTH];
+       drop_path[MAX_PATH_LENGTH],
+       hypnogram_stage_name[5][32],
+       hypnogram_annot_name[5][32];
 
   double pixelsizefactor,
          x_pixelsizefactor,

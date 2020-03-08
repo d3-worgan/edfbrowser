@@ -281,6 +281,18 @@ UI_Mainwindow::UI_Mainwindow()
   cdsa_log = 1;
   cdsa_pwr_voltage = 1;
 
+  strlcpy(hypnogram_stage_name[0], "W", 32);
+  strlcpy(hypnogram_stage_name[1], "R", 32);
+  strlcpy(hypnogram_stage_name[2], "N1", 32);
+  strlcpy(hypnogram_stage_name[3], "N2", 32);
+  strlcpy(hypnogram_stage_name[4], "N3", 32);
+
+  strlcpy(hypnogram_annot_name[0], "W", 32);
+  strlcpy(hypnogram_annot_name[1], "R", 32);
+  strlcpy(hypnogram_annot_name[2], "N1", 32);
+  strlcpy(hypnogram_annot_name[3], "N2", 32);
+  strlcpy(hypnogram_annot_name[4], "N3", 32);
+
   z_score_var.crossoverfreq = 7.5;
   z_score_var.z_threshold = 0.0;
   z_score_var.zscore_page_len = 30;
