@@ -171,9 +171,9 @@ UI_Mainwindow::UI_Mainwindow()
     cdsa_dock[i] = NULL;
   }
 
-  for(i=0; i<MAXHISTOGRAMDOCKS; i++)
+  for(i=0; i<MAXHYPNOGRAMDOCKS; i++)
   {
-    histogram_dock[i] = NULL;
+    hypnogram_dock[i] = NULL;
   }
 
   for(i=0; i<MAXAVERAGECURVEDIALOGS; i++)
@@ -858,7 +858,7 @@ UI_Mainwindow::UI_Mainwindow()
   windowmenu->addAction("Annotation editor", this, SLOT(annotation_editor()));
   windowmenu->addAction("Power Spectrum", this, SLOT(show_spectrum_dock()));
   windowmenu->addAction("Color Density Spectral Array", this, SLOT(show_cdsa_dock()));
-//  windowmenu->addAction("Histogram", this, SLOT(show_histogram()));
+  windowmenu->addAction("Hypnogram", this, SLOT(show_hypnogram()));
   menubar->addMenu(windowmenu);
 
   helpmenu = new QMenu(this);

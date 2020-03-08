@@ -26,13 +26,13 @@
 
 
 
-#include "histogram_dialog.h"
+#include "hypnogram_dialog.h"
 
 
 
 
 
-UI_histogram_window::UI_histogram_window(QWidget *w_parent, int f_num, int i_num)
+UI_hypnogram_window::UI_hypnogram_window(QWidget *w_parent, int f_num, int i_num)
 {
   mainwindow = (UI_Mainwindow *)w_parent;
 
@@ -44,7 +44,7 @@ UI_histogram_window::UI_histogram_window(QWidget *w_parent, int f_num, int i_num
 
   myobjectDialog->setMinimumSize(600, 525);
   myobjectDialog->setMaximumSize(600, 525);
-  myobjectDialog->setWindowTitle("Histogram");
+  myobjectDialog->setWindowTitle("Hypnogram");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
@@ -100,7 +100,7 @@ UI_histogram_window::UI_histogram_window(QWidget *w_parent, int f_num, int i_num
 }
 
 
-void UI_histogram_window::default_button_clicked()
+void UI_hypnogram_window::default_button_clicked()
 {
   stage1_edit->setText("W");
   stage2_edit->setText("R");
@@ -116,11 +116,11 @@ void UI_histogram_window::default_button_clicked()
 }
 
 
-void UI_histogram_window::start_button_clicked()
+void UI_hypnogram_window::start_button_clicked()
 {
-  struct histogram_dock_param_struct dock_param;
+  struct hypnogram_dock_param_struct dock_param;
 
-  memset(&dock_param, 0, sizeof(struct histogram_dock_param_struct));
+  memset(&dock_param, 0, sizeof(struct hypnogram_dock_param_struct));
 
   dock_param.instance_num = instance_num;
 
@@ -138,13 +138,13 @@ void UI_histogram_window::start_button_clicked()
   strlcpy(dock_param.annot_name[3], annot1_edit->text().toLatin1().data(), 32);
   strlcpy(dock_param.annot_name[4], annot1_edit->text().toLatin1().data(), 32);
 
-  mainwindow->histogram_dock[instance_num] = new UI_histogram_dock(mainwindow, dock_param);
+  mainwindow->hypnogram_dock[instance_num] = new UI_hypnogram_dock(mainwindow, dock_param);
 
-  mainwindow->addToolBar(Qt::BottomToolBarArea, mainwindow->histogram_dock[instance_num]->histogram_dock);
+  mainwindow->addToolBar(Qt::BottomToolBarArea, mainwindow->hypnogram_dock[instance_num]->hypnogram_dock);
 
-  mainwindow->insertToolBarBreak(mainwindow->histogram_dock[instance_num]->histogram_dock);
+  mainwindow->insertToolBarBreak(mainwindow->hypnogram_dock[instance_num]->hypnogram_dock);
 
-  mainwindow->edfheaderlist[file_num]->histogram_dock[instance_num] = instance_num + 1;
+  mainwindow->edfheaderlist[file_num]->hypnogram_dock[instance_num] = instance_num + 1;
 
   myobjectDialog->close();
 }

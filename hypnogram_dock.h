@@ -25,8 +25,8 @@
 */
 
 
-#ifndef UI_HISTOGRAMDOCKFORM_H
-#define UI_HISTOGRAMDOCKFORM_H
+#ifndef UI_HYPNOGRAMDOCKFORM_H
+#define UI_HYPNOGRAMDOCKFORM_H
 
 
 #include <QtGlobal>
@@ -76,7 +76,7 @@ class simple_ruler_indicator2;
 
 
 
-struct histogram_dock_param_struct
+struct hypnogram_dock_param_struct
 {
   int instance_num;
   int file_num;
@@ -85,21 +85,21 @@ struct histogram_dock_param_struct
 };
 
 
-class UI_histogram_dock : public QObject
+class UI_hypnogram_dock : public QObject
 {
   Q_OBJECT
 
 public:
-  UI_histogram_dock(QWidget *, struct histogram_dock_param_struct);
-  ~UI_histogram_dock();
+  UI_hypnogram_dock(QWidget *, struct hypnogram_dock_param_struct);
+  ~UI_hypnogram_dock();
 
   UI_Mainwindow  *mainwindow;
 
-  QToolBar *histogram_dock;
+  QToolBar *hypnogram_dock;
 
 private:
 
-  struct histogram_dock_param_struct param;
+  struct hypnogram_dock_param_struct param;
 
   simple_tracking_indicator2 *trck_indic;
 
@@ -110,7 +110,7 @@ private:
 private slots:
 
   void file_pos_changed(long long);
-  void hide_histogram_dock(bool);
+  void hide_hypnogram_dock(bool);
 
 };
 
@@ -151,9 +151,7 @@ public:
   QSize sizeHint() const {return minimumSizeHint(); }
   QSize minimumSizeHint() const {return QSize(5, 5); }
 
-  void set_minimum(int);
-  void set_maximum(int);
-  void set_unit(const char *);
+  void set_params(struct hypnogram_dock_param_struct *);
 
 public slots:
 
@@ -163,9 +161,7 @@ protected:
 
 private:
 
-  char unit[32];
-
-  int min, max;
+  struct hypnogram_dock_param_struct param;
 };
 
 #endif

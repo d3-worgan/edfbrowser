@@ -1406,17 +1406,17 @@ void UI_Mainwindow::show_cdsa_dock()
 }
 
 
-void UI_Mainwindow::show_histogram()
+void UI_Mainwindow::show_hypnogram()
 {
   int i;
 
   if((!files_open) || live_stream_active)  return;
 
-  for(i=0; i<MAXHISTOGRAMDOCKS; i++)
+  for(i=0; i<MAXHYPNOGRAMDOCKS; i++)
   {
-    if(histogram_dock[i] == NULL)
+    if(hypnogram_dock[i] == NULL)
     {
-      UI_histogram_window histogram_dialog(this, 0, i);
+      UI_hypnogram_window hypnogram_dialog(this, 0, i);
 
       break;
     }
@@ -2202,20 +2202,20 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
 
   stop_playback();
 
-  for(i=0; i<MAXHISTOGRAMDOCKS; i++)
+  for(i=0; i<MAXHYPNOGRAMDOCKS; i++)
   {
-    inst_num = edfheaderlist[file_n]->histogram_dock[i];
+    inst_num = edfheaderlist[file_n]->hypnogram_dock[i];
 
     if(inst_num > 0)
     {
-      if(histogram_dock[inst_num - 1] != NULL)
+      if(hypnogram_dock[inst_num - 1] != NULL)
       {
-        delete histogram_dock[inst_num - 1];
+        delete hypnogram_dock[inst_num - 1];
 
-        histogram_dock[inst_num - 1] = NULL;
+        hypnogram_dock[inst_num - 1] = NULL;
       }
 
-      edfheaderlist[file_n]->histogram_dock[i] = 0;
+      edfheaderlist[file_n]->hypnogram_dock[i] = 0;
     }
   }
 
@@ -2502,20 +2502,20 @@ void UI_Mainwindow::close_all_files()
       annotations_dock[files_open] = NULL;
     }
 
-    for(i=0; i<MAXHISTOGRAMDOCKS; i++)
+    for(i=0; i<MAXHYPNOGRAMDOCKS; i++)
     {
-      inst_num = edfheaderlist[files_open]->histogram_dock[i];
+      inst_num = edfheaderlist[files_open]->hypnogram_dock[i];
 
       if(inst_num > 0)
       {
-        if(histogram_dock[inst_num - 1] != NULL)
+        if(hypnogram_dock[inst_num - 1] != NULL)
         {
-          delete histogram_dock[inst_num - 1];
+          delete hypnogram_dock[inst_num - 1];
 
-          histogram_dock[inst_num - 1] = NULL;
+          hypnogram_dock[inst_num - 1] = NULL;
         }
 
-        edfheaderlist[files_open]->histogram_dock[i] = 0;
+        edfheaderlist[files_open]->hypnogram_dock[i] = 0;
       }
     }
 

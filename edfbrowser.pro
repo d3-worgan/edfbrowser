@@ -137,8 +137,8 @@ HEADERS += fir_filter_dialog.h
 HEADERS += ishne2edf.h
 HEADERS += cdsa_dialog.h
 HEADERS += cdsa_dock.h
-HEADERS += histogram_dialog.h
-HEADERS += histogram_dock.h
+HEADERS += hypnogram_dialog.h
+HEADERS += hypnogram_dock.h
 
 HEADERS += third_party/fidlib/fidlib.h
 HEADERS += third_party/fidlib/fidmkf.h
@@ -248,8 +248,8 @@ SOURCES += fir_filter_dialog.cpp
 SOURCES += ishne2edf.cpp
 SOURCES += cdsa_dialog.cpp
 SOURCES += cdsa_dock.cpp
-SOURCES += histogram_dialog.cpp
-SOURCES += histogram_dock.cpp
+SOURCES += hypnogram_dialog.cpp
+SOURCES += hypnogram_dock.cpp
 
 SOURCES += third_party/fidlib/fidlib.c
 

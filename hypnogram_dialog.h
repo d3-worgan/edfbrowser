@@ -25,9 +25,9 @@
 */
 
 
-#ifndef UI_HISTOGRAMFORM_H
-#define UI_HISTOGRAMFORM_H
-
+#ifndef UI_HYPNOGRAMFORM_H
+#define UI_HYPNOGRAMFORM_H
+//
 
 #include <QtGlobal>
 #include <QApplication>
@@ -66,19 +66,19 @@
 #include "global.h"
 #include "mainwindow.h"
 #include "utils.h"
-#include "histogram_dock.h"
+#include "hypnogram_dock.h"
 
 
 
 class UI_Mainwindow;
 
 
-class UI_histogram_window : public QObject
+class UI_hypnogram_window : public QObject
 {
   Q_OBJECT
 
 public:
-  UI_histogram_window(QWidget *, int, int);
+  UI_hypnogram_window(QWidget *, int, int);
 
   UI_Mainwindow  *mainwindow;
 

@@ -173,8 +173,8 @@
 #include "fir_filter_dialog.h"
 #include "ishne2edf.h"
 #include "cdsa_dock.h"
-#include "histogram_dialog.h"
-#include "histogram_dock.h"
+#include "hypnogram_dialog.h"
+#include "hypnogram_dock.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -190,7 +190,7 @@ class UI_FreqSpectrumWindow;
 class UI_AverageCurveWindow;
 class UI_ZScoreWindow;
 class UI_cdsa_dock;
-class UI_histogram_dock;
+class UI_hypnogram_dock;
 
 
 class UI_Mainwindow : public QMainWindow
@@ -334,7 +334,7 @@ public:
 
   UI_cdsa_dock *cdsa_dock[MAXCDSADOCKS];
 
-  UI_histogram_dock *histogram_dock[MAXHISTOGRAMDOCKS];
+  UI_hypnogram_dock *hypnogram_dock[MAXHYPNOGRAMDOCKS];
 
   UI_SpectrumDockWindow *spectrumdock[MAXSPECTRUMDOCKS];
 
@@ -617,7 +617,7 @@ private slots:
   void edit_predefined_montages();
   void show_spectrum_dock();
   void show_cdsa_dock();
-  void show_histogram();
+  void show_hypnogram();
   void page_3cmsec();
   void page_25mmsec();
   void page_50mmsec();
