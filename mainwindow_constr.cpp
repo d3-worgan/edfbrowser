@@ -858,7 +858,7 @@ UI_Mainwindow::UI_Mainwindow()
   windowmenu->addAction("Annotation editor", this, SLOT(annotation_editor()));
   windowmenu->addAction("Power Spectrum", this, SLOT(show_spectrum_dock()));
   windowmenu->addAction("Color Density Spectral Array", this, SLOT(show_cdsa_dock()));
-  windowmenu->addAction("Hypnogram", this, SLOT(show_hypnogram()));
+//  windowmenu->addAction("Hypnogram", this, SLOT(show_hypnogram()));
   menubar->addMenu(windowmenu);
 
   helpmenu = new QMenu(this);
