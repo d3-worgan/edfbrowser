@@ -44,43 +44,49 @@ UI_histogram_dock::UI_histogram_dock(QWidget *w_parent, struct histogram_dock_pa
 
   is_deleted = 0;
 
-//   frame = new QFrame;
-// //  frame->setMinimumSize(1050, 45);
-//   frame->setFrameStyle(QFrame::NoFrame);
-//   frame->setLineWidth(0);
-//   frame->setMidLineWidth(0);
-//   frame->setContentsMargins(0, 0, 0, 0);
+  frame = new QFrame;
+  frame->setFrameStyle(QFrame::NoFrame);
+  frame->setLineWidth(0);
+  frame->setMidLineWidth(0);
+  frame->setContentsMargins(0, 0, 0, 0);
 
   histogram_label = new QLabel;
   histogram_label->setMinimumHeight(100);
   histogram_label->setMinimumWidth(100);
   histogram_label->setContentsMargins(0, 0, 0, 0);
   histogram_label->setText("test1234");
+  histogram_label->setStyleSheet("QLabel { background-color : #c0c0c0; color : black; }");
 
-//   trck_indic = new simple_tracking_indicator2;
-// //FIXME  trck_indic->set_maximum(param.segments_in_recording * param.segment_len);
-//   trck_indic->set_maximum(2000);
-//   trck_indic->setContentsMargins(0, 0, 0, 0);
-//
-//   ruler_label = new QLabel;
-//   ruler_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-//   ruler_label->setText("Hz / Time");
-//   ruler_label->setContentsMargins(0, 0, 0, 0);
-//
-//   grid_layout = new QGridLayout(frame);
-// //FIXME  grid_layout->addWidget(srl_indic,  0, 0);
-//   grid_layout->addWidget(histogram_label, 0, 1);
-//   grid_layout->addWidget(trck_indic, 1, 1);
-//   grid_layout->addWidget(ruler_label, 1, 0);
+  trck_indic = new simple_tracking_indicator2;
+  trck_indic->set_maximum(mainwindow->edfheaderlist[param.file_num]->recording_len_sec);
+  trck_indic->setContentsMargins(0, 0, 0, 0);
+
+  srl_indic = new simple_ruler_indicator2;
+  srl_indic->set_maximum(5);
+  srl_indic->set_minimum(0);
+  srl_indic->set_unit("St");
+  srl_indic->setContentsMargins(0, 0, 0, 0);
+
+  ruler_label = new QLabel;
+  ruler_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+  ruler_label->setText("Stage / Time");
+  ruler_label->setContentsMargins(0, 0, 0, 0);
+
+  grid_layout = new QGridLayout(frame);
+  grid_layout->addWidget(srl_indic,  0, 0);
+  grid_layout->addWidget(histogram_label, 0, 1);
+  grid_layout->addWidget(ruler_label, 1, 0);
+  grid_layout->addWidget(trck_indic, 1, 1);
+  grid_layout->setColumnStretch(1, 100);
 
   histogram_dock = new QToolBar("Histogram", mainwindow);
   histogram_dock->setOrientation(Qt::Horizontal);
   histogram_dock->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
-//  histogram_dock->addWidget(frame);
-  histogram_dock->addWidget(histogram_label);
+  histogram_dock->addWidget(frame);
 
   QObject::connect(mainwindow,     SIGNAL(file_position_changed(long long)), this, SLOT(file_pos_changed(long long)));
   QObject::connect(histogram_dock, SIGNAL(visibilityChanged(bool)),          this, SLOT(hide_histogram_dock(bool)));
+  QObject::connect(mainwindow,     SIGNAL(file_position_changed(long long)), this, SLOT(file_pos_changed(long long)));
 
   file_pos_changed(0);
 }
@@ -115,22 +121,7 @@ void UI_histogram_dock::hide_histogram_dock(bool visible)
 
 void UI_histogram_dock::file_pos_changed(long long)
 {
-//   int i;
-//
-//   for(i=0; i<mainwindow->signalcomps; i++)
-//   {
-//     if(mainwindow->signalcomp[i]->uid == sigcomp_uid)
-//     {
-//       if(param.signalcomp == mainwindow->signalcomp[i])
-//       {
-//         break;
-//       }
-//     }
-//   }
-// FIXME
-//   if(i == mainwindow->signalcomps)  return;
-//
-//   trck_indic->set_position((int)((param.signalcomp->edfhdr->viewtime + (mainwindow->pagetime / 2)) / 10000000LL));
+  trck_indic->set_position((int)((mainwindow->edfheaderlist[param.file_num]->viewtime + (mainwindow->pagetime / 2)) / 10000000LL));
 }
 
 
@@ -226,6 +217,113 @@ void simple_tracking_indicator2::draw_small_arrow(QPainter *painter, int xpos, i
 }
 
 
+simple_ruler_indicator2::simple_ruler_indicator2(QWidget *w_parent) : QWidget(w_parent)
+{
+  setAttribute(Qt::WA_OpaquePaintEvent);
+
+  setFixedWidth(60);
+
+  min = 0;
+  max = 100;
+}
+
+
+void simple_ruler_indicator2::set_minimum(int val)
+{
+  min = val;
+}
+
+
+void simple_ruler_indicator2::set_maximum(int val)
+{
+  max = val;
+}
+
+
+void simple_ruler_indicator2::set_unit(const char *str)
+{
+  strlcpy(unit, str, 32);
+}
+
+
+void simple_ruler_indicator2::paintEvent(QPaintEvent *)
+{
+  int i, w, h, range, skip;
+
+  double pixel_per_unit;
+
+  char str[64]={""};
+
+  w = width();
+  h = height();
+
+  QPainter painter(this);
+
+  painter.fillRect(0, 0, w, h, Qt::lightGray);
+
+  painter.setPen(Qt::black);
+
+  painter.drawLine(w - 4, 0, w - 4, h);
+
+  range = max - min;
+
+  pixel_per_unit = (double)h / (double)range;
+
+  for(skip=1; skip<100000; )
+  {
+    if((skip * pixel_per_unit) > 25)  break;
+
+    switch(skip)
+    {
+      case   1 : skip = 2;
+                 break;
+      case   2 : skip = 5;
+                 break;
+      case   5 : skip = 10;
+                 break;
+      case  10 : skip = 20;
+                 break;
+      case  20 : skip = 50;
+                 break;
+      case  50 : skip = 100;
+                 break;
+      case 100 : skip = 200;
+                 break;
+      case 200 : skip = 500;
+                 break;
+      case 500 : skip = 1000;
+                 break;
+      case 1000 : skip = 2000;
+                 break;
+      case 2000 : skip = 5000;
+                 break;
+      case 5000 : skip = 10000;
+                 break;
+      case 10000 : skip = 20000;
+                 break;
+      case 20000 : skip = 50000;
+                 break;
+      case 50000 : skip = 100000;
+                 break;
+      case 100000 : skip = 200000;
+                 break;
+      case 200000 : skip = 500000;
+                 break;
+    }
+  }
+
+  for(i=0; i<=range; i++)
+  {
+    if(!((i + min) % skip))
+    {
+      painter.drawLine(w - 4, h - (int)((pixel_per_unit * i) + 0.5), w - 13, h - (int)((pixel_per_unit * i) + 0.5));
+
+      snprintf(str, 64, "%i", min + i);
+
+      painter.drawText(QRectF(2, h - (int)((pixel_per_unit * i) + 0.5) - 9, 40, 25), Qt::AlignRight | Qt::AlignHCenter, str);
+    }
+  }
+}
 
 
 

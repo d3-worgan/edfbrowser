@@ -72,6 +72,7 @@
 
 class UI_Mainwindow;
 class simple_tracking_indicator2;
+class simple_ruler_indicator2;
 
 
 
@@ -101,6 +102,8 @@ private:
   struct histogram_dock_param_struct param;
 
   simple_tracking_indicator2 *trck_indic;
+
+  simple_ruler_indicator2 *srl_indic;
 
   int is_deleted;
 
@@ -137,6 +140,33 @@ private:
   void draw_small_arrow(QPainter *, int, int, int, QColor);
 };
 
+
+class simple_ruler_indicator2: public QWidget
+{
+  Q_OBJECT
+
+public:
+  simple_ruler_indicator2(QWidget *parent=0);
+
+  QSize sizeHint() const {return minimumSizeHint(); }
+  QSize minimumSizeHint() const {return QSize(5, 5); }
+
+  void set_minimum(int);
+  void set_maximum(int);
+  void set_unit(const char *);
+
+public slots:
+
+protected:
+  void paintEvent(QPaintEvent *);
+  void contextmenu_requested(QPoint);
+
+private:
+
+  char unit[32];
+
+  int min, max;
+};
 
 #endif
 
