@@ -171,6 +171,11 @@ UI_Mainwindow::UI_Mainwindow()
     cdsa_dock[i] = NULL;
   }
 
+  for(i=0; i<MAXHISTOGRAMDOCKS; i++)
+  {
+    histogram_dock[i] = NULL;
+  }
+
   for(i=0; i<MAXAVERAGECURVEDIALOGS; i++)
   {
     averagecurvedialog[i] = NULL;

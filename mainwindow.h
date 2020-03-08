@@ -174,6 +174,7 @@
 #include "ishne2edf.h"
 #include "cdsa_dock.h"
 #include "histogram_dialog.h"
+#include "histogram_dock.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -189,6 +190,7 @@ class UI_FreqSpectrumWindow;
 class UI_AverageCurveWindow;
 class UI_ZScoreWindow;
 class UI_cdsa_dock;
+class UI_histogram_dock;
 
 
 class UI_Mainwindow : public QMainWindow
@@ -331,6 +333,8 @@ public:
   UI_FreqSpectrumWindow *spectrumdialog[MAXSPECTRUMDIALOGS];
 
   UI_cdsa_dock *cdsa_dock[MAXCDSADOCKS];
+
+  UI_histogram_dock *histogram_dock[MAXHISTOGRAMDOCKS];
 
   UI_SpectrumDockWindow *spectrumdock[MAXSPECTRUMDOCKS];
 

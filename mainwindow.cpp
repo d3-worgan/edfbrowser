@@ -1408,9 +1408,19 @@ void UI_Mainwindow::show_cdsa_dock()
 
 void UI_Mainwindow::show_histogram()
 {
+  int i;
+
   if((!files_open) || live_stream_active)  return;
 
-  UI_histogram_window histogram_dialog(this, 0);
+  for(i=0; i<MAXHISTOGRAMDOCKS; i++)
+  {
+    if(histogram_dock[i] == NULL)
+    {
+      UI_histogram_window histogram_dialog(this, 0, i);
+
+      break;
+    }
+  }
 }
 
 
@@ -2158,7 +2168,8 @@ void UI_Mainwindow::remove_all_signals()
 void UI_Mainwindow::close_file_action_func(QAction *action)
 {
   int i, j, k, p,
-      file_n;
+      file_n,
+      inst_num=0;
 
   char f_path[MAX_PATH_LENGTH];
 
@@ -2190,6 +2201,23 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
   stop_video_generic(0);
 
   stop_playback();
+
+  for(i=0; i<MAXHISTOGRAMDOCKS; i++)
+  {
+    inst_num = edfheaderlist[file_n]->histogram_dock[i];
+
+    if(inst_num > 0)
+    {
+      if(histogram_dock[inst_num - 1] != NULL)
+      {
+        delete histogram_dock[inst_num - 1];
+
+        histogram_dock[inst_num - 1] = NULL;
+      }
+
+      edfheaderlist[file_n]->histogram_dock[i] = 0;
+    }
+  }
 
   for(j=0; j<signalcomps; )
   {
@@ -2415,8 +2443,8 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
 void UI_Mainwindow::close_all_files()
 {
   int i, j, k,
-      button_nr=0;
-
+      button_nr=0,
+      inst_num=0;
 
   toolbar_stats.active = 0;
   nav_toolbar_label->setText("");
@@ -2472,6 +2500,23 @@ void UI_Mainwindow::close_all_files()
       annotations_dock[files_open]->docklist->close();
       delete annotations_dock[files_open];
       annotations_dock[files_open] = NULL;
+    }
+
+    for(i=0; i<MAXHISTOGRAMDOCKS; i++)
+    {
+      inst_num = edfheaderlist[files_open]->histogram_dock[i];
+
+      if(inst_num > 0)
+      {
+        if(histogram_dock[inst_num - 1] != NULL)
+        {
+          delete histogram_dock[inst_num - 1];
+
+          histogram_dock[inst_num - 1] = NULL;
+        }
+
+        edfheaderlist[files_open]->histogram_dock[i] = 0;
+      }
     }
 
     delete sel_viewtime_act[files_open];

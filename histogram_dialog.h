@@ -78,13 +78,14 @@ class UI_histogram_window : public QObject
   Q_OBJECT
 
 public:
-  UI_histogram_window(QWidget *, int);
+  UI_histogram_window(QWidget *, int, int);
 
   UI_Mainwindow  *mainwindow;
 
 private:
 
-  int histogram_instance_nr;
+  int instance_num,
+      file_num;
 
   QDialog       *myobjectDialog;
 

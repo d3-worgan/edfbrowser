@@ -44,43 +44,43 @@ UI_histogram_dock::UI_histogram_dock(QWidget *w_parent, struct histogram_dock_pa
 
   is_deleted = 0;
 
-  frame = new QFrame;
-//  frame->setMinimumSize(1050, 45);
-  frame->setFrameStyle(QFrame::NoFrame);
-  frame->setLineWidth(0);
-  frame->setMidLineWidth(0);
-  frame->setContentsMargins(0, 0, 0, 0);
+//   frame = new QFrame;
+// //  frame->setMinimumSize(1050, 45);
+//   frame->setFrameStyle(QFrame::NoFrame);
+//   frame->setLineWidth(0);
+//   frame->setMidLineWidth(0);
+//   frame->setContentsMargins(0, 0, 0, 0);
 
   histogram_label = new QLabel;
   histogram_label->setMinimumHeight(100);
   histogram_label->setMinimumWidth(100);
-  histogram_label->setScaledContents(true);
   histogram_label->setContentsMargins(0, 0, 0, 0);
   histogram_label->setText("test1234");
 
-  trck_indic = new simple_tracking_indicator2;
-//FIXME  trck_indic->set_maximum(param.segments_in_recording * param.segment_len);
-  trck_indic->set_maximum(2000);
-  trck_indic->setContentsMargins(0, 0, 0, 0);
-
-  ruler_label = new QLabel;
-  ruler_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-  ruler_label->setText("Hz / Time");
-  ruler_label->setContentsMargins(0, 0, 0, 0);
-
-  grid_layout = new QGridLayout(frame);
-//FIXME  grid_layout->addWidget(srl_indic,  0, 0);
-  grid_layout->addWidget(histogram_label, 0, 1);
-  grid_layout->addWidget(trck_indic, 1, 1);
-  grid_layout->addWidget(ruler_label, 1, 0);
+//   trck_indic = new simple_tracking_indicator2;
+// //FIXME  trck_indic->set_maximum(param.segments_in_recording * param.segment_len);
+//   trck_indic->set_maximum(2000);
+//   trck_indic->setContentsMargins(0, 0, 0, 0);
+//
+//   ruler_label = new QLabel;
+//   ruler_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+//   ruler_label->setText("Hz / Time");
+//   ruler_label->setContentsMargins(0, 0, 0, 0);
+//
+//   grid_layout = new QGridLayout(frame);
+// //FIXME  grid_layout->addWidget(srl_indic,  0, 0);
+//   grid_layout->addWidget(histogram_label, 0, 1);
+//   grid_layout->addWidget(trck_indic, 1, 1);
+//   grid_layout->addWidget(ruler_label, 1, 0);
 
   histogram_dock = new QToolBar("Histogram", mainwindow);
   histogram_dock->setOrientation(Qt::Horizontal);
   histogram_dock->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
-  histogram_dock->addWidget(frame);
+//  histogram_dock->addWidget(frame);
+  histogram_dock->addWidget(histogram_label);
 
-  QObject::connect(histogram_dock,  SIGNAL(destroyed(QObject *)),               this, SLOT(histogram_dock_destroyed(QObject *)));
-  QObject::connect(mainwindow,      SIGNAL(file_position_changed(long long)),   this, SLOT(file_pos_changed(long long)));
+  QObject::connect(mainwindow,     SIGNAL(file_position_changed(long long)), this, SLOT(file_pos_changed(long long)));
+  QObject::connect(histogram_dock, SIGNAL(visibilityChanged(bool)),          this, SLOT(hide_histogram_dock(bool)));
 
   file_pos_changed(0);
 }
@@ -92,27 +92,24 @@ UI_histogram_dock::~UI_histogram_dock()
   {
     is_deleted = 1;
 
-    histogram_dock->close();
+    mainwindow->removeToolBar(histogram_dock);
 
-//FIXME    param.signalcomp->histogram_dock[param.instance_nr] = 0;
+    mainwindow->edfheaderlist[param.file_num]->histogram_dock[param.instance_num] = 0;
 
-//FIXME    mainwindow->histogram_dock[param.instance_nr] = NULL;
+    mainwindow->histogram_dock[param.instance_num] = NULL;
   }
 }
 
 
-void UI_histogram_dock::histogram_dock_destroyed(QObject *)
+void UI_histogram_dock::hide_histogram_dock(bool visible)
 {
-  if(!is_deleted)
+  if(visible == false)
   {
-    is_deleted = 1;
-
-//     param.signalcomp->histogram_dock[param.instance_nr] = 0;
-//FIXME
-//     mainwindow->histogram_dock[param.instance_nr] = NULL;
+    if(!is_deleted)
+    {
+      delete this;
+    }
   }
-
-  delete this;
 }
 
 

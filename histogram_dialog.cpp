@@ -32,11 +32,13 @@
 
 
 
-UI_histogram_window::UI_histogram_window(QWidget *w_parent, int numb)
+UI_histogram_window::UI_histogram_window(QWidget *w_parent, int f_num, int i_num)
 {
   mainwindow = (UI_Mainwindow *)w_parent;
 
-  histogram_instance_nr = numb;
+  instance_num = i_num;
+
+  file_num = f_num;
 
   myobjectDialog = new QDialog;
 
@@ -116,17 +118,33 @@ void UI_histogram_window::default_button_clicked()
 
 void UI_histogram_window::start_button_clicked()
 {
-  UI_histogram_dock *obj;
-
   struct histogram_dock_param_struct dock_param;
 
-  obj = new UI_histogram_dock(mainwindow, dock_param);
+  memset(&dock_param, 0, sizeof(struct histogram_dock_param_struct));
 
-  mainwindow->addToolBar(Qt::BottomToolBarArea, obj->histogram_dock);
+  dock_param.instance_num = instance_num;
 
-//   mainwindow->cdsa_dock[cdsa_instance_nr] = new UI_cdsa_dock(mainwindow, dock_param);
-//FIXME
-//   signalcomp->cdsa_dock[cdsa_instance_nr] = cdsa_instance_nr + 1;
+  dock_param.file_num = file_num;
+
+  strlcpy(dock_param.stage_name[0], stage1_edit->text().toLatin1().data(), 32);
+  strlcpy(dock_param.stage_name[1], stage2_edit->text().toLatin1().data(), 32);
+  strlcpy(dock_param.stage_name[2], stage3_edit->text().toLatin1().data(), 32);
+  strlcpy(dock_param.stage_name[3], stage4_edit->text().toLatin1().data(), 32);
+  strlcpy(dock_param.stage_name[4], stage5_edit->text().toLatin1().data(), 32);
+
+  strlcpy(dock_param.annot_name[0], annot1_edit->text().toLatin1().data(), 32);
+  strlcpy(dock_param.annot_name[1], annot1_edit->text().toLatin1().data(), 32);
+  strlcpy(dock_param.annot_name[2], annot1_edit->text().toLatin1().data(), 32);
+  strlcpy(dock_param.annot_name[3], annot1_edit->text().toLatin1().data(), 32);
+  strlcpy(dock_param.annot_name[4], annot1_edit->text().toLatin1().data(), 32);
+
+  mainwindow->histogram_dock[instance_num] = new UI_histogram_dock(mainwindow, dock_param);
+
+  mainwindow->addToolBar(Qt::BottomToolBarArea, mainwindow->histogram_dock[instance_num]->histogram_dock);
+
+  mainwindow->insertToolBarBreak(mainwindow->histogram_dock[instance_num]->histogram_dock);
+
+  mainwindow->edfheaderlist[file_num]->histogram_dock[instance_num] = instance_num + 1;
 
   myobjectDialog->close();
 }

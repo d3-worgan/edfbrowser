@@ -76,6 +76,7 @@
 #define MAXSPECTRUMDIALOGS (32)
 #define MAXSPECTRUMDOCKS (8)
 #define MAXCDSADOCKS (64)
+#define MAXHISTOGRAMDOCKS (64)
 #define MAXPREDEFINEDMONTAGES (12)
 #define MAXAVERAGECURVEDIALOGS (32)
 #define MAXZSCOREDIALOGS (32)
@@ -172,6 +173,7 @@ struct edfhdrblock{
         int       recording_len_sec;
         struct edfparamblock *edfparam;
         struct annotation_list annot_list;
+        int histogram_dock[MAXHISTOGRAMDOCKS];
       };
 
 struct signalcompblock{

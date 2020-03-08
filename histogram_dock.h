@@ -77,7 +77,10 @@ class simple_tracking_indicator2;
 
 struct histogram_dock_param_struct
 {
-  int instance_nr;
+  int instance_num;
+  int file_num;
+  char stage_name[5][32];
+  char annot_name[5][32];
 };
 
 
@@ -103,8 +106,8 @@ private:
 
 private slots:
 
-  void histogram_dock_destroyed(QObject *);
   void file_pos_changed(long long);
+  void hide_histogram_dock(bool);
 
 };
 
