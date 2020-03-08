@@ -73,7 +73,7 @@
 class UI_Mainwindow;
 class simple_tracking_indicator2;
 class simple_ruler_indicator2;
-
+class hypnogram_curve_widget;
 
 
 struct hypnogram_dock_param_struct
@@ -104,6 +104,8 @@ private:
   simple_tracking_indicator2 *trck_indic;
 
   simple_ruler_indicator2 *srl_indic;
+
+  hypnogram_curve_widget *hypnogram_curve;
 
   int is_deleted;
 
@@ -163,6 +165,30 @@ private:
 
   struct hypnogram_dock_param_struct param;
 };
+
+
+class hypnogram_curve_widget: public QWidget
+{
+  Q_OBJECT
+
+public:
+  hypnogram_curve_widget(QWidget *parent=0);
+
+  QSize sizeHint() const {return minimumSizeHint(); }
+  QSize minimumSizeHint() const {return QSize(5, 5); }
+
+  void set_params(struct hypnogram_dock_param_struct *);
+
+public slots:
+
+protected:
+  void paintEvent(QPaintEvent *);
+
+private:
+
+  struct hypnogram_dock_param_struct param;
+};
+
 
 #endif
 

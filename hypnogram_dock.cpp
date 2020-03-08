@@ -31,8 +31,7 @@
 
 UI_hypnogram_dock::UI_hypnogram_dock(QWidget *w_parent, struct hypnogram_dock_param_struct par)
 {
-  QLabel *hypnogram_label,
-         *ruler_label;
+  QLabel *ruler_label;
 
   QFrame *frame;
 
@@ -50,12 +49,11 @@ UI_hypnogram_dock::UI_hypnogram_dock(QWidget *w_parent, struct hypnogram_dock_pa
   frame->setMidLineWidth(0);
   frame->setContentsMargins(0, 0, 0, 0);
 
-  hypnogram_label = new QLabel;
-  hypnogram_label->setMinimumHeight(100);
-  hypnogram_label->setMinimumWidth(100);
-  hypnogram_label->setContentsMargins(0, 0, 0, 0);
-  hypnogram_label->setText("test1234");
-  hypnogram_label->setStyleSheet("QLabel { background-color : #c0c0c0; color : black; }");
+  hypnogram_curve = new hypnogram_curve_widget;
+  hypnogram_curve->setMinimumHeight(100);
+  hypnogram_curve->setMinimumWidth(100);
+  hypnogram_curve->setContentsMargins(0, 0, 0, 0);
+  hypnogram_curve->set_params(&param);
 
   trck_indic = new simple_tracking_indicator2;
   trck_indic->set_maximum(mainwindow->edfheaderlist[param.file_num]->recording_len_sec);
@@ -73,7 +71,7 @@ UI_hypnogram_dock::UI_hypnogram_dock(QWidget *w_parent, struct hypnogram_dock_pa
 
   grid_layout = new QGridLayout(frame);
   grid_layout->addWidget(srl_indic,  0, 0);
-  grid_layout->addWidget(hypnogram_label, 0, 1);
+  grid_layout->addWidget(hypnogram_curve, 0, 1);
   grid_layout->addWidget(ruler_label, 1, 0);
   grid_layout->addWidget(trck_indic, 1, 1);
   grid_layout->setColumnStretch(1, 100);
@@ -258,6 +256,43 @@ void simple_ruler_indicator2::paintEvent(QPaintEvent *)
 
     painter.drawText(QRectF(2, (int)((pixel_per_unit * i) + 0.5 + offset) - 9, 60, 25), Qt::AlignRight | Qt::AlignHCenter, param.stage_name[i]);
   }
+}
+
+
+hypnogram_curve_widget::hypnogram_curve_widget(QWidget *w_parent) : QWidget(w_parent)
+{
+  setAttribute(Qt::WA_OpaquePaintEvent);
+}
+
+
+void hypnogram_curve_widget::set_params(struct hypnogram_dock_param_struct *parms)
+{
+  param = *parms;
+}
+
+
+void hypnogram_curve_widget::paintEvent(QPaintEvent *)
+{
+  int w, h;
+
+  double pixel_per_unit;
+
+  w = width();
+  h = height();
+
+  QPainter painter(this);
+
+  painter.fillRect(0, 0, w, h, Qt::lightGray);
+
+  pixel_per_unit = ((double)h / 5.0);
+
+  painter.fillRect(0, 0, w, pixel_per_unit, QColor(255, 255, 217));
+  painter.fillRect(0, pixel_per_unit + 0.5, w, pixel_per_unit + 0.5, QColor(217, 255, 217));
+  painter.fillRect(0, pixel_per_unit * 2.0 + 0.5, w, pixel_per_unit + 0.5, QColor(231, 248, 255));
+  painter.fillRect(0, pixel_per_unit * 3.0 + 0.5, w, pixel_per_unit + 0.5, QColor(213, 237, 255));
+  painter.fillRect(0, pixel_per_unit * 4.0 + 0.5, w, pixel_per_unit + 0.5, QColor(186, 225, 255));
+
+  painter.setPen(Qt::black);
 }
 
 
