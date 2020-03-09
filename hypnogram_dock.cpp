@@ -104,6 +104,12 @@ UI_hypnogram_dock::~UI_hypnogram_dock()
 }
 
 
+void UI_hypnogram_dock::update_curve(void)
+{
+  hypnogram_curve->update();
+}
+
+
 void UI_hypnogram_dock::hide_hypnogram_dock(bool visible)
 {
   if(visible == false)

@@ -3992,6 +3992,12 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
 }
 
 
+void UI_Mainwindow::annot_dock_updated(void)
+{
+  emit annot_docklist_changed();
+}
+
+
 
 
 

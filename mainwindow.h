@@ -354,6 +354,8 @@ public:
 
   void get_rgbcolor_settings(struct xml_handle *, const char *, int, QColor *);
 
+  void annot_dock_updated(void);
+
   struct signalcompblock * create_signalcomp_copy(struct signalcompblock *);
 
 #ifdef Q_OS_WIN32
@@ -377,6 +379,7 @@ public:
 
 signals:
      void file_position_changed(long long);
+     void annot_docklist_changed(void);
 
 private:
 

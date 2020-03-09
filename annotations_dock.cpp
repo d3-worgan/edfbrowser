@@ -1009,6 +1009,8 @@ void UI_Annotationswindow::updateList(void)
   messagewindow.hide();
 
   QApplication::restoreOverrideCursor();
+
+  mainwindow->annot_dock_updated();
 }
 
 

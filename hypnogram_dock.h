@@ -98,6 +98,9 @@ public:
 
   QToolBar *hypnogram_dock;
 
+public slots:
+  void update_curve(void);
+
 private:
 
   struct hypnogram_dock_param_struct param;

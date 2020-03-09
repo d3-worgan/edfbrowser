@@ -182,6 +182,8 @@ void UI_hypnogram_window::start_button_clicked()
 
   mainwindow->edfheaderlist[file_num]->hypnogram_dock[instance_num] = instance_num + 1;
 
+  QObject::connect(mainwindow, SIGNAL(annot_docklist_changed()), mainwindow->hypnogram_dock[instance_num], SLOT(update_curve()));
+
   myobjectDialog->close();
 }
 
