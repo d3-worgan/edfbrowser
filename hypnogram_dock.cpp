@@ -309,7 +309,7 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
   painter.fillRect(0, pixel_per_unit * 2.0 + 0.5, w, pixel_per_unit + 0.5, QColor(231, 248, 255));
   painter.fillRect(0, pixel_per_unit * 3.0 + 0.5, w, pixel_per_unit + 0.5, QColor(213, 237, 255));
   painter.fillRect(0, pixel_per_unit * 4.0 + 0.5, w, pixel_per_unit + 0.5, QColor(186, 225, 255));
-  painter.fillRect(0, pixel_per_unit * 5.0 + 0.5, w, pixel_per_unit + 0.5, QColor(140, 200, 255));
+  painter.fillRect(0, pixel_per_unit * 5.0 + 0.5, w, pixel_per_unit + 0.5, QColor(160, 210, 255));
 
   painter.setPen(Qt::blue);
 
