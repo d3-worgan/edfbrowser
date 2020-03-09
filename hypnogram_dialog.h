@@ -97,11 +97,13 @@ private:
                 *stage3_edit,
                 *stage4_edit,
                 *stage5_edit,
+                *stage6_edit,
                 *annot1_edit,
                 *annot2_edit,
                 *annot3_edit,
                 *annot4_edit,
-                *annot5_edit;
+                *annot5_edit,
+                *annot6_edit;
 
   QPushButton   *close_button,
                 *start_button,

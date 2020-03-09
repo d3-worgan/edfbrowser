@@ -67,7 +67,7 @@
 #include "global.h"
 #include "mainwindow.h"
 #include "utils.h"
-
+#include "edf_annot_list.h"
 
 
 class UI_Mainwindow;
@@ -80,8 +80,9 @@ struct hypnogram_dock_param_struct
 {
   int instance_num;
   int file_num;
-  char stage_name[5][32];
-  char annot_name[5][32];
+  char stage_name[6][32];
+  char annot_name[6][32];
+  UI_Mainwindow  *mainwindow;
 };
 
 
@@ -176,6 +177,8 @@ public:
 
   QSize sizeHint() const {return minimumSizeHint(); }
   QSize minimumSizeHint() const {return QSize(5, 5); }
+
+  UI_Mainwindow  *mainwindow;
 
   void set_params(struct hypnogram_dock_param_struct *);
 

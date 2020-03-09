@@ -1179,6 +1179,43 @@ void UI_Mainwindow::read_general_settings()
     xml_go_up(xml_hdl);
   }
 
+  if(!(xml_goto_nth_element_inside(xml_hdl, "hypnogram", 0)))
+  {
+    for(i=0; i<6; i++)
+    {
+      if(!(xml_goto_nth_element_inside(xml_hdl, "stage_name", i)))
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          xml_close(xml_hdl);
+          return;
+        }
+
+        strlcpy(hypnogram_stage_name[i], result, 32);
+
+        xml_go_up(xml_hdl);
+      }
+    }
+
+    for(i=0; i<6; i++)
+    {
+      if(!(xml_goto_nth_element_inside(xml_hdl, "annot_name", i)))
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          xml_close(xml_hdl);
+          return;
+        }
+
+        strlcpy(hypnogram_annot_name[i], result, 32);
+
+        xml_go_up(xml_hdl);
+      }
+    }
+
+    xml_go_up(xml_hdl);
+  }
+
   if(!(xml_goto_nth_element_inside(xml_hdl, "live_stream_update_interval", 0)))
   {
     if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
@@ -2165,6 +2202,24 @@ void UI_Mainwindow::write_settings()
     fprintf(cfgfile, "      <duration>%i</duration>\n", export_annotations_var->duration);
 
     fprintf(cfgfile, "    </annotations_export_var>\n");
+
+    fprintf(cfgfile, "    <hypnogram>\n");
+
+    fprintf(cfgfile, "      <stage_name>%s</stage_name>\n", hypnogram_stage_name[0]);
+    fprintf(cfgfile, "      <stage_name>%s</stage_name>\n", hypnogram_stage_name[1]);
+    fprintf(cfgfile, "      <stage_name>%s</stage_name>\n", hypnogram_stage_name[2]);
+    fprintf(cfgfile, "      <stage_name>%s</stage_name>\n", hypnogram_stage_name[3]);
+    fprintf(cfgfile, "      <stage_name>%s</stage_name>\n", hypnogram_stage_name[4]);
+    fprintf(cfgfile, "      <stage_name>%s</stage_name>\n", hypnogram_stage_name[5]);
+
+    fprintf(cfgfile, "      <annot_name>%s</annot_name>\n", hypnogram_annot_name[0]);
+    fprintf(cfgfile, "      <annot_name>%s</annot_name>\n", hypnogram_annot_name[1]);
+    fprintf(cfgfile, "      <annot_name>%s</annot_name>\n", hypnogram_annot_name[2]);
+    fprintf(cfgfile, "      <annot_name>%s</annot_name>\n", hypnogram_annot_name[3]);
+    fprintf(cfgfile, "      <annot_name>%s</annot_name>\n", hypnogram_annot_name[4]);
+    fprintf(cfgfile, "      <annot_name>%s</annot_name>\n", hypnogram_annot_name[5]);
+
+    fprintf(cfgfile, "    </hypnogram>\n");
 
     fprintf(cfgfile, "    <live_stream_update_interval>%i</live_stream_update_interval>\n", live_stream_update_interval);
 

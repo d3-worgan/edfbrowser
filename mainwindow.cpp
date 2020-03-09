@@ -2487,20 +2487,6 @@ void UI_Mainwindow::close_all_files()
   while(files_open)
   {
     files_open--;
-    if(edfheaderlist[files_open]->file_hdl != NULL)
-    {
-      fclose(edfheaderlist[files_open]->file_hdl);
-    }
-    edfplus_annotation_empty_list(&edfheaderlist[files_open]->annot_list);
-    free(edfheaderlist[files_open]->edfparam);
-    free(edfheaderlist[files_open]);
-
-    if(annotations_dock[files_open] != NULL)
-    {
-      annotations_dock[files_open]->docklist->close();
-      delete annotations_dock[files_open];
-      annotations_dock[files_open] = NULL;
-    }
 
     for(i=0; i<MAXHYPNOGRAMDOCKS; i++)
     {
@@ -2517,6 +2503,21 @@ void UI_Mainwindow::close_all_files()
 
         edfheaderlist[files_open]->hypnogram_dock[i] = 0;
       }
+    }
+
+    if(edfheaderlist[files_open]->file_hdl != NULL)
+    {
+      fclose(edfheaderlist[files_open]->file_hdl);
+    }
+    edfplus_annotation_empty_list(&edfheaderlist[files_open]->annot_list);
+    free(edfheaderlist[files_open]->edfparam);
+    free(edfheaderlist[files_open]);
+
+    if(annotations_dock[files_open] != NULL)
+    {
+      annotations_dock[files_open]->docklist->close();
+      delete annotations_dock[files_open];
+      annotations_dock[files_open] = NULL;
     }
 
     delete sel_viewtime_act[files_open];

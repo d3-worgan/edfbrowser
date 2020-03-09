@@ -244,13 +244,13 @@ void simple_ruler_indicator2::paintEvent(QPaintEvent *)
 
   painter.setPen(Qt::black);
 
-  pixel_per_unit = (double)h / 5.0;
+  pixel_per_unit = (double)h / 6.0;
 
-  offset = (double)h / 10.0;
+  offset = (double)h / 12.0;
 
   painter.drawLine(w - 4, offset, w - 4, h - offset);
 
-  for(i=0; i<5; i++)
+  for(i=0; i<6; i++)
   {
     painter.drawLine(w - 4, (int)((pixel_per_unit * i) + 0.5 + offset), w - 13, (int)((pixel_per_unit * i) + 0.5 + offset));
 
@@ -261,6 +261,8 @@ void simple_ruler_indicator2::paintEvent(QPaintEvent *)
 
 hypnogram_curve_widget::hypnogram_curve_widget(QWidget *w_parent) : QWidget(w_parent)
 {
+  mainwindow = NULL;
+
   setAttribute(Qt::WA_OpaquePaintEvent);
 }
 
@@ -268,14 +270,22 @@ hypnogram_curve_widget::hypnogram_curve_widget(QWidget *w_parent) : QWidget(w_pa
 void hypnogram_curve_widget::set_params(struct hypnogram_dock_param_struct *parms)
 {
   param = *parms;
+
+  mainwindow = param.mainwindow;
 }
 
 
 void hypnogram_curve_widget::paintEvent(QPaintEvent *)
 {
-  int w, h;
+  int w, h, i, j, n, pos_x1=0, pos_x2=0, stage=0;
 
-  double pixel_per_unit;
+  double pixel_per_unit,
+         pixel_per_sec,
+         offset;
+
+  struct annotation_list *annot_list;
+
+  struct annotationblock *annot;
 
   w = width();
   h = height();
@@ -284,15 +294,54 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
 
   painter.fillRect(0, 0, w, h, Qt::lightGray);
 
-  pixel_per_unit = ((double)h / 5.0);
+  pixel_per_unit = ((double)h / 6.0);
 
-  painter.fillRect(0, 0, w, pixel_per_unit, QColor(255, 255, 217));
+  offset = ((double)h / 12.0);
+
+  painter.fillRect(0, 0, w, pixel_per_unit + 0.5, QColor(255, 255, 217));
   painter.fillRect(0, pixel_per_unit + 0.5, w, pixel_per_unit + 0.5, QColor(217, 255, 217));
   painter.fillRect(0, pixel_per_unit * 2.0 + 0.5, w, pixel_per_unit + 0.5, QColor(231, 248, 255));
   painter.fillRect(0, pixel_per_unit * 3.0 + 0.5, w, pixel_per_unit + 0.5, QColor(213, 237, 255));
   painter.fillRect(0, pixel_per_unit * 4.0 + 0.5, w, pixel_per_unit + 0.5, QColor(186, 225, 255));
+  painter.fillRect(0, pixel_per_unit * 5.0 + 0.5, w, pixel_per_unit + 0.5, QColor(140, 200, 255));
 
-  painter.setPen(Qt::black);
+  painter.setPen(Qt::blue);
+
+  if(mainwindow == NULL)  return;
+
+  pixel_per_sec = (double)w / (double)(mainwindow->edfheaderlist[param.file_num]->recording_len_sec);
+
+  annot_list = &mainwindow->edfheaderlist[param.file_num]->annot_list;
+
+  n = edfplus_annotation_size(annot_list);
+
+  for(i=0; i<n; i++)
+  {
+    annot = edfplus_annotation_get_item(annot_list, i);
+
+    for(j=0; j<6; j++)
+    {
+      if(!strcmp(annot->annotation, param.annot_name[j]))
+      {
+        pos_x2 = ((double)(annot->onset) * pixel_per_sec) / TIME_DIMENSION;
+
+        if(i)
+        {
+          painter.drawLine(pos_x1, offset + (stage * pixel_per_unit) + 0.5,
+                           pos_x2, offset + (stage * pixel_per_unit) + 0.5);
+
+          painter.drawLine(pos_x2, offset + (stage * pixel_per_unit) + 0.5,
+                           pos_x2, offset + (j * pixel_per_unit) + 0.5);
+        }
+
+        pos_x1 = pos_x2;
+
+        stage = j;
+
+        break;
+      }
+    }
+  }
 }
 
 

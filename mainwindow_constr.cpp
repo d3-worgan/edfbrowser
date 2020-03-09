@@ -286,12 +286,14 @@ UI_Mainwindow::UI_Mainwindow()
   strlcpy(hypnogram_stage_name[2], "N1", 32);
   strlcpy(hypnogram_stage_name[3], "N2", 32);
   strlcpy(hypnogram_stage_name[4], "N3", 32);
+  strlcpy(hypnogram_stage_name[5], "N4", 32);
 
   strlcpy(hypnogram_annot_name[0], "W", 32);
   strlcpy(hypnogram_annot_name[1], "R", 32);
   strlcpy(hypnogram_annot_name[2], "N1", 32);
   strlcpy(hypnogram_annot_name[3], "N2", 32);
   strlcpy(hypnogram_annot_name[4], "N3", 32);
+  strlcpy(hypnogram_annot_name[5], "N4", 32);
 
   z_score_var.crossoverfreq = 7.5;
   z_score_var.z_threshold = 0.0;
@@ -870,7 +872,7 @@ UI_Mainwindow::UI_Mainwindow()
   windowmenu->addAction("Annotation editor", this, SLOT(annotation_editor()));
   windowmenu->addAction("Power Spectrum", this, SLOT(show_spectrum_dock()));
   windowmenu->addAction("Color Density Spectral Array", this, SLOT(show_cdsa_dock()));
-//  windowmenu->addAction("Hypnogram", this, SLOT(show_hypnogram()));
+  windowmenu->addAction("Hypnogram", this, SLOT(show_hypnogram()));
   menubar->addMenu(windowmenu);
 
   helpmenu = new QMenu(this);
