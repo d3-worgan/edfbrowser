@@ -78,14 +78,15 @@ class UI_hypnogram_window : public QObject
   Q_OBJECT
 
 public:
-  UI_hypnogram_window(QWidget *, int, int);
+  UI_hypnogram_window(QWidget *, struct edfhdrblock *, int);
 
   UI_Mainwindow  *mainwindow;
 
 private:
 
-  int instance_num,
-      file_num;
+  int instance_num;
+
+  struct edfhdrblock *edfhdr;
 
   QDialog       *myobjectDialog;
 

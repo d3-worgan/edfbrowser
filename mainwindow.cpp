@@ -1408,7 +1408,7 @@ void UI_Mainwindow::show_cdsa_dock()
 
 void UI_Mainwindow::show_hypnogram()
 {
-  int i;
+  int i, file_num=0;
 
   if((!files_open) || live_stream_active)  return;
 
@@ -1416,7 +1416,19 @@ void UI_Mainwindow::show_hypnogram()
   {
     if(hypnogram_dock[i] == NULL)
     {
-      UI_hypnogram_window hypnogram_dialog(this, 0, i);
+      if(files_open > 1)
+      {
+        UI_activeFileChooserWindow choose_file_dialog(&file_num, this);
+
+        if(file_num >= 0)
+        {
+          UI_hypnogram_window hypnogram_dialog(this, edfheaderlist[file_num], i);
+        }
+      }
+      else
+      {
+        UI_hypnogram_window hypnogram_dialog(this, edfheaderlist[0], i);
+      }
 
       break;
     }

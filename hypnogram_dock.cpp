@@ -56,7 +56,7 @@ UI_hypnogram_dock::UI_hypnogram_dock(QWidget *w_parent, struct hypnogram_dock_pa
   hypnogram_curve->set_params(&param);
 
   trck_indic = new simple_tracking_indicator2;
-  trck_indic->set_maximum(mainwindow->edfheaderlist[param.file_num]->recording_len_sec);
+  trck_indic->set_maximum(param.edfhdr->recording_len_sec);
   trck_indic->setContentsMargins(0, 0, 0, 0);
 
   srl_indic = new simple_ruler_indicator2;
@@ -97,7 +97,7 @@ UI_hypnogram_dock::~UI_hypnogram_dock()
 
     mainwindow->removeToolBar(hypnogram_dock);
 
-    mainwindow->edfheaderlist[param.file_num]->hypnogram_dock[param.instance_num] = 0;
+    param.edfhdr->hypnogram_dock[param.instance_num] = 0;
 
     mainwindow->hypnogram_dock[param.instance_num] = NULL;
   }
@@ -124,7 +124,7 @@ void UI_hypnogram_dock::hide_hypnogram_dock(bool visible)
 
 void UI_hypnogram_dock::file_pos_changed(long long)
 {
-  trck_indic->set_position((int)((mainwindow->edfheaderlist[param.file_num]->viewtime + (mainwindow->pagetime / 2)) / 10000000LL));
+  trck_indic->set_position((int)((param.edfhdr->viewtime + (mainwindow->pagetime / 2)) / 10000000LL));
 }
 
 
@@ -289,6 +289,8 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
          pixel_per_sec,
          offset;
 
+  long long annot_duration;
+
   struct annotation_list *annot_list;
 
   struct annotationblock *annot;
@@ -315,9 +317,9 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
 
   if(mainwindow == NULL)  return;
 
-  pixel_per_sec = (double)w / (double)(mainwindow->edfheaderlist[param.file_num]->recording_len_sec);
+  pixel_per_sec = (double)w / (double)(param.edfhdr->recording_len_sec);
 
-  annot_list = &mainwindow->edfheaderlist[param.file_num]->annot_list;
+  annot_list = &param.edfhdr->annot_list;
 
   n = edfplus_annotation_size(annot_list);
 
@@ -330,6 +332,8 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
       if(!strcmp(annot->annotation, param.annot_name[j]))
       {
         pos_x2 = ((double)(annot->onset) * pixel_per_sec) / TIME_DIMENSION;
+
+        annot_duration = annot->long_duration;
 
         if(i)
         {
@@ -346,6 +350,22 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
 
         break;
       }
+    }
+  }
+
+  if(pos_x1)
+  {
+    if(annot_duration > 0)
+    {
+      pos_x2 = (((double)annot_duration * pixel_per_sec) / TIME_DIMENSION) + pos_x1;
+
+      painter.drawLine(pos_x1, offset + (stage * pixel_per_unit) + 0.5,
+                       pos_x2, offset + (stage * pixel_per_unit) + 0.5);
+    }
+    else
+    {
+      painter.drawLine(pos_x1, offset + (stage * pixel_per_unit) + 0.5,
+                       w, offset + (stage * pixel_per_unit) + 0.5);
     }
   }
 }

@@ -79,9 +79,9 @@ class hypnogram_curve_widget;
 struct hypnogram_dock_param_struct
 {
   int instance_num;
-  int file_num;
   char stage_name[6][32];
   char annot_name[6][32];
+  struct edfhdrblock *edfhdr;
   UI_Mainwindow  *mainwindow;
 };
 

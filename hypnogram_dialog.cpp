@@ -32,13 +32,13 @@
 
 
 
-UI_hypnogram_window::UI_hypnogram_window(QWidget *w_parent, int f_num, int i_num)
+UI_hypnogram_window::UI_hypnogram_window(QWidget *w_parent, struct edfhdrblock *e_hdr, int i_num)
 {
   mainwindow = (UI_Mainwindow *)w_parent;
 
   instance_num = i_num;
 
-  file_num = f_num;
+  edfhdr = e_hdr;
 
   myobjectDialog = new QDialog;
 
@@ -51,36 +51,50 @@ UI_hypnogram_window::UI_hypnogram_window(QWidget *w_parent, int f_num, int i_num
   stage_label = new QLabel(myobjectDialog);
   stage_label->setGeometry(20, 20, 150, 25);
   stage_label->setText("Stage");
+  stage_label->setToolTip("The labels as how they will be displayed in the hypnogram");
 
   annot_label = new QLabel(myobjectDialog);
   annot_label->setGeometry(200, 20, 150, 25);
   annot_label->setText("Annotation");
+  annot_label->setToolTip("The annotations that will be mapped to the labels in the left column");
 
   stage1_edit = new QLineEdit(myobjectDialog);
   stage1_edit->setGeometry(20, 65, 150, 25);
+  stage1_edit->setToolTip("The label as how it will be displayed in the hypnogram");
   stage2_edit = new QLineEdit(myobjectDialog);
   stage2_edit->setGeometry(20, 110, 150, 25);
+  stage2_edit->setToolTip("The label as how it will be displayed in the hypnogram");
   stage3_edit = new QLineEdit(myobjectDialog);
   stage3_edit->setGeometry(20, 155, 150, 25);
+  stage3_edit->setToolTip("The label as how it will be displayed in the hypnogram");
   stage4_edit = new QLineEdit(myobjectDialog);
   stage4_edit->setGeometry(20, 200, 150, 25);
+  stage4_edit->setToolTip("The label as how it will be displayed in the hypnogram");
   stage5_edit = new QLineEdit(myobjectDialog);
   stage5_edit->setGeometry(20, 245, 150, 25);
+  stage5_edit->setToolTip("The label as how it will be displayed in the hypnogram");
   stage6_edit = new QLineEdit(myobjectDialog);
   stage6_edit->setGeometry(20, 290, 150, 25);
+  stage6_edit->setToolTip("The label as how it will be displayed in the hypnogram");
 
   annot1_edit = new QLineEdit(myobjectDialog);
   annot1_edit->setGeometry(200, 65, 150, 25);
+  annot1_edit->setToolTip("The annotation that will be mapped to the label in the left column");
   annot2_edit = new QLineEdit(myobjectDialog);
   annot2_edit->setGeometry(200, 110, 150, 25);
+  annot2_edit->setToolTip("The annotation that will be mapped to the label in the left column");
   annot3_edit = new QLineEdit(myobjectDialog);
   annot3_edit->setGeometry(200, 155, 150, 25);
+  annot3_edit->setToolTip("The annotation that will be mapped to the label in the left column");
   annot4_edit = new QLineEdit(myobjectDialog);
   annot4_edit->setGeometry(200, 200, 150, 25);
+  annot4_edit->setToolTip("The annotation that will be mapped to the label in the left column");
   annot5_edit = new QLineEdit(myobjectDialog);
   annot5_edit->setGeometry(200, 245, 150, 25);
+  annot5_edit->setToolTip("The annotation that will be mapped to the label in the left column");
   annot6_edit = new QLineEdit(myobjectDialog);
   annot6_edit->setGeometry(200, 290, 150, 25);
+  annot6_edit->setToolTip("The annotation that will be mapped to the label in the left column");
 
   close_button = new QPushButton(myobjectDialog);
   close_button->setGeometry(20, 470, 100, 25);
@@ -142,7 +156,7 @@ void UI_hypnogram_window::start_button_clicked()
 
   dock_param.instance_num = instance_num;
 
-  dock_param.file_num = file_num;
+  dock_param.edfhdr = edfhdr;
 
   dock_param.mainwindow = mainwindow;
 
@@ -180,7 +194,7 @@ void UI_hypnogram_window::start_button_clicked()
 
   mainwindow->insertToolBarBreak(mainwindow->hypnogram_dock[instance_num]->hypnogram_dock);
 
-  mainwindow->edfheaderlist[file_num]->hypnogram_dock[instance_num] = instance_num + 1;
+  edfhdr->hypnogram_dock[instance_num] = instance_num + 1;
 
   QObject::connect(mainwindow, SIGNAL(annot_docklist_changed()), mainwindow->hypnogram_dock[instance_num], SLOT(update_curve()));
 
