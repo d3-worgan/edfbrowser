@@ -116,7 +116,7 @@ private:
 private slots:
 
   void file_pos_changed(long long);
-  void hide_hypnogram_dock(bool);
+  void hypnogram_dock_destroyed(QObject *);
 
 };
 

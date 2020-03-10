@@ -80,10 +80,11 @@ UI_hypnogram_dock::UI_hypnogram_dock(QWidget *w_parent, struct hypnogram_dock_pa
   hypnogram_dock->setOrientation(Qt::Horizontal);
   hypnogram_dock->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
   hypnogram_dock->addWidget(frame);
+  hypnogram_dock->setAttribute(Qt::WA_DeleteOnClose, true);
 
   QObject::connect(mainwindow,     SIGNAL(file_position_changed(long long)), this, SLOT(file_pos_changed(long long)));
-  QObject::connect(hypnogram_dock, SIGNAL(visibilityChanged(bool)),          this, SLOT(hide_hypnogram_dock(bool)));
   QObject::connect(mainwindow,     SIGNAL(file_position_changed(long long)), this, SLOT(file_pos_changed(long long)));
+  QObject::connect(hypnogram_dock, SIGNAL(destroyed(QObject *)),             this, SLOT(hypnogram_dock_destroyed(QObject *)));
 
   file_pos_changed(0);
 }
@@ -110,15 +111,18 @@ void UI_hypnogram_dock::update_curve(void)
 }
 
 
-void UI_hypnogram_dock::hide_hypnogram_dock(bool visible)
+void UI_hypnogram_dock::hypnogram_dock_destroyed(QObject *)
 {
-  if(visible == false)
+  if(!is_deleted)
   {
-    if(!is_deleted)
-    {
-      delete this;
-    }
+    is_deleted = 1;
+
+    param.edfhdr->hypnogram_dock[param.instance_num] = 0;
+
+    mainwindow->hypnogram_dock[param.instance_num] = NULL;
   }
+
+  delete this;
 }
 
 
