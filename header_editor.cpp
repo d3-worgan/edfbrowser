@@ -1225,6 +1225,15 @@ void UI_headerEditorWindow::save_hdr()
     }
   }
 
+  fseeko(file, 244LL, SEEK_SET);
+  fread(scratchpad, 8, 1, file);
+  scratchpad[8] = 0;
+  if(!strcmp(scratchpad, "0       "))
+  {
+    fseeko(file, 244LL, SEEK_SET);
+    fputc('1', file);              /* fix for broken EDF+ files from Physionet */
+  }
+
   for(i=0; i<edfsignals; i++)
   {
     if(((QLineEdit *)(signallist->cellWidget(i, 0)))->isEnabled() == false)  // EDF/BDF Annotations signal
