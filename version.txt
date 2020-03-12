@@ -1,5 +1,12 @@
 
 
+ version 1.73      to be defined
+ --------------
+
+ - Added the possibility to show a Hypnogram using sleepstages from the annotations.
+
+
+
  version 1.72      February 8, 2020
  --------------
 
