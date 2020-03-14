@@ -85,14 +85,15 @@ public:
 
   void annotEditSetDuration(long long);
 
-  void set_selected_annotation(int, int);
+  void set_selected_annotation(struct edfhdrblock *, int);
 
   void set_selected_annotation(struct annotationblock *);
 
 private:
 
-  int file_num,
-      annot_num;
+  int annot_num;
+
+  struct edfhdrblock *edf_hdr;
 
   QFrame *annot_edit_frame;
 

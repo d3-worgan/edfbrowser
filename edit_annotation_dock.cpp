@@ -34,7 +34,7 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(QWidget *w_parent)
 {
   mainwindow = (UI_Mainwindow *)w_parent;
 
-  file_num = 0;
+  edf_hdr = NULL;
 
   dockedit = new QToolBar("Annotation editor", w_parent);
   dockedit->setOrientation(Qt::Horizontal);
@@ -141,7 +141,9 @@ void UI_AnnotationEditwindow::open_close_dock(bool visible)
 
 void UI_AnnotationEditwindow::modifyButtonClicked()
 {
-  struct annotation_list *annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
+  int file_num;
+
+  struct annotation_list *annot_list = &(edf_hdr->annot_list);
 
   struct annotationblock *annot = edfplus_annotation_get_item(annot_list, annot_num);
 
@@ -152,7 +154,7 @@ void UI_AnnotationEditwindow::modifyButtonClicked()
     annot->onset = -(annot->onset);
   }
 
-  annot->onset += mainwindow->edfheaderlist[file_num]->starttime_offset;
+  annot->onset += edf_hdr->starttime_offset;
 
   if(dblcmp(duration_spinbox->value(), 0.0) > 0)
   {
@@ -177,7 +179,11 @@ void UI_AnnotationEditwindow::modifyButtonClicked()
 
   mainwindow->annotations_edited = 1;
 
-  mainwindow->annotations_dock[file_num]->updateList();
+  file_num = mainwindow->get_filenum((struct edfhdrblock *)(annot->edfhdr));
+  if(file_num >= 0)
+  {
+    mainwindow->annotations_dock[file_num]->updateList();
+  }
 
   mainwindow->maincurve->update();
 }
@@ -186,9 +192,9 @@ void UI_AnnotationEditwindow::modifyButtonClicked()
 
 void UI_AnnotationEditwindow::deleteButtonClicked()
 {
-  int sz;
+  int sz, file_num;
 
-  struct annotation_list *annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
+  struct annotation_list *annot_list = &(edf_hdr->annot_list);
 
   struct annotationblock *annot = edfplus_annotation_get_item(annot_list, annot_num);
 
@@ -211,7 +217,11 @@ void UI_AnnotationEditwindow::deleteButtonClicked()
 
   mainwindow->save_act->setEnabled(true);
 
-  mainwindow->annotations_dock[file_num]->updateList();
+  file_num = mainwindow->get_filenum((struct edfhdrblock *)(annot->edfhdr));
+  if(file_num >= 0)
+  {
+    mainwindow->annotations_dock[file_num]->updateList();
+  }
 
   mainwindow->maincurve->update();
 }
@@ -220,7 +230,9 @@ void UI_AnnotationEditwindow::deleteButtonClicked()
 
 void UI_AnnotationEditwindow::createButtonClicked()
 {
-  struct annotation_list *annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
+  int file_num;
+
+  struct annotation_list *annot_list = &(edf_hdr->annot_list);
 
   struct annotationblock annotation;
 
@@ -233,9 +245,9 @@ void UI_AnnotationEditwindow::createButtonClicked()
     annotation.onset = -(annotation.onset);
   }
 
-  annotation.onset += mainwindow->edfheaderlist[file_num]->starttime_offset;
+  annotation.onset += edf_hdr->starttime_offset;
 
-  annotation.file_num = file_num;
+  annotation.edfhdr = edf_hdr;
 
   if(dblcmp(duration_spinbox->value(), 0.0) > 0)
   {
@@ -260,7 +272,11 @@ void UI_AnnotationEditwindow::createButtonClicked()
 
   mainwindow->annotations_edited = 1;
 
-  mainwindow->annotations_dock[file_num]->updateList();
+  file_num = mainwindow->get_filenum((struct edfhdrblock *)(annotation.edfhdr));
+  if(file_num >= 0)
+  {
+    mainwindow->annotations_dock[file_num]->updateList();
+  }
 
   mainwindow->maincurve->update();
 }
@@ -327,26 +343,21 @@ void UI_AnnotationEditwindow::annotEditSetDuration(long long duration)
 
 
 
-void UI_AnnotationEditwindow::set_selected_annotation(int file_nr, int annot_nr)
+void UI_AnnotationEditwindow::set_selected_annotation(struct edfhdrblock *, int annot_nr)
 {
   long long l_tmp;
 
   QTime ta;
 
-
-  file_num = file_nr;
-
   annot_num = annot_nr;
 
-  struct annotation_list *annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
+  struct annotation_list *annot_list = &(edf_hdr->annot_list);
 
   struct annotationblock *annot = edfplus_annotation_get_item(annot_list, annot_num);
 
-  annot = edfplus_annotation_get_item(annot_list, annot_num);
-
   annot_descript_lineEdit->setText(QString::fromUtf8(annot->annotation));
 
-  l_tmp = annot->onset - mainwindow->edfheaderlist[annot->file_num]->starttime_offset;
+  l_tmp = annot->onset - ((struct edfhdrblock *)(annot->edfhdr))->starttime_offset;
 
   if(l_tmp < 0LL)
   {
@@ -395,9 +406,7 @@ void UI_AnnotationEditwindow::set_selected_annotation(struct annotationblock *an
 
   QTime ta;
 
-  struct annotation_list *annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
-
-  file_num = annot->file_num;
+  struct annotation_list *annot_list = &(edf_hdr->annot_list);
 
   n = edfplus_annotation_get_index(annot_list, annot);
 
@@ -407,7 +416,7 @@ void UI_AnnotationEditwindow::set_selected_annotation(struct annotationblock *an
 
   annot_descript_lineEdit->setText(QString::fromUtf8(annot->annotation));
 
-  l_tmp = annot->onset - mainwindow->edfheaderlist[annot->file_num]->starttime_offset;
+  l_tmp = annot->onset - ((struct edfhdrblock *)(annot->edfhdr))->starttime_offset;
 
   if(l_tmp < 0LL)
   {

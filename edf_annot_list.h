@@ -41,7 +41,7 @@ extern "C" {
 #endif
 
 struct annotationblock{
-        int file_num;
+        void *edfhdr;
         long long onset;
         char duration[16];
         long long long_duration;

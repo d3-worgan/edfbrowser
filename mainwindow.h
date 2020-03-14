@@ -356,6 +356,8 @@ public:
 
   void annot_dock_updated(void);
 
+  int get_filenum(struct edfhdrblock *);
+
   struct signalcompblock * create_signalcomp_copy(struct signalcompblock *);
 
 #ifdef Q_OS_WIN32

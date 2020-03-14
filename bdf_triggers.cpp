@@ -211,7 +211,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
       {
         if(!status[16])  // rising edge detected
         {
-          annotation.file_num = hdr->file_num;
+          annotation.edfhdr = hdr;
           annotation.onset = (records_read * TIME_DIMENSION) + ((long long)(i / 3) * status_sample_duration);
           annotation.onset += hdr->starttime_offset;
           strlcpy(annotation.annotation, "new epoch", MAX_ANNOTATION_LEN_II + 1);

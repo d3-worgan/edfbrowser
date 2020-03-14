@@ -31,19 +31,23 @@
 
 
 
-UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, struct annotationblock *annot, struct annot_filter_struct *filter_p, int file_n)
+UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, struct annotationblock *annot, struct annot_filter_struct *filter_p, struct edfhdrblock *e_hdr)
 {
+  int n;
+
   mainwindow = (UI_Mainwindow *)w_parent;
 
   annot_filter_dialog = new QDialog(w_parent);
 
-  file_num = file_n;
+  edf_hdr = e_hdr;
 
-  annot_list = &mainwindow->edfheaderlist[file_num]->annot_list;
+  annot_list = &(edf_hdr->annot_list);
 
   filter_params = filter_p;
 
-  annots_dock = mainwindow->annotations_dock[file_num];
+  n = mainwindow->get_filenum(edf_hdr);
+
+  annots_dock = mainwindow->annotations_dock[n];
 
   annot_filter_dialog->setMinimumSize(430, 400);
   annot_filter_dialog->setMaximumSize(430, 400);

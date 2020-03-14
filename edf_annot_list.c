@@ -391,7 +391,7 @@ int edfplus_annotation_remove_duplicates(struct annotation_list *list)
   {
     annot = &list->items[list->idx[i]];
 
-    if(annot->file_num != list->items[list->idx[i + 1]].file_num)  continue;
+    if(annot->edfhdr != list->items[list->idx[i + 1]].edfhdr)  continue;
 
     if(annot->onset != list->items[list->idx[i + 1]].onset)  continue;
 

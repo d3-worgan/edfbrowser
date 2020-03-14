@@ -68,7 +68,7 @@ class UI_AveragerWindow : public QObject
   Q_OBJECT
 
 public:
-  UI_AveragerWindow(QWidget *, int, int);
+  UI_AveragerWindow(QWidget *, int, struct edfhdrblock *);
 
   ~UI_AveragerWindow();
 
@@ -104,10 +104,11 @@ QSpinBox *avg_periodspinbox;
 
 char annot_str[MAX_ANNOTATION_LEN + 1];
 
-int signal_nr,
-    file_num;
+int signal_nr;
 
 double *avgbuf;
+
+struct edfhdrblock *edf_hdr;
 
 
 void process_avg(struct signalcompblock *);

@@ -76,7 +76,7 @@ class UI_Annotationswindow : public QObject
   Q_OBJECT
 
 public:
-  UI_Annotationswindow(int, QWidget *parent);
+  UI_Annotationswindow(struct edfhdrblock *e_hdr, QWidget *parent);
 
   UI_Mainwindow *mainwindow;
 
@@ -88,12 +88,13 @@ public:
 
 private:
 
-  int file_num,
-      relative,
+  int relative,
       selected,
       invert_filter,
       hide_nk_triggers,
       hide_bs_triggers;
+
+  struct edfhdrblock *edf_hdr;
 
   QDialog *dialog1;
 

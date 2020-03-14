@@ -1042,6 +1042,8 @@ void UI_ZScoreWindow::get_annotationsButtonClicked()
 
   struct annotationblock annotation;
 
+  struct edfhdrblock *edf_hdr = mainwindow->signalcomp[signalnr]->edfhdr;
+
   if((epoch_cntr < 2) || (zscore_pages < 1))
   {
     return;
@@ -1059,7 +1061,7 @@ void UI_ZScoreWindow::get_annotationsButtonClicked()
     marker_end = zscore_pages;
   }
 
-  filenum = mainwindow->signalcomp[signalnr]->edfhdr->file_num;
+  filenum = mainwindow->get_filenum(edf_hdr);
 
   for(i=0; i<marker_end; i++)
   {
@@ -1087,7 +1089,7 @@ void UI_ZScoreWindow::get_annotationsButtonClicked()
 
   if(mainwindow->annotations_dock[filenum] == NULL)
   {
-    mainwindow->annotations_dock[filenum] = new UI_Annotationswindow(filenum, mainwindow);
+    mainwindow->annotations_dock[filenum] = new UI_Annotationswindow(edf_hdr, mainwindow);
 
     mainwindow->addDockWidget(Qt::RightDockWidgetArea, mainwindow->annotations_dock[filenum]->docklist, Qt::Vertical);
 
@@ -1352,7 +1354,7 @@ void UI_ZScoreWindow::jumpButtonClicked()
     onset = position * ZSCORE_EPOCH_LEN * TIME_DIMENSION;
   }
 
-  file_num = mainwindow->signalcomp[signalnr]->edfhdr->file_num;
+  file_num = mainwindow->get_filenum(mainwindow->signalcomp[signalnr]->edfhdr);
 
   if(mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)
   {

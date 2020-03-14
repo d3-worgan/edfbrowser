@@ -1316,7 +1316,7 @@ void UI_Mainwindow::show_annotations()
         {
           if(annotations_dock[i] == NULL)
           {
-            annotations_dock[i] = new UI_Annotationswindow(i, this);
+            annotations_dock[i] = new UI_Annotationswindow(edfheaderlist[i], this);
 
             addDockWidget(Qt::RightDockWidgetArea, annotations_dock[i]->docklist, Qt::Vertical);
           }
@@ -1662,8 +1662,6 @@ void UI_Mainwindow::open_new_file()
 
     edfhdr->file_hdl = newfile;
 
-    edfhdr->file_num = files_open;
-
     edfheaderlist[files_open] = edfhdr;
 
     memset(&edfheaderlist[files_open]->annot_list, 0, sizeof(struct annotation_list));
@@ -1684,7 +1682,7 @@ void UI_Mainwindow::open_new_file()
         }
         else
         {
-          annotations_dock[files_open] = new UI_Annotationswindow(files_open, this);
+          annotations_dock[files_open] = new UI_Annotationswindow(edfheaderlist[files_open], this);
 
           addDockWidget(Qt::RightDockWidgetArea, annotations_dock[files_open]->docklist, Qt::Vertical);
 
@@ -1708,7 +1706,7 @@ void UI_Mainwindow::open_new_file()
 
         bdf_triggers_obj.get_triggers(edfhdr);
 
-        annotations_dock[files_open] = new UI_Annotationswindow(files_open, this);
+        annotations_dock[files_open] = new UI_Annotationswindow(edfheaderlist[files_open], this);
 
         addDockWidget(Qt::RightDockWidgetArea, annotations_dock[files_open]->docklist, Qt::Vertical);
 
@@ -4010,7 +4008,20 @@ void UI_Mainwindow::annot_dock_updated(void)
 }
 
 
+int UI_Mainwindow::get_filenum(struct edfhdrblock *ptr)
+{
+  int i;
 
+  for(i=0; i<files_open; i++)
+  {
+    if(ptr == edfheaderlist[i])
+    {
+      return i;
+    }
+  }
+
+  return -1;
+}
 
 
 

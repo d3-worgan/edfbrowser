@@ -31,7 +31,7 @@
 
 
 
-UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, int annot_nr, int file_n)
+UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, int annot_nr, struct edfhdrblock *e_hdr)
 {
   int i;
 
@@ -41,7 +41,7 @@ UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, int annot_nr, int file_n
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
-  file_num = file_n;
+  edf_hdr = e_hdr;
 
   averager_dialog = new QDialog(w_parent);
 
@@ -69,7 +69,7 @@ UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, int annot_nr, int file_n
 
   time1.setHMS(0, 0, 0, 0);
 
-  recording_duration = (mainwindow->edfheaderlist[file_num]->datarecords * mainwindow->edfheaderlist[file_num]->long_data_record_duration) / TIME_DIMENSION;
+  recording_duration = (edf_hdr->datarecords * edf_hdr->long_data_record_duration) / TIME_DIMENSION;
 
   time2.setHMS((recording_duration / 3600) % 24, (recording_duration % 3600) / 60, recording_duration % 60, 0);
 
@@ -139,7 +139,7 @@ UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, int annot_nr, int file_n
 
   list->setCurrentRow(0, QItemSelectionModel::Select);
 
-  annot_ptr = edfplus_annotation_get_item_visible_only(&mainwindow->edfheaderlist[file_num]->annot_list, annot_nr);
+  annot_ptr = edfplus_annotation_get_item_visible_only(&(edf_hdr->annot_list), annot_nr);
 
   strlcpy(annot_str, annot_ptr->annotation, MAX_ANNOTATION_LEN + 1);
   remove_leading_spaces(annot_str);
@@ -228,7 +228,7 @@ void UI_AveragerWindow::startButtonClicked()
             break;
   }
 
-  backup_viewtime = mainwindow->edfheaderlist[file_num]->viewtime;
+  backup_viewtime = edf_hdr->viewtime;
 
   backup_timescale = mainwindow->pagetime;
 
@@ -238,16 +238,16 @@ void UI_AveragerWindow::startButtonClicked()
 
   mainwindow->signal_averaging_active = 1;
 
-  n = edfplus_annotation_size(&mainwindow->edfheaderlist[file_num]->annot_list);
+  n = edfplus_annotation_size(&(edf_hdr->annot_list));
 
   avg_cnt = 0;
 
   for(i=0; i<n; i++)
   {
-    annot_ptr = edfplus_annotation_get_item(&mainwindow->edfheaderlist[file_num]->annot_list, i);
+    annot_ptr = edfplus_annotation_get_item(&(edf_hdr->annot_list), i);
 
-    if(((annot_ptr->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) >= l_time1)
-      && ((annot_ptr->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) <= l_time2))
+    if(((annot_ptr->onset - edf_hdr->starttime_offset) >= l_time1)
+      && ((annot_ptr->onset - edf_hdr->starttime_offset) <= l_time2))
     {
       strlcpy(str, annot_ptr->annotation, MAX_ANNOTATION_LEN + 1);
 
@@ -289,7 +289,7 @@ void UI_AveragerWindow::startButtonClicked()
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Too many \"Average\" windows are open.\nClose some first.");
       messagewindow.exec();
 
-      mainwindow->edfheaderlist[file_num]->viewtime = backup_viewtime;
+      edf_hdr->viewtime = backup_viewtime;
       mainwindow->pagetime = backup_timescale;
       mainwindow->signal_averaging_active = 0;
       mainwindow->setup_viewbuf();
@@ -304,7 +304,7 @@ void UI_AveragerWindow::startButtonClicked()
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Too many samples in buf.");
       messagewindow.exec();
 
-      mainwindow->edfheaderlist[file_num]->viewtime = backup_viewtime;
+      edf_hdr->viewtime = backup_viewtime;
       mainwindow->pagetime = backup_timescale;
       mainwindow->signal_averaging_active = 0;
       mainwindow->setup_viewbuf();
@@ -320,7 +320,7 @@ void UI_AveragerWindow::startButtonClicked()
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
       messagewindow.exec();
 
-      mainwindow->edfheaderlist[file_num]->viewtime = backup_viewtime;
+      edf_hdr->viewtime = backup_viewtime;
       mainwindow->pagetime = backup_timescale;
       mainwindow->signal_averaging_active = 0;
       mainwindow->setup_viewbuf();
@@ -328,21 +328,21 @@ void UI_AveragerWindow::startButtonClicked()
       return;
     }
 
-    n = edfplus_annotation_size(&mainwindow->edfheaderlist[file_num]->annot_list);
+    n = edfplus_annotation_size(&(edf_hdr->annot_list));
 
     avg_cnt = 0;
 
     for(i=0; i<n; i++)
     {
-      annot_ptr = edfplus_annotation_get_item(&mainwindow->edfheaderlist[file_num]->annot_list, i);
+      annot_ptr = edfplus_annotation_get_item(&(edf_hdr->annot_list), i);
 
       if(annot_ptr->hided_in_list)
       {
         continue;
       }
 
-      if(((annot_ptr->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) >= l_time1)
-        && ((annot_ptr->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) <= l_time2))
+      if(((annot_ptr->onset - edf_hdr->starttime_offset) >= l_time1)
+        && ((annot_ptr->onset - edf_hdr->starttime_offset) <= l_time2))
       {
         strlcpy(str, annot_ptr->annotation, MAX_ANNOTATION_LEN + 1);
 
@@ -361,7 +361,7 @@ void UI_AveragerWindow::startButtonClicked()
             {
               free(avgbuf);
 
-              mainwindow->edfheaderlist[file_num]->viewtime = backup_viewtime;
+              edf_hdr->viewtime = backup_viewtime;
 
               mainwindow->pagetime = backup_timescale;
 
@@ -373,11 +373,11 @@ void UI_AveragerWindow::startButtonClicked()
             }
           }
 
-          mainwindow->edfheaderlist[file_num]->viewtime = annot_ptr->onset;
+          edf_hdr->viewtime = annot_ptr->onset;
 
-          mainwindow->edfheaderlist[file_num]->viewtime -= mainwindow->edfheaderlist[file_num]->starttime_offset;
+          edf_hdr->viewtime -= edf_hdr->starttime_offset;
 
-          mainwindow->edfheaderlist[file_num]->viewtime -= (mainwindow->pagetime / trigger_position_ratio);
+          edf_hdr->viewtime -= (mainwindow->pagetime / trigger_position_ratio);
 
           mainwindow->setup_viewbuf();
 
@@ -404,7 +404,7 @@ void UI_AveragerWindow::startButtonClicked()
 
       free(avgbuf);
 
-      mainwindow->edfheaderlist[file_num]->viewtime = backup_viewtime;
+      edf_hdr->viewtime = backup_viewtime;
 
       mainwindow->pagetime = backup_timescale;
 
@@ -455,7 +455,7 @@ void UI_AveragerWindow::startButtonClicked()
     }
   }
 
-  mainwindow->edfheaderlist[file_num]->viewtime = backup_viewtime;
+  edf_hdr->viewtime = backup_viewtime;
 
   mainwindow->pagetime = backup_timescale;
 

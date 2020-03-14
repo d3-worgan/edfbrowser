@@ -185,7 +185,13 @@ void UI_ECGExport::Export_RR_intervals()
       return;
     }
 
-    filenum = signalcomp->filenum;
+    filenum = mainwindow->get_filenum(signalcomp->edfhdr);
+    if(filenum < 0)
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Internal error: filenum < 0");
+      messagewindow.exec();
+      return;
+    }
 
     reset_ecg_filter(signalcomp->ecg_filter);
 
@@ -286,7 +292,7 @@ void UI_ECGExport::Export_RR_intervals()
 
     if(mainwindow->annotations_dock[signalcomp->filenum] == NULL)
     {
-      mainwindow->annotations_dock[filenum] = new UI_Annotationswindow(filenum, mainwindow);
+      mainwindow->annotations_dock[filenum] = new UI_Annotationswindow(signalcomp->edfhdr, mainwindow);
 
       mainwindow->addDockWidget(Qt::RightDockWidgetArea, mainwindow->annotations_dock[filenum]->docklist, Qt::Vertical);
 

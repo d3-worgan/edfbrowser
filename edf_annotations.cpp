@@ -425,7 +425,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
               if(n >= 0)
               {
                 memset(&annotblock, 0, sizeof(annotationblock));
-                annotblock.file_num = edf_hdr->file_num;
+                annotblock.edfhdr = edf_hdr;
                 annotblock.onset = get_long_time(time_in_txt);
                 for(j=0; j<n; j++)
                 {
@@ -544,7 +544,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
               nk_triggers_cnt++;
 
               memset(&annotblock, 0, sizeof(annotationblock));
-              annotblock.file_num = edf_hdr->file_num;
+              annotblock.edfhdr = edf_hdr;
               annotblock.onset = ((long long)i * data_record_duration) + ((long long)k * nk_trigger_sample_duration);
               annotblock.onset += edf_hdr->starttime_offset;
               strlcpy(annotblock.annotation, nk_triggerlabel[j], MAX_ANNOTATION_LEN_II + 1);

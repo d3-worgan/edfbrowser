@@ -1871,7 +1871,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
                   memset(&annotation, 0, sizeof(struct annotationblock));
                   annotation.onset = ((trigger_datrec * signalcomp->edfhdr->long_data_record_duration) + (trigger_sample * time_per_sample));
                   annotation.onset += signalcomp->edfhdr->starttime_offset;
-                  annotation.file_num = signalcomp->edfhdr->file_num;
+                  annotation.edfhdr = signalcomp->edfhdr;
                   strncpy(annotation.annotation, scratchpad, MAX_ANNOTATION_LEN);
                   annotation.annotation[MAX_ANNOTATION_LEN] = 0;
                   if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))

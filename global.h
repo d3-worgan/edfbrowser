@@ -132,7 +132,6 @@ struct edfparamblock{
 
 struct edfhdrblock{
         FILE      *file_hdl;
-        int       file_num;
         char      version[32];
         char      filename[MAX_PATH_LENGTH];
         char      patient[81];
