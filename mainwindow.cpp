@@ -566,13 +566,13 @@ void UI_Mainwindow::sync_by_crosshairs()
 
   if(maincurve->crosshair_1.active&&maincurve->crosshair_2.active)
   {
-    if(maincurve->crosshair_1.file_num!=maincurve->crosshair_2.file_num)
+    if(maincurve->crosshair_1.edf_hdr != maincurve->crosshair_2.edf_hdr)
     {
       viewtime_sync = VIEWTIME_USER_DEF_SYNCED;
 
-      edfheaderlist[maincurve->crosshair_2.file_num]->viewtime
-      -= ((maincurve->crosshair_1.time - edfheaderlist[maincurve->crosshair_1.file_num]->l_starttime - edfheaderlist[maincurve->crosshair_1.file_num]->viewtime - edfheaderlist[maincurve->crosshair_1.file_num]->starttime_offset)
-      - (maincurve->crosshair_2.time - edfheaderlist[maincurve->crosshair_2.file_num]->l_starttime - edfheaderlist[maincurve->crosshair_2.file_num]->viewtime - edfheaderlist[maincurve->crosshair_2.file_num]->starttime_offset));
+      maincurve->crosshair_2.edf_hdr->viewtime
+      -= ((maincurve->crosshair_1.time - maincurve->crosshair_1.edf_hdr->l_starttime - maincurve->crosshair_1.edf_hdr->viewtime - maincurve->crosshair_1.edf_hdr->starttime_offset)
+      - (maincurve->crosshair_2.time - maincurve->crosshair_2.edf_hdr->l_starttime - maincurve->crosshair_2.edf_hdr->viewtime - maincurve->crosshair_2.edf_hdr->starttime_offset));
 
       maincurve->crosshair_2.x_position = maincurve->crosshair_1.x_position;
 
@@ -2231,7 +2231,7 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
 
   for(j=0; j<signalcomps; )
   {
-    if(signalcomp[j]->filenum == file_n)
+    if(signalcomp[j]->edfhdr == edfheaderlist[file_n])
     {
       for(i=0; i<MAXSPECTRUMDOCKS; i++)
       {
@@ -2394,14 +2394,6 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
     else
     {
       j++;
-    }
-  }
-
-  for(j=0; j<signalcomps; j++)
-  {
-    if(signalcomp[j]->filenum > file_n)
-    {
-      signalcomp[j]->filenum--;
     }
   }
 

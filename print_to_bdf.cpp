@@ -224,7 +224,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
       break;
     }
 
-    duration_factor[signalcomp[i]->filenum] = duration / signalcomp[i]->edfhdr->long_data_record_duration;
+    duration_factor[mainwindow->get_filenum(signalcomp[i]->edfhdr)] = duration / signalcomp[i]->edfhdr->long_data_record_duration;
   }
 
   if((!integer_sf) && (!datrec_multiple_int))
@@ -925,7 +925,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
     if(datrec_multiple_int)
     {
       fprintf(outputfile, "%-8i", signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record
-       * duration_factor[signalcomp[i]->filenum]);
+       * duration_factor[mainwindow->get_filenum(signalcomp[i]->edfhdr)]);
     }
     else
     {
@@ -974,7 +974,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
     {
       if(datrec_multiple_int)
       {
-        r = signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record * duration_factor[signalcomp[i]->filenum];
+        r = signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record * duration_factor[mainwindow->get_filenum(signalcomp[i]->edfhdr)];
       }
       else
       {
@@ -1064,7 +1064,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
           {
             if(smpls_written[i]==signalcomp[i]->sample_start)
             {
-              if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime<=0)
+              if(signalcomp[i]->edfhdr->viewtime<=0)
               {
                 reset_spike_filter(signalcomp[i]->spike_filter);
               }
@@ -1081,7 +1081,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
           {
             if(smpls_written[i]==signalcomp[i]->sample_start)
             {
-              if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime==0)
+              if(signalcomp[i]->edfhdr->viewtime==0)
               {
                 reset_filter(dig_value, signalcomp[i]->filter[p]);
               }
@@ -1099,7 +1099,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
           {
             if(smpls_written[i]==signalcomp[i]->sample_start)
             {
-              if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime!=0)
+              if(signalcomp[i]->edfhdr->viewtime!=0)
               {
                 ravg_filter_restore_buf(signalcomp[i]->ravg_filter[p]);
               }
@@ -1112,7 +1112,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
           {
             if(smpls_written[i]==signalcomp[i]->sample_start)
             {
-              if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime!=0)
+              if(signalcomp[i]->edfhdr->viewtime!=0)
               {
                 memcpy(signalcomp[i]->fidbuf[p], signalcomp[i]->fidbuf2[p], fid_run_bufsize(signalcomp[i]->fid_run[p]));
               }
@@ -1125,7 +1125,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
           {
             if(smpls_written[i]==signalcomp[i]->sample_start)
             {
-              if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime!=0)
+              if(signalcomp[i]->edfhdr->viewtime!=0)
               {
                 fir_filter_restore_buf(signalcomp[i]->fir_filter);
               }
@@ -1138,7 +1138,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
           {
             if(smpls_written[i]==signalcomp[i]->sample_start)
             {
-              if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime<=0)
+              if(signalcomp[i]->edfhdr->viewtime<=0)
               {
                 plif_reset_subtract_filter(signalcomp[i]->plif_ecg_filter, 0);
               }
@@ -1155,7 +1155,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
           {
             if(smpls_written[i]==signalcomp[i]->sample_start)
             {
-              if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime != 0)
+              if(signalcomp[i]->edfhdr->viewtime != 0)
               {
                 ecg_filter_restore_buf(signalcomp[i]->ecg_filter);
               }
@@ -1170,7 +1170,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
           {
             if(smpls_written[i]==signalcomp[i]->sample_start)
             {
-              if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime != 0)
+              if(signalcomp[i]->edfhdr->viewtime != 0)
               {
                 zratio_filter_restore_buf(signalcomp[i]->zratio_filter);
               }

@@ -617,7 +617,7 @@ void UI_AveragerWindow::process_avg(struct signalcompblock *signalcomp)
     {
       if(s==signalcomp->sample_start)
       {
-        if(mainwindow->edfheaderlist[signalcomp->filenum]->viewtime<=0)
+        if(signalcomp->edfhdr->viewtime<=0)
         {
           plif_reset_subtract_filter(signalcomp->plif_ecg_filter, 0);
         }

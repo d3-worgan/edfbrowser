@@ -200,8 +200,7 @@ void UI_Signalswindow::DisplayCompButtonClicked()
 
   newsignalcomp->uid = mainwindow->uid_seq++;
   newsignalcomp->num_of_signals = n;
-  newsignalcomp->filenum = filelist->currentRow();
-  newsignalcomp->edfhdr = mainwindow->edfheaderlist[newsignalcomp->filenum];
+  newsignalcomp->edfhdr = mainwindow->edfheaderlist[filelist->currentRow()];
   newsignalcomp->file_duration = newsignalcomp->edfhdr->long_data_record_duration * newsignalcomp->edfhdr->datarecords;
   newsignalcomp->voltpercm = mainwindow->default_amplitude;
   if(mainwindow->use_diverse_signal_colors)
@@ -311,8 +310,7 @@ void UI_Signalswindow::DisplayButtonClicked()
 
     newsignalcomp->uid = mainwindow->uid_seq++;
     newsignalcomp->num_of_signals = 1;
-    newsignalcomp->filenum = filelist->currentRow();
-    newsignalcomp->edfhdr = mainwindow->edfheaderlist[newsignalcomp->filenum];
+    newsignalcomp->edfhdr = mainwindow->edfheaderlist[filelist->currentRow()];
     newsignalcomp->file_duration = newsignalcomp->edfhdr->long_data_record_duration * newsignalcomp->edfhdr->datarecords;
     newsignalcomp->voltpercm = mainwindow->default_amplitude;
     if(mainwindow->use_diverse_signal_colors)

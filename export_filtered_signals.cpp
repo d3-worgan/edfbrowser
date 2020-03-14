@@ -488,7 +488,7 @@ void UI_ExportFilteredSignalsWindow::StartExport()
 
   for(i=0, new_edfsignals=0; i<mainwindow->signalcomps; i++)
   {
-    if(mainwindow->signalcomp[i]->filenum != file_num)  continue;
+    if(mainwindow->signalcomp[i]->edfhdr != edfhdr)  continue;
 
     signalcomp[new_edfsignals] = mainwindow->signalcomp[i];
 
@@ -1251,7 +1251,7 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
 
   for(i=0; i<mainwindow->signalcomps; i++)
   {
-    if(mainwindow->signalcomp[i]->filenum != file_num)  continue;
+    if(mainwindow->signalcomp[i]->edfhdr != edfhdr)  continue;
 
     txtbuf[0] = 0;
 

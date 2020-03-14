@@ -136,9 +136,12 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
   struct signalcompblock *newsignalcomp;
 
+  struct edfhdrblock *edf_hdr;
 
   if(mainwindow->files_open==1)  n = 0;
   else  n = filelist->currentRow();
+
+  edf_hdr = mainwindow->edfheaderlist[n];
 
   if(mtg_path[0]==0)
   {
@@ -175,8 +178,20 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
   for(k=0; k<mainwindow->signalcomps; )
   {
-    if(mainwindow->signalcomp[k]->filenum==n)
+    if(mainwindow->signalcomp[k]->edfhdr == edf_hdr)
     {
+      for(i=0; i<MAXCDSADOCKS; i++)
+      {
+        p = mainwindow->signalcomp[k]->cdsa_dock[i];
+
+        if(p != 0)
+        {
+          delete mainwindow->cdsa_dock[p - 1];
+
+          mainwindow->cdsa_dock[p - 1] = NULL;
+        }
+      }
+
       for(i=0; i<MAXSPECTRUMDOCKS; i++)
       {
         if(mainwindow->spectrumdock[i]->signalcomp == mainwindow->signalcomp[k])
@@ -363,7 +378,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       return;
     }
     newsignalcomp->edfhdr = mainwindow->edfheaderlist[n];
-    newsignalcomp->filenum = n;
+    newsignalcomp->edfhdr = edf_hdr;
     newsignalcomp->num_of_signals = signal_cnt;
     newsignalcomp->hascursor1 = 0;
     newsignalcomp->hascursor2 = 0;

@@ -177,7 +177,6 @@ struct edfhdrblock{
 
 struct signalcompblock{
         unsigned long long uid;
-        int filenum;
         struct edfhdrblock *edfhdr;
         int num_of_signals;
         unsigned long long viewbufsize;
@@ -274,7 +273,7 @@ struct zoomhistoryblock{
        };
 
 struct active_markersblock{
-        int file_num;
+        struct edfhdrblock *edf_hdr;
         struct annotationblock *list[MAX_ACTIVE_ANNOT_MARKERS];
         int count;
         int selected;
@@ -293,7 +292,7 @@ struct graphicBufStruct{
 
 struct crossHairStruct{
         int color;
-        int file_num;
+        struct edfhdrblock *edf_hdr;
         int active;
         int moving;
         int position;

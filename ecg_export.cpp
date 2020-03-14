@@ -290,7 +290,7 @@ void UI_ECGExport::Export_RR_intervals()
       edfplus_annotation_add_item(&mainwindow->edfheaderlist[filenum]->annot_list, annotation);
     }
 
-    if(mainwindow->annotations_dock[signalcomp->filenum] == NULL)
+    if(mainwindow->annotations_dock[filenum] == NULL)
     {
       mainwindow->annotations_dock[filenum] = new UI_Annotationswindow(signalcomp->edfhdr, mainwindow);
 
