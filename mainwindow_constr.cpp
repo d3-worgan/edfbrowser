@@ -1062,13 +1062,7 @@ UI_Mainwindow::UI_Mainwindow()
     }
   }
 
-  annotationEditDock = new UI_AnnotationEditwindow(this);
-
-  addToolBar(Qt::BottomToolBarArea, annotationEditDock->dockedit);
-
-  annotationEditDock->dockedit->hide();
-
-  insertToolBarBreak(annotationEditDock->dockedit);
+  annotationEditDock = NULL;
 
   for(i=0; i<MAXSPECTRUMDOCKS; i++)
   {

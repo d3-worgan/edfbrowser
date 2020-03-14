@@ -632,7 +632,7 @@ void UI_ImportAnnotationswindow::ImportButtonClicked()
 
   if(mainwindow->annotations_dock[0] == NULL)
   {
-    mainwindow->annotations_dock[0] = new UI_Annotationswindow(0, mainwindow);
+    mainwindow->annotations_dock[0] = new UI_Annotationswindow(mainwindow->edfheaderlist[0], mainwindow);
 
     mainwindow->addDockWidget(Qt::RightDockWidgetArea, mainwindow->annotations_dock[0]->docklist, Qt::Vertical);
 

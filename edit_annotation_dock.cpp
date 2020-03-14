@@ -30,15 +30,18 @@
 
 
 
-UI_AnnotationEditwindow::UI_AnnotationEditwindow(QWidget *w_parent)
+UI_AnnotationEditwindow::UI_AnnotationEditwindow(struct edfhdrblock *e_hdr, QWidget *w_parent)
 {
   mainwindow = (UI_Mainwindow *)w_parent;
 
-  edf_hdr = NULL;
+  edf_hdr = e_hdr;
+
+  is_deleted = 0;
 
   dockedit = new QToolBar("Annotation editor", w_parent);
   dockedit->setOrientation(Qt::Horizontal);
   dockedit->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
+  dockedit->setAttribute(Qt::WA_DeleteOnClose, true);
 
   annot_edit_frame = new QFrame;
   annot_edit_frame->setMinimumSize(1050, 45);
@@ -100,43 +103,50 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(QWidget *w_parent)
   createbutton->setGeometry(940, 10, 100, 25);
   createbutton->setText("Create");
 
+  mainwindow->annot_editor_active = 1;
+
+  mainwindow->show_annot_markers = 1;
+
+  if(mainwindow->annotationlist_backup==NULL)
+  {
+    mainwindow->annotationlist_backup = edfplus_annotation_create_list_copy(&mainwindow->edfheaderlist[0]->annot_list);
+  }
+
   QObject::connect(modifybutton, SIGNAL(clicked()),               this, SLOT(modifyButtonClicked()));
   QObject::connect(deletebutton, SIGNAL(clicked()),               this, SLOT(deleteButtonClicked()));
   QObject::connect(createbutton, SIGNAL(clicked()),               this, SLOT(createButtonClicked()));
-  QObject::connect(dockedit,     SIGNAL(visibilityChanged(bool)), this, SLOT(open_close_dock(bool)));
+  QObject::connect(dockedit,     SIGNAL(destroyed(QObject *)),    this, SLOT(dockedit_destroyed(QObject *)));
 }
 
 
-void UI_AnnotationEditwindow::open_close_dock(bool visible)
+UI_AnnotationEditwindow::~UI_AnnotationEditwindow()
 {
-  if(mainwindow->files_open != 1)
+  if(!is_deleted)
   {
-    dockedit->hide();
+    is_deleted = 1;
 
-    return;
-  }
-
-  if(visible==true)
-  {
-    mainwindow->annot_editor_active = 1;
-
-    mainwindow->show_annot_markers = 1;
-
-    if(mainwindow->annotationlist_backup==NULL)
-    {
-      mainwindow->annotationlist_backup = edfplus_annotation_create_list_copy(&mainwindow->edfheaderlist[0]->annot_list);
-    }
-  }
-  else
-  {
-    modifybutton->setEnabled(false);
-
-    deletebutton->setEnabled(false);
+    mainwindow->removeToolBar(dockedit);
 
     mainwindow->annot_editor_active = 0;
+
+    mainwindow->annotationEditDock = NULL;
   }
 }
 
+
+void UI_AnnotationEditwindow::dockedit_destroyed(QObject *)
+{
+  if(!is_deleted)
+  {
+    is_deleted = 1;
+
+    mainwindow->annot_editor_active = 0;
+
+    mainwindow->annotationEditDock = NULL;
+
+    delete this;
+  }
+}
 
 
 void UI_AnnotationEditwindow::modifyButtonClicked()
@@ -342,8 +352,13 @@ void UI_AnnotationEditwindow::annotEditSetDuration(long long duration)
 }
 
 
+void UI_AnnotationEditwindow::set_edf_header(struct edfhdrblock *e_hdr)
+{
+  edf_hdr = e_hdr;
+}
 
-void UI_AnnotationEditwindow::set_selected_annotation(struct edfhdrblock *, int annot_nr)
+
+void UI_AnnotationEditwindow::set_selected_annotation(int annot_nr)
 {
   long long l_tmp;
 

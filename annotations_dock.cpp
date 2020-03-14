@@ -811,7 +811,9 @@ void UI_Annotationswindow::hide_editdock(bool visible)
 {
   if(visible==false)
   {
-    mainwindow->annotationEditDock->dockedit->hide();
+    delete mainwindow->annotationEditDock;
+
+    mainwindow->annotationEditDock = NULL;
   }
 }
 
@@ -986,7 +988,10 @@ void UI_Annotationswindow::updateList(void)
     {
       list->setCurrentRow(selected, QItemSelectionModel::ClearAndSelect);
 
-      mainwindow->annotationEditDock->set_selected_annotation(edf_hdr, selected);
+      if(mainwindow->annotationEditDock != NULL)
+      {
+        mainwindow->annotationEditDock->set_selected_annotation(selected);
+      }
 
       if(jump)
       {
@@ -1039,7 +1044,10 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
 
   if(mainwindow->annot_editor_active)
   {
-    mainwindow->annotationEditDock->set_selected_annotation(edf_hdr, n);
+    if(mainwindow->annotationEditDock != NULL)
+    {
+      mainwindow->annotationEditDock->set_selected_annotation(n);
+    }
   }
 
   if(mainwindow->video_player->status == VIDEO_STATUS_PLAYING)
@@ -1098,7 +1106,7 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
     }
   }
 
-  if(mainwindow->annotationEditDock->dockedit->isVisible()==true)
+  if(mainwindow->annotationEditDock != NULL)
   {
     mainwindow->maincurve->setCrosshair_1_center();
   }

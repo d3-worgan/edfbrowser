@@ -370,7 +370,7 @@ void UI_Mainwindow::save_file()
 
   save_act->setEnabled(false);
 
-  annotationEditDock->dockedit->hide();
+  delete annotationEditDock;
 
   maincurve->update();
 }
@@ -1310,7 +1310,7 @@ void UI_Mainwindow::show_annotations()
 
         if(edfheaderlist[i]->annots_not_read)
         {
-          edfplus_annotation_empty_list(&edfheaderlist[files_open]->annot_list);
+          edfplus_annotation_empty_list(&edfheaderlist[i]->annot_list);
         }
         else
         {
@@ -1347,7 +1347,7 @@ void UI_Mainwindow::annotation_editor()
   {
     if(edfheaderlist[0]->annots_not_read)
     {
-      edfplus_annotation_empty_list(&edfheaderlist[files_open]->annot_list);
+      edfplus_annotation_empty_list(&edfheaderlist[0]->annot_list);
 
       if(annotations_dock[0] != NULL)
       {
@@ -1373,14 +1373,27 @@ void UI_Mainwindow::annotation_editor()
 
     if(annotations_dock[0]==NULL)
     {
-      annotations_dock[0] = new UI_Annotationswindow(0, this);
+      annotations_dock[0] = new UI_Annotationswindow(edfheaderlist[0], this);
 
       addDockWidget(Qt::RightDockWidgetArea, annotations_dock[0]->docklist, Qt::Vertical);
     }
 
     annotations_dock[0]->docklist->show();
 
-    annotationEditDock->dockedit->show();
+    if(annotationEditDock == NULL)
+    {
+      annotationEditDock = new UI_AnnotationEditwindow(edfheaderlist[0], this);
+
+      addToolBar(Qt::BottomToolBarArea, annotationEditDock->dockedit);
+
+      insertToolBarBreak(annotationEditDock->dockedit);
+    }
+    else
+    {
+      annotationEditDock->set_edf_header(edfheaderlist[0]);
+
+      annotationEditDock->dockedit->show();
+    }
   }
   else
   {
@@ -2561,7 +2574,7 @@ void UI_Mainwindow::close_all_files()
     }
   }
 
-  annotationEditDock->dockedit->hide();
+  delete annotationEditDock;
 
   save_act->setEnabled(false);
 

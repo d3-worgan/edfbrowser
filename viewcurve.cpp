@@ -637,19 +637,28 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
   {
     if(crosshair_1.moving)
     {
-      mainwindow->annotationEditDock->annotEditSetOnset(crosshair_1.time_relative);
+      if(mainwindow->annotationEditDock != NULL)
+      {
+        mainwindow->annotationEditDock->annotEditSetOnset(crosshair_1.time_relative);
+      }
 
       if(crosshair_2.active)
       {
-        mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - mainwindow->annotationEditDock->annotEditGetOnset());
+        if(mainwindow->annotationEditDock != NULL)
+        {
+          mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - mainwindow->annotationEditDock->annotEditGetOnset());
+        }
       }
     }
 
     if(crosshair_2.moving)
     {
+      if(mainwindow->annotationEditDock != NULL)
+      {
           // Don't update the onset time when changing file position
 //      mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - crosshair_1.time_relative);
-      mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - mainwindow->annotationEditDock->annotEditGetOnset());
+        mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - mainwindow->annotationEditDock->annotEditGetOnset());
+      }
     }
 
     if(annot_marker_moving)
@@ -664,7 +673,10 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
       active_markers->list[active_markers->selected]->selected = 1;
 
-      mainwindow->annotationEditDock->set_selected_annotation(active_markers->list[active_markers->selected]);
+      if(mainwindow->annotationEditDock != NULL)
+      {
+        mainwindow->annotationEditDock->set_selected_annotation(active_markers->list[active_markers->selected]);
+      }
 
       mainwindow->annotations_dock[mainwindow->get_filenum(active_markers->edf_hdr)]->updateList();
 
@@ -2292,7 +2304,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
         painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
 
-        if(mainwindow->auto_update_annot_onset && (!crosshair_1.moving) && (!mainwindow->annotationEditDock->dockedit->isHidden()))
+        if(mainwindow->auto_update_annot_onset && (!crosshair_1.moving) && (mainwindow->annotationEditDock != NULL))
         {
           mainwindow->annotationEditDock->annotEditSetOnset(crosshair_1.time_relative);
         }

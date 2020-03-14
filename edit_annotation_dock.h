@@ -73,7 +73,8 @@ class UI_AnnotationEditwindow : public QObject
   Q_OBJECT
 
 public:
-  UI_AnnotationEditwindow(QWidget *parent);
+  UI_AnnotationEditwindow(struct edfhdrblock *e_hdr, QWidget *parent);
+  ~UI_AnnotationEditwindow();
 
   UI_Mainwindow *mainwindow;
 
@@ -85,13 +86,16 @@ public:
 
   void annotEditSetDuration(long long);
 
-  void set_selected_annotation(struct edfhdrblock *, int);
+  void set_selected_annotation(int);
+
+  void set_edf_header(struct edfhdrblock *);
 
   void set_selected_annotation(struct annotationblock *);
 
 private:
 
-  int annot_num;
+  int annot_num,
+      is_deleted;
 
   struct edfhdrblock *edf_hdr;
 
@@ -121,7 +125,7 @@ private slots:
   void deleteButtonClicked();
   void createButtonClicked();
 
-  void open_close_dock(bool);
+  void dockedit_destroyed(QObject *);
 };
 
 
