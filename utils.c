@@ -2171,7 +2171,7 @@ int strlcat(char *dst, const char *src, int sz)
 
   sz -= dstlen + 1;
 
-  if(!sz)  return dstlen;
+  if(sz < 1)  return dstlen;
 
   srclen = strlen(src);
 
