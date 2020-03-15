@@ -150,6 +150,8 @@ void UI_hypnogram_window::default_button_clicked()
 
 void UI_hypnogram_window::start_button_clicked()
 {
+  int i;
+
   struct hypnogram_dock_param_struct dock_param;
 
   memset(&dock_param, 0, sizeof(struct hypnogram_dock_param_struct));
@@ -167,6 +169,14 @@ void UI_hypnogram_window::start_button_clicked()
   strlcpy(dock_param.stage_name[4], stage5_edit->text().toLatin1().data(), 32);
   strlcpy(dock_param.stage_name[5], stage6_edit->text().toLatin1().data(), 32);
 
+  for(i=0; i<6; i++)
+  {
+    remove_trailing_spaces(dock_param.stage_name[i]);
+    remove_leading_spaces(dock_param.stage_name[i]);
+
+    strlcpy(mainwindow->hypnogram_stage_name[i], dock_param.stage_name[i], 32);
+  }
+
   strlcpy(dock_param.annot_name[0], annot1_edit->text().toLatin1().data(), 32);
   strlcpy(dock_param.annot_name[1], annot2_edit->text().toLatin1().data(), 32);
   strlcpy(dock_param.annot_name[2], annot3_edit->text().toLatin1().data(), 32);
@@ -174,19 +184,13 @@ void UI_hypnogram_window::start_button_clicked()
   strlcpy(dock_param.annot_name[4], annot5_edit->text().toLatin1().data(), 32);
   strlcpy(dock_param.annot_name[5], annot6_edit->text().toLatin1().data(), 32);
 
-  strlcpy(mainwindow->hypnogram_stage_name[0], dock_param.stage_name[0], 32);
-  strlcpy(mainwindow->hypnogram_stage_name[1], dock_param.stage_name[1], 32);
-  strlcpy(mainwindow->hypnogram_stage_name[2], dock_param.stage_name[2], 32);
-  strlcpy(mainwindow->hypnogram_stage_name[3], dock_param.stage_name[3], 32);
-  strlcpy(mainwindow->hypnogram_stage_name[4], dock_param.stage_name[4], 32);
-  strlcpy(mainwindow->hypnogram_stage_name[5], dock_param.stage_name[5], 32);
+  for(i=0; i<6; i++)
+  {
+    remove_trailing_spaces(dock_param.annot_name[i]);
+    remove_leading_spaces(dock_param.annot_name[i]);
 
-  strlcpy(mainwindow->hypnogram_annot_name[0], dock_param.annot_name[0], 32);
-  strlcpy(mainwindow->hypnogram_annot_name[1], dock_param.annot_name[1], 32);
-  strlcpy(mainwindow->hypnogram_annot_name[2], dock_param.annot_name[2], 32);
-  strlcpy(mainwindow->hypnogram_annot_name[3], dock_param.annot_name[3], 32);
-  strlcpy(mainwindow->hypnogram_annot_name[4], dock_param.annot_name[4], 32);
-  strlcpy(mainwindow->hypnogram_annot_name[5], dock_param.annot_name[5], 32);
+    strlcpy(mainwindow->hypnogram_annot_name[i], dock_param.annot_name[i], 32);
+  }
 
   mainwindow->hypnogram_dock[instance_num] = new UI_hypnogram_dock(mainwindow, dock_param);
 

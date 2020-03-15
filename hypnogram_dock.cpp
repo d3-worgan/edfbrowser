@@ -295,6 +295,8 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
 
   long long annot_duration;
 
+  char str[64];
+
   struct annotation_list *annot_list;
 
   struct annotationblock *annot;
@@ -331,9 +333,13 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
   {
     annot = edfplus_annotation_get_item(annot_list, i);
 
+    strlcpy(str, annot->annotation, 48);
+    remove_trailing_spaces(str);
+    remove_leading_spaces(str);
+
     for(j=0; j<6; j++)
     {
-      if(!strcmp(annot->annotation, param.annot_name[j]))
+      if(!strcmp(str, param.annot_name[j]))
       {
         pos_x2 = ((double)(annot->onset) * pixel_per_sec) / TIME_DIMENSION;
 
