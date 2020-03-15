@@ -400,47 +400,66 @@ void UI_Mainwindow::slider_moved(int value)
     new_viewtime *= value;
   }
 
-  if(pagetime >= (300LL * TIME_DIMENSION))
+  if(pagetime >= (3600LL * TIME_DIMENSION))
   {
-    tmp = new_viewtime % (30LL * TIME_DIMENSION);
+    tmp = new_viewtime % (360LL * TIME_DIMENSION);
 
     new_viewtime -= tmp;
   }
-  else
-    if(pagetime >= (60LL * TIME_DIMENSION))
+  else if(pagetime >= (1200LL * TIME_DIMENSION))
     {
-      tmp = new_viewtime % (6LL * TIME_DIMENSION);
+      tmp = new_viewtime % (120LL * TIME_DIMENSION);
 
       new_viewtime -= tmp;
     }
-    else
-      if(pagetime >= (30LL * TIME_DIMENSION))
+    else if(pagetime >= (300LL * TIME_DIMENSION))
       {
-        tmp = new_viewtime % (3LL * TIME_DIMENSION);
+        tmp = new_viewtime % (30LL * TIME_DIMENSION);
 
         new_viewtime -= tmp;
       }
-      else
-        if(pagetime >= (20LL * TIME_DIMENSION))
+      else if(pagetime >= (60LL * TIME_DIMENSION))
         {
-          tmp = new_viewtime % (2LL * TIME_DIMENSION);
+          tmp = new_viewtime % (6LL * TIME_DIMENSION);
 
           new_viewtime -= tmp;
         }
-        else
-          if(pagetime >= (10LL * TIME_DIMENSION))
+        else if(pagetime >= (30LL * TIME_DIMENSION))
           {
-            tmp = new_viewtime % TIME_DIMENSION;
+            tmp = new_viewtime % (3LL * TIME_DIMENSION);
 
             new_viewtime -= tmp;
           }
-          else
-            if(pagetime >= TIME_DIMENSION)
+          else if(pagetime >= (20LL * TIME_DIMENSION))
             {
-              tmp = new_viewtime % (TIME_DIMENSION / 10LL);
+              tmp = new_viewtime % (2LL * TIME_DIMENSION);
 
               new_viewtime -= tmp;
             }
+            else if(pagetime >= (10LL * TIME_DIMENSION))
+              {
+                tmp = new_viewtime % TIME_DIMENSION;
+
+                new_viewtime -= tmp;
+              }
+              else if(pagetime >= TIME_DIMENSION)
+                {
+                  tmp = new_viewtime % (TIME_DIMENSION / 10LL);
+
+                  new_viewtime -= tmp;
+                }
+                else if(pagetime >= (TIME_DIMENSION / 10LL))
+                  {
+                    tmp = new_viewtime % (TIME_DIMENSION / 100LL);
+
+                    new_viewtime -= tmp;
+                  }
+                  else if(pagetime >= (TIME_DIMENSION / 100LL))
+                    {
+                      tmp = new_viewtime % (TIME_DIMENSION / 1000LL);
+
+                      new_viewtime -= tmp;
+                    }
 
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
