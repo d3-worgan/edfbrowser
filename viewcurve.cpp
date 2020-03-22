@@ -114,6 +114,7 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
 
 /////////////////////////////////////////////////////////
 
+  signal_nr = 0;
   crosshair_1.active = 0;
   crosshair_2.active = 0;
   ruler_active = 0;
@@ -4540,7 +4541,7 @@ void ViewCurve::next_crosshair_triggered()
 {
   int i, n=0;
 
-  if(signal_nr >= mainwindow->signalcomps)
+  if(!mainwindow->signalcomps)
   {
     return;
   }
