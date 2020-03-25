@@ -875,7 +875,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
 //       (double)((-32768 + mit_hdr.baseline[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i],
 //       mit_hdr.adc_gain[i], mit_hdr.adc_zero[i], mit_hdr.baseline[i], mit_hdr.unit[i], mit_hdr.unit_multiplier[i]);
 
-    if(edf_set_physical_maximum(hdl, i, (double)((32767 + mit_hdr.baseline[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]))
+    if(edf_set_physical_maximum(hdl, i, (double)((32767 - mit_hdr.baseline[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]))
     {
       textEdit1->append("Error: edf_set_physical_maximum()\n");
       fclose(data_inputfile);
@@ -884,7 +884,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
       return;
     }
 
-    if(edf_set_physical_minimum(hdl, i, (double)((-32768 + mit_hdr.baseline[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]))
+    if(edf_set_physical_minimum(hdl, i, (double)((-32768 - mit_hdr.baseline[i]) * mit_hdr.unit_multiplier[i]) / mit_hdr.adc_gain[i]))
     {
       textEdit1->append("Error: edf_set_physical_minimum()\n");
       fclose(data_inputfile);
