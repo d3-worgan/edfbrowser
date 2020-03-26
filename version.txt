@@ -1,4 +1,13 @@
 
+ version 1.74      to be defined
+ --------------
+
+ - MIT (Physionet) to EDF+ converter: fixed a bug related to ADC baseline and ADC zero
+   which could possibly cause a wrong DC-offset.
+
+ - Fixed a bug that could render the keyboard shortcut for crosshairs inoperable.
+
+
 
  version 1.73      March 15, 2020
  --------------
