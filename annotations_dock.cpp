@@ -667,7 +667,14 @@ void UI_Annotationswindow::hide_same_annots(bool)
     {
       annot->hided_in_list = 1;
 
-      annot->hided = 1;
+      if(mainwindow->annot_filter->hide_in_list_only)
+      {
+        annot->hided = 0;
+      }
+      else
+      {
+        annot->hided = 1;
+      }
     }
   }
 
