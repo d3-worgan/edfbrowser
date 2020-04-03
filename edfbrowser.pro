@@ -310,10 +310,10 @@ mac {
  QMAKE_APPLICATION_BUNDLE_NAME = EDFbrowser
  QMAKE_TARGET_BUNDLE_PREFIX = net.teuniz
  icns.target = edf.icns
- icns.commands = $$_PRO_FILE_PWD_/images/macos-icns-create.command "$$(PWD)"
+ icns.commands = /usr/bin/env bash $$_PRO_FILE_PWD_/images/macos-icns-create.command "$$(PWD)"
  QMAKE_EXTRA_TARGETS += icns
  ICON = $$(PWD)/edf.icns
- QMAKE_POST_LINK = $$_PRO_FILE_PWD_/install/macos-dmg-create.command "$$(PWD)"
+ QMAKE_POST_LINK = /usr/bin/env bash $$_PRO_FILE_PWD_/install/macos-dmg-create.command "$$(PWD)"
  QMAKE_CLEAN += edf.iconset EDFbrowser-*-temp.dmg
  QMAKE_DISTCLEAN += edf.icns EDFbrowser-*.dmg
 }
