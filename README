@@ -108,37 +108,37 @@ upx edfbrowser (if upx is not recognized as a command, install it using your pac
 
 
 
--Requirements on macOS (warning, I don't have a Mac and I can not support it!)
--=====================
+Requirements on macOS (warning, I don't have a Mac and I can not support it!)
+=====================
 
--Development tools from Apple. To get them, run
--
--xcode-select --install
--
--QT >= 5.9.1
--One of the ways to get QT on macOS is to install it via homebrew:
--
--brew install qt
--
--Note: after installing, qmake will likely not be in your $PATH, so you need to invoke it using its full path.
--
--Build on macOS
--==============
--
--In the directory where you extracted sourcefile or cloned git repo, first run qmake, then make:
--
--/usr/local/Cellar/qt/<your.qt.version>/bin/qmake
--make
--
--You can also build it in a dedicated subdirectory:
--
--mkdir build
--cd build
--/usr/local/Cellar/qt/<your.qt.version>/bin/qmake .. //note the double dot at the end
--make //make as usual
--
--
--This will create the app bundle in the current directory, which you can then move to /Applications/ if desired.
+Development tools from Apple: to get them, run
+
+xcode-select --install
+
+Qt >= 5.9.1: one method to get Qt on macOS is to install it via homebrew:
+
+brew install qt
+
+Note: after installing, qmake will likely not be in your $PATH, so you need to invoke it using its full path.
+
+
+Build on macOS
+==============
+
+In the directory where you extracted sourcefile or cloned git repo, first run qmake, then make
+(change option -j according to number of available cpu cores, get with 'sysctl -n hw.ncpu' command):
+
+$(brew --prefix qt)/bin/qmake
+make -j4
+
+You can also build it in a dedicated subdirectory:
+
+mkdir build
+cd build
+$(brew --prefix qt)/bin/qmake ..
+make -j4
+
+This will create the app bundle in the current directory, which you can then move to /Applications/ if desired.
 
 
 
