@@ -40,6 +40,8 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
 
   last_default_color = 0;
 
+  color_selected = 0;
+
   default_color_list[0] = Qt::yellow;
   default_color_list[1] = Qt::green;
   default_color_list[2] = Qt::red;
@@ -166,6 +168,8 @@ void UI_Signalswindow::ColorButtonClicked(SpecialButton *)
   ColorButton->setColor((Qt::GlobalColor)color);
 
   curve_color = color;
+
+  color_selected = 1;
 }
 
 
@@ -203,7 +207,7 @@ void UI_Signalswindow::DisplayCompButtonClicked()
   newsignalcomp->edfhdr = mainwindow->edfheaderlist[filelist->currentRow()];
   newsignalcomp->file_duration = newsignalcomp->edfhdr->long_data_record_duration * newsignalcomp->edfhdr->datarecords;
   newsignalcomp->voltpercm = mainwindow->default_amplitude;
-  if(mainwindow->use_diverse_signal_colors)
+  if(mainwindow->use_diverse_signal_colors && (!color_selected))
   {
     newsignalcomp->color = default_color_list[last_default_color++];
     last_default_color %= 6;
@@ -313,7 +317,7 @@ void UI_Signalswindow::DisplayButtonClicked()
     newsignalcomp->edfhdr = mainwindow->edfheaderlist[filelist->currentRow()];
     newsignalcomp->file_duration = newsignalcomp->edfhdr->long_data_record_duration * newsignalcomp->edfhdr->datarecords;
     newsignalcomp->voltpercm = mainwindow->default_amplitude;
-    if(mainwindow->use_diverse_signal_colors)
+    if(mainwindow->use_diverse_signal_colors && (!color_selected))
     {
       newsignalcomp->color = default_color_list[last_default_color++];
       last_default_color %= 6;

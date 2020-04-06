@@ -104,7 +104,8 @@ private:
   int smp_per_record,
       curve_color,
       default_color_list[32],
-      last_default_color;
+      last_default_color,
+      color_selected;
 
   char physdimension[64];
 

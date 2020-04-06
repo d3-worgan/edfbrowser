@@ -9,6 +9,9 @@
 
  - Fixed a bug related to the option "Annotations: filter list only".
 
+ - Override setting "Vary signal colors" when manually selecting a signal color in
+   the "Add Signals" dialog.
+
 
 
  version 1.73      March 15, 2020
