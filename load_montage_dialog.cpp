@@ -1605,8 +1605,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       if(type == 1)
       {
         newsignalcomp->ecg_filter = create_ecg_filter(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f,
-                                                      newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue,
-                                                      mainwindow->powerlinefreq);
+                                                      newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue);
         if(newsignalcomp->ecg_filter == NULL)
         {
           snprintf(str2, 512, "A memory allocation error occurred when creating an ECG filter.\nFile: %s line: %i", __FILE__, __LINE__);

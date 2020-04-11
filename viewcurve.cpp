@@ -3797,8 +3797,7 @@ void ViewCurve::ECGdetectButton()
 
   newsignalcomp->ecg_filter =
     create_ecg_filter(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f,
-                      newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue,
-                      mainwindow->powerlinefreq);
+                      newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue);
 
   strlcpy(newsignalcomp->signallabel_bu, newsignalcomp->signallabel, 512);
   newsignalcomp->signallabellen_bu = newsignalcomp->signallabellen;

@@ -12,6 +12,8 @@
  - Override setting "Vary signal colors" when manually selecting a signal color in
    the "Add Signals" dialog.
 
+ - Heartrate / beat detector: replaced the QRS detector with the Pan-Tompkins algorithm.
+
 
 
  version 1.73      March 15, 2020
