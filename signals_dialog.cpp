@@ -165,13 +165,21 @@ void UI_Signalswindow::ColorButtonClicked(SpecialButton *)
 
   if(color < 0)  return;
 
+  if(color == 127)
+  {
+    color_selected = 0;
+
+    mainwindow->use_diverse_signal_colors = 1;
+
+    return;
+  }
+
   ColorButton->setColor((Qt::GlobalColor)color);
 
   curve_color = color;
 
   color_selected = 1;
 }
-
 
 
 void UI_Signalswindow::DisplayCompButtonClicked()

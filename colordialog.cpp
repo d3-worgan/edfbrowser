@@ -35,8 +35,8 @@ UI_ColorMenuDialog::UI_ColorMenuDialog(int *newColor, QWidget *w_parent)
 {
   colormenu_dialog = new QDialog(w_parent);
 
-  colormenu_dialog->setMinimumSize(105, 130);
-  colormenu_dialog->setMaximumSize(105, 130);
+  colormenu_dialog->setMinimumSize(105, 175);
+  colormenu_dialog->setMaximumSize(105, 175);
   colormenu_dialog->setWindowTitle("Color");
   colormenu_dialog->setModal(true);
   colormenu_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -44,10 +44,6 @@ UI_ColorMenuDialog::UI_ColorMenuDialog(int *newColor, QWidget *w_parent)
   color = newColor;
 
   *color = -1;
-
-  CloseButton = new QPushButton(colormenu_dialog);
-  CloseButton->setGeometry(5, 105, 95, 20);
-  CloseButton->setText("Close");
 
   ColorButton1 = new SpecialButton(colormenu_dialog);
   ColorButton1->setGeometry(5, 5, 20, 20);
@@ -113,25 +109,43 @@ UI_ColorMenuDialog::UI_ColorMenuDialog(int *newColor, QWidget *w_parent)
   ColorButton16->setGeometry(80, 80, 20, 20);
   ColorButton16->setColor(Qt::white);
 
-  QObject::connect(CloseButton,   SIGNAL(clicked()),                colormenu_dialog, SLOT(close()));
-  QObject::connect(ColorButton1,  SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton1_pressed(SpecialButton *)));
-  QObject::connect(ColorButton2,  SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton2_pressed(SpecialButton *)));
-  QObject::connect(ColorButton3,  SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton3_pressed(SpecialButton *)));
-  QObject::connect(ColorButton4,  SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton4_pressed(SpecialButton *)));
-  QObject::connect(ColorButton5,  SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton5_pressed(SpecialButton *)));
-  QObject::connect(ColorButton6,  SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton6_pressed(SpecialButton *)));
-  QObject::connect(ColorButton7,  SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton7_pressed(SpecialButton *)));
-  QObject::connect(ColorButton8,  SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton8_pressed(SpecialButton *)));
-  QObject::connect(ColorButton9,  SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton9_pressed(SpecialButton *)));
-  QObject::connect(ColorButton10, SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton10_pressed(SpecialButton *)));
-  QObject::connect(ColorButton11, SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton11_pressed(SpecialButton *)));
-  QObject::connect(ColorButton12, SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton12_pressed(SpecialButton *)));
-  QObject::connect(ColorButton13, SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton13_pressed(SpecialButton *)));
-  QObject::connect(ColorButton14, SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton14_pressed(SpecialButton *)));
-  QObject::connect(ColorButton15, SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton15_pressed(SpecialButton *)));
-  QObject::connect(ColorButton16, SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton16_pressed(SpecialButton *)));
+  varyColorButton = new QPushButton(colormenu_dialog);
+  varyColorButton->setGeometry(5, 110, 95, 25);
+  varyColorButton->setText("Varying colors");
+  varyColorButton->setToolTip("Use different colors for every signal");
+
+  CloseButton = new QPushButton(colormenu_dialog);
+  CloseButton->setGeometry(5, 145, 95, 25);
+  CloseButton->setText("Close");
+
+  QObject::connect(CloseButton,     SIGNAL(clicked()),                colormenu_dialog, SLOT(close()));
+  QObject::connect(ColorButton1,    SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton1_pressed(SpecialButton *)));
+  QObject::connect(ColorButton2,    SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton2_pressed(SpecialButton *)));
+  QObject::connect(ColorButton3,    SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton3_pressed(SpecialButton *)));
+  QObject::connect(ColorButton4,    SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton4_pressed(SpecialButton *)));
+  QObject::connect(ColorButton5,    SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton5_pressed(SpecialButton *)));
+  QObject::connect(ColorButton6,    SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton6_pressed(SpecialButton *)));
+  QObject::connect(ColorButton7,    SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton7_pressed(SpecialButton *)));
+  QObject::connect(ColorButton8,    SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton8_pressed(SpecialButton *)));
+  QObject::connect(ColorButton9,    SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton9_pressed(SpecialButton *)));
+  QObject::connect(ColorButton10,   SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton10_pressed(SpecialButton *)));
+  QObject::connect(ColorButton11,   SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton11_pressed(SpecialButton *)));
+  QObject::connect(ColorButton12,   SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton12_pressed(SpecialButton *)));
+  QObject::connect(ColorButton13,   SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton13_pressed(SpecialButton *)));
+  QObject::connect(ColorButton14,   SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton14_pressed(SpecialButton *)));
+  QObject::connect(ColorButton15,   SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton15_pressed(SpecialButton *)));
+  QObject::connect(ColorButton16,   SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton16_pressed(SpecialButton *)));
+  QObject::connect(varyColorButton, SIGNAL(clicked()),                this,             SLOT(varyColorButtonClicked()));
 
   colormenu_dialog->exec();
+}
+
+
+void UI_ColorMenuDialog::varyColorButtonClicked()
+{
+  *color = 127;
+
+  colormenu_dialog->close();
 }
 
 

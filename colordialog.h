@@ -63,7 +63,8 @@ int *color;
 
 QDialog      *colormenu_dialog;
 
-QPushButton  *CloseButton;
+QPushButton  *CloseButton,
+             *varyColorButton;
 
 SpecialButton *ColorButton1,
               *ColorButton2,
@@ -80,8 +81,7 @@ SpecialButton *ColorButton1,
               *ColorButton13,
               *ColorButton14,
               *ColorButton15,
-              *ColorButton16,
-              *parentbutton;
+              *ColorButton16;
 
 
 private slots:
@@ -102,6 +102,7 @@ void ColorButton13_pressed(SpecialButton *);
 void ColorButton14_pressed(SpecialButton *);
 void ColorButton15_pressed(SpecialButton *);
 void ColorButton16_pressed(SpecialButton *);
+void varyColorButtonClicked();
 
 };
 
