@@ -34,7 +34,7 @@
 
 
 
-struct ecg_filter_settings * create_ecg_filter(double sf, double bitval)
+struct ecg_filter_settings * create_ecg_filter(double sf, double bitval, double sense)
 {
   struct ecg_filter_settings *st;
 
@@ -45,18 +45,16 @@ struct ecg_filter_settings * create_ecg_filter(double sf, double bitval)
 
   st->sf = sf;
 
-  st->bu_filled = 0;
-
   st->bpm = 60.0;
 
   st->bitvalue = bitval;
 
-  st->stat_buf_idx = 0;
-
-  st->sample_cntr = 0;
-
-  st->pt_qrs = create_pt_qrs(sf, fabs(bitval));
+  st->pt_qrs = create_pt_qrs(sf, fabs(bitval * sense));
   if(st->pt_qrs == NULL)
+    goto CREATE_OUT_ERROR;
+
+  st->pt_qrs_bu = create_pt_qrs(sf, fabs(bitval * sense));
+  if(st->pt_qrs_bu == NULL)
     goto CREATE_OUT_ERROR;
 
   st->stat_buf = (double *)malloc(sizeof(double) * ECG_FILTER_STAT_BUFSIZE);
@@ -82,6 +80,7 @@ void free_ecg_filter(struct ecg_filter_settings *st)
   if(st == NULL)  return;
 
   free_pt_qrs(st->pt_qrs);
+  free_pt_qrs(st->pt_qrs_bu);
 
   free(st->stat_buf);
   free(st->stat_smpl_buf);
@@ -103,7 +102,7 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *st)
 
     st->smpl_n++;
 
-    return st->bpm / st->bitvalue;
+    return (st->bpm / st->bitvalue);
   }
 
   rr_smpl_ival = st->smpl_n + st->qrs_smpl_offset_old - qrs_smpl_offset;
@@ -132,15 +131,35 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *st)
 
   st->smpl_n = 1;
 
-  return st->bpm / st->bitvalue;
+  return (st->bpm / st->bitvalue);
 }
 
 
 void ecg_filter_save_buf(struct ecg_filter_settings *st)
 {
+  int i;
+
+  double *d_ptr;
+
+  if(st == NULL)  return;
+
   st->smpl_n_bu = st->smpl_n;
 
   st->bpm_bu = st->bpm;
+
+  d_ptr = st->pt_qrs_bu->ds_ravg_buf;
+
+  *st->pt_qrs_bu = *st->pt_qrs;
+
+  st->pt_qrs_bu->ds_ravg_buf = d_ptr;
+
+  if(st->pt_qrs->ds_ravg_len > 1)
+  {
+    for(i=0; i<st->pt_qrs->ds_ravg_len; i++)
+    {
+      st->pt_qrs_bu->ds_ravg_buf[i] = st->pt_qrs->ds_ravg_buf[i];
+    }
+  }
 
   st->bu_filled = 1;
 }
@@ -148,6 +167,12 @@ void ecg_filter_save_buf(struct ecg_filter_settings *st)
 
 void ecg_filter_restore_buf(struct ecg_filter_settings *st)
 {
+  int i;
+
+  double *d_ptr;
+
+  if(st == NULL)  return;
+
   st->stat_buf_idx = 0;
 
   st->sample_cntr = 0;
@@ -157,11 +182,27 @@ void ecg_filter_restore_buf(struct ecg_filter_settings *st)
   st->smpl_n = st->smpl_n_bu;
 
   st->bpm = st->bpm_bu;
+
+  d_ptr = st->pt_qrs->ds_ravg_buf;
+
+  *st->pt_qrs = *st->pt_qrs_bu;
+
+  st->pt_qrs->ds_ravg_buf = d_ptr;
+
+  if(st->pt_qrs->ds_ravg_len > 1)
+  {
+    for(i=0; i<st->pt_qrs->ds_ravg_len; i++)
+    {
+      st->pt_qrs->ds_ravg_buf[i] = st->pt_qrs_bu->ds_ravg_buf[i];
+    }
+  }
 }
 
 
 void reset_ecg_filter(struct ecg_filter_settings *st)
 {
+  if(st == NULL)  return;
+
   st->smpl_n = 0;
 
   st->bu_filled = 0;
@@ -176,18 +217,24 @@ void reset_ecg_filter(struct ecg_filter_settings *st)
 
 int ecg_filter_get_beat_cnt(struct ecg_filter_settings *st)
 {
+  if(st == NULL)  return 0;
+
   return st->stat_buf_idx;
 }
 
 
 long long * ecg_filter_get_onset_beatlist(struct ecg_filter_settings *st)
 {
+  if(st == NULL)  return 0LL;
+
   return st->stat_smpl_buf;
 }
 
 
 double * ecg_filter_get_interval_beatlist(struct ecg_filter_settings *st)
 {
+  if(st == NULL)  return NULL;
+
   return st->stat_buf;
 }
 

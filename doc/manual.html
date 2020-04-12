@@ -36,7 +36,7 @@
   <li><a href="#Hypnogram">Hypnogram</a></li>
   <li><a href="#Averaging_EP">Averaging (evoked potentials, heart beats or other triggers)</a></li>
   <li><a href="#ECG_PLIF_filter">ECG powerline interference filter</a></li>
-  <li><a href="#ECG_detection">ECG heartrate detection</a></li>
+  <li><a href="#ECG_detection">ECG QRS detector</a></li>
   <li><a href="#HR_statistics">Heart Rate statistics</a></li>
   <li><a href="#Export_Import_ECG_RR_interval">Export/Import ECG RR-interval</a></li>
   <li><a href="#Custom_fir_filter">Custom FIR filter</a></li>
@@ -589,15 +589,14 @@
 
 <p><br><br></p>
 
-<h3><a name="ECG_detection">ECG heart rate detection</a></h3>
+<h3><a name="ECG_detection">ECG QRS detector</a></h3>
 
 <p>
-  Toggling the "Heart Rate" button toggles on or off the detection and calculation of the heartrate<br>
-  expressed in beats per minute (bpm).<br>
+  Toggling the "Heart Rate" button toggles on or off the detection and calculation of the heartrate expressed in beats per minute (bpm).<br>
   The "Heart Rate" button can be found in the <a href="#Signalproperties">Signalproperties dialog</a>.
 <br>
-  The algorithm used for the heartrate detection is derived from "Real time electrocardiogram QRS detection using combined adaptive threshold"<br>
-  by Ivaylo I Christov. <a href="http://www.biomedical-engineering-online.com/content/3/1/28">http://www.biomedical-engineering-online.com/content/3/1/28</a><br>
+  The algorithm used for the heartrate detection is derived from "A Real-Time QRS Detection Algorithm" by Jiapu Pan and Willis J. Tompkins.<br>
+  <a href="https://courses.cs.washington.edu/courses/cse474/18wi/labs/l8/QRSdetection.pdf">https://courses.cs.washington.edu/courses/cse474/18wi/labs/l8/QRSdetection.pdf</a><br>
 <br>
   The R-onset times and/or RR-interval times (beat to beat) can be exported to an ascii-file for analysis in other programs (e.g. Kubios).<br>
   After you switched on the Heart Rate detection, go to "Tools -&gt; Import/Export ECG RR-interval".<br>
@@ -606,8 +605,7 @@
 <br>
   Some statistics about the Heart Rate (variability) are available <a href="#HR_statistics">here</a>.<br>
 <br>
-  Note: before using the Heart Rate detection, go to the settings menu (Settings -&gt; Other) and adjust the "Powerline Frequency" to the frequency used in the country<br>
-  where the recording of the ECG took place (50 or 60 Hz). Otherwise the powerline noise suppression filter in the Heart Rate detection algorithm will not work correctly.
+  Note: The QRS detection requires a samplerate of 200Hz or higher. The physical dimension (unit) must be expressed in uV, mV or V.
 </p>
 
 <p><br></p>
@@ -619,7 +617,7 @@
 <h3><a name="HR_statistics">Heart Rate statistics</a></h3>
 
 <p>
-  When the <a href="#ECG_detection">ECG heart rate detection</a> is enabled, you can view some statistics about the<br>
+  When the <a href="#ECG_detection">ECG QRS detector</a> is enabled, you can view some statistics about the<br>
   Heart Rate (variability) in the <a href="#Signalproperties">Signalproperties</a>. Once you see the Signalproperties dialog,<br>
   click on the "Statistics" button. A brief description of the statistics:<br>
 <br>
@@ -635,7 +633,7 @@
 <br>
   In case you want to see this info permanently at the bottom of the screen during navigation through the file,<br>
   use the following procedure.<br>
-  First, import the output of the <a href="#ECG_detection">ECG heartrate detection</a> as annotations as described here: <a href="#Export_Import_ECG_RR_interval">Export/Import ECG RR-interval</a><br>
+  First, import the output of the <a href="#ECG_detection">ECG QRS detector</a> as annotations as described here: <a href="#Export_Import_ECG_RR_interval">Export/Import ECG RR-interval</a><br>
   Now right-click on an annotation named "R-onset" and select "Heart Rate Variability".<br>
   A new window with the statistics will appear. Close it.<br>
   From now on, after changing file position e.g. PgUp/PgDn, you will see the updated statistics at the bottom of the screen.
@@ -650,11 +648,11 @@
 <h3><a name="Export_Import_ECG_RR_interval">Export/Import ECG RR-interval</a></h3>
 
 <p>
-  This tool can be used to export the output of the <a href="#ECG_detection">ECG heartrate detection</a>,<br>
+  This tool can be used to export the output of the <a href="#ECG_detection">ECG QRS detector</a>,<br>
   or<br>
-  it can be used to import the output of the <a href="#ECG_detection">ECG heartrate detection</a> as annotations.<br>
+  it can be used to import the output of the <a href="#ECG_detection">ECG QRS detector</a> as annotations.<br>
 <br>
-  After having imported the <a href="#ECG_detection">ECG heartrate detection</a> output as annotations, more options<br>
+  After having imported the <a href="#ECG_detection">ECG QRS detector</a> output as annotations, more options<br>
   are available by right-clicking on one of the annotations in the annotationlist.
 </p>
 

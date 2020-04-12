@@ -3762,7 +3762,9 @@ void ViewCurve::signalInvert()
 
 void ViewCurve::ECGdetectButton()
 {
-  int i;
+  int i, sense=1;
+
+  char str[32]={""};
 
   struct signalcompblock *newsignalcomp;
 
@@ -3772,6 +3774,37 @@ void ViewCurve::ECGdetectButton()
   {
     return;
   }
+
+  if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].sf_f < 199.999)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Sample rate of selected signal is less than 200 Hz!");
+    messagewindow.exec();
+
+    return;
+  }
+
+  strlcpy(str, mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].physdimension, 32);
+  remove_trailing_spaces(str);
+  remove_leading_spaces(str);
+  if((!strcmp(str, "uV")) || (!strcmp(str, "ECG uV")) || (!strcmp(str, "EEG uV")))
+  {
+    sense = 1;
+  }
+  else if((!strcmp(str, "mV")) || (!strcmp(str, "ECG mV")) || (!strcmp(str, "EEG mV")))
+    {
+      sense = 1000;
+    }
+    else if((!strcmp(str, "V")) || (!strcmp(str, "ECG V")) || (!strcmp(str, "EEG V")))
+      {
+        sense = 1000000;
+      }
+      else
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Unknown unit (physical dimension), expected uV or mV or V");
+        messagewindow.exec();
+
+        return;
+      }
 
   if(mainwindow->signalcomp[signal_nr]->zratio_filter != NULL)
   {
@@ -3797,7 +3830,16 @@ void ViewCurve::ECGdetectButton()
 
   newsignalcomp->ecg_filter =
     create_ecg_filter(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f,
-                      newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue);
+                      newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue,
+                      sense);
+
+  if(newsignalcomp->ecg_filter == NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Could not create the QRS detector.");
+    messagewindow.exec();
+
+    return;
+  }
 
   strlcpy(newsignalcomp->signallabel_bu, newsignalcomp->signallabel, 512);
   newsignalcomp->signallabellen_bu = newsignalcomp->signallabellen;

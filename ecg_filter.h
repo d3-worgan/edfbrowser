@@ -52,7 +52,8 @@ extern "C" {
 
 struct ecg_filter_settings
 {
-  struct pt_qrs_settings *pt_qrs;
+  struct pt_qrs_settings *pt_qrs,
+                         *pt_qrs_bu;
 
   int qrs_smpl_offset_old;
 
@@ -72,7 +73,7 @@ struct ecg_filter_settings
 };
 
 
-struct ecg_filter_settings * create_ecg_filter(double, double);
+struct ecg_filter_settings * create_ecg_filter(double, double, double);
 double run_ecg_filter(double, struct ecg_filter_settings *);
 void free_ecg_filter(struct ecg_filter_settings *);
 void ecg_filter_save_buf(struct ecg_filter_settings *);

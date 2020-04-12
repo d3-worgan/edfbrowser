@@ -114,7 +114,8 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       plif_powerlinefrequency,
       not_compatibel,
       sf,
-      n_taps;
+      n_taps,
+      sense;
 
   char result[XML_STRBUFLEN],
        scratchpad[2048],
@@ -1604,24 +1605,48 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(type == 1)
       {
-        newsignalcomp->ecg_filter = create_ecg_filter(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f,
-                                                      newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue);
-        if(newsignalcomp->ecg_filter == NULL)
+        if(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f >= 199.999)
         {
-          snprintf(str2, 512, "A memory allocation error occurred when creating an ECG filter.\nFile: %s line: %i", __FILE__, __LINE__);
-          QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
-          messagewindow.exec();
-          free(newsignalcomp);
-          xml_close(xml_hdl);
-          return;
-        }
+          strlcpy(str2, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension, 32);
+          remove_trailing_spaces(str2);
+          remove_leading_spaces(str2);
+          sense = 0;
+          if((!strcmp(str2, "uV")) || (!strcmp(str2, "ECG uV")) || (!strcmp(str2, "EEG uV")))
+          {
+            sense = 1;
+          }
+          else if((!strcmp(str2, "mV")) || (!strcmp(str2, "ECG mV")) || (!strcmp(str2, "EEG mV")))
+            {
+              sense = 1000;
+            }
+            else if((!strcmp(str2, "V")) || (!strcmp(str2, "ECG V")) || (!strcmp(str2, "EEG V")))
+              {
+                sense = 1000000;
+              }
 
-        strlcpy(newsignalcomp->signallabel_bu, newsignalcomp->signallabel, 512);
-        newsignalcomp->signallabellen_bu = newsignalcomp->signallabellen;
-        strlcpy(newsignalcomp->signallabel, "HR", 512);
-        newsignalcomp->signallabellen = strlen(newsignalcomp->signallabel);
-        strlcpy(newsignalcomp->physdimension_bu, newsignalcomp->physdimension, 9);
-        strlcpy(newsignalcomp->physdimension, "bpm", 9);
+          if(sense > 0)
+          {
+            newsignalcomp->ecg_filter = create_ecg_filter(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f,
+                                                          newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue,
+                                                          sense);
+            if(newsignalcomp->ecg_filter == NULL)
+            {
+              snprintf(str2, 512, "Could not create an ECG filter.\nFile: %s line: %i", __FILE__, __LINE__);
+              QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+              messagewindow.exec();
+              free(newsignalcomp);
+              xml_close(xml_hdl);
+              return;
+            }
+
+            strlcpy(newsignalcomp->signallabel_bu, newsignalcomp->signallabel, 512);
+            newsignalcomp->signallabellen_bu = newsignalcomp->signallabellen;
+            strlcpy(newsignalcomp->signallabel, "HR", 512);
+            newsignalcomp->signallabellen = strlen(newsignalcomp->signallabel);
+            strlcpy(newsignalcomp->physdimension_bu, newsignalcomp->physdimension, 9);
+            strlcpy(newsignalcomp->physdimension, "bpm", 9);
+          }
+        }
       }
 
       xml_go_up(xml_hdl);
