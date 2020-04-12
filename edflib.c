@@ -46,7 +46,7 @@
 #define EDFLIB_MAXFILES 64
 
 
-#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
+#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__) || defined(__HAIKU__)
 
 #define fopeno fopen
 
