@@ -217,6 +217,8 @@ UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, struct signalcompblock *sign
 
   dock_param.mainwindow = mainwindow;
 
+  strlcpy(dock_param.annot_name, "R-onset", 16);
+
   mainwindow->hrv_dock[instance_num] = new UI_hrv_dock(mainwindow, dock_param);
 
   mainwindow->addToolBar(Qt::BottomToolBarArea, mainwindow->hrv_dock[instance_num]->hrv_dock);

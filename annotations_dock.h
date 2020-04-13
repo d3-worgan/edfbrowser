@@ -64,6 +64,7 @@
 #include "edf_annot_list.h"
 #include "annotlist_filter_dialog.h"
 #include "statistics_dialog.h"
+#include "hrv_dock.h"
 
 
 class UI_Mainwindow;
@@ -123,7 +124,8 @@ private:
           *unhide_all_NK_triggers_act,
           *unhide_all_BS_triggers_act,
           *filt_ival_time_act,
-          *show_stats_act;
+          *show_stats_act,
+          *show_heart_rate_act;
 
 private slots:
 
@@ -146,6 +148,7 @@ private slots:
   void unhide_all_BS_triggers(bool);
   void filt_ival_time(bool);
   void show_stats(bool);
+  void show_heart_rate(bool);
 };
 
 

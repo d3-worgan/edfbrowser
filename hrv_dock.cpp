@@ -373,7 +373,7 @@ void hrv_curve_widget::paintEvent(QPaintEvent *)
     remove_trailing_spaces(str);
     remove_leading_spaces(str);
 
-    if(!strcmp(str, "R-onset"))
+    if(!strcmp(str, param.annot_name))
     {
       hr_ival = annot->onset - former_onset;
 

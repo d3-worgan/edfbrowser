@@ -104,6 +104,7 @@ UI_Annotationswindow::UI_Annotationswindow(struct edfhdrblock *e_hdr, QWidget *w
   unhide_all_BS_triggers_act = new QAction("Unhide all Biosemi triggers", list);
   filt_ival_time_act = new QAction("Filter Interval Time", list);
   show_stats_act = new QAction("Heart Rate Variability", list);
+  show_heart_rate_act = new QAction("Heart Rate", list);
 
   list->setContextMenuPolicy(Qt::ActionsContextMenu);
   list->insertAction(NULL, show_between_act);
@@ -119,6 +120,7 @@ UI_Annotationswindow::UI_Annotationswindow(struct edfhdrblock *e_hdr, QWidget *w
   list->insertAction(NULL, unhide_all_BS_triggers_act);
   list->insertAction(NULL, filt_ival_time_act);
   list->insertAction(NULL, show_stats_act);
+  list->insertAction(NULL, show_heart_rate_act);
 
   h_layout = new QHBoxLayout;
   h_layout->addWidget(checkbox1);
@@ -154,6 +156,7 @@ UI_Annotationswindow::UI_Annotationswindow(struct edfhdrblock *e_hdr, QWidget *w
   QObject::connect(unhide_all_BS_triggers_act, SIGNAL(triggered(bool)),                this, SLOT(unhide_all_BS_triggers(bool)));
   QObject::connect(filt_ival_time_act,         SIGNAL(triggered(bool)),                this, SLOT(filt_ival_time(bool)));
   QObject::connect(show_stats_act,             SIGNAL(triggered(bool)),                this, SLOT(show_stats(bool)));
+  QObject::connect(show_heart_rate_act,        SIGNAL(triggered(bool)),                this, SLOT(show_heart_rate(bool)));
   QObject::connect(lineedit1,                  SIGNAL(textEdited(const QString)),      this, SLOT(filter_edited(const QString)));
 }
 
@@ -163,6 +166,81 @@ void UI_Annotationswindow::more_button_clicked(bool)
   QMessageBox messagewindow(QMessageBox::Information, "Info", "Right-click on an annotation for more options.");
   messagewindow.exec();
   return;
+}
+
+
+void UI_Annotationswindow::show_heart_rate(bool)
+{
+  int instance_num;
+
+  char str[4096]="";
+
+  struct annotation_list *annot_list;
+
+  struct annotationblock *annot;
+
+  if(mainwindow->files_open < 1)
+  {
+    return;
+  }
+
+  if(list->count() < 1)
+  {
+    return;
+  }
+
+  annot_list = &(edf_hdr->annot_list);
+  if(annot_list == NULL)
+  {
+    snprintf(str, 4096, "Nullpointer returned: file: %s line %i", __FILE__, __LINE__);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    messagewindow.exec();
+    return;
+  }
+
+  annot = edfplus_annotation_get_item_visible_only(annot_list, list->currentRow());
+  if(annot == NULL)
+  {
+    snprintf(str, 4096, "Nullpointer returned: file: %s line %i", __FILE__, __LINE__);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    messagewindow.exec();
+    return;
+  }
+
+  struct hrv_dock_param_struct dock_param;
+
+  memset(&dock_param, 0, sizeof(struct hrv_dock_param_struct));
+
+  for(instance_num=0; instance_num<MAXHRVDOCKS; instance_num++)
+  {
+    if(mainwindow->hrv_dock[instance_num] == NULL)
+    {
+      break;
+    }
+  }
+
+  if(instance_num == MAXHRVDOCKS)
+  {
+    return;
+  }
+
+  dock_param.instance_num = instance_num;
+
+  dock_param.edfhdr = edf_hdr;
+
+  dock_param.mainwindow = mainwindow;
+
+  strlcpy(dock_param.annot_name, annot->annotation, 32);
+
+  mainwindow->hrv_dock[instance_num] = new UI_hrv_dock(mainwindow, dock_param);
+
+  mainwindow->addToolBar(Qt::BottomToolBarArea, mainwindow->hrv_dock[instance_num]->hrv_dock);
+
+  mainwindow->insertToolBarBreak(mainwindow->hrv_dock[instance_num]->hrv_dock);
+
+  edf_hdr->hrv_dock[instance_num] = instance_num + 1;
+
+  QObject::connect(mainwindow, SIGNAL(annot_docklist_changed()), mainwindow->hrv_dock[instance_num], SLOT(update_curve()));
 }
 
 
