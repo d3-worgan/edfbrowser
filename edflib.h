@@ -48,51 +48,51 @@
 
 
 
-#define EDFLIB_TIME_DIMENSION (10000000LL)
-#define EDFLIB_MAXSIGNALS 640
-#define EDFLIB_MAX_ANNOTATION_LEN 512
+#define EDFLIB_TIME_DIMENSION     (10000000LL)
+#define EDFLIB_MAXSIGNALS                (640)
+#define EDFLIB_MAX_ANNOTATION_LEN        (512)
 
-#define EDFSEEK_SET 0
-#define EDFSEEK_CUR 1
-#define EDFSEEK_END 2
+#define EDFSEEK_SET  (0)
+#define EDFSEEK_CUR  (1)
+#define EDFSEEK_END  (2)
 
 
 
 /* the following defines are used in the member "filetype" of the edf_hdr_struct */
 /* and as return value for the function edfopen_file_readonly() */
-#define EDFLIB_FILETYPE_EDF                  0
-#define EDFLIB_FILETYPE_EDFPLUS              1
-#define EDFLIB_FILETYPE_BDF                  2
-#define EDFLIB_FILETYPE_BDFPLUS              3
-#define EDFLIB_MALLOC_ERROR                 -1
-#define EDFLIB_NO_SUCH_FILE_OR_DIRECTORY    -2
+#define EDFLIB_FILETYPE_EDF                  (0)
+#define EDFLIB_FILETYPE_EDFPLUS              (1)
+#define EDFLIB_FILETYPE_BDF                  (2)
+#define EDFLIB_FILETYPE_BDFPLUS              (3)
+#define EDFLIB_MALLOC_ERROR                 (-1)
+#define EDFLIB_NO_SUCH_FILE_OR_DIRECTORY    (-2)
 
 /* when this error occurs, try to open the file with EDFbrowser,
    it will give you full details about the cause of the error. */
 #define EDFLIB_FILE_CONTAINS_FORMAT_ERRORS  -3
 
-#define EDFLIB_MAXFILES_REACHED             -4
-#define EDFLIB_FILE_READ_ERROR              -5
-#define EDFLIB_FILE_ALREADY_OPENED          -6
-#define EDFLIB_FILETYPE_ERROR               -7
-#define EDFLIB_FILE_WRITE_ERROR             -8
-#define EDFLIB_NUMBER_OF_SIGNALS_INVALID    -9
-#define EDFLIB_FILE_IS_DISCONTINUOUS       -10
-#define EDFLIB_INVALID_READ_ANNOTS_VALUE   -11
+#define EDFLIB_MAXFILES_REACHED             (-4)
+#define EDFLIB_FILE_READ_ERROR              (-5)
+#define EDFLIB_FILE_ALREADY_OPENED          (-6)
+#define EDFLIB_FILETYPE_ERROR               (-7)
+#define EDFLIB_FILE_WRITE_ERROR             (-8)
+#define EDFLIB_NUMBER_OF_SIGNALS_INVALID    (-9)
+#define EDFLIB_FILE_IS_DISCONTINUOUS       (-10)
+#define EDFLIB_INVALID_READ_ANNOTS_VALUE   (-11)
 
 /* values for annotations */
-#define EDFLIB_DO_NOT_READ_ANNOTATIONS 0
-#define EDFLIB_READ_ANNOTATIONS        1
-#define EDFLIB_READ_ALL_ANNOTATIONS    2
+#define EDFLIB_DO_NOT_READ_ANNOTATIONS  (0)
+#define EDFLIB_READ_ANNOTATIONS         (1)
+#define EDFLIB_READ_ALL_ANNOTATIONS     (2)
 
 /* the following defines are possible errors returned by the first sample write action */
-#define EDFLIB_NO_SIGNALS                  -20
-#define EDFLIB_TOO_MANY_SIGNALS            -21
-#define EDFLIB_NO_SAMPLES_IN_RECORD        -22
-#define EDFLIB_DIGMIN_IS_DIGMAX            -23
-#define EDFLIB_DIGMAX_LOWER_THAN_DIGMIN    -24
-#define EDFLIB_PHYSMIN_IS_PHYSMAX          -25
-#define EDFLIB_DATARECORD_SIZE_TOO_BIG     -26
+#define EDFLIB_NO_SIGNALS                  (-20)
+#define EDFLIB_TOO_MANY_SIGNALS            (-21)
+#define EDFLIB_NO_SAMPLES_IN_RECORD        (-22)
+#define EDFLIB_DIGMIN_IS_DIGMAX            (-23)
+#define EDFLIB_DIGMAX_LOWER_THAN_DIGMIN    (-24)
+#define EDFLIB_PHYSMIN_IS_PHYSMAX          (-25)
+#define EDFLIB_DATARECORD_SIZE_TOO_BIG     (-26)
 
 
 
@@ -419,7 +419,7 @@ int edf_set_physical_dimension(int handle, int edfsignal, const char *phys_dim);
 /* Sets the physical dimension (unit) of signal edfsignal. ("uV", "BPM", "mA", "Degr.", etc.) */
 /* phys_dim is a pointer to a NULL-terminated ASCII-string containing the physical dimension of the signal edfsignal */
 /* Returns 0 on success, otherwise -1 */
-/* This function is recommanded for every signal when you want to write a file */
+/* This function is recommended for every signal when you want to write a file */
 /* and can be called only after opening a file in writemode and before the first sample write action */
 
 

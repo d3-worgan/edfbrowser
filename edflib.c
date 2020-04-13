@@ -42,8 +42,8 @@
 #include "edflib.h"
 
 
-#define EDFLIB_VERSION 116
-#define EDFLIB_MAXFILES 64
+#define EDFLIB_VERSION  (116)
+#define EDFLIB_MAXFILES  (64)
 
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__) || defined(__HAIKU__)
@@ -79,15 +79,15 @@
 
 
 /* max size of annotationtext */
-#define EDFLIB_WRITE_MAX_ANNOTATION_LEN 40
+#define EDFLIB_WRITE_MAX_ANNOTATION_LEN  (40)
 
 /* bytes in datarecord for EDF annotations, must be an integer multiple of three and two */
-#define EDFLIB_ANNOTATION_BYTES 114
+#define EDFLIB_ANNOTATION_BYTES  (114)
 
 /* for writing only */
-#define EDFLIB_MAX_ANNOTATION_CHANNELS 64
+#define EDFLIB_MAX_ANNOTATION_CHANNELS  (64)
 
-#define EDFLIB_ANNOT_MEMBLOCKSZ 1000
+#define EDFLIB_ANNOT_MEMBLOCKSZ  (1000)
 
 
 struct edfparamblock{
