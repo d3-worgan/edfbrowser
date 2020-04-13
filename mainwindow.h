@@ -175,6 +175,7 @@
 #include "cdsa_dock.h"
 #include "hypnogram_dialog.h"
 #include "hypnogram_dock.h"
+#include "run_qrs_detector.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -641,6 +642,7 @@ private slots:
   void organize_signals();
   void Escape_fun();
   void export_ecg_rr_interval_to_ascii();
+  void qrs_detector();
   void convert_binary_to_edf();
   void convert_manscan_to_edf();
   void convert_scpecg_to_edf();

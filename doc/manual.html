@@ -592,10 +592,17 @@
 <h3><a name="ECG_detection">ECG QRS detector</a></h3>
 
 <p>
-  Toggling the "Heart Rate" button toggles on or off the detection and calculation of the heartrate expressed in beats per minute (bpm).<br>
-  The "Heart Rate" button can be found in the <a href="#Signalproperties">Signalproperties dialog</a>.
+  The quickest way to run the QRS detector and to import the beats as annotations, is to use the QRS detector in the Tools menu.<br>
+  You will be able to select one of the signals on your screen as the source for the QRS detector.<br>
+  The selected signal must have a samplerate of at least 200 Hz and must have a physical dimension (unit) uV, mV or V.<br>
+  This tool will run the QRS detector over the whole file and at the end it will import the R-onset time of the QRS complex as annotations.<br>
+  The annotations can be exported to different formats using the <a href="#Export_annotations">Export annotations tool</a>.<br>
 <br>
-  The algorithm used for the heartrate detection is derived from "A Real-Time QRS Detection Algorithm" by Jiapu Pan and Willis J. Tompkins.<br>
+  Otherwise, toggling the "Heart Rate" button toggles on or off the detection and calculation of the heartrate expressed in beats per minute (bpm).<br>
+  The "Heart Rate" button can be found in the <a href="#Signalproperties">Signalproperties dialog</a>.
+  This tool will create a new trace on the screen that represents the beats per minute.<br>
+<br>
+  The algorithm used for the QRS detection is derived from "A Real-Time QRS Detection Algorithm" by Jiapu Pan and Willis J. Tompkins.<br>
   <a href="https://courses.cs.washington.edu/courses/cse474/18wi/labs/l8/QRSdetection.pdf">https://courses.cs.washington.edu/courses/cse474/18wi/labs/l8/QRSdetection.pdf</a><br>
 <br>
   The R-onset times and/or RR-interval times (beat to beat) can be exported to an ascii-file for analysis in other programs (e.g. Kubios).<br>

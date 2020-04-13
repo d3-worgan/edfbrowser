@@ -798,6 +798,7 @@ UI_Mainwindow::UI_Mainwindow()
   toolsmenu->addAction("Export annotations/events", this, SLOT(export_annotations()));
   toolsmenu->addAction("Export EDF/BDF to ASCII (CSV)", this, SLOT(export_to_ascii()));
   toolsmenu->addAction("Export/Import ECG RR-interval", this, SLOT(export_ecg_rr_interval_to_ascii()));
+  toolsmenu->addAction("QRS detector", this, SLOT(qrs_detector()));
   toolsmenu->addAction("Export Filtered Signals", this, SLOT(export_filtered_signals()));
   toolsmenu->addSeparator();
   toolsmenu->addAction("Convert Nihon Kohden to EDF+", this, SLOT(nk2edf_converter()));

@@ -3446,6 +3446,48 @@ void UI_Mainwindow::export_ecg_rr_interval_to_ascii()
 }
 
 
+void UI_Mainwindow::qrs_detector()
+{
+  int signal_nr=-2;
+
+  char str[2048]={""};
+
+  double sf=1;
+
+  if(!signalcomps)  return;
+
+  UI_SignalChooser signal_chooser(this, 4, &signal_nr);
+
+  if((signal_nr < 0) || (signal_nr >= signalcomps))  return;
+
+  sf = signalcomp[signal_nr]->edfhdr->edfparam[signalcomp[signal_nr]->edfsignal[0]].sf_f;
+  if(sf < 199.999)
+  {
+    snprintf(str, 2048, "Sample rate of selected signal is %.1f Hz."
+                        "The QRS detector needs a samplerate of 200 Hz or higher.", sf);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    messagewindow.exec();
+    return;
+  }
+
+  strlcpy(str, signalcomp[signal_nr]->edfhdr->edfparam[signalcomp[signal_nr]->edfsignal[0]].physdimension, 2048);
+  remove_trailing_spaces(str);
+  remove_leading_spaces(str);
+  if((strcmp(str, "uV")) && (strcmp(str, "ECG uV")) && (strcmp(str, "EEG uV")) &&
+     (strcmp(str, "mV")) && (strcmp(str, "ECG mV")) && (strcmp(str, "EEG mV")) &&
+     (strcmp(str, "V")) && (strcmp(str, "ECG V")) && (strcmp(str, "EEG V")))
+  {
+    snprintf(str, 2048, "Unknown unit (physical dimension): \"%s\", expected uV or mV or V",
+             signalcomp[signal_nr]->edfhdr->edfparam[signalcomp[signal_nr]->edfsignal[0]].physdimension);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    messagewindow.exec();
+    return;
+  }
+
+  UI_QRS_detector ui_qrs_det(this, signalcomp[signal_nr]);
+}
+
+
 void UI_Mainwindow::export_filtered_signals()
 {
   UI_ExportFilteredSignalsWindow filt_signalswdw(this);
