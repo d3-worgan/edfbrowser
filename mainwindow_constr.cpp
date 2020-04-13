@@ -176,6 +176,11 @@ UI_Mainwindow::UI_Mainwindow()
     hypnogram_dock[i] = NULL;
   }
 
+  for(i=0; i<MAXHRVDOCKS; i++)
+  {
+    hrv_dock[i] = NULL;
+  }
+
   for(i=0; i<MAXAVERAGECURVEDIALOGS; i++)
   {
     averagecurvedialog[i] = NULL;

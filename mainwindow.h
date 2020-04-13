@@ -176,6 +176,7 @@
 #include "hypnogram_dialog.h"
 #include "hypnogram_dock.h"
 #include "run_qrs_detector.h"
+#include "hrv_dock.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -192,6 +193,7 @@ class UI_AverageCurveWindow;
 class UI_ZScoreWindow;
 class UI_cdsa_dock;
 class UI_hypnogram_dock;
+class UI_hrv_dock;
 
 
 class UI_Mainwindow : public QMainWindow
@@ -338,6 +340,8 @@ public:
   UI_cdsa_dock *cdsa_dock[MAXCDSADOCKS];
 
   UI_hypnogram_dock *hypnogram_dock[MAXHYPNOGRAMDOCKS];
+
+  UI_hrv_dock *hrv_dock[MAXHRVDOCKS];
 
   UI_SpectrumDockWindow *spectrumdock[MAXSPECTRUMDOCKS];
 

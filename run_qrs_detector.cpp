@@ -36,7 +36,8 @@ UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, struct signalcompblock *sign
       sense=1,
       total_datrecs=0,
       beat_cnt=0,
-      filenum=-1;
+      filenum=-1,
+      instance_num=0;
 
   char str[32]={""};
 
@@ -192,6 +193,39 @@ UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, struct signalcompblock *sign
 
     mainwindow->save_act->setEnabled(true);
   }
+
+  struct hrv_dock_param_struct dock_param;
+
+  memset(&dock_param, 0, sizeof(struct hrv_dock_param_struct));
+
+  for(instance_num=0; instance_num<MAXHRVDOCKS; instance_num++)
+  {
+    if(mainwindow->hrv_dock[instance_num] == NULL)
+    {
+      break;
+    }
+  }
+
+  if(instance_num == MAXHRVDOCKS)
+  {
+    goto OUT_EXIT_RETURN;
+  }
+
+  dock_param.instance_num = instance_num;
+
+  dock_param.edfhdr = signalcomp->edfhdr;
+
+  dock_param.mainwindow = mainwindow;
+
+  mainwindow->hrv_dock[instance_num] = new UI_hrv_dock(mainwindow, dock_param);
+
+  mainwindow->addToolBar(Qt::BottomToolBarArea, mainwindow->hrv_dock[instance_num]->hrv_dock);
+
+  mainwindow->insertToolBarBreak(mainwindow->hrv_dock[instance_num]->hrv_dock);
+
+  signalcomp->edfhdr->hrv_dock[instance_num] = instance_num + 1;
+
+  QObject::connect(mainwindow, SIGNAL(annot_docklist_changed()), mainwindow->hrv_dock[instance_num], SLOT(update_curve()));
 
 OUT_EXIT_RETURN:
 

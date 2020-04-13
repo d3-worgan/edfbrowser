@@ -61,6 +61,7 @@
 #include "pt_qrs.h"
 #include "ecg_filter.h"
 #include "filteredblockread.h"
+#include "hrv_dock.h"
 
 
 

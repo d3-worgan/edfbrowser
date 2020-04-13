@@ -2261,6 +2261,23 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
     }
   }
 
+  for(i=0; i<MAXHRVDOCKS; i++)
+  {
+    inst_num = edfheaderlist[file_n]->hrv_dock[i];
+
+    if(inst_num > 0)
+    {
+      if(hrv_dock[inst_num - 1] != NULL)
+      {
+        delete hrv_dock[inst_num - 1];
+
+        hrv_dock[inst_num - 1] = NULL;
+      }
+
+      edfheaderlist[file_n]->hrv_dock[i] = 0;
+    }
+  }
+
   for(j=0; j<signalcomps; )
   {
     if(signalcomp[j]->edfhdr == edfheaderlist[file_n])
@@ -2536,6 +2553,23 @@ void UI_Mainwindow::close_all_files()
         }
 
         edfheaderlist[files_open]->hypnogram_dock[i] = 0;
+      }
+    }
+
+    for(i=0; i<MAXHRVDOCKS; i++)
+    {
+      inst_num = edfheaderlist[files_open]->hrv_dock[i];
+
+      if(inst_num > 0)
+      {
+        if(hrv_dock[inst_num - 1] != NULL)
+        {
+          delete hrv_dock[inst_num - 1];
+
+          hrv_dock[inst_num - 1] = NULL;
+        }
+
+        edfheaderlist[files_open]->hrv_dock[i] = 0;
       }
     }
 
@@ -3454,7 +3488,7 @@ void UI_Mainwindow::qrs_detector()
 
   double sf=1;
 
-  if(!signalcomps)  return;
+  if((!files_open) || live_stream_active || (!signalcomps))  return;
 
   UI_SignalChooser signal_chooser(this, 4, &signal_nr);
 

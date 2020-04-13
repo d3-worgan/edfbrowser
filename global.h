@@ -77,6 +77,7 @@
 #define MAXSPECTRUMDOCKS (8)
 #define MAXCDSADOCKS (64)
 #define MAXHYPNOGRAMDOCKS (64)
+#define MAXHRVDOCKS (64)
 #define MAXPREDEFINEDMONTAGES (12)
 #define MAXAVERAGECURVEDIALOGS (32)
 #define MAXZSCOREDIALOGS (32)
@@ -173,6 +174,7 @@ struct edfhdrblock{
         struct edfparamblock *edfparam;
         struct annotation_list annot_list;
         int hypnogram_dock[MAXHYPNOGRAMDOCKS];
+        int hrv_dock[MAXHRVDOCKS];
       };
 
 struct signalcompblock{
