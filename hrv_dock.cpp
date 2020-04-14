@@ -323,7 +323,8 @@ void hrv_curve_widget::paintEvent(QPaintEvent *)
 {
   int w, h, i, n,
       pos_x1=0,
-      pos_x2=0;
+      pos_x2=0,
+      skip_first=1;
 
   double pixel_per_unit,
          pixel_per_sec,
@@ -356,6 +357,7 @@ void hrv_curve_widget::paintEvent(QPaintEvent *)
   offset += bpm_min * pixel_per_unit;
 
   painter.setPen(Qt::red);
+//  painter.setPen(QPen(QBrush(Qt::red, Qt::SolidPattern), 2, Qt::SolidLine, Qt::SquareCap, Qt::BevelJoin));
 
   if(mainwindow == NULL)  return;
 
@@ -381,7 +383,11 @@ void hrv_curve_widget::paintEvent(QPaintEvent *)
 
       pos_x2 = ((double)(annot->onset) * pixel_per_sec) / TIME_DIMENSION;
 
-      if(former_onset > 0)
+      if(skip_first)
+      {
+        skip_first = 0;
+      }
+      else
       {
         painter.drawLine(pos_x1, offset - (bpm * pixel_per_unit),
                          pos_x2, offset - (old_bpm * pixel_per_unit));
