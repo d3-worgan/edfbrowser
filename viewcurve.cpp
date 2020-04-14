@@ -3586,8 +3586,8 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
 
   sidemenu = new QDialog(this);
 
-  sidemenu->setMinimumSize(190, 545);
-  sidemenu->setMaximumSize(190, 545);
+  sidemenu->setMinimumSize(190, 575);
+  sidemenu->setMaximumSize(190, 575);
   sidemenu->setWindowTitle("Signal");
   sidemenu->setModal(true);
   sidemenu->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -3688,19 +3688,27 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
 
   sidemenuButton12 = new QPushButton(sidemenu);
   sidemenuButton12->setGeometry(45, 455, 100, 25);
-  sidemenuButton12->setText("Heart Rate");
+  sidemenuButton12->setText("QRS det.");
+  if(mainwindow->live_stream_active)
+  {
+    sidemenuButton12->setEnabled(false);
+  }
 
   sidemenuButton13 = new QPushButton(sidemenu);
   sidemenuButton13->setGeometry(45, 485, 100, 25);
-  sidemenuButton13->setText("CDSA");
-  if(mainwindow->live_stream_active)
-  {
-    sidemenuButton13->setEnabled(false);
-  }
+  sidemenuButton13->setText("Heart Rate");
 
   sidemenuButton14 = new QPushButton(sidemenu);
   sidemenuButton14->setGeometry(45, 515, 100, 25);
-  sidemenuButton14->setText("Close");
+  sidemenuButton14->setText("CDSA");
+  if(mainwindow->live_stream_active)
+  {
+    sidemenuButton14->setEnabled(false);
+  }
+
+  sidemenuButton15 = new QPushButton(sidemenu);
+  sidemenuButton15->setGeometry(45, 545, 100, 25);
+  sidemenuButton15->setText("Close");
 
   QObject::connect(ScaleBox,          SIGNAL(valueChanged(double)),     this,     SLOT(ScaleBoxChanged(double)));
   QObject::connect(ScaleBox2,         SIGNAL(valueChanged(double)),     this,     SLOT(ScaleBox2Changed(double)));
@@ -3715,9 +3723,10 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   QObject::connect(sidemenuButton9,   SIGNAL(clicked()),                this,     SLOT(RemovesignalButton()));
   QObject::connect(sidemenuButton10,  SIGNAL(clicked()),                this,     SLOT(AdjustFilterButton()));
   QObject::connect(sidemenuButton11,  SIGNAL(clicked()),                this,     SLOT(StatisticsButton()));
-  QObject::connect(sidemenuButton12,  SIGNAL(clicked()),                this,     SLOT(ECGdetectButton()));
-  QObject::connect(sidemenuButton13,  SIGNAL(clicked()),                this,     SLOT(cdsa_button()));
-  QObject::connect(sidemenuButton14,  SIGNAL(clicked()),                this,     SLOT(sidemenu_close()));
+  QObject::connect(sidemenuButton12,  SIGNAL(clicked()),                this,     SLOT(QRSdetectButton()));
+  QObject::connect(sidemenuButton13,  SIGNAL(clicked()),                this,     SLOT(ECGdetectButton()));
+  QObject::connect(sidemenuButton14,  SIGNAL(clicked()),                this,     SLOT(cdsa_button()));
+  QObject::connect(sidemenuButton15,  SIGNAL(clicked()),                this,     SLOT(sidemenu_close()));
   QObject::connect(AliasLineEdit,     SIGNAL(returnPressed()),          this,     SLOT(sidemenu_close()));
 
   sidemenu->exec();
@@ -3872,6 +3881,50 @@ void ViewCurve::ECGdetectButton()
   newsignalcomp->screen_offset = 55.0 / (mainwindow->pixelsizefactor * newsignalcomp->voltpercm);
 
   mainwindow->setup_viewbuf();
+}
+
+
+void ViewCurve::QRSdetectButton()
+{
+  char str[32]={""};
+
+  sidemenu->close();
+
+  if(signal_nr >= mainwindow->signalcomps)
+  {
+    return;
+  }
+
+  if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].sf_f < 199.999)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Sample rate of selected signal is less than 200 Hz!");
+    messagewindow.exec();
+
+    return;
+  }
+
+  strlcpy(str, mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].physdimension, 32);
+  remove_trailing_spaces(str);
+  remove_leading_spaces(str);
+  if((strcmp(str, "uV")) && (strcmp(str, "ECG uV")) && (strcmp(str, "EEG uV")) &&
+     (strcmp(str, "mV")) && (strcmp(str, "ECG mV")) && (strcmp(str, "EEG mV")) &&
+     (strcmp(str, "V")) && (strcmp(str, "ECG V")) && (strcmp(str, "EEG V")))
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Unknown unit (physical dimension), expected uV or mV or V");
+    messagewindow.exec();
+
+    return;
+  }
+
+  if(mainwindow->signalcomp[signal_nr]->zratio_filter != NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Z-ratio is active for this signal!");
+    messagewindow.exec();
+
+    return;
+  }
+
+  UI_QRS_detector ui_qrs_det(mainwindow, mainwindow->signalcomp[signal_nr]);
 }
 
 

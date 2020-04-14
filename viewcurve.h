@@ -76,6 +76,7 @@
 #include "z_score_dialog.h"
 #include "z_ratio_filter.h"
 #include "cdsa_dialog.h"
+#include "run_qrs_detector.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -228,7 +229,8 @@ private:
               *sidemenuButton11,
               *sidemenuButton12,
               *sidemenuButton13,
-              *sidemenuButton14;
+              *sidemenuButton14,
+              *sidemenuButton15;
 
   QDoubleSpinBox *ScaleBox,
                  *ScaleBox2;
@@ -282,6 +284,7 @@ protected slots:
   void strip_types_from_label(char *);
   void sidemenu_close();
   void cdsa_button();
+  void QRSdetectButton();
 
 protected:
   void paintEvent(QPaintEvent *);

@@ -3518,6 +3518,14 @@ void UI_Mainwindow::qrs_detector()
     return;
   }
 
+  if(signalcomp[signal_nr]->zratio_filter != NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Z-ratio is active for this signal!");
+    messagewindow.exec();
+
+    return;
+  }
+
   UI_QRS_detector ui_qrs_det(this, signalcomp[signal_nr]);
 }
 
