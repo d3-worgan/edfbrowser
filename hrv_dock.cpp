@@ -370,6 +370,10 @@ void hrv_curve_widget::paintEvent(QPaintEvent *)
   for(i=0; i<n; i++)
   {
     annot = edfplus_annotation_get_item(annot_list, i);
+    if(annot == NULL)
+    {
+      break;
+    }
 
     strlcpy(str, annot->annotation, 48);
     remove_trailing_spaces(str);
@@ -383,7 +387,7 @@ void hrv_curve_widget::paintEvent(QPaintEvent *)
 
       pos_x2 = ((double)(annot->onset) * pixel_per_sec) / TIME_DIMENSION;
 
-      if(skip_first)
+      if(skip_first || annot->hided_in_list)
       {
         skip_first = 0;
       }
