@@ -13,7 +13,7 @@
    the "Add Signals" dialog.
 
  - Heartrate / beat detector: replaced the QRS detector with the Pan-Tompkins algorithm.
-   Added a quick-access in the Tools menu.
+   Added a quick-access in the Tools menu. Added a heart rate toolbar with timeline.
 
 
 
