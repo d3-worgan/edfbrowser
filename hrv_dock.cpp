@@ -345,7 +345,9 @@ void hrv_curve_widget::paintEvent(QPaintEvent *)
   h = height();
 
   QPainter painter(this);
-
+#if QT_VERSION >= 0x050000
+  painter.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#endif
   painter.fillRect(0, 0, w, h, Qt::lightGray);
 
   offset = ((double)h / 12.0);
@@ -385,7 +387,7 @@ void hrv_curve_widget::paintEvent(QPaintEvent *)
 
       bpm = (60.0 * TIME_DIMENSION) / (double)hr_ival;
 
-      pos_x2 = ((double)(annot->onset) * pixel_per_sec) / TIME_DIMENSION;
+      pos_x2 = (((double)(annot->onset) * pixel_per_sec) / ((double)TIME_DIMENSION)) + 0.5;
 
       if(skip_first || annot->hided_in_list)
       {
@@ -393,8 +395,8 @@ void hrv_curve_widget::paintEvent(QPaintEvent *)
       }
       else
       {
-        painter.drawLine(pos_x1, offset - (bpm * pixel_per_unit),
-                         pos_x2, offset - (old_bpm * pixel_per_unit));
+        painter.drawLine(pos_x1, (offset - (old_bpm * pixel_per_unit)) + 0.5,
+                         pos_x2, (offset - (bpm * pixel_per_unit)) + 0.5);
       }
 
       pos_x1 = pos_x2;
