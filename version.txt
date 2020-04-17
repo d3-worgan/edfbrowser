@@ -1,5 +1,5 @@
 
- version 1.74      to be defined
+ version 1.74      April 17, 2020
  --------------
 
  - MIT (Physionet) to EDF+ converter: fixed a bug related to ADC baseline and ADC zero
