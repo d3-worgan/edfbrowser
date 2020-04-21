@@ -41,7 +41,6 @@ extern "C" {
 #define PT_DIFF_LEN         (5)
 #define PT_QRS_RR_AVG_LEN   (8)
 #define PT_MWI_LEN         (30)
-#define PT_MWI_AVG_LEN     (40)
 
 
 struct pt_qrs_settings
@@ -68,6 +67,7 @@ struct pt_qrs_settings
   int pk_det_start;
 
   double slope_last;
+  double slope_lt;
 
   int del_comp;
 
@@ -127,9 +127,6 @@ struct pt_qrs_settings
   int rr_high_limit;
   int rr_missed_limit;
   int rr_regular;
-
-  int mwi_avg_idx;
-  double mwi_avg_buf[PT_MWI_AVG_LEN];
 };
 
 

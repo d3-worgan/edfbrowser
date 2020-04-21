@@ -27,7 +27,7 @@
 /* This is an implementation of the Pan-Tompkins QRS detector algorithm.
  * The performance has been tested on an annotated arrhythmia database (MIT-BIH):
  *
- * sensitivity: 99.79 %    positive predictivity: 99.45 %
+ * sensitivity: 99.76 %    positive predictivity: 99.47 %
  *
  * Se = TP / (TP + FN)   sensitivity
  *
@@ -44,13 +44,13 @@
  *
  * 2: in case parts of the signal with ventricular flutter/fibrillation were excluded
  *    during the evaluation, the rates are:
- *    sensitivity: 99.79 %    positive predictivity: 99.79 %
+ *    sensitivity: 99.76 %    positive predictivity: 99.80 %
  *
  * 3: For every record in the database, the lead with best signal quality was chosen.
  *    The first signal in the records was chosen, except for records 108, 113, 114, 116,
  *    117, 202, 222, 228, 232 for which the second signal was selected.
  *    In case always the first signal is selected for every record, the rates are:
- *    sensitivity: 99.65 %    positive predictivity: 99.30 %
+ *    sensitivity: 99.42 %    positive predictivity: 99.37 %
  *
  * https://courses.cs.washington.edu/courses/cse474/18wi/labs/l8/QRSdetection.pdf
  *
@@ -199,7 +199,7 @@ int run_pt_qrs(double new_val, struct pt_qrs_settings *st)
       r_peak_detected_2nd_run=0,
       r_peak_pos=0;
 
-  double hpf_out, mwi_out, slope, mwi_avg_min, mwi_avg_max;
+  double hpf_out, mwi_out, slope;
 
   if(st == NULL)  return 0;
 
@@ -270,34 +270,7 @@ int run_pt_qrs(double new_val, struct pt_qrs_settings *st)
  */
   if(st->smpls_last_pk <= REFRACT_PERIOD)
   {
-    st->mwi_avg_idx = 0;
-
     goto RUN_OUT_RETURN;
-  }
-
-  if(st->mwi_avg_idx < PT_MWI_AVG_LEN)
-  {
-    st->mwi_avg_buf[st->mwi_avg_idx++] = mwi_out;
-    st->mwi_avg_idx %= PT_MWI_AVG_LEN;
-
-    if(st->mwi_avg_idx == 0)
-    {
-      mwi_avg_min = st->mwi_avg_buf[0];
-      mwi_avg_max = st->mwi_avg_buf[0];
-
-      for(i=1; i<PT_MWI_AVG_LEN; i++)
-      {
-        if(mwi_avg_min > st->mwi_avg_buf[i])
-        {
-          mwi_avg_min = st->mwi_avg_buf[i];
-        }
-
-        if(mwi_avg_max < st->mwi_avg_buf[i])
-        {
-          mwi_avg_max = st->mwi_avg_buf[i];
-        }
-      }
-    }
   }
 
 /* check also the lower thresholds in case we need to do a second run
@@ -311,6 +284,13 @@ int run_pt_qrs(double new_val, struct pt_qrs_settings *st)
       st->mwi_out_lt = mwi_out;
 
       st->hpf_out_lt = hpf_out;
+
+      slope = pt_qrs_get_slope(st);
+
+      if(st->slope_lt < slope)
+      {
+        st->slope_lt = slope;
+      }
     }
   }
 
@@ -395,6 +375,8 @@ int run_pt_qrs(double new_val, struct pt_qrs_settings *st)
 
       st->idx_lt = 0;
 
+      st->slope_lt = 0;
+
       r_peak_detected_1st_run = 1;
     }
   }
@@ -420,8 +402,20 @@ RUN_OUT_RETURN:
   if((!r_peak_detected_1st_run) && (!r_peak_detected_2nd_run))
   {
     r_peak_pos = 0;
-
-    st->smpls_last_pk++;
+/* If no QRS complex has been recognized for 5 seconds, lower the thresholds.
+ * This avoids that, after recurring artefacts, the thresholds become too high and
+ * no more beats will be detected.
+ */
+    if(++st->smpls_last_pk >= (5 * SMPL_FREQ))
+    {
+      if(st->smpls_last_pk < (15 * SMPL_FREQ))
+      {
+        if(!(st->smpls_last_pk % SMPL_FREQ))
+        {
+          pt_qrs_adjust_thresholds(0, 1, st);
+        }
+      }
+    }
   }
   else if(r_peak_detected_1st_run)
     {
@@ -438,6 +432,8 @@ RUN_OUT_RETURN:
         st->smpls_last_pk -= st->idx_lt;
 
         st->idx_lt = 0;
+
+        st->slope_lt = 0;
       }
       else  /* catch all */
       {
@@ -525,25 +521,24 @@ static inline void pt_qrs_bpf_diff_sqr(double new_val, struct pt_qrs_settings *s
  */
 static inline int pt_qrs_search_back(struct pt_qrs_settings *st)
 {
-  if(st->idx_lt > 0)
-  {
-    st->peaki = st->mwi_out_lt;
-    st->peakf = st->hpf_out_lt;
+  if(st->idx_lt < 1)  return 0;
 
-    st->pk_det_start = 0;
+  if(st->slope_lt < (st->slope_last * 0.15))  return 0;
 
-    pt_qrs_adjust_thresholds(0, 1, st);
+  st->peaki = st->mwi_out_lt;
+  st->peakf = st->hpf_out_lt;
 
-    pt_qrs_adjust_rr_averages(st, 1);
+  st->pk_det_start = 0;
 
-    st->mwi_out_lt = 0;
+  pt_qrs_adjust_thresholds(0, 1, st);
 
-    st->hpf_out_lt = 0;
+  pt_qrs_adjust_rr_averages(st, 1);
 
-    return 1;
-  }
+  st->mwi_out_lt = 0;
 
-  return 0;
+  st->hpf_out_lt = 0;
+
+  return 1;
 }
 
 /* Adjusting the thresholds.
