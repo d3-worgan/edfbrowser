@@ -1,4 +1,15 @@
 
+ version 1.75      to be defined
+ --------------
+
+ - Color chooser dialog:  fixed a bug that showed a "vary colors" button
+   in places where it shouldn't.
+
+ - Pan-Tompkins QRS detector: added an improvement in order to recover faster
+   after artefacts with very high amplitude.
+
+
+
  version 1.74      April 17, 2020
  --------------
 
