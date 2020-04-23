@@ -31,7 +31,7 @@
 
 
 
-UI_ColorMenuDialog::UI_ColorMenuDialog(int *newColor, QWidget *w_parent)
+UI_ColorMenuDialog::UI_ColorMenuDialog(int *newColor, QWidget *w_parent, int show_var_colors_button)
 {
   colormenu_dialog = new QDialog(w_parent);
 
@@ -44,6 +44,8 @@ UI_ColorMenuDialog::UI_ColorMenuDialog(int *newColor, QWidget *w_parent)
   color = newColor;
 
   *color = -1;
+
+  show_var_colors = show_var_colors_button;
 
   ColorButton1 = new SpecialButton(colormenu_dialog);
   ColorButton1->setGeometry(5, 5, 20, 20);
@@ -113,6 +115,11 @@ UI_ColorMenuDialog::UI_ColorMenuDialog(int *newColor, QWidget *w_parent)
   varyColorButton->setGeometry(5, 110, 95, 25);
   varyColorButton->setText("Varying colors");
   varyColorButton->setToolTip("Use different colors for every signal");
+  if(!show_var_colors)
+  {
+    varyColorButton->setEnabled(false);
+    varyColorButton->hide();
+  }
 
   CloseButton = new QPushButton(colormenu_dialog);
   CloseButton->setGeometry(5, 145, 95, 25);

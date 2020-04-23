@@ -55,11 +55,13 @@ class UI_ColorMenuDialog : public QObject
 
 public:
 
-  UI_ColorMenuDialog(int *oldColor, QWidget *parent = NULL);
+  UI_ColorMenuDialog(int *oldColor, QWidget *parent, int show_var_color_button=0);
 
 private:
 
 int *color;
+
+int show_var_colors;
 
 QDialog      *colormenu_dialog;
 

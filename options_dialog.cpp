@@ -1151,7 +1151,7 @@ void UI_OptionsDialog::colorBarButtonClicked(SpecialButton *button)
 {
   int color;
 
-  UI_ColorMenuDialog colormenudialog(&color);
+  UI_ColorMenuDialog colormenudialog(&color, mainwindow);
 
   if(color < 0)  return;
 
@@ -1527,7 +1527,7 @@ void UI_OptionsDialog::SigColorButtonClicked(SpecialButton *)
 {
   int i, color;
 
-  UI_ColorMenuDialog colormenudialog(&color);
+  UI_ColorMenuDialog colormenudialog(&color, mainwindow);
 
   if(color < 0)  return;
 
@@ -1567,7 +1567,7 @@ void UI_OptionsDialog::Crh1ColorButtonClicked(SpecialButton *)
 {
   int color;
 
-  UI_ColorMenuDialog colormenudialog(&color);
+  UI_ColorMenuDialog colormenudialog(&color, mainwindow);
 
   if(color < 0)  return;
 
@@ -1584,7 +1584,7 @@ void UI_OptionsDialog::Crh2ColorButtonClicked(SpecialButton *)
 {
   int color;
 
-  UI_ColorMenuDialog colormenudialog(&color);
+  UI_ColorMenuDialog colormenudialog(&color, mainwindow);
 
   if(color < 0)  return;
 
@@ -1600,7 +1600,7 @@ void UI_OptionsDialog::FrColorButtonClicked(SpecialButton *)
 {
   int color;
 
-  UI_ColorMenuDialog colormenudialog(&color);
+  UI_ColorMenuDialog colormenudialog(&color, mainwindow);
 
   if(color < 0)  return;
 

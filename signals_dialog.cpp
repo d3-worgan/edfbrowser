@@ -161,7 +161,7 @@ void UI_Signalswindow::ColorButtonClicked(SpecialButton *)
 {
   int color;
 
-  UI_ColorMenuDialog colormenudialog(&color);
+  UI_ColorMenuDialog colormenudialog(&color, mainwindow, 1);
 
   if(color < 0)  return;
 
