@@ -8,6 +8,9 @@
  - Pan-Tompkins QRS detector: added an improvement in order to recover faster
    after artefacts with very high amplitude.
 
+ - Fixed a bug that caused a crash (segmentation fault) when opening the
+   annotation editor caused by dereferencing a null-pointer.
+
 
 
  version 1.74      April 17, 2020

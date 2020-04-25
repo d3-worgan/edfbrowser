@@ -1397,6 +1397,8 @@ void UI_Mainwindow::annotation_editor()
       addDockWidget(Qt::RightDockWidgetArea, annotations_dock[0]->docklist, Qt::Vertical);
     }
 
+    maincurve->active_markers->edf_hdr = edfheaderlist[0];
+
     annotations_dock[0]->docklist->show();
 
     if(annotationEditDock == NULL)

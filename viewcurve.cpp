@@ -662,7 +662,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
       }
     }
 
-    if(annot_marker_moving)
+    if((annot_marker_moving) && (active_markers->edf_hdr != NULL))
     {
       active_markers->list[active_markers->selected]->x_pos = m_x;
 
@@ -905,7 +905,7 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
       }
     }
 
-    if(annot_marker_moving)
+    if((annot_marker_moving) && (active_markers->edf_hdr != NULL))
     {
       active_markers->list[active_markers->selected]->x_pos = mouse_x;
 
