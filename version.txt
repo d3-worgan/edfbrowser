@@ -1,5 +1,5 @@
 
- version 1.75      to be defined
+ version 1.75      April 25, 2020
  --------------
 
  - Color chooser dialog:  fixed a bug that showed a "vary colors" button
