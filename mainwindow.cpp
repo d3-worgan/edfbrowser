@@ -32,6 +32,7 @@ UI_Mainwindow::~UI_Mainwindow()
 {
   delete splash_pixmap;
   delete splash;
+  delete startup_timer;
   delete myfont;
   delete monofont;
   delete maincurve;
@@ -44,7 +45,7 @@ UI_Mainwindow::~UI_Mainwindow()
   delete video_poll_timer;
   delete playback_realtime_time;
   delete playback_realtime_timer;
-  if(update_checker != NULL)  delete update_checker;
+  delete update_checker;
   free(toolbar_stats.ival);
 }
 

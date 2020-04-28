@@ -44,9 +44,12 @@ int main(int argc, char *argv[])
 #endif
   QObject::connect(&t1, SIGNAL(timeout()), &splash, SLOT(close()));
 
-  splash.show();
+  if(QCoreApplication::arguments().size()<2)
+  {
+    splash.show();
 
-  t1.start(3000);
+    t1.start(3000);
+  }
 
   qApp->processEvents();
 

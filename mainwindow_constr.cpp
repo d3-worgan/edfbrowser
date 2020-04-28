@@ -44,6 +44,12 @@ UI_Mainwindow::UI_Mainwindow()
 
   monofont = new QFont;
 
+  splash_pixmap = NULL;
+
+  splash = NULL;
+
+  startup_timer = NULL;
+
 #ifdef Q_OS_WIN32
   myfont->setFamily("Tahoma");
   myfont->setPixelSize(11);
@@ -1138,23 +1144,25 @@ UI_Mainwindow::UI_Mainwindow()
 
   oldwindowheight = height();
 
-  if(cmdlineargument)
+  splash_pixmap = new QPixmap(":/images/splash.png");
+  QPainter p(splash_pixmap);
+  QFont sansFont("Noto Sans", 10);
+  p.setFont(sansFont);
+  p.setPen(Qt::black);
+  if(!strcmp(PROGRAM_BETA_SUFFIX, ""))
   {
-    if(cmdlineoption)
-    {
-      if(!strcmp(option_str, "--stream"))
-      {
-        open_stream();
-      }
-    }
-    else
-    {
-      open_new_file();
-    }
+    p.drawText(250, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_VERSION "    " THIS_APP_BITS_W);
   }
+  else
+  {
+    p.drawText(150, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_VERSION " " PROGRAM_BETA_SUFFIX "    " THIS_APP_BITS_W);
+  }
+  splash = new QSplashScreen(this, *splash_pixmap, Qt::WindowStaysOnTopHint);
 
   if((QT_VERSION < MINIMUM_QT4_VERSION) || ((QT_VERSION >= 0x050000) && (QT_VERSION < MINIMUM_QT5_VERSION)))
   {
+    cmdlineargument = 0;
+
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "EDFbrowser has been compiled with a version of Qt\n"
                                                               "which is too old and will likely cause problems!");
     messagewindow.exec();
@@ -1180,6 +1188,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   if((v_nr < MINIMUM_QT4_VERSION) || ((v_nr >= 0x050000) && (v_nr < MINIMUM_QT5_VERSION)))
   {
+    cmdlineargument = 0;
+
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Your version of Qt is too old\n"
                                                               "and will likely cause problems!");
     messagewindow.exec();
@@ -1187,34 +1197,43 @@ UI_Mainwindow::UI_Mainwindow()
 
   if(edflib_version() != 116)
   {
+    cmdlineargument = 0;
+
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "There's a version problem with EDFlib.\n"
                                                               "Can not continue.");
     messagewindow.exec();
 
     menubar->setEnabled(false);
     navtoolbar->setEnabled(false);
-  }
 
-  splash_pixmap = new QPixmap(":/images/splash.png");
-  QPainter p(splash_pixmap);
-  QFont sansFont("Noto Sans", 10);
-  p.setFont(sansFont);
-  p.setPen(Qt::black);
-  if(!strcmp(PROGRAM_BETA_SUFFIX, ""))
-  {
-    p.drawText(250, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_VERSION "    " THIS_APP_BITS_W);
+    return;
   }
-  else
-  {
-    p.drawText(150, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_VERSION " " PROGRAM_BETA_SUFFIX "    " THIS_APP_BITS_W);
-  }
-  splash = new QSplashScreen(this, *splash_pixmap, Qt::WindowStaysOnTopHint);
 
   update_checker = NULL;
 
   if(check_for_updates)
   {
     update_checker = new Check_for_updates;
+  }
+
+  if(cmdlineargument)
+  {
+    startup_timer = new QTimer;
+    startup_timer->setSingleShot(true);
+
+    if(cmdlineoption)
+    {
+      if(!strcmp(option_str, "--stream"))
+      {
+        QObject::connect(startup_timer, SIGNAL(timeout()), this, SLOT(open_stream()));
+        startup_timer->start(50);
+      }
+    }
+    else
+    {
+      QObject::connect(startup_timer, SIGNAL(timeout()), this, SLOT(open_new_file()));
+      startup_timer->start(50);
+    }
   }
 
   QObject::connect(maincurve, SIGNAL(file_dropped()), this, SLOT(open_new_file()));

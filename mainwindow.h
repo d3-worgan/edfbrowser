@@ -503,7 +503,8 @@ private:
 
   QTimer   *live_stream_timer,
            *video_poll_timer,
-           *playback_realtime_timer;
+           *playback_realtime_timer,
+           *startup_timer;
 
   QTime    *playback_realtime_time;
 
