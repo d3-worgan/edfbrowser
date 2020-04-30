@@ -10,6 +10,8 @@
 #include <QPen>
 #include <QColor>
 #include <QFont>
+#include <QEventLoop>
+
 
 #include "mainwindow.h"
 
@@ -49,9 +51,11 @@ int main(int argc, char *argv[])
     splash.show();
 
     t1.start(3000);
-  }
 
-  qApp->processEvents();
+    QEventLoop evlp;
+    QTimer::singleShot(1000, &evlp, SLOT(quit()));
+    evlp.exec();
+  }
 
 #if QT_VERSION >= 0x050000
 #ifdef Q_OS_LINUX
