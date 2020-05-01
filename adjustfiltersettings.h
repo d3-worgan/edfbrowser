@@ -74,7 +74,7 @@ int filter_nr,
     model,
     order,
     size,
-    brand[MAXFILTERS];
+    brand[MAXFILTERS * 2];
 
 double frequency1,
        frequency2,

@@ -164,8 +164,15 @@ void AdjustFilterSettings::loadFilterSettings(void)
 
   filterbox->clear();
 
+  filter_cnt = 0;
+
   for(i=0; i<signalcomp->fidfilter_cnt; i++)
   {
+    if(filter_cnt >= (MAXFILTERS * 2))
+    {
+      break;
+    }
+
     type = signalcomp->fidfilter_type[i];
 
     model = signalcomp->fidfilter_model[i];
@@ -266,6 +273,11 @@ void AdjustFilterSettings::loadFilterSettings(void)
 
   for(i=0; i<signalcomp->ravg_filter_cnt; i++)
   {
+    if(filter_cnt >= (MAXFILTERS * 2))
+    {
+      break;
+    }
+
     type = signalcomp->ravg_filter_type[i];
 
     size = signalcomp->ravg_filter_size[i];

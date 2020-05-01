@@ -1,4 +1,11 @@
 
+ version 1.76      to be defined
+ --------------
+
+ - Adjust filter dialog:  fixed a bug that potentially could cause a crash (segmentation fault).
+
+
+
  version 1.75      April 25, 2020
  --------------
 
