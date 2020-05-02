@@ -1427,7 +1427,30 @@ void UI_Mainwindow::annotation_editor()
 
 void UI_Mainwindow::show_spectrum_dock()
 {
-  if(!files_open)  return;
+  int i;
+
+  if((!files_open) || (!signalcomps))  return;
+
+  if(signalcomps == 1)
+  {
+    for(i=0; i<MAXSPECTRUMDOCKS; i++)
+    {
+      if(spectrumdock[i]->dock->isHidden())  break;
+    }
+
+    if(i<MAXSPECTRUMDOCKS)
+    {
+      spectrumdock[i]->init(0);
+    }
+    else
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "The maximum number of docked Power Spectrum windows has been reached.\n"
+                                                                "Close one first.");
+      messagewindow.exec();
+    }
+
+    return;
+  }
 
   UI_SignalChooser signalchooserdialog(this, 1);
 }
@@ -1435,7 +1458,42 @@ void UI_Mainwindow::show_spectrum_dock()
 
 void UI_Mainwindow::show_cdsa_dock()
 {
-  if((!files_open) || live_stream_active)  return;
+  int i;
+
+  if((!files_open) || (!signalcomps) || live_stream_active)  return;
+
+  if(signalcomps == 1)
+  {
+    if(signalcomp[0]->ecg_filter != NULL)
+    {
+      return;
+    }
+
+    if(signalcomp[0]->edfhdr->edfparam[signalcomp[0]->edfsignal[0]].sf_int < 30)
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Samplefrequency must be at least 30Hz and must be an integer value.");
+      messagewindow.exec();
+      return;
+    }
+
+    if(signalcomp[0]->edfhdr->recording_len_sec < 30)
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Recording length must be at least 30 seconds.");
+      messagewindow.exec();
+      return;
+    }
+
+    for(i=0; i<MAXCDSADOCKS; i++)
+    {
+      if(cdsa_dock[i] == NULL)
+      {
+        UI_cdsa_window wndw(this, signalcomp[0], i);
+        break;
+      }
+    }
+
+    return;
+  }
 
   UI_SignalChooser signalchooserdialog(this, 5);
 }
@@ -1922,7 +1980,14 @@ void UI_Mainwindow::setMainwindowTitle(struct edfhdrblock *edfhdr)
 
 void UI_Mainwindow::signalproperties_dialog()
 {
-  if(!files_open)  return;
+  if((!files_open) || (!signalcomps))  return;
+
+  if(signalcomps == 1)
+  {
+    maincurve->exec_sidemenu(0);
+
+    return;
+  }
 
   UI_SignalChooser signalchooserdialog(this, 0);
 }
@@ -1930,7 +1995,14 @@ void UI_Mainwindow::signalproperties_dialog()
 
 void UI_Mainwindow::filterproperties_dialog()
 {
-  if(!files_open)  return;
+  if((!files_open) || (!signalcomps))  return;
+
+  if(signalcomps == 1)
+  {
+    AdjustFilterSettings filtersettings(signalcomp[0], maincurve);
+
+    return;
+  }
 
   UI_SignalChooser signalchooserdialog(this, 2);
 }
@@ -3493,7 +3565,14 @@ void UI_Mainwindow::qrs_detector()
 
   if((!files_open) || live_stream_active || (!signalcomps))  return;
 
-  UI_SignalChooser signal_chooser(this, 4, &signal_nr);
+  if(signalcomps > 1)
+  {
+    UI_SignalChooser signal_chooser(this, 4, &signal_nr);
+  }
+  else
+  {
+    signal_nr = 0;
+  }
 
   if((signal_nr < 0) || (signal_nr >= signalcomps))  return;
 

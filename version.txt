@@ -6,6 +6,8 @@
 
  - Fixed some compiler warnings related to deprecated declarations.
 
+ - Signalchooser widget: skip it if there's only one signal on the screen.
+
 
 
  version 1.75      April 25, 2020
