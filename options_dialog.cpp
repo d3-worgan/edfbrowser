@@ -40,11 +40,17 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   optionsdialog = new QDialog(w_parent);
 
+#if QT_VERSION > 0x050C00
+  if(QGuiApplication::primaryScreen()->geometry().height() < 940)
+  {
+    showminimized = 1;
+  }
+#else
   if(QApplication::desktop()->screenGeometry().height() < 940)
   {
     showminimized = 1;
   }
-
+#endif
   if(showminimized)
   {
     optionsdialog->setMinimumSize(480, 500);

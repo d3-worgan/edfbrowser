@@ -4,6 +4,8 @@
 
  - Adjust filter dialog:  fixed a bug that potentially could cause a crash (segmentation fault).
 
+ - Fixed some compiler warnings related to deprecated declarations.
+
 
 
  version 1.75      April 25, 2020

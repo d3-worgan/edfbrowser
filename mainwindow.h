@@ -506,7 +506,7 @@ private:
            *playback_realtime_timer,
            *startup_timer;
 
-  QTime    *playback_realtime_time;
+  QElapsedTimer *playback_realtime_time;
 
   QSplashScreen *splash;
 

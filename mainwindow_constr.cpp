@@ -362,7 +362,7 @@ UI_Mainwindow::UI_Mainwindow()
   video_poll_timer->setSingleShot(true);
   QObject::connect(video_poll_timer, SIGNAL(timeout()), this, SLOT(video_poll_timer_func()));
 
-  playback_realtime_time = new QTime();
+  playback_realtime_time = new QElapsedTimer;
 
   playback_realtime_timer = new QTimer;
   playback_realtime_timer->setInterval(20);
