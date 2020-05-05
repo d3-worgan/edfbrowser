@@ -28,19 +28,20 @@
 
 #include "signals_dialog.h"
 
+#define DEFAULT_COLOR_LIST_SZ  (6)
 
 
 UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
 {
-  int i;
+  int i, tmp;
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
   smp_per_record = 0;
 
-  last_default_color = 0;
-
   color_selected = 0;
+
+  default_color_idx = 0;
 
   default_color_list[0] = Qt::yellow;
   default_color_list[1] = Qt::green;
@@ -48,6 +49,21 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
   default_color_list[3] = Qt::cyan;
   default_color_list[4] = Qt::magenta;
   default_color_list[5] = Qt::blue;
+
+  if(mainwindow->signalcomps > 0)
+  {
+    tmp = mainwindow->signalcomp[mainwindow->signalcomps - 1]->color;
+
+    for(i=0; i<DEFAULT_COLOR_LIST_SZ; i++)
+    {
+      if(default_color_list[i] == tmp)  break;
+    }
+
+    if(i < DEFAULT_COLOR_LIST_SZ)
+    {
+      default_color_idx = (i + 1) % DEFAULT_COLOR_LIST_SZ;
+    }
+  }
 
   SignalsDialog = new QDialog;
 
@@ -128,7 +144,14 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
 
   ColorButton = new SpecialButton(SignalsDialog);
   ColorButton->setGeometry(320, 405, 100, 25);
-  ColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->signal_color);
+  if(mainwindow->use_diverse_signal_colors)
+  {
+    ColorButton->setColor(127);
+  }
+  else
+  {
+    ColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->signal_color);
+  }
 
   compositionlist = new QListWidget(SignalsDialog);
   compositionlist->setGeometry(430, 210, 360, 225);
@@ -171,8 +194,12 @@ void UI_Signalswindow::ColorButtonClicked(SpecialButton *)
 
     mainwindow->use_diverse_signal_colors = 1;
 
+    ColorButton->setColor(127);
+
     return;
   }
+
+  mainwindow->use_diverse_signal_colors = 0;
 
   ColorButton->setColor((Qt::GlobalColor)color);
 
@@ -217,8 +244,8 @@ void UI_Signalswindow::DisplayCompButtonClicked()
   newsignalcomp->voltpercm = mainwindow->default_amplitude;
   if(mainwindow->use_diverse_signal_colors && (!color_selected))
   {
-    newsignalcomp->color = default_color_list[last_default_color++];
-    last_default_color %= 6;
+    newsignalcomp->color = default_color_list[default_color_idx++];
+    default_color_idx %= DEFAULT_COLOR_LIST_SZ;
   }
   else
   {
@@ -327,8 +354,8 @@ void UI_Signalswindow::DisplayButtonClicked()
     newsignalcomp->voltpercm = mainwindow->default_amplitude;
     if(mainwindow->use_diverse_signal_colors && (!color_selected))
     {
-      newsignalcomp->color = default_color_list[last_default_color++];
-      last_default_color %= 6;
+      newsignalcomp->color = default_color_list[default_color_idx++];
+      default_color_idx %= DEFAULT_COLOR_LIST_SZ;
     }
     else
     {

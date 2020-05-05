@@ -55,7 +55,19 @@ void SpecialButton::paintEvent(QPaintEvent *)
   painter.setRenderHint(QPainter::Antialiasing);
   painter.setPen(Qt::black);
   painter.drawRect(0, 0, w-1, h-1);
-  painter.fillRect(1, 1, w-2, h-2, ButtonColor);
+  if(ButtonColor == 127)
+  {
+    painter.fillRect(      1, 1, w-2, h-2, Qt::yellow);
+    painter.fillRect(  (w/6), 1, w-2, h-2, Qt::green);
+    painter.fillRect((w*2)/6, 1, w-2, h-2, Qt::red);
+    painter.fillRect((w*3)/6, 1, w-2, h-2, Qt::cyan);
+    painter.fillRect((w*4)/6, 1, w-2, h-2, Qt::magenta);
+    painter.fillRect((w*5)/6, 1, w-2, h-2, Qt::blue);
+  }
+  else
+  {
+    painter.fillRect(1, 1, w-2, h-2, ButtonColor);
+  }
   if(buttonText[0]!=0)  painter.drawText(5, h/2+5, buttonText);
   painter.restore();
 }
