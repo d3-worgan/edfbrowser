@@ -8,6 +8,8 @@
 
  - Signalchooser widget: skip it if there's only one signal on the screen.
 
+ - Adapt the colorbutton when choosing varying colors whel loading signals.
+
 
 
  version 1.75      April 25, 2020
