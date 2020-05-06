@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+#include <stdio.h>
 
 #include <QApplication>
 #include <QObject>
@@ -18,6 +20,18 @@
 
 int main(int argc, char *argv[])
 {
+  /* avoid nasty surprises! */
+  if((sizeof(char)      != 1) ||
+     (sizeof(short)     != 2) ||
+     (sizeof(int)       != 4) ||
+     (sizeof(long long) != 8) ||
+     (sizeof(float)     != 4) ||
+     (sizeof(double)    != 8))
+  {
+    fprintf(stderr, "Wrong compiler or platform!\n");
+    return EXIT_FAILURE;
+  }
+
   QApplication app(argc, argv);
 
 //   app.setAttribute(Qt::AA_DontUseNativeMenuBar);
