@@ -20,7 +20,7 @@
 
 int main(int argc, char *argv[])
 {
-  /* avoid nasty surprises! */
+  /* avoid surprises! */
   if((sizeof(char)      != 1) ||
      (sizeof(short)     != 2) ||
      (sizeof(int)       != 4) ||
@@ -31,6 +31,20 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Wrong compiler or platform!\n");
     return EXIT_FAILURE;
   }
+
+#if defined(__LP64__) || defined(__MINGW64__)
+  if(sizeof(long) != 8)
+  {
+    fprintf(stderr, "Wrong compiler or platform!\n");
+    return EXIT_FAILURE;
+  }
+#else
+  if(sizeof(long) != 4)
+  {
+    fprintf(stderr, "Wrong compiler or platform!\n");
+    return EXIT_FAILURE;
+  }
+#endif
 
   QApplication app(argc, argv);
 
@@ -67,7 +81,7 @@ int main(int argc, char *argv[])
     t1.start(3000);
 
     QEventLoop evlp;
-    QTimer::singleShot(1000, &evlp, SLOT(quit()));
+    QTimer::singleShot(500, &evlp, SLOT(quit()));
     evlp.exec();
   }
 

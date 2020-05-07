@@ -8,7 +8,7 @@
 
  - Signalchooser widget: skip it if there's only one signal on the screen.
 
- - Adapt the colorbutton when choosing varying colors whel loading signals.
+ - Adapt the colorbutton when choosing varying colors when loading signals.
 
 
 

@@ -8,7 +8,7 @@ Minimum version 4.7.1 or later, preferable 4.8.7
 If you want to use Qt5, it must be version >= 5.9.1.
 For info how to compile Qt5 from source, scroll down.
 
-EDFbrowser is a GNU/Linux & GCC & Make project. Other tools or compilers are not supported.
+EDFbrowser is a GNU/Linux & GCC & GNU Make project. Other tools or compilers are not supported.
 Requests to support other tools or compilers will be ignored.
 
 

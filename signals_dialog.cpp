@@ -102,7 +102,7 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
 
   colorlabel = new QLabel(SignalsDialog);
   colorlabel->setGeometry(320, 380, 100, 25);
-  colorlabel->setText("   Color");
+  colorlabel->setText("  Trace color");
 
   signallist = new QListWidget(SignalsDialog);
   signallist->setGeometry(10, 210, 300, 225);
@@ -125,10 +125,12 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
   DisplayButton = new QPushButton(SignalsDialog);
   DisplayButton->setGeometry(150, 455, 160, 25);
   DisplayButton->setText("&Add signal(s)");
+  DisplayButton->setToolTip("Add the above selected signals to the screen (unipolar)");
 
   DisplayCompButton = new QPushButton(SignalsDialog);
   DisplayCompButton->setGeometry(430, 455, 160, 25);
   DisplayCompButton->setText("&Make derivation");
+  DisplayCompButton->setToolTip("Make a derivation of the above selected signals");
 
   AddButton = new QPushButton(SignalsDialog);
   AddButton->setGeometry(320, 250, 100, 25);
@@ -152,6 +154,7 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
   {
     ColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->signal_color);
   }
+  ColorButton->setToolTip("Click to select the trace color");
 
   compositionlist = new QListWidget(SignalsDialog);
   compositionlist->setGeometry(430, 210, 360, 225);
