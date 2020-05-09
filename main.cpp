@@ -20,6 +20,10 @@
 
 int main(int argc, char *argv[])
 {
+#if defined(_MSC_VER) || defined(_MSC_FULL_VER) || defined(_MSC_BUILD)
+#error "Wrong compiler or platform!"
+#endif
+
   /* avoid surprises! */
   if((sizeof(char)      != 1) ||
      (sizeof(short)     != 2) ||
