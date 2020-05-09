@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
     t1.start(3000);
 
     QEventLoop evlp;
-    QTimer::singleShot(500, &evlp, SLOT(quit()));
+    QTimer::singleShot(100, &evlp, SLOT(quit()));
     evlp.exec();
   }
 
