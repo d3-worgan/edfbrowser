@@ -42,6 +42,7 @@
 #include <QPalette>
 #include <QTime>
 #include <QTimeEdit>
+#include <QTimer>
 #include <QString>
 #include <QDialog>
 #include <QVBoxLayout>
@@ -108,7 +109,7 @@ private:
 
   QLabel *label1;
 
-  QLineEdit *lineedit1;
+  QLineEdit *search_line_edit;
 
   QPushButton *more_button;
 
@@ -126,6 +127,8 @@ private:
           *filt_ival_time_act,
           *show_stats_act,
           *show_heart_rate_act;
+
+  QTimer *delayed_list_filter_update_timer;
 
 private slots:
 
@@ -149,6 +152,7 @@ private slots:
   void filt_ival_time(bool);
   void show_stats(bool);
   void show_heart_rate(bool);
+  void delayed_list_filter_update();
 };
 
 

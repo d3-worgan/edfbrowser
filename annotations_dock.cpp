@@ -74,8 +74,8 @@ UI_Annotationswindow::UI_Annotationswindow(struct edfhdrblock *e_hdr, QWidget *w
   label1 = new QLabel;
   label1->setText(" Filter:");
 
-  lineedit1 = new QLineEdit;
-  lineedit1->setMaxLength(16);
+  search_line_edit = new QLineEdit;
+  search_line_edit->setMaxLength(16);
 
   checkbox2 = new QCheckBox("Inv.");
   checkbox2->setGeometry(2, 2, 10, 10);
@@ -125,7 +125,7 @@ UI_Annotationswindow::UI_Annotationswindow(struct edfhdrblock *e_hdr, QWidget *w
   h_layout = new QHBoxLayout;
   h_layout->addWidget(checkbox1);
   h_layout->addWidget(label1);
-  h_layout->addWidget(lineedit1);
+  h_layout->addWidget(search_line_edit);
   h_layout->addWidget(checkbox2);
   h_layout->addWidget(more_button);
 
@@ -133,6 +133,9 @@ UI_Annotationswindow::UI_Annotationswindow(struct edfhdrblock *e_hdr, QWidget *w
   v_layout->addLayout(h_layout);
   v_layout->addWidget(list);
   v_layout->setSpacing(1);
+
+  delayed_list_filter_update_timer = new QTimer(this);
+  delayed_list_filter_update_timer->setSingleShot(true);
 
   docklist->setWidget(dialog1);
 
@@ -157,7 +160,8 @@ UI_Annotationswindow::UI_Annotationswindow(struct edfhdrblock *e_hdr, QWidget *w
   QObject::connect(filt_ival_time_act,         SIGNAL(triggered(bool)),                this, SLOT(filt_ival_time(bool)));
   QObject::connect(show_stats_act,             SIGNAL(triggered(bool)),                this, SLOT(show_stats(bool)));
   QObject::connect(show_heart_rate_act,        SIGNAL(triggered(bool)),                this, SLOT(show_heart_rate(bool)));
-  QObject::connect(lineedit1,                  SIGNAL(textEdited(const QString)),      this, SLOT(filter_edited(const QString)));
+  QObject::connect(search_line_edit,           SIGNAL(textEdited(const QString)),      this, SLOT(filter_edited(const QString)));
+  QObject::connect(delayed_list_filter_update_timer, SIGNAL(timeout()),                this, SLOT(delayed_list_filter_update()));
 }
 
 
@@ -443,7 +447,13 @@ void UI_Annotationswindow::unhide_all_BS_triggers(bool)
 }
 
 
-void UI_Annotationswindow::filter_edited(const QString text)
+void UI_Annotationswindow::filter_edited(const QString)
+{
+  delayed_list_filter_update_timer->start(500);
+}
+
+
+void UI_Annotationswindow::delayed_list_filter_update()
 {
   int i, j, n, len, sz;
 
@@ -452,6 +462,8 @@ void UI_Annotationswindow::filter_edited(const QString text)
   struct annotation_list *annot_list = &(edf_hdr->annot_list);
 
   struct annotationblock *annot;
+
+  QString text = search_line_edit->text();
 
   sz = edfplus_annotation_size(annot_list);
 
@@ -479,7 +491,7 @@ void UI_Annotationswindow::filter_edited(const QString text)
     return;
   }
 
-  strlcpy(filter_str, lineedit1->text().toUtf8().data(), 32);
+  strlcpy(filter_str, search_line_edit->text().toUtf8().data(), 32);
 
   len = strlen(filter_str);
 
@@ -584,7 +596,7 @@ void UI_Annotationswindow::checkbox2_clicked(int state)
 
   if(changed == 0)  return;
 
-  filter_edited(lineedit1->text());
+  filter_edited(search_line_edit->text());
 }
 
 
