@@ -804,7 +804,18 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   QObject::connect(checkbox4_7, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_7Clicked(int)));
 
+  label4_14 = new QLabel(tab4);
+  label4_14->setGeometry(20, 615, 310, 25);
+  label4_14->setText("R-wave description string");
+
+  lineedit4_1 = new QLineEdit(tab4);
+  lineedit4_1->setGeometry(200, 615, 140, 25);
+  lineedit4_1->setMaxLength(31);
+  lineedit4_1->setText(mainwindow->ecg_qrs_rpeak_descr);
+
   tabholder->addTab(tab4, "Other");
+
+  QObject::connect(lineedit4_1, SIGNAL(textEdited(const QString)), this, SLOT(lineedit4_1_changed(const QString)));
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2288,7 +2299,45 @@ void UI_OptionsDialog::loadColorSchema_blue_gray()
 }
 
 
+void UI_OptionsDialog::lineedit4_1_changed(const QString qstr)
+{
+  int i, j, len, cp;
 
+  char str[32];
+
+  strlcpy(str, qstr.toLatin1().data(), 32);
+  remove_leading_spaces(str);
+  remove_trailing_spaces(str);
+  len = strlen(str);
+
+  cp = lineedit4_1->cursorPosition();
+
+  for(i=0; i<len; i++)
+  {
+    if((str[i] < 32) || (str[i] > 126))
+    {
+      for(j=i; j<len; j++)
+      {
+        str[j] = str[j+1];
+      }
+
+      i--;
+    }
+  }
+
+  lineedit4_1->setText(str);
+
+  lineedit4_1->setCursorPosition(cp);
+
+  if(strlen(mainwindow->ecg_qrs_rpeak_descr))
+  {
+    strlcpy(mainwindow->ecg_qrs_rpeak_descr, str, 32);
+  }
+  else
+  {
+    strlcpy(mainwindow->ecg_qrs_rpeak_descr, "R-wave", 32);
+  }
+}
 
 
 

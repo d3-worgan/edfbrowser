@@ -3610,7 +3610,7 @@ void UI_Mainwindow::qrs_detector()
 
   UI_QRS_detector ui_qrs_det(this, signalcomp[signal_nr]);
 
-  enable_hrv_stats_toolbar("R-onset", &signalcomp[signal_nr]->edfhdr->annot_list);
+  enable_hrv_stats_toolbar(ecg_qrs_rpeak_descr, &signalcomp[signal_nr]->edfhdr->annot_list);
 }
 
 

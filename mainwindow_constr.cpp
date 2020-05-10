@@ -306,6 +306,8 @@ UI_Mainwindow::UI_Mainwindow()
   strlcpy(hypnogram_annot_name[4], "N3", 32);
   strlcpy(hypnogram_annot_name[5], "N4", 32);
 
+  strlcpy(ecg_qrs_rpeak_descr, "R-wave", 32);
+
   z_score_var.crossoverfreq = 7.5;
   z_score_var.z_threshold = 0.0;
   z_score_var.zscore_page_len = 30;

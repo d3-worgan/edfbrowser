@@ -254,7 +254,7 @@ void UI_ECGExport::Export_RR_intervals()
     }
 
     memset(&annotation, 0, sizeof(struct annotationblock));
-    strncpy(annotation.annotation, "R-onset", MAX_ANNOTATION_LEN);
+    strncpy(annotation.annotation, mainwindow->ecg_qrs_rpeak_descr, MAX_ANNOTATION_LEN);
     annotation.annotation[MAX_ANNOTATION_LEN] = 0;
 
     for(i=0; i<beat_cnt; i++)
@@ -416,7 +416,7 @@ void UI_ECGExport::Export_RR_intervals()
 
   if(!import_as_annots)
   {
-    snprintf(str, 2048, "Done. The R-onsets and/or RR-intervals are exported to:\n\n%s", path);
+    snprintf(str, 2048, "Done. The %s's and/or RR-intervals are exported to:\n\n%s", mainwindow->ecg_qrs_rpeak_descr, path);
     QMessageBox messagewindow(QMessageBox::Information, "Ready", QString::fromLocal8Bit(str));
     messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
     messagewindow.exec();

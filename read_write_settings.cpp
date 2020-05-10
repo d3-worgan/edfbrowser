@@ -1364,6 +1364,29 @@ void UI_Mainwindow::read_general_settings()
     xml_go_up(xml_hdl);
   }
 
+  if(!(xml_goto_nth_element_inside(xml_hdl, "ecg_qrs", 0)))
+  {
+    if(!(xml_goto_nth_element_inside(xml_hdl, "r_peak_description", 0)))
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        xml_close(xml_hdl);
+        return;
+      }
+
+      remove_leading_spaces(result);
+      remove_trailing_spaces(result);
+      if(strlen(result))
+      {
+        strlcpy(ecg_qrs_rpeak_descr, result, 32);
+      }
+
+      xml_go_up(xml_hdl);
+    }
+
+    xml_go_up(xml_hdl);
+  }
+
   if(!(xml_goto_nth_element_inside(xml_hdl, "live_stream_update_interval", 0)))
   {
     if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
@@ -2377,6 +2400,10 @@ void UI_Mainwindow::write_settings()
       fprintf(cfgfile, "      <annot_name>%s</annot_name>\n", hypnogram_annot_name[i]);
     }
     fprintf(cfgfile, "    </hypnogram>\n");
+
+    fprintf(cfgfile, "    <ecg_qrs>\n");
+    fprintf(cfgfile, "      <r_peak_description>%s</r_peak_description>\n", ecg_qrs_rpeak_descr);
+    fprintf(cfgfile, "    </ecg_qrs>\n");
 
     fprintf(cfgfile, "    <live_stream_update_interval>%i</live_stream_update_interval>\n", live_stream_update_interval);
 

@@ -164,6 +164,7 @@ QLabel         *label1,
                *label4_11,
                *label4_12,
                *label4_13,
+               *label4_14,
                *label2_2,
                *label2_4,
                *label1_3,
@@ -209,7 +210,8 @@ QRadioButton   *radiobutton1,
                *radiobutton2,
                *radiobutton3;
 
-QLineEdit      *lineEdit3_1;
+QLineEdit      *lineEdit3_1,
+               *lineedit4_1;
 
 QGroupBox      *groupbox1;
 
@@ -269,7 +271,7 @@ void loadColorSchema_NK();
 void loadColorSchema_Dark();
 void loadColorSchema_blue_gray();
 void dspinbox4_4ValueChanged(double);
-
+void lineedit4_1_changed(const QString);
 };
 
 

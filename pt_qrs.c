@@ -39,7 +39,7 @@
  *
  * The following conditions apply:
  *
- * 1: maximum allowed misalignment (time skew) of the detected R-onset relative to
+ * 1: maximum allowed misalignment (time skew) of the detected R-peak relative to
  *    the annotation in order to be a correctly detected beat, is 110 milli-Sec.
  *
  * 2: in case parts of the signal with ventricular flutter/fibrillation were excluded

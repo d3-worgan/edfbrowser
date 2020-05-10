@@ -154,7 +154,7 @@ UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, struct signalcompblock *sign
   }
 
   memset(&annotation, 0, sizeof(struct annotationblock));
-  strncpy(annotation.annotation, "R-onset", MAX_ANNOTATION_LEN);
+  strncpy(annotation.annotation, mainwindow->ecg_qrs_rpeak_descr, MAX_ANNOTATION_LEN);
   annotation.annotation[MAX_ANNOTATION_LEN] = 0;
 
   for(i=0; i<beat_cnt; i++)
@@ -217,7 +217,7 @@ UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, struct signalcompblock *sign
 
   dock_param.mainwindow = mainwindow;
 
-  strlcpy(dock_param.annot_name, "R-onset", 16);
+  strlcpy(dock_param.annot_name, mainwindow->ecg_qrs_rpeak_descr, 16);
 
   mainwindow->hrv_dock[instance_num] = new UI_hrv_dock(mainwindow, dock_param);
 

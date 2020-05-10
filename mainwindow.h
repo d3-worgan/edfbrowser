@@ -288,7 +288,8 @@ public:
        cfg_app_version[17],
        drop_path[MAX_PATH_LENGTH],
        hypnogram_stage_name[6][32],
-       hypnogram_annot_name[6][32];
+       hypnogram_annot_name[6][32],
+       ecg_qrs_rpeak_descr[32];
 
   double pixelsizefactor,
          x_pixelsizefactor,
