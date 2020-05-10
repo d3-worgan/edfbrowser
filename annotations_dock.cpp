@@ -245,6 +245,8 @@ void UI_Annotationswindow::show_heart_rate(bool)
   edf_hdr->hrv_dock[instance_num] = instance_num + 1;
 
   QObject::connect(mainwindow, SIGNAL(annot_docklist_changed()), mainwindow->hrv_dock[instance_num], SLOT(update_curve()));
+
+  mainwindow->enable_hrv_stats_toolbar(annot->annotation, annot_list);
 }
 
 

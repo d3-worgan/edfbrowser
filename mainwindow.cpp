@@ -3609,6 +3609,8 @@ void UI_Mainwindow::qrs_detector()
   }
 
   UI_QRS_detector ui_qrs_det(this, signalcomp[signal_nr]);
+
+  enable_hrv_stats_toolbar("R-onset", &signalcomp[signal_nr]->edfhdr->annot_list);
 }
 
 
@@ -4214,7 +4216,18 @@ int UI_Mainwindow::get_filenum(struct edfhdrblock *ptr)
 }
 
 
+void UI_Mainwindow::enable_hrv_stats_toolbar(const char *annotation, struct annotation_list *annot_list)
+{
+  if((annotation == NULL) || (annot_list == NULL))  return;
 
+  strlcpy(toolbar_stats.annot_label, annotation, MAX_ANNOTATION_LEN + 1);
+
+  toolbar_stats.annot_list = annot_list;
+
+  toolbar_stats.sz = 0;
+
+  toolbar_stats.active = 1;
+}
 
 
 

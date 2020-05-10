@@ -365,6 +365,8 @@ public:
 
   struct signalcompblock * create_signalcomp_copy(struct signalcompblock *);
 
+  void enable_hrv_stats_toolbar(const char *, struct annotation_list *);
+
 #ifdef Q_OS_WIN32
   QString specialFolder(int);
 #endif
