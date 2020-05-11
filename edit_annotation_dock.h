@@ -49,6 +49,7 @@
 #include <QSpinBox>
 #include <QToolBar>
 #include <QFrame>
+#include <QToolTip>
 
 #include <stdio.h>
 #include <stdlib.h>

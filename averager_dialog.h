@@ -46,6 +46,7 @@
 #include <QTime>
 #include <QTimeEdit>
 #include <QSpinBox>
+#include <QToolTip>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -100,7 +101,9 @@ QTimeEdit    *timeEdit1,
 QTime        time1,
              time2;
 
-QSpinBox *avg_periodspinbox;
+QSpinBox *avg_periodspinbox,
+         *day_spinbox1,
+         *day_spinbox2;
 
 char annot_str[MAX_ANNOTATION_LEN + 1];
 

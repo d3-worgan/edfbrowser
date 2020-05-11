@@ -70,11 +70,13 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(struct edfhdrblock *e_hdr, QWid
   onset_daySpinbox->setRange(0, 99);
   onset_daySpinbox->setSingleStep(1);
   onset_daySpinbox->setValue(0);
+  onset_daySpinbox->setToolTip("24-hour units relative to starttime");
 
   onset_timeEdit = new QTimeEdit(annot_edit_frame);
   onset_timeEdit->setGeometry(380, 10, 100, 25);
   onset_timeEdit->setDisplayFormat("hh:mm:ss.zzz");
   onset_timeEdit->setMinimumTime(QTime(-1, 0, 0, 0));
+  onset_timeEdit->setToolTip("Onset time of the event (hh:mm:ss:mmm) relative to starttime");
 
   durationLabel = new QLabel(annot_edit_frame);
   durationLabel->setGeometry(490, 10, 58, 25);
@@ -87,6 +89,7 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(struct edfhdrblock *e_hdr, QWid
   duration_spinbox->setDecimals(3);
   duration_spinbox->setSuffix(" sec");
   duration_spinbox->setValue(-1.0);
+  duration_spinbox->setToolTip("Duration of the event (hh:mm:ss:mmm), -1 if not applicable)");
 
   modifybutton = new QPushButton(annot_edit_frame);
   modifybutton->setGeometry(700, 10, 100, 25);

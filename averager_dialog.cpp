@@ -74,24 +74,33 @@ UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, int annot_nr, struct edf
   time2.setHMS((recording_duration / 3600) % 24, (recording_duration % 3600) / 60, recording_duration % 60, 0);
 
   time1Label = new QLabel(averager_dialog);
-  time1Label->setGeometry(20, 65, 100, 25);
-  time1Label->setText("From (hh:mm:ss)");
+  time1Label->setGeometry(20, 55, 130, 50);
+  time1Label->setText("From\n(d:hh:mm:ss.mmm)");
+
+  day_spinbox1 = new QSpinBox(averager_dialog);
+  day_spinbox1->setGeometry(160, 65, 35, 25);
+  day_spinbox1->setRange(0, 9);
+  day_spinbox1->setToolTip("Days (24-hour units)");
 
   timeEdit1 = new QTimeEdit(averager_dialog);
-  timeEdit1->setGeometry(130, 65, 110, 25);
+  timeEdit1->setGeometry(200, 65, 110, 25);
   timeEdit1->setDisplayFormat("hh:mm:ss.zzz");
   timeEdit1->setMinimumTime(QTime(0, 0, 0, 0));
-  timeEdit1->setMaximumTime(time2);
 
   time2Label = new QLabel(averager_dialog);
-  time2Label->setGeometry(20, 110, 100, 25);
-  time2Label->setText("To (hh:mm:ss)");
+  time2Label->setGeometry(20, 100, 130, 50);
+  time2Label->setText("To\n(d:hh:mm:ss.mmm)");
+
+  day_spinbox2 = new QSpinBox(averager_dialog);
+  day_spinbox2->setGeometry(160, 110, 35, 25);
+  day_spinbox2->setRange(0, 9);
+  day_spinbox2->setToolTip("Days (24-hour units)");
+  day_spinbox2->setValue((int)(recording_duration / (86400)));
 
   timeEdit2 = new QTimeEdit(averager_dialog);
-  timeEdit2->setGeometry(130, 110, 110, 25);
+  timeEdit2->setGeometry(200, 110, 110, 25);
   timeEdit2->setDisplayFormat("hh:mm:ss.zzz");
   timeEdit2->setMinimumTime(QTime(0, 0, 0, 0));
-  timeEdit2->setMaximumTime(time2);
   timeEdit2->setTime(time2);
 
   ratioLabel = new QLabel(averager_dialog);
@@ -206,15 +215,15 @@ void UI_AveragerWindow::startButtonClicked()
   time1 = timeEdit1->time();
   time2 = timeEdit2->time();
 
-  if(time2.operator<=(time1) == true)
+  l_time1 = (((time1.hour() * 3600) + (time1.minute() * 60) + (time1.second())) * TIME_DIMENSION) + (time1.msec() * TIME_DIMENSION / 1000LL) + (day_spinbox1->value() * 86400LL * TIME_DIMENSION);
+  l_time2 = (((time2.hour() * 3600) + (time2.minute() * 60) + (time2.second())) * TIME_DIMENSION) + (time2.msec() * TIME_DIMENSION / 1000LL) + (day_spinbox2->value() * 86400LL * TIME_DIMENSION);
+
+  if(l_time1 >= l_time2)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Starttime is higher or equal to stoptime.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Start time is higher or equal to stop time.");
     messagewindow.exec();
     return;
   }
-
-  l_time1 = (((time1.hour() * 3600) + (time1.minute() * 60) + (time1.second())) * TIME_DIMENSION) + (time1.msec() * TIME_DIMENSION / 1000LL);
-  l_time2 = (((time2.hour() * 3600) + (time2.minute() * 60) + (time2.second())) * TIME_DIMENSION) + (time2.msec() * TIME_DIMENSION / 1000LL);
 
   n = ratioBox->currentIndex();
 
