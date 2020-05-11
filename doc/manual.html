@@ -595,7 +595,8 @@
   The quickest way to run the QRS detector and to import the beats as annotations, is to use the QRS detector in the Tools menu.<br>
   You will be able to select one of the signals on your screen as the source for the QRS detector.<br>
   The selected signal must have a samplerate of at least 200 Hz and must have a physical dimension (unit) uV, mV or V.<br>
-  This tool will run the QRS detector over the whole file and at the end it will import the R-peak time of the QRS complex as annotations.<br>
+  The detector will over the whole file and at the end it will import the R-peaks as annotations.<br>
+  The label "R-wave" is used by default for the annotations but this can be changed in the settings (Settings -> Options).<br>
   The annotations can be exported to different formats using the <a href="#Export_annotations">Export annotations tool</a>.<br>
 <br>
   Otherwise, toggling the "Heart Rate" button toggles on or off the detection and calculation of the heartrate expressed in beats per minute (bpm).<br>
@@ -605,7 +606,7 @@
   The algorithm used for the QRS detection is derived from "A Real-Time QRS Detection Algorithm" by Jiapu Pan and Willis J. Tompkins.<br>
   <a href="https://courses.cs.washington.edu/courses/cse474/18wi/labs/l8/QRSdetection.pdf">https://courses.cs.washington.edu/courses/cse474/18wi/labs/l8/QRSdetection.pdf</a><br>
 <br>
-  The R-peak times and/or RR-interval times (beat to beat) can be exported to an ascii-file for analysis in other programs.<br>
+  The R-peaks and/or RR-interval times (beat to beat) can be exported to an ascii-file for analysis in other programs.<br>
   After you switched on the Heart Rate detection, go to "Tools -&gt; Import/Export ECG RR-interval".<br>
   Only the part of the signal that is visible on the screen will be exported, except when you check the "Whole recording" checkbox.<br>
   There is also the possibility to import the RR-intervals as annotations.<br>
@@ -1052,8 +1053,8 @@
 
 <p>
   This tool exports the annotations/events from an EDF+/BDF+ file.<br>
-  You can choose to save as a comma (or tab) separated textfile, to save as an EDFplus file<br>
-  or XML. If you have opened multiple files, you can choose to export all<br>
+  They can be saved as CVS, EDF+ or XML.<br>
+  If you have opened multiple files, you can choose to export all<br>
   annotations of all opened files into one new file. The header of the file which acts as<br>
   the "reference" will be copied into the new EDFplus file. The "reference" file can be selected<br>
   in the menu <a href="#Timelock">Time -&gt; Timereference</a>.
