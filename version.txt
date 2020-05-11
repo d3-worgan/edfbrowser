@@ -10,6 +10,8 @@
 
  - Adapt the colorbutton when choosing varying colors when loading signals.
 
+ - Average waveform dialog: fixed a bug that prevented setting the stop time with recordings >= 24 hours.
+
 
 
  version 1.75      April 25, 2020
