@@ -79,6 +79,7 @@
 #include <QPixmap>
 #include <QSplashScreen>
 #include <QTimer>
+#include <QElapsedTimer>
 #include <QDesktopServices>
 #include <QUrl>
 #include <QLibrary>
