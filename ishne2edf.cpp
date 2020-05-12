@@ -614,13 +614,13 @@ int UI_IshneEDFwindow::check_crc(FILE *inputfile, int len)
 
 unsigned short UI_IshneEDFwindow::crc_ccitt(const unsigned char *message, int nbytes, unsigned short remainder)
 {
-  int byte;
+  int byte_;
 
   unsigned char data;
 
-  for(byte=0; byte<nbytes; byte++)  /* Divide the message by the polynomial, a byte at a time. */
+  for(byte_=0; byte_<nbytes; byte_++)  /* Divide the message by the polynomial, a byte at a time. */
   {
-    data = message[byte] ^ (remainder >> 8);
+    data = message[byte_] ^ (remainder >> 8);
 
     remainder = crc_ccitt_table[data] ^ (remainder << 8);
   }

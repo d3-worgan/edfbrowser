@@ -36,13 +36,21 @@ int main(int argc, char *argv[])
     return EXIT_FAILURE;
   }
 
-#if defined(__LP64__) || defined(__MINGW64__)
+#if defined(__LP64__)
   if(sizeof(long) != 8)
   {
     fprintf(stderr, "Wrong compiler or platform!\n");
     return EXIT_FAILURE;
   }
 #else
+  if(sizeof(long) != 4)
+  {
+    fprintf(stderr, "Wrong compiler or platform!\n");
+    return EXIT_FAILURE;
+  }
+#endif
+
+#if defined(__MINGW64__)
   if(sizeof(long) != 4)
   {
     fprintf(stderr, "Wrong compiler or platform!\n");
