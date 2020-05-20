@@ -469,7 +469,7 @@ static int xml_attribute(const char *data, const char *item, char *result, int r
   }
 
 #ifdef XMLDEBUG_TEST
-  printf("XML: error at line: %i\n", __LINE__);
+  printf("XML: XML_ERROR_NOTFOUND at line: %i\n", __LINE__);
 #endif
   return XML_ERROR_NOTFOUND;
 }
@@ -773,7 +773,7 @@ int xml_goto_nth_element_inside(struct xml_handle *handle_p, const char *name, i
         else
         {
 #ifdef XMLDEBUG_TEST
-          printf("XML: error at line: %i\n", __LINE__);
+          printf("XML: XML_ERROR_NOTFOUND at line: %i\n", __LINE__);
 #endif
           return XML_ERROR_NOTFOUND;
         }

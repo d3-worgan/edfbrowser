@@ -36,16 +36,16 @@
 
 
 
-#define XML_STRBUFLEN    4096
+#define XML_STRBUFLEN        (4096)
 /* XML max element depth */
-#define XML_MAX_ED         32
+#define XML_MAX_ED             (32)
 
-#define XML_ERROR_GEN      -1
-#define XML_ERROR_STRLEN   -2
-#define XML_ERROR_MEMBUFSZ -3
-#define XML_ERROR_INV_HDL  -4
-#define XML_ERROR_NOTFOUND -5
-#define XML_ERROR_MALLOC   -6
+#define XML_ERROR_GEN          (-1)
+#define XML_ERROR_STRLEN       (-2)
+#define XML_ERROR_MEMBUFSZ     (-3)
+#define XML_ERROR_INV_HDL      (-4)
+#define XML_ERROR_NOTFOUND     (-5)
+#define XML_ERROR_MALLOC       (-6)
 
 
 #ifdef __cplusplus
