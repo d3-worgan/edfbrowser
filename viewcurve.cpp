@@ -148,6 +148,16 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
   blackwhite_printing = 1;
   floating_ruler_value = 0;
   linear_interpol = 0;
+
+  shift_page_left_shortcut = new QShortcut(QKeySequence::MoveToPreviousChar, this, 0, 0, Qt::WidgetShortcut);
+  shift_page_right_shortcut = new QShortcut(QKeySequence::MoveToNextChar, this, 0, 0, Qt::WidgetShortcut);
+  shift_page_up_shortcut = new QShortcut(QKeySequence::MoveToPreviousLine, this, 0, 0, Qt::WidgetShortcut);
+  shift_page_down_shortcut = new QShortcut(QKeySequence::MoveToNextLine, this, 0, 0, Qt::WidgetShortcut);
+
+  QObject::connect(shift_page_left_shortcut,  SIGNAL(activated()), mainwindow, SLOT(shift_page_left()));
+  QObject::connect(shift_page_right_shortcut, SIGNAL(activated()), mainwindow, SLOT(shift_page_right()));
+  QObject::connect(shift_page_up_shortcut,    SIGNAL(activated()), mainwindow, SLOT(shift_page_up()));
+  QObject::connect(shift_page_down_shortcut,  SIGNAL(activated()), mainwindow, SLOT(shift_page_down()));
 }
 
 

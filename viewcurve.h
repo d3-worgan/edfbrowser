@@ -29,6 +29,7 @@
 #ifndef VIEWCURVE_H
 #define VIEWCURVE_H
 
+#include <QObject>
 #include <QtGlobal>
 #include <QWidget>
 #include <QPainter>
@@ -55,6 +56,8 @@
 #include <QDropEvent>
 #include <QUrl>
 #include <QList>
+#include <QShortcut>
+#include <QKeySequence>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -197,6 +200,11 @@ public:
          backup_color_15;
 
   QFont *printfont;
+
+  QShortcut *shift_page_left_shortcut,
+            *shift_page_right_shortcut,
+            *shift_page_up_shortcut,
+            *shift_page_down_shortcut;
 
   void drawCurve_stage_1(QPainter *painter=NULL, int w_width=0, int w_height=0, int print_linewidth=0);
   void setCrosshair_1_center(void);

@@ -546,6 +546,10 @@ public slots:
   void edfplus_remove_duplicate_annotations();
   void video_player_seek(int);
   void video_player_toggle_pause();
+  void shift_page_left();
+  void shift_page_right();
+  void shift_page_up();
+  void shift_page_down();
 
 private slots:
   void open_new_file();
@@ -567,13 +571,9 @@ private slots:
   void fit_signals_to_pane();
   void fit_signals_dc_offset();
   void former_page();
-  void shift_page_left();
-  void shift_page_right();
   void playback_file();
   void stop_playback();
   void next_page();
-  void shift_page_up();
-  void shift_page_down();
   void zoomback();
   void forward();
   void show_splashscreen();

@@ -913,12 +913,6 @@ UI_Mainwindow::UI_Mainwindow()
   connect(former_page_Act, SIGNAL(triggered()), this, SLOT(former_page()));
   navtoolbar->addAction(former_page_Act);
 
-  shift_page_left_Act = new QAction(QIcon(":/images/go-next-symbolic-rtl.symbolic.png"), "<", this);
-  shift_page_left_Act->setToolTip("Shift Left");
-  shift_page_left_Act->setShortcut(QKeySequence::MoveToPreviousChar);
-  connect(shift_page_left_Act, SIGNAL(triggered()), this, SLOT(shift_page_left()));
-  navtoolbar->addAction(shift_page_left_Act);
-
   stop_playback_realtime_Act = new QAction(QIcon(":/images/media-playback-stop-symbolic.symbolic.png"), "[stop]", this);
   connect(stop_playback_realtime_Act, SIGNAL(triggered()), this, SLOT(stop_playback()));
   navtoolbar->addAction(stop_playback_realtime_Act);
@@ -927,9 +921,27 @@ UI_Mainwindow::UI_Mainwindow()
   connect(playback_file_Act, SIGNAL(triggered()), this, SLOT(playback_file()));
   navtoolbar->addAction(playback_file_Act);
 
+  shift_page_up_Act = new QAction(QIcon(":/images/go-up-symbolic.symbolic.png"), "^", this);
+  shift_page_up_Act->setToolTip("Shift Up");
+//  shift_page_up_Act->setShortcut(QKeySequence::MoveToPreviousLine);
+  connect(shift_page_up_Act, SIGNAL(triggered()), this, SLOT(shift_page_up()));
+  navtoolbar->addAction(shift_page_up_Act);
+
+  shift_page_down_Act = new QAction(QIcon(":/images/go-down-symbolic.symbolic.png"), "v", this);
+  shift_page_down_Act->setToolTip("Shift Down");
+//  shift_page_down_Act->setShortcut(QKeySequence::MoveToNextLine);
+  connect(shift_page_down_Act, SIGNAL(triggered()), this, SLOT(shift_page_down()));
+  navtoolbar->addAction(shift_page_down_Act);
+
+  shift_page_left_Act = new QAction(QIcon(":/images/go-next-symbolic-rtl.symbolic.png"), "<", this);
+  shift_page_left_Act->setToolTip("Shift Left");
+//  shift_page_left_Act->setShortcut(QKeySequence::MoveToPreviousChar);
+  connect(shift_page_left_Act, SIGNAL(triggered()), this, SLOT(shift_page_left()));
+  navtoolbar->addAction(shift_page_left_Act);
+
   shift_page_right_Act = new QAction(QIcon(":/images/go-next-symbolic.symbolic.png"), ">", this);
   shift_page_right_Act->setToolTip("Shift Right");
-  shift_page_right_Act->setShortcut(QKeySequence::MoveToNextChar);
+//  shift_page_right_Act->setShortcut(QKeySequence::MoveToNextChar);
   connect(shift_page_right_Act, SIGNAL(triggered()), this, SLOT(shift_page_right()));
   navtoolbar->addAction(shift_page_right_Act);
 
@@ -952,18 +964,6 @@ UI_Mainwindow::UI_Mainwindow()
   connect(faster_Act, SIGNAL(triggered()), this, SLOT(video_player_faster()));
   navtoolbar->addAction(faster_Act);
   faster_Act->setVisible(false);
-
-  shift_page_up_Act = new QAction(QIcon(":/images/go-up-symbolic.symbolic.png"), "^", this);
-  shift_page_up_Act->setToolTip("Shift Up");
-  shift_page_up_Act->setShortcut(QKeySequence::MoveToPreviousLine);
-  connect(shift_page_up_Act, SIGNAL(triggered()), this, SLOT(shift_page_up()));
-  navtoolbar->addAction(shift_page_up_Act);
-
-  shift_page_down_Act = new QAction(QIcon(":/images/go-down-symbolic.symbolic.png"), "v", this);
-  shift_page_down_Act->setToolTip("Shift Down");
-  shift_page_down_Act->setShortcut(QKeySequence::MoveToNextLine);
-  connect(shift_page_down_Act, SIGNAL(triggered()), this, SLOT(shift_page_down()));
-  navtoolbar->addAction(shift_page_down_Act);
 
   zoomback_Act = new QAction(QIcon(":/images/zoom-out-symbolic.symbolic.png"), "Zoom Out", this);
   zoomback_Act->setShortcut(Qt::Key_Backspace);
@@ -1143,6 +1143,8 @@ UI_Mainwindow::UI_Mainwindow()
   }
 
   showMaximized();
+
+  maincurve->setFocus(Qt::OtherFocusReason);
 
   oldwindowheight = height();
 

@@ -57,6 +57,7 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(struct edfhdrblock *e_hdr, QWid
 
   completer = new QCompleter(annot_edit_frame);
   completer->setCaseSensitivity(Qt::CaseInsensitive);
+  completer->setCompletionMode(QCompleter::PopupCompletion);
   annot_descript_lineEdit->setCompleter(completer);
 
   onsetLabel = new QLabel(annot_edit_frame);
