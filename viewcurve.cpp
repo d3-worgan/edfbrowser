@@ -2103,7 +2103,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
               painter->drawText(marker_x + 5, h - 65 + ((j % 3) * 30), string);
             }
 
-            strncpy(string, annot->annotation, 20);
+            strncpy(string, annot->description, 20);
 
             string[20] = 0;
 
@@ -2131,7 +2131,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
           if((mainwindow->toolbar_stats.active) && (mainwindow->toolbar_stats.annot_list == annot_list))
           {
-            if((!strcmp(annot->annotation, mainwindow->toolbar_stats.annot_label)) && (mainwindow->toolbar_stats.sz < STATISTICS_IVAL_LIST_SZ))
+            if((!strcmp(annot->description, mainwindow->toolbar_stats.annot_label)) && (mainwindow->toolbar_stats.sz < STATISTICS_IVAL_LIST_SZ))
             {
               if(mainwindow->toolbar_stats.sz > 0)
               {

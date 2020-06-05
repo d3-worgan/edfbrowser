@@ -430,9 +430,9 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
                 for(j=0; j<n; j++)
                 {
                   if(j==MAX_ANNOTATION_LEN)  break;
-                  annotblock.annotation[j] = scratchpad[j];
+                  annotblock.description[j] = scratchpad[j];
                 }
-                annotblock.annotation[j] = 0;
+                annotblock.description[j] = 0;
 
                 if(duration)
                 {
@@ -547,7 +547,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
               annotblock.edfhdr = edf_hdr;
               annotblock.onset = ((long long)i * data_record_duration) + ((long long)k * nk_trigger_sample_duration);
               annotblock.onset += edf_hdr->starttime_offset;
-              strlcpy(annotblock.annotation, nk_triggerlabel[j], MAX_ANNOTATION_LEN_II + 1);
+              strlcpy(annotblock.description, nk_triggerlabel[j], MAX_ANNOTATION_LEN_II + 1);
               annotblock.ident = (1 << ANNOT_ID_NK_TRIGGER);
 
               if(edfplus_annotation_add_item(&edf_hdr->annot_list, annotblock))

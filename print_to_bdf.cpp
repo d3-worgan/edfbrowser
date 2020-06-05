@@ -1318,7 +1318,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
             fputc(20, outputfile);
             tallen++;
 
-            tallen += fprintf(outputfile, "%s", annot_ptr->annotation);
+            tallen += fprintf(outputfile, "%s", annot_ptr->description);
 
             fputc(20, outputfile);
             fputc(0, outputfile);

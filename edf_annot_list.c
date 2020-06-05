@@ -111,7 +111,7 @@ int edfplus_annotation_cnt(struct annotation_list *list, struct annotationblock 
   {
     tmp_annot = &list->items[list->idx[i]];
 
-    if(!strcmp(tmp_annot->annotation, annot->annotation))
+    if(!strcmp(tmp_annot->description, annot->description))
     {
       if(!tmp_annot->hided_in_list)  n++;
     }
@@ -395,7 +395,7 @@ int edfplus_annotation_remove_duplicates(struct annotation_list *list)
 
     if(annot->onset != list->items[list->idx[i + 1]].onset)  continue;
 
-    if(strcmp(annot->annotation, list->items[list->idx[i + 1]].annotation))  continue;
+    if(strcmp(annot->description, list->items[list->idx[i + 1]].description))  continue;
 
     if(strcmp(annot->duration, list->items[list->idx[i + 1]].duration))  continue;
 
@@ -475,7 +475,7 @@ int edfplus_annotation_get_max_annotation_strlen(struct annotation_list *list)
       timestamp_decimals = len;
     }
 
-    len = strlen(annot->annotation);
+    len = strlen(annot->description);
 
     if(len>annot_descr_len)
     {

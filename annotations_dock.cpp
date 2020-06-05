@@ -234,7 +234,7 @@ void UI_Annotationswindow::show_heart_rate(bool)
 
   dock_param.mainwindow = mainwindow;
 
-  strlcpy(dock_param.annot_name, annot->annotation, 32);
+  strlcpy(dock_param.annot_name, annot->description, 32);
 
   mainwindow->hrv_dock[instance_num] = new UI_hrv_dock(mainwindow, dock_param);
 
@@ -246,7 +246,7 @@ void UI_Annotationswindow::show_heart_rate(bool)
 
   QObject::connect(mainwindow, SIGNAL(annot_docklist_changed()), mainwindow->hrv_dock[instance_num], SLOT(update_curve()));
 
-  mainwindow->enable_hrv_stats_toolbar(annot->annotation, annot_list);
+  mainwindow->enable_hrv_stats_toolbar(annot->description, annot_list);
 }
 
 
@@ -517,11 +517,11 @@ void UI_Annotationswindow::delayed_list_filter_update()
           annot->hided = 1;
         }
 
-        n = strlen(annot->annotation) - len + 1;
+        n = strlen(annot->description) - len + 1;
 
         for(j=0; j<n; j++)
         {
-          if(!(strncmp(filter_str, annot->annotation + j, len)))
+          if(!(strncmp(filter_str, annot->description + j, len)))
           {
             annot->hided_in_list = 0;
 
@@ -546,11 +546,11 @@ void UI_Annotationswindow::delayed_list_filter_update()
 
         annot->hided = 0;
 
-        n = strlen(annot->annotation) - len + 1;
+        n = strlen(annot->description) - len + 1;
 
         for(j=0; j<n; j++)
         {
-          if(!(strncmp(filter_str, annot->annotation + j, len)))
+          if(!(strncmp(filter_str, annot->description + j, len)))
           {
             annot->hided_in_list = 1;
 
@@ -739,7 +739,7 @@ void UI_Annotationswindow::hide_same_annots(bool)
 
   annot = edfplus_annotation_get_item_visible_only(annot_list, n);
 
-  strlcpy(str1, annot->annotation, MAX_ANNOTATION_LEN);
+  strlcpy(str1, annot->description, MAX_ANNOTATION_LEN);
 
   remove_leading_spaces(str1);
 
@@ -749,7 +749,7 @@ void UI_Annotationswindow::hide_same_annots(bool)
   {
     annot = edfplus_annotation_get_item(annot_list, i);
 
-    strlcpy(str2, annot->annotation, MAX_ANNOTATION_LEN);
+    strlcpy(str2, annot->description, MAX_ANNOTATION_LEN);
 
     remove_leading_spaces(str2);
 
@@ -797,7 +797,7 @@ void UI_Annotationswindow::unhide_same_annots(bool)
 
   annot = edfplus_annotation_get_item_visible_only(annot_list, n);
 
-  strlcpy(str1, annot->annotation, MAX_ANNOTATION_LEN);
+  strlcpy(str1, annot->description, MAX_ANNOTATION_LEN);
 
   remove_leading_spaces(str1);
 
@@ -807,7 +807,7 @@ void UI_Annotationswindow::unhide_same_annots(bool)
   {
     annot = edfplus_annotation_get_item(annot_list, i);
 
-    strlcpy(str2, annot->annotation, MAX_ANNOTATION_LEN);
+    strlcpy(str2, annot->description, MAX_ANNOTATION_LEN);
 
     remove_leading_spaces(str2);
 
@@ -1010,7 +1010,7 @@ void UI_Annotationswindow::updateList(void)
 
     remove_trailing_zeros(str);
 
-    string = QString::fromUtf8(annot->annotation);
+    string = QString::fromUtf8(annot->description);
 
     if(string.size() < 20)
     {
@@ -1062,7 +1062,7 @@ void UI_Annotationswindow::updateList(void)
 
     string = QString::fromLatin1(str);
 
-    string.append(QString::fromUtf8(annot->annotation));
+    string.append(QString::fromUtf8(annot->description));
 
     listitem->setToolTip(string);
 

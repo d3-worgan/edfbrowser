@@ -4230,6 +4230,41 @@ void UI_Mainwindow::enable_hrv_stats_toolbar(const char *annotation, struct anno
 }
 
 
+void UI_Mainwindow::get_unique_annotations(struct edfhdrblock *hdr)
+{
+  int i, j, listsz;
+
+  struct annotationblock *annot;
+
+  if(hdr == NULL)  return;
+
+  hdr->unique_annotations_list[0][0] = 0;
+
+  listsz = edfplus_annotation_size(&hdr->annot_list);
+
+  for(i=0; i<listsz; i++)
+  {
+    annot = edfplus_annotation_get_item(&hdr->annot_list, i);
+
+    for(j=0; j<MAX_UNIQUE_ANNOTATIONS; j++)
+    {
+      if(hdr->unique_annotations_list[j][0] == 0)
+      {
+        strlcpy(hdr->unique_annotations_list[j], annot->description, MAX_ANNOTATION_LEN);
+
+        if(j < (MAX_UNIQUE_ANNOTATIONS - 1))
+        {
+          hdr->unique_annotations_list[j+1][0] = 0;
+        }
+
+        break;
+      }
+
+      if(!strcmp(annot->description, hdr->unique_annotations_list[j]))  break;
+    }
+  }
+}
+
 
 
 

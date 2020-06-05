@@ -842,9 +842,9 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
           {
             memset(&annotation, 0, sizeof(struct annotationblock));
             annotation.onset = (long long)tc * sampletime;
-            strncpy(annotation.annotation, aux_str, MAX_ANNOTATION_LEN);
+            strncpy(annotation.description, aux_str, MAX_ANNOTATION_LEN);
 
-            annotation.annotation[MAX_ANNOTATION_LEN] = 0;
+            annotation.description[MAX_ANNOTATION_LEN] = 0;
 
             if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
             {
@@ -875,14 +875,14 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
               annotation.onset = (long long)tc * sampletime;
               if(annot_code < 42)
               {
-                strncpy(annotation.annotation, annotdescrlist[annot_code], MAX_ANNOTATION_LEN);
+                strncpy(annotation.description, annotdescrlist[annot_code], MAX_ANNOTATION_LEN);
               }
               else
               {
-                strncpy(annotation.annotation, "user-defined", MAX_ANNOTATION_LEN);
+                strncpy(annotation.description, "user-defined", MAX_ANNOTATION_LEN);
               }
 
-              annotation.annotation[MAX_ANNOTATION_LEN] = 0;
+              annotation.description[MAX_ANNOTATION_LEN] = 0;
 
               if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
               {
@@ -1119,12 +1119,12 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
     {
       memset(&annotation, 0, sizeof(struct annotationblock));
       annotation.onset = onset;
-      strncpy(annotation.annotation, result, MAX_ANNOTATION_LEN);
+      strncpy(annotation.description, result, MAX_ANNOTATION_LEN);
       if(xml_hdl->encoding == 1)
       {
-        latin1_to_utf8(annotation.annotation, MAX_ANNOTATION_LEN);
+        latin1_to_utf8(annotation.description, MAX_ANNOTATION_LEN);
       }
-      annotation.annotation[MAX_ANNOTATION_LEN] = 0;
+      annotation.description[MAX_ANNOTATION_LEN] = 0;
       strlcpy(annotation.duration, duration, 32);
       annotation.long_duration = edfplus_annotation_get_long_from_number(duration);
       if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
@@ -1434,8 +1434,8 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
       {
         memset(&annotation, 0, sizeof(struct annotationblock));
         annotation.onset = onset;
-        strncpy(annotation.annotation, description, MAX_ANNOTATION_LEN);
-        annotation.annotation[MAX_ANNOTATION_LEN] = 0;
+        strncpy(annotation.description, description, MAX_ANNOTATION_LEN);
+        annotation.description[MAX_ANNOTATION_LEN] = 0;
         if(use_duration && duration_is_set)
         {
           if((!(is_number(duration))) && (duration[0] != '-'))
@@ -1589,6 +1589,8 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
   }
 
   edfplus_annotation_sort(&mainwindow->edfheaderlist[0]->annot_list, NULL);
+
+  mainwindow->get_unique_annotations(mainwindow->edfheaderlist[0]);
 
   edfplus_annotation_empty_list(&edfhdr->annot_list);
   free(edfhdr->edfparam);
@@ -1872,8 +1874,8 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
                   annotation.onset = ((trigger_datrec * signalcomp->edfhdr->long_data_record_duration) + (trigger_sample * time_per_sample));
                   annotation.onset += signalcomp->edfhdr->starttime_offset;
                   annotation.edfhdr = signalcomp->edfhdr;
-                  strncpy(annotation.annotation, scratchpad, MAX_ANNOTATION_LEN);
-                  annotation.annotation[MAX_ANNOTATION_LEN] = 0;
+                  strncpy(annotation.description, scratchpad, MAX_ANNOTATION_LEN);
+                  annotation.description[MAX_ANNOTATION_LEN] = 0;
                   if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
                   {
                     progress.reset();

@@ -1076,11 +1076,11 @@ void UI_ZScoreWindow::get_annotationsButtonClicked()
         annotation.onset = i * zscore_page_len * 2LL * TIME_DIMENSION;
         if(awake)
         {
-          strlcpy(annotation.annotation, "Wake", MAX_ANNOTATION_LEN_II + 1);
+          strlcpy(annotation.description, "Wake", MAX_ANNOTATION_LEN_II + 1);
         }
         else
         {
-          strlcpy(annotation.annotation, "Sleep", MAX_ANNOTATION_LEN_II + 1);
+          strlcpy(annotation.description, "Sleep", MAX_ANNOTATION_LEN_II + 1);
         }
         edfplus_annotation_add_item(&mainwindow->edfheaderlist[filenum]->annot_list, annotation);
       }

@@ -50,6 +50,9 @@
 #include <QToolBar>
 #include <QFrame>
 #include <QToolTip>
+#include <QCompleter>
+#include <QStringList>
+#include <QStringListModel>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -108,6 +111,8 @@ private:
 
   QLineEdit *annot_descript_lineEdit;
 
+  QCompleter *completer;
+
   QTimeEdit *onset_timeEdit;
 
   QSpinBox  *onset_daySpinbox;
@@ -119,6 +124,8 @@ private:
               *createbutton;
 
   QComboBox *posNegTimebox;
+
+  void update_description_completer(void);
 
 private slots:
 

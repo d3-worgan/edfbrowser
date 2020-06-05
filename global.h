@@ -56,38 +56,39 @@
 
 #endif
 
-#define PROGRAM_NAME "EDFbrowser"
-#define PROGRAM_VERSION "1.76"
-#define PROGRAM_BETA_SUFFIX ""
-#define MINIMUM_QT4_VERSION 0x040701
-#define MINIMUM_QT5_VERSION 0x050901
-#define MAXFILES (32)
-#define MAXSIGNALS (640)
-#define MAXFILTERS (16)
-#define TIME_DIMENSION (10000000LL)
-#define MAX_ANNOTATION_LEN (512)
-#define VIEWTIME_SYNCED_OFFSET (0)
-#define VIEWTIME_SYNCED_ABSOLUT (1)
-#define VIEWTIME_UNSYNCED (2)
-#define VIEWTIME_USER_DEF_SYNCED (3)
-#define MAX_PATH_LENGTH (1024)
-#define MAX_RECENTFILES (32)
-#define MAX_ACTIVE_ANNOT_MARKERS (64)
-#define MAXSPECTRUMDIALOGS (32)
-#define MAXSPECTRUMDOCKS (8)
-#define MAXCDSADOCKS (64)
-#define MAXHYPNOGRAMDOCKS (64)
-#define MAXHRVDOCKS (64)
-#define MAXPREDEFINEDMONTAGES (12)
-#define MAXAVERAGECURVEDIALOGS (32)
-#define MAXZSCOREDIALOGS (32)
-#define MAXZOOMHISTORY (16)
+#define PROGRAM_NAME                "EDFbrowser"
+#define PROGRAM_VERSION                   "1.76"
+#define PROGRAM_BETA_SUFFIX                   ""
+#define MINIMUM_QT4_VERSION             0x040701
+#define MINIMUM_QT5_VERSION             0x050901
+#define MAXFILES                            (32)
+#define MAXSIGNALS                         (640)
+#define MAXFILTERS                          (16)
+#define TIME_DIMENSION                (10000000LL)
+#define MAX_ANNOTATION_LEN                 (512)
+#define MAX_UNIQUE_ANNOTATIONS              (64)
+#define VIEWTIME_SYNCED_OFFSET               (0)
+#define VIEWTIME_SYNCED_ABSOLUT              (1)
+#define VIEWTIME_UNSYNCED                    (2)
+#define VIEWTIME_USER_DEF_SYNCED             (3)
+#define MAX_PATH_LENGTH                   (1024)
+#define MAX_RECENTFILES                     (32)
+#define MAX_ACTIVE_ANNOT_MARKERS            (64)
+#define MAXSPECTRUMDIALOGS                  (32)
+#define MAXSPECTRUMDOCKS                     (8)
+#define MAXCDSADOCKS                        (64)
+#define MAXHYPNOGRAMDOCKS                   (64)
+#define MAXHRVDOCKS                         (64)
+#define MAXPREDEFINEDMONTAGES               (12)
+#define MAXAVERAGECURVEDIALOGS              (32)
+#define MAXZSCOREDIALOGS                    (32)
+#define MAXZOOMHISTORY                      (16)
 /* 200 bpm x 60 min. x 24 hours x 2 days */
-#define STATISTICS_IVAL_LIST_SZ   (576000)
+#define STATISTICS_IVAL_LIST_SZ         (576000)
 
 
-#define ANNOT_ID_NK_TRIGGER   (0)
-#define ANNOT_ID_BS_TRIGGER   (1)
+#define ANNOT_ID_NK_TRIGGER       (0)
+#define ANNOT_ID_BS_TRIGGER       (1)
 
 #define VIDEO_STATUS_STOPPED      (0)
 #define VIDEO_STATUS_STARTUP_1    (1)
@@ -171,10 +172,11 @@ struct edfhdrblock{
         long long prefiltertime;
         int       annots_not_read;
         int       recording_len_sec;
-        struct edfparamblock *edfparam;
-        struct annotation_list annot_list;
-        int hypnogram_dock[MAXHYPNOGRAMDOCKS];
-        int hrv_dock[MAXHRVDOCKS];
+        struct    edfparamblock *edfparam;
+        struct    annotation_list annot_list;
+        char      unique_annotations_list[MAX_UNIQUE_ANNOTATIONS][MAX_ANNOTATION_LEN];
+        int       hypnogram_dock[MAXHYPNOGRAMDOCKS];
+        int       hrv_dock[MAXHRVDOCKS];
       };
 
 struct signalcompblock{

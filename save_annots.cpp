@@ -569,7 +569,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
 
           annot_buf[p++] = 20;
 
-          p += snprintf(annot_buf + p, annot_recordsize + 10 - p, "%s", annot_ptr->annotation);
+          p += snprintf(annot_buf + p, annot_recordsize + 10 - p, "%s", annot_ptr->description);
 
           annot_buf[p++] = 20;
           annot_buf[p++] = 0;

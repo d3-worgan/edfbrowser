@@ -431,7 +431,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       {
         break;
       }
-      strncpy(str, annot->annotation, 1024);
+      strncpy(str, annot->description, 1024);
       str[1023] = 0;
       utf8_to_latin1(str);
 
@@ -620,7 +620,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
                               "  <description>",
                               tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, temp, annot->duration);
 
-      xml_fwrite_encode_entity(annotationfile, annot->annotation);
+      xml_fwrite_encode_entity(annotationfile, annot->description);
 
       fprintf(annotationfile,                     "</description>\n"
                               " </annotation>\n");
@@ -729,7 +729,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
       if(annot->duration[0] == 0)
       {
-        edfwrite_annotation_utf8(hdl, annot->onset / 1000LL, -1LL, annot->annotation);
+        edfwrite_annotation_utf8(hdl, annot->onset / 1000LL, -1LL, annot->description);
       }
       else
       {
@@ -775,7 +775,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
           strlcat(str, "0000", 1024);
         }
 
-        edfwrite_annotation_utf8(hdl, annot->onset / 1000LL, atoi(str), annot->annotation);
+        edfwrite_annotation_utf8(hdl, annot->onset / 1000LL, atoi(str), annot->description);
       }
     }
 

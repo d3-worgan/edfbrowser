@@ -135,7 +135,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
     if(job_src == STAT_JOB_SRC_ANNOT)
     {
       strlcpy(stat_str, "Distribution ", 2048);
-      strlcat(stat_str, annot->annotation, 2048);
+      strlcat(stat_str, annot->description, 2048);
       curve1->setUpperLabel1(stat_str);
     }
     else
@@ -279,7 +279,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
 
         if(tmp_annot == NULL)  break;
 
-        if(!strcmp(tmp_annot->annotation, annot->annotation))
+        if(!strcmp(tmp_annot->description, annot->description))
         {
           if(beat_cnt)
           {
@@ -498,7 +498,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
   {
     free(beat_interval_list);
 
-    mainwindow->enable_hrv_stats_toolbar(annot->annotation, annot_list);
+    mainwindow->enable_hrv_stats_toolbar(annot->description, annot_list);
   }
 
   Label1->setText(stat_str);

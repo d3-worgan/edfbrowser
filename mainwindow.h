@@ -365,6 +365,8 @@ public:
 
   int get_filenum(struct edfhdrblock *);
 
+  void get_unique_annotations(struct edfhdrblock *);
+
   struct signalcompblock * create_signalcomp_copy(struct signalcompblock *);
 
   void enable_hrv_stats_toolbar(const char *, struct annotation_list *);

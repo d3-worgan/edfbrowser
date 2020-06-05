@@ -333,7 +333,7 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
   {
     annot = edfplus_annotation_get_item(annot_list, i);
 
-    strlcpy(str, annot->annotation, 48);
+    strlcpy(str, annot->description, 48);
     remove_trailing_spaces(str);
     remove_leading_spaces(str);
 

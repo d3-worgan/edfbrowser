@@ -1,4 +1,11 @@
 
+ version 1.77      to be defined
+ --------------
+
+ - Annotation editor: added auto-completion for the annotation description field.
+
+
+
  version 1.76      May 12, 2020
  --------------
 

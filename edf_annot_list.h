@@ -45,7 +45,7 @@ struct annotationblock{
         long long onset;
         char duration[16];
         long long long_duration;
-        char annotation[MAX_ANNOTATION_LEN_II + 1];
+        char description[MAX_ANNOTATION_LEN_II + 1];
         int modified;
         int x_pos;
         int selected;
