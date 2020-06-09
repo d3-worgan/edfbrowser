@@ -905,7 +905,14 @@ void UI_Mainwindow::setup_viewbuf()
             }
             else
             {
-              positionslider->setValue(edfheaderlist[sel_viewtime]->viewtime * 1000000LL / record_duration);
+              if(record_duration > 1e12)
+              {
+                positionslider->setValue(edfheaderlist[sel_viewtime]->viewtime / (record_duration / 1000000LL));
+              }
+              else
+              {
+                positionslider->setValue(edfheaderlist[sel_viewtime]->viewtime * 1000000LL / record_duration);
+              }
             }
           }
         }

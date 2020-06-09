@@ -4,6 +4,9 @@
 
  - Annotation editor: added auto-completion for the annotation description field.
 
+ - Positionslider: fixed a bug that could cause the slider to jump back to the beginning
+   with filelengths of more than 255 hours.
+
 
 
  version 1.76      May 12, 2020
