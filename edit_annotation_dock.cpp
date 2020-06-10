@@ -126,11 +126,15 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(struct edfhdrblock *e_hdr, QWid
   QObject::connect(deletebutton, SIGNAL(clicked()),               this, SLOT(deleteButtonClicked()));
   QObject::connect(createbutton, SIGNAL(clicked()),               this, SLOT(createButtonClicked()));
   QObject::connect(dockedit,     SIGNAL(destroyed(QObject *)),    this, SLOT(dockedit_destroyed(QObject *)));
+
+  mainwindow->maincurve->arrowkeys_shortcuts_global_set_enabled(false);
 }
 
 
 UI_AnnotationEditwindow::~UI_AnnotationEditwindow()
 {
+  mainwindow->maincurve->arrowkeys_shortcuts_global_set_enabled(true);
+
   if(!is_deleted)
   {
     is_deleted = 1;

@@ -149,15 +149,12 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
   floating_ruler_value = 0;
   linear_interpol = 0;
 
-  shift_page_left_shortcut = new QShortcut(QKeySequence::MoveToPreviousChar, this, 0, 0, Qt::WidgetShortcut);
-  shift_page_right_shortcut = new QShortcut(QKeySequence::MoveToNextChar, this, 0, 0, Qt::WidgetShortcut);
-  shift_page_up_shortcut = new QShortcut(QKeySequence::MoveToPreviousLine, this, 0, 0, Qt::WidgetShortcut);
-  shift_page_down_shortcut = new QShortcut(QKeySequence::MoveToNextLine, this, 0, 0, Qt::WidgetShortcut);
+  shift_page_left_shortcut = NULL;
+  shift_page_right_shortcut = NULL;
+  shift_page_up_shortcut = NULL;
+  shift_page_down_shortcut = NULL;
 
-  QObject::connect(shift_page_left_shortcut,  SIGNAL(activated()), mainwindow, SLOT(shift_page_left()));
-  QObject::connect(shift_page_right_shortcut, SIGNAL(activated()), mainwindow, SLOT(shift_page_right()));
-  QObject::connect(shift_page_up_shortcut,    SIGNAL(activated()), mainwindow, SLOT(shift_page_up()));
-  QObject::connect(shift_page_down_shortcut,  SIGNAL(activated()), mainwindow, SLOT(shift_page_down()));
+  arrowkeys_shortcuts_global_set_enabled(true);
 }
 
 
@@ -196,6 +193,54 @@ ViewCurve::~ViewCurve()
   {
     delete thr[i];
   }
+}
+
+
+void ViewCurve::arrowkeys_shortcuts_global_set_enabled(bool enabled)
+{
+  if(shift_page_left_shortcut != NULL)
+  {
+    QObject::disconnect(shift_page_left_shortcut, 0, 0, 0);
+    delete shift_page_left_shortcut;
+  }
+
+  if(shift_page_right_shortcut != NULL)
+  {
+    QObject::disconnect(shift_page_right_shortcut, 0, 0, 0);
+    delete shift_page_right_shortcut;
+  }
+
+  if(shift_page_up_shortcut != NULL)
+  {
+    QObject::disconnect(shift_page_up_shortcut, 0, 0, 0);
+    delete shift_page_up_shortcut;
+  }
+
+  if(shift_page_down_shortcut != NULL)
+  {
+    QObject::disconnect(shift_page_down_shortcut, 0, 0, 0);
+    delete shift_page_down_shortcut;
+  }
+
+  if(enabled == true)
+  {
+    shift_page_left_shortcut = new QShortcut(QKeySequence::MoveToPreviousChar, mainwindow);
+    shift_page_right_shortcut = new QShortcut(QKeySequence::MoveToNextChar, mainwindow);
+    shift_page_up_shortcut = new QShortcut(QKeySequence::MoveToPreviousLine, mainwindow);
+    shift_page_down_shortcut = new QShortcut(QKeySequence::MoveToNextLine, mainwindow);
+  }
+  else
+  {
+    shift_page_left_shortcut = new QShortcut(QKeySequence::MoveToPreviousChar, this, 0, 0, Qt::WidgetShortcut);
+    shift_page_right_shortcut = new QShortcut(QKeySequence::MoveToNextChar, this, 0, 0, Qt::WidgetShortcut);
+    shift_page_up_shortcut = new QShortcut(QKeySequence::MoveToPreviousLine, this, 0, 0, Qt::WidgetShortcut);
+    shift_page_down_shortcut = new QShortcut(QKeySequence::MoveToNextLine, this, 0, 0, Qt::WidgetShortcut);
+  }
+
+  QObject::connect(shift_page_left_shortcut,  SIGNAL(activated()), mainwindow, SLOT(shift_page_left()));
+  QObject::connect(shift_page_right_shortcut, SIGNAL(activated()), mainwindow, SLOT(shift_page_right()));
+  QObject::connect(shift_page_up_shortcut,    SIGNAL(activated()), mainwindow, SLOT(shift_page_up()));
+  QObject::connect(shift_page_down_shortcut,  SIGNAL(activated()), mainwindow, SLOT(shift_page_down()));
 }
 
 

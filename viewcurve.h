@@ -208,6 +208,7 @@ public:
 
   void drawCurve_stage_1(QPainter *painter=NULL, int w_width=0, int w_height=0, int print_linewidth=0);
   void setCrosshair_1_center(void);
+  void arrowkeys_shortcuts_global_set_enabled(bool);
 
 public slots:
 
