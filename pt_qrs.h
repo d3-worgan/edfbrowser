@@ -90,7 +90,6 @@ struct pt_qrs_settings
   double sqr_out;
   double sqr_out_clip;
 
-  int mwi_len;
   int mwi_idx;
   double mwix[PT_MWI_LEN];
   double mwi_out;
@@ -105,8 +104,6 @@ struct pt_qrs_settings
 
   double threshold_i1;
   double threshold_i2;
-
-  double preset_val;
 
   int smpls_last_pk;
 
