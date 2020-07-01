@@ -67,7 +67,7 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
 
   SignalsDialog = new QDialog;
 
-  SignalsDialog->setMinimumSize(800, 500);
+  SignalsDialog->setMinimumSize(850, 500);
   SignalsDialog->setMaximumSize(800, 500);
   SignalsDialog->setWindowTitle("Signals");
   SignalsDialog->setModal(true);
@@ -156,11 +156,22 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
   }
   ColorButton->setToolTip("Click to select the trace color");
 
-  compositionlist = new QListWidget(SignalsDialog);
-  compositionlist->setGeometry(430, 210, 360, 225);
-  compositionlist->setFont(*mainwindow->monofont);
+  compositionlist = new QTableWidget(SignalsDialog);
+  compositionlist->setGeometry(430, 210, 410, 225);
   compositionlist->setSelectionBehavior(QAbstractItemView::SelectRows);
   compositionlist->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  compositionlist->setColumnCount(4);
+  compositionlist->setColumnWidth(0, 30);
+  compositionlist->setColumnWidth(1, 150);
+  compositionlist->setColumnWidth(2, 100);
+  compositionlist->setColumnWidth(3, 100);
+
+  QStringList horizontallabels;
+  horizontallabels += "Signal";
+  horizontallabels += "Label";
+  horizontallabels += "Factor";
+  horizontallabels += "Samplerate";
+  compositionlist->setHorizontalHeaderLabels(horizontallabels);
 
   QObject::connect(CloseButton,       SIGNAL(clicked()),                SignalsDialog, SLOT(close()));
   QObject::connect(SelectAllButton,   SIGNAL(clicked()),                this,          SLOT(SelectAllButtonClicked()));
@@ -214,21 +225,33 @@ void UI_Signalswindow::ColorButtonClicked(SpecialButton *)
 
 void UI_Signalswindow::DisplayCompButtonClicked()
 {
-  int i, j, n;
+  int i, j, n, edfsignal=0;
 
-  char str[512],
-       str2[128];
+  char str[512]="",
+       str2[128]="";
 
   struct signalcompblock *newsignalcomp;
 
-  QListWidgetItem *item;
 
-
-  n = compositionlist->count();
+  n = compositionlist->rowCount();
 
   if(!n)
   {
     return;
+  }
+
+  for(i=0; i<n; i++)
+  {
+    if((((QDoubleSpinBox *)(compositionlist->cellWidget(i, 2)))->value() < 0.001) &&
+       (((QDoubleSpinBox *)(compositionlist->cellWidget(i, 2)))->value() > -0.001))
+    {
+      strlcpy(str2, ((QLabel *)(compositionlist->cellWidget(i, 0)))->text().toLatin1().data(), 128);
+
+      snprintf(str, 512, "Signal %i in the Composition list has a Factor too close to zero.", atoi(str2));
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+      messagewindow.exec();
+      return;
+    }
   }
 
   newsignalcomp = (struct signalcompblock *)calloc(1, sizeof(struct signalcompblock));
@@ -259,19 +282,22 @@ void UI_Signalswindow::DisplayCompButtonClicked()
 
   for(i=0; i<n; i++)
   {
-    strlcpy(str, compositionlist->item(i)->text().toLatin1().data(), 512);
+    strlcpy(str, ((QLabel *)(compositionlist->cellWidget(i, 0)))->text().toLatin1().data(), 512);
+
+    edfsignal = atoi(str) - 1;
+
+    strlcpy(str, ((QLabel *)(compositionlist->cellWidget(i, 1)))->text().toLatin1().data(), 512);
 
     for(j=0; j<newsignalcomp->edfhdr->edfsignals; j++)
     {
-      if(!strncmp(newsignalcomp->edfhdr->edfparam[j].label, str + 5, 16))
+      if(!strcmp(newsignalcomp->edfhdr->edfparam[j].label, str))
       {
-        if(j != compositionlist->item(i)->data(Qt::UserRole).toInt())  continue;
+        if(j != edfsignal)  continue;
 
         newsignalcomp->edfsignal[i] = j;
-        newsignalcomp->factor[i] = str[23] - 48;
-        if(str[3]=='-')
+        newsignalcomp->factor[i] = ((QDoubleSpinBox *)(compositionlist->cellWidget(i, 2)))->value();
+        if(newsignalcomp->factor[i] < 0.0001)
         {
-          newsignalcomp->factor[i] = -(newsignalcomp->factor[i]);
           strlcat(newsignalcomp->signallabel, "- ", 512);
         }
         else
@@ -305,10 +331,9 @@ void UI_Signalswindow::DisplayCompButtonClicked()
   mainwindow->signalcomp[mainwindow->signalcomps] = newsignalcomp;
   mainwindow->signalcomps++;
 
-  while(compositionlist->count())
+  while(compositionlist->rowCount())
   {
-    item = compositionlist->takeItem(0);
-    delete item;
+    compositionlist->removeRow(0);
   }
 
   mainwindow->setup_viewbuf();
@@ -408,29 +433,23 @@ void UI_Signalswindow::DisplayButtonClicked()
 
 void UI_Signalswindow::RemoveButtonClicked()
 {
-  int i, n, row;
-
-  QListWidgetItem *item;
-
-  QList<QListWidgetItem *> selectedlist;
-
-  selectedlist = compositionlist->selectedItems();
-
-  n = selectedlist.size();
-
-  if(!n)  return;
-
-  for(i=0; i<n; i++)
-  {
-    item = selectedlist.at(i);
-    row = compositionlist->row(item);
-    item = compositionlist->takeItem(row);
-    delete item;
-  }
+  compositionlist->removeRow(compositionlist->currentRow());
 }
 
 
 void UI_Signalswindow::AddButtonClicked()
+{
+  AddSubtractButtonsClicked(0);
+}
+
+
+void UI_Signalswindow::SubtractButtonClicked()
+{
+  AddSubtractButtonsClicked(1);
+}
+
+
+void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
 {
   int i, j, k, n, s, row, duplicate;
 
@@ -446,7 +465,7 @@ void UI_Signalswindow::AddButtonClicked()
 
   if(!n)  return;
 
-  if(!compositionlist->count())
+  if(!compositionlist->rowCount())
   {
     smp_per_record = 0;
     physdimension[0] = 0;
@@ -521,171 +540,57 @@ void UI_Signalswindow::AddButtonClicked()
 
     duplicate = 0;
 
-    k = compositionlist->count();
+    k = compositionlist->rowCount();
     for(j=0; j<k; j++)
     {
-      item = compositionlist->item(j);
-      strlcpy(str, item->text().toLatin1().data(), 256);
-      if(!strncmp(mainwindow->edfheaderlist[row]->edfparam[s].label, str + 5, 16))
+      strlcpy(str, ((QLabel *)(compositionlist->cellWidget(j, 0)))->text().toLatin1().data(), 256);
+
+      if((s + 1) == atoi(str))
       {
-        if(str[3]=='+')
-        {
-          if(s == item->data(Qt::UserRole).toInt())
-          {
-            duplicate = 1;
-            break;
-          }
-        }
+        duplicate = 1;
+        break;
       }
     }
     if(duplicate)
     {
-       if(str[23]==57)  continue;
-
-       str[23] += 1;
-       item->setText(str);
+      if(subtract)
+      {
+        ((QDoubleSpinBox *)(compositionlist->cellWidget(j, 2)))->setValue(((QDoubleSpinBox *)(compositionlist->cellWidget(j, 2)))->value() - 1);
+      }
+      else
+      {
+        ((QDoubleSpinBox *)(compositionlist->cellWidget(j, 2)))->setValue(((QDoubleSpinBox *)(compositionlist->cellWidget(j, 2)))->value() + 1);
+      }
     }
     else
     {
-      snprintf(str, 200, "%-2i + ", row + 1);
-      strlcat(str, mainwindow->edfheaderlist[row]->edfparam[s].label, 256);
-      strlcat(str, " x1 ", 256);
-      convert_to_metric_suffix(str + strlen(str), mainwindow->edfheaderlist[row]->edfparam[s].sf_f, 3, 256 - strlen(str));
+      compositionlist->insertRow(k);
+      compositionlist->setRowHeight(k, 25);
+      snprintf(str, 200, "%i", s + 1);
+      compositionlist->setCellWidget(k, 0, new QLabel(str));
+      ((QLabel *)(compositionlist->cellWidget(k, 0)))->setAlignment(Qt::AlignCenter);
+      compositionlist->setCellWidget(k, 1, new QLabel(mainwindow->edfheaderlist[row]->edfparam[s].label));
+      ((QLabel *)(compositionlist->cellWidget(k, 1)))->setAlignment(Qt::AlignCenter);
+
+      compositionlist->setCellWidget(k, 2, new QDoubleSpinBox);
+      ((QDoubleSpinBox *)(compositionlist->cellWidget(k, 2)))->setAlignment(Qt::AlignCenter);
+      ((QDoubleSpinBox *)(compositionlist->cellWidget(k, 2)))->setPrefix("x");
+      ((QDoubleSpinBox *)(compositionlist->cellWidget(k, 2)))->setDecimals(3);
+      ((QDoubleSpinBox *)(compositionlist->cellWidget(k, 2)))->setRange(-128.0, 128.0);
+      if(subtract)
+      {
+        ((QDoubleSpinBox *)(compositionlist->cellWidget(k, 2)))->setValue(-1);
+      }
+      else
+      {
+        ((QDoubleSpinBox *)(compositionlist->cellWidget(k, 2)))->setValue(1);
+      }
+
+      convert_to_metric_suffix(str, mainwindow->edfheaderlist[row]->edfparam[s].sf_f, 3, 256);
       remove_trailing_zeros(str);
       strlcat(str, "Hz", 256);
-      item = new QListWidgetItem;
-      item->setData(Qt::UserRole, QVariant(s));
-      item->setText(str);
-      compositionlist->addItem(item);
-    }
-  }
-}
-
-
-void UI_Signalswindow::SubtractButtonClicked()
-{
-  int i, j, k, n, s, row, duplicate;
-
-  char str[256];
-
-  QListWidgetItem *item;
-
-  QList<QListWidgetItem *> selectedlist;
-
-  selectedlist = signallist->selectedItems();
-
-  n = selectedlist.size();
-
-  if(!n)  return;
-
-  if(!compositionlist->count())
-  {
-    smp_per_record = 0;
-    physdimension[0] = 0;
-    bitvalue = 0.0;
-  }
-
-  for(i=0; i<n; i++)
-  {
-    item = selectedlist.at(i);
-    s = item->data(Qt::UserRole).toInt();
-    row = filelist->currentRow();
-
-    if(smp_per_record)
-    {
-      if(smp_per_record!=mainwindow->edfheaderlist[row]->edfparam[s].smp_per_record)
-      {
-        QMessageBox messagewindow(QMessageBox::Warning, "Warning",
-                                     "It is only possible to make combinations/derivations with signals which:\n"
-                                     " - are from the same file\n"
-                                     " - have the same samplerate\n"
-                                     " - have the same physical dimension (e.g. uV)\n"
-                                     " - have the same sensitivity (e.g. uV/bit)");
-        messagewindow.exec();
-
-        continue;
-      }
-    }
-    else
-    {
-      smp_per_record = mainwindow->edfheaderlist[row]->edfparam[s].smp_per_record;
-    }
-
-    if(physdimension[0])
-    {
-      if(strcmp(physdimension, mainwindow->edfheaderlist[row]->edfparam[s].physdimension))
-      {
-        QMessageBox messagewindow(QMessageBox::Warning, "Warning",
-                                     "It is only possible to make combinations/derivations with signals which:\n"
-                                     " - are from the same file\n"
-                                     " - have the same samplerate\n"
-                                     " - have the same physical dimension (e.g. uV)\n"
-                                     " - have the same sensitivity (e.g. uV/bit)");
-        messagewindow.exec();
-
-        continue;
-      }
-    }
-    else
-    {
-      strlcpy(physdimension, mainwindow->edfheaderlist[row]->edfparam[s].physdimension, 64);
-    }
-
-    if(bitvalue!=0.0)
-    {
-      if(bitvalue!=mainwindow->edfheaderlist[row]->edfparam[s].bitvalue)
-      {
-        QMessageBox messagewindow(QMessageBox::Warning, "Warning",
-                                     "It is only possible to make combinations/derivations with signals which:\n"
-                                     " - are from the same file\n"
-                                     " - have the same samplerate\n"
-                                     " - have the same physical dimension (e.g. uV)\n"
-                                     " - have the same sensitivity (e.g. uV/bit)");
-        messagewindow.exec();
-
-        continue;
-      }
-    }
-    else
-    {
-      bitvalue = mainwindow->edfheaderlist[row]->edfparam[s].bitvalue;
-    }
-
-    duplicate = 0;
-
-    k = compositionlist->count();
-    for(j=0; j<k; j++)
-    {
-      item = compositionlist->item(j);
-      strlcpy(str, item->text().toLatin1().data(), 256);
-      if(!strncmp(mainwindow->edfheaderlist[row]->edfparam[s].label, str + 5, 16))
-      {
-        if(str[3]=='-')
-        {
-          duplicate = 1;
-          break;
-        }
-      }
-    }
-    if(duplicate)
-    {
-       if(str[23]==57)  continue;
-
-       str[23] += 1;
-       item->setText(str);
-    }
-    else
-    {
-      snprintf(str, 200, "%-2i - ", row + 1);
-      strlcat(str, mainwindow->edfheaderlist[row]->edfparam[s].label, 256);
-      strlcat(str, " x1 ", 256);
-      convert_to_metric_suffix(str + strlen(str), mainwindow->edfheaderlist[row]->edfparam[s].sf_f, 3, 256 - strlen(str));
-      remove_trailing_zeros(str);
-      strlcat(str, "Hz", 256);
-      item = new QListWidgetItem;
-      item->setData(Qt::UserRole, QVariant(s));
-      item->setText(str);
-      compositionlist->addItem(item);
+      compositionlist->setCellWidget(k, 3, new QLabel(str));
+      ((QLabel *)(compositionlist->cellWidget(k, 3)))->setAlignment(Qt::AlignCenter);
     }
   }
 }
@@ -709,6 +614,11 @@ void UI_Signalswindow::show_signals(int row)
   while(signallist->count())
   {
     delete signallist->item(0);
+  }
+
+  while(compositionlist->rowCount())
+  {
+    compositionlist->removeRow(0);
   }
 
   if((mainwindow->edfheaderlist[row]->edfplus)||(mainwindow->edfheaderlist[row]->bdfplus))

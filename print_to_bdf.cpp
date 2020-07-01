@@ -37,7 +37,6 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
       records_written,
       signalcomps,
       duration_factor[MAXFILES],
-      temp=0,
       bdfplus=0,
       tallen,
       annotationlist_nr=-1,
@@ -72,7 +71,8 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   double frequency,
          frequency2,
-         dig_value;
+         dig_value,
+         f_tmp=0;
 
   FILE *outputfile;
 
@@ -1034,12 +1034,12 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
                   var.four[3] = 0x00;
                 }
 
-                temp = var.one_signed;
+                f_tmp = var.one_signed;
               }
 
               if(signalcomp[i]->edfhdr->edf)
               {
-                temp = *(((short *)(
+                f_tmp = *(((short *)(
                   viewbuf
                   + signalcomp[i]->viewbufoffset
                   + (signalcomp[i]->edfhdr->recordsize * (s2 / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record))
@@ -1047,17 +1047,17 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
                   + (s2 % signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record));
               }
 
-              temp += signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].offset;
-              temp *= signalcomp[i]->factor[j];
+              f_tmp += signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].offset;
+              f_tmp *= signalcomp[i]->factor[j];
 
-              temp -= signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].offset;
+              f_tmp -= signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].offset;
             }
             else
             {
-              temp = 0;
+              f_tmp = 0;
             }
 
-            dig_value += temp;
+            dig_value += f_tmp;
           }
 
           if(signalcomp[i]->spike_filter)

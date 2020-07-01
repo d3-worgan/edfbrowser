@@ -196,7 +196,7 @@ struct signalcompblock{
         double sample_timeoffset_part;
         double sample_pixel_ratio;
         int edfsignal[MAXSIGNALS];
-        int factor[MAXSIGNALS];
+        double factor[MAXSIGNALS];
         int polarity;
         double sensitivity[MAXSIGNALS];
         int oldvalue;

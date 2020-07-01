@@ -1234,7 +1234,8 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
       order,
       n_taps;
 
-  char txtbuf[2048];
+  char txtbuf[2048]="",
+       str[64]="";
 
   double frequency,
          frequency2,
@@ -1264,8 +1265,12 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
 
     for(j=0; j<mainwindow->signalcomp[i]->num_of_signals; j++)
     {
-      snprintf(txtbuf + strlen(txtbuf), 2048 - strlen(txtbuf), "%+ix %s",
-              mainwindow->signalcomp[i]->factor[j],
+      snprintf(str, 64, "%+f", mainwindow->signalcomp[i]->factor[j]);
+
+      remove_trailing_zeros(str);
+
+      snprintf(txtbuf + strlen(txtbuf), 2048 - strlen(txtbuf), "%sx %s",
+              str,
               mainwindow->signalcomp[i]->edfhdr->edfparam[mainwindow->signalcomp[i]->edfsignal[j]].label);
 
       remove_trailing_spaces(txtbuf);

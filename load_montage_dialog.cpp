@@ -615,7 +615,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         xml_close(xml_hdl);
         return;
       }
-      newsignalcomp->factor[signals_read] = atoi(result);
+      newsignalcomp->factor[signals_read] = atof(result);
       if(newsignalcomp->factor[signals_read] < -128)
       {
         newsignalcomp->factor[signals_read] = -128;
@@ -624,7 +624,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       {
         newsignalcomp->factor[signals_read] = 128;
       }
-      if(newsignalcomp->factor[signals_read] == 0)
+      if((newsignalcomp->factor[signals_read] < 0.001) && (newsignalcomp->factor[signals_read] > -0.001))
       {
         newsignalcomp->factor[signals_read] = 1;
       }

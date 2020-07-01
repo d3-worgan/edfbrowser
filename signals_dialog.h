@@ -38,6 +38,8 @@
 #include <QDialog>
 #include <QLabel>
 #include <QPushButton>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QList>
@@ -45,6 +47,9 @@
 #include <QMessageBox>
 #include <QVariant>
 #include <QString>
+#include <QSpinBox>
+#include <QDoubleSpinBox>
+#include <QStringList>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -79,8 +84,9 @@ private:
   QDialog      *SignalsDialog;
 
   QListWidget  *filelist,
-               *signallist,
-               *compositionlist;
+               *signallist;
+
+  QTableWidget *compositionlist;
 
   QLabel       *label1,
                *label2,
@@ -112,6 +118,8 @@ private:
   double bitvalue;
 
   void strip_types_from_label(char *);
+
+  void AddSubtractButtonsClicked(int);
 
  private slots:
 

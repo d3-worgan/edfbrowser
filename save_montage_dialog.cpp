@@ -170,7 +170,7 @@ void UI_SaveMontagewindow::SaveButtonClicked()
 
         fprintf(mtgfile, "</label>\n");
 
-        fprintf(mtgfile, "      <factor>%i</factor>\n", mainwindow->signalcomp[i]->factor[j]);
+        fprintf(mtgfile, "      <factor>%e</factor>\n", mainwindow->signalcomp[i]->factor[j]);
 
         fprintf(mtgfile, "    </signal>\n");
       }
