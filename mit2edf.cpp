@@ -186,7 +186,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
   pushButton1->setEnabled(false);
 
-  strlcpy(header_filename, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "MIT header files (*.hea *.HEA)").toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcpy(header_filename, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "MIT header files (*.hea *.HEA);;All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(header_filename, ""))
   {

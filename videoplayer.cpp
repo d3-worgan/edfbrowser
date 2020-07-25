@@ -94,7 +94,7 @@ void UI_Mainwindow::start_stop_video()
   }
 
   strlcpy(videopath, QFileDialog::getOpenFileName(this, "Select media file", QString::fromLocal8Bit(recent_opendir),
-                                                 "Video and audio files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
+                                                 "Video files (*.mkv *.mp4 *.mpg *.mpeg *.avi *.webm *.ogv *.ogg *.wmv *.mov *.m4v);;Audio files (*.wav *.ogg *.flac *.mp3 *.aac *.m4a *.wma);;All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(videopath, ""))
   {

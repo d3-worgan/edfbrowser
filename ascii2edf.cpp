@@ -358,7 +358,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     return;
   }
 
-  strlcpy(path, QFileDialog::getOpenFileName(0, "Open ASCII file", QString::fromLocal8Bit(recent_opendir), "ASCII files (*.txt *.TXT *.csv *.CSV)").toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Open ASCII file", QString::fromLocal8Bit(recent_opendir), "ASCII files (*.txt *.TXT *.csv *.CSV);;All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -1315,7 +1315,7 @@ void UI_ASCII2EDFapp::loadbuttonpressed()
 
   struct xml_handle *xml_hdl;
 
-  strlcpy(path, QFileDialog::getOpenFileName(0, "Load parameters", QString::fromLocal8Bit(recent_opendir), "Template files (*.template *.TEMPLATE)").toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Load parameters", QString::fromLocal8Bit(recent_opendir), "Template files (*.template *.TEMPLATE);;All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {

@@ -5,6 +5,8 @@
  - Signals dialog: make it possible to compose derivations with signal factors that are not an integer.
    E.g.: It's now possible to create a signalcomposition of (1 x F4) - (0.5 x A1) - (0.5 x A2).
 
+ - Several different import tools: Filedialog: give an option to show "All files (*)" instead of only the default extensions.
+
 
 
  version 1.77      June 24, 2020

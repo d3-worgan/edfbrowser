@@ -753,7 +753,7 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
 
   sampletime = TIME_DIMENSION / SampleTimeSpinbox->value();
 
-  strlcpy(path, QFileDialog::getOpenFileName(0, "Open MIT WFDB annotation file", QString::fromLocal8Bit(mainwindow->recent_opendir), "MIT annotation files (*.ari *.ecg *.trigger *.qrs *.atr *.apn *.st *.pwave)").toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Open MIT WFDB annotation file", QString::fromLocal8Bit(mainwindow->recent_opendir), "MIT annotation files (*.ari *.ecg *.trigger *.qrs *.atr *.apn *.st *.pwave);;All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -950,7 +950,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
     ignore_consecutive = 0;
   }
 
-  strlcpy(path, QFileDialog::getOpenFileName(0, "Open XML file", QString::fromLocal8Bit(mainwindow->recent_opendir), "XML files (*.xml *.XML)").toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Open XML file", QString::fromLocal8Bit(mainwindow->recent_opendir), "XML files (*.xml *.XML);;All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
@@ -1315,7 +1315,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   mainwindow->import_annotations_var->ignoreconsecutive = ignore_consecutive;
 
-  strlcpy(path, QFileDialog::getOpenFileName(0, "Open ASCII file", QString::fromLocal8Bit(mainwindow->recent_opendir), "ASCII files (*.txt *.TXT *.csv *.CSV)").toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Open ASCII file", QString::fromLocal8Bit(mainwindow->recent_opendir), "ASCII files (*.txt *.TXT *.csv *.CSV);;All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {
