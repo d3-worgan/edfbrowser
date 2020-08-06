@@ -43,8 +43,8 @@ UI_SignalChooser::UI_SignalChooser(QWidget *w_parent, int job, int *sgnl_nr)
 
   if(task == 3)
   {
-    signalchooser_dialog->setMinimumSize(265, 420);
-    signalchooser_dialog->setMaximumSize(265, 420);
+    signalchooser_dialog->setMinimumSize(435, 420);
+    signalchooser_dialog->setMaximumSize(435, 420);
     signalchooser_dialog->setWindowTitle("Organize signals");
   }
   else
@@ -57,14 +57,17 @@ UI_SignalChooser::UI_SignalChooser(QWidget *w_parent, int job, int *sgnl_nr)
   signalchooser_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   list = new QListWidget(signalchooser_dialog);
-  list->setGeometry(10, 10, 130, 365);
-  list->setSelectionBehavior(QAbstractItemView::SelectRows);
   if(task == 3)
   {
+    list->setGeometry(10, 10, 300, 365);
+    list->setSelectionBehavior(QAbstractItemView::SelectRows);
     list->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    list->setToolTip("Double-click on an item to edit properties");
   }
   else
   {
+    list->setGeometry(10, 10, 130, 365);
+    list->setSelectionBehavior(QAbstractItemView::SelectRows);
     list->setSelectionMode(QAbstractItemView::SingleSelection);
   }
 
@@ -74,20 +77,24 @@ UI_SignalChooser::UI_SignalChooser(QWidget *w_parent, int job, int *sgnl_nr)
 
   if(task == 3)
   {
+    EditButton = new QPushButton(signalchooser_dialog);
+    EditButton->setGeometry(325, 140, 100, 25);
+    EditButton->setText("Edit");
+
     UpButton = new QPushButton(signalchooser_dialog);
-    UpButton->setGeometry(155, 180, 100, 25);
+    UpButton->setGeometry(325, 180, 100, 25);
     UpButton->setText("Up");
 
     DownButton = new QPushButton(signalchooser_dialog);
-    DownButton->setGeometry(155, 220, 100, 25);
+    DownButton->setGeometry(325, 220, 100, 25);
     DownButton->setText("Down");
 
     InvertButton = new QPushButton(signalchooser_dialog);
-    InvertButton->setGeometry(155, 260, 100, 25);
+    InvertButton->setGeometry(325, 260, 100, 25);
     InvertButton->setText("Invert");
 
     DeleteButton = new QPushButton(signalchooser_dialog);
-    DeleteButton->setGeometry(155, 300, 100, 25);
+    DeleteButton->setGeometry(325, 300, 100, 25);
     DeleteButton->setText("Remove");
   }
 
@@ -101,10 +108,13 @@ UI_SignalChooser::UI_SignalChooser(QWidget *w_parent, int job, int *sgnl_nr)
     {
       list->setCurrentRow(0);
 
+      QObject::connect(EditButton,   SIGNAL(clicked()), this, SLOT(signalEdit()));
       QObject::connect(UpButton,     SIGNAL(clicked()), this, SLOT(signalUp()));
       QObject::connect(DownButton,   SIGNAL(clicked()), this, SLOT(signalDown()));
       QObject::connect(InvertButton, SIGNAL(clicked()), this, SLOT(signalInvert()));
       QObject::connect(DeleteButton, SIGNAL(clicked()), this, SLOT(signalDelete()));
+
+      QObject::connect(list, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(item_activated(QListWidgetItem *)));
     }
   }
   else
@@ -128,12 +138,28 @@ void UI_SignalChooser::load_signalcomps(void)
   for(i=0; i<mainwindow->signalcomps; i++)
   {
     item = new QListWidgetItem;
-    item->setText(mainwindow->signalcomp[i]->signallabel);
+    if(task == 3)
+    {
+      item->setText(QString(mainwindow->signalcomp[i]->signallabel) + QString("  Alias: ") + QString(mainwindow->signalcomp[i]->alias));
+    }
+    else
+    {
+      item->setText(mainwindow->signalcomp[i]->signallabel);
+    }
     item->setData(Qt::UserRole, QVariant(i));
     list->addItem(item);
   }
 }
 
+
+void UI_SignalChooser::item_activated(QListWidgetItem *item)
+{
+  mainwindow->maincurve->exec_sidemenu(item->data(Qt::UserRole).toInt());
+
+  load_signalcomps();
+
+  mainwindow->setup_viewbuf();
+}
 
 
 void UI_SignalChooser::call_sidemenu(QListWidgetItem *)
@@ -219,6 +245,26 @@ void UI_SignalChooser::call_sidemenu(QListWidgetItem *)
   }
 
   signalchooser_dialog->close();
+}
+
+
+void UI_SignalChooser::signalEdit()
+{
+  int n,
+      selected_signals[MAXSIGNALS];
+
+  n = get_selectionlist(selected_signals);
+
+  if(n < 1)
+  {
+    return;
+  }
+
+  mainwindow->maincurve->exec_sidemenu(selected_signals[0]);
+
+  load_signalcomps();
+
+  mainwindow->setup_viewbuf();
 }
 
 

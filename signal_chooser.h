@@ -42,6 +42,7 @@
 #include <QPushButton>
 #include <QVariant>
 #include <QMessageBox>
+#include <QToolTip>
 
 #include "global.h"
 #include "mainwindow.h"
@@ -76,7 +77,8 @@ QPushButton  *CloseButton,
              *UpButton,
              *DownButton,
              *DeleteButton,
-             *InvertButton;
+             *InvertButton,
+             *EditButton;
 
 QListWidget  *list;
 
@@ -96,6 +98,8 @@ void signalUp();
 void signalDown();
 void signalDelete();
 void signalInvert();
+void signalEdit();
+void item_activated(QListWidgetItem *);
 
 };
 

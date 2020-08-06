@@ -7,6 +7,8 @@
 
  - Several different import tools: Filedialog: give an option to show "All files (*)" instead of only the default extensions.
 
+ - Organize Signals dialog: Make it possible to edit the signal/trace properties and show the alias.
+
 
 
  version 1.77      June 24, 2020
