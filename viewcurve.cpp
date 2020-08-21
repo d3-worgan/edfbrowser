@@ -3798,9 +3798,7 @@ void ViewCurve::sidemenu_close()
 
     mainwindow->signalcomp[signal_nr]->alias[16] = 0;
 
-    remove_trailing_spaces(mainwindow->signalcomp[signal_nr]->alias);
-
-    remove_leading_spaces(mainwindow->signalcomp[signal_nr]->alias);
+    trim_spaces(mainwindow->signalcomp[signal_nr]->alias);
   }
 
   sidemenu->close();
@@ -3848,8 +3846,7 @@ void ViewCurve::ECGdetectButton()
   }
 
   strlcpy(str, mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].physdimension, 32);
-  remove_trailing_spaces(str);
-  remove_leading_spaces(str);
+  trim_spaces(str);
   if((!strcmp(str, "uV")) || (!strcmp(str, "ECG uV")) || (!strcmp(str, "EEG uV")))
   {
     sense = 1;
@@ -3959,8 +3956,7 @@ void ViewCurve::QRSdetectButton()
   }
 
   strlcpy(str, mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].physdimension, 32);
-  remove_trailing_spaces(str);
-  remove_leading_spaces(str);
+  trim_spaces(str);
   if((strcmp(str, "uV")) && (strcmp(str, "ECG uV")) && (strcmp(str, "EEG uV")) &&
      (strcmp(str, "mV")) && (strcmp(str, "ECG mV")) && (strcmp(str, "EEG mV")) &&
      (strcmp(str, "V")) && (strcmp(str, "ECG V")) && (strcmp(str, "EEG V")))

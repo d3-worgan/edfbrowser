@@ -420,15 +420,13 @@ struct
   strncpy(tmp_str, hdr + 28, 40);
   tmp_str[40] = 0;
 
-  remove_leading_spaces(tmp_str);
-  remove_trailing_spaces(tmp_str);
+  trim_spaces(tmp_str);
   strlcat(tmp_str, " ", 128);
 
   strncpy(scratchpad, hdr + 68, 40);
   scratchpad[40] = 0;
 
-  remove_leading_spaces(scratchpad);
-  remove_trailing_spaces(scratchpad);
+  trim_spaces(scratchpad);
 
   strlcat(tmp_str, scratchpad, 128);
   remove_trailing_spaces(tmp_str);
@@ -445,8 +443,7 @@ struct
   strncpy(tmp_str, hdr + 108, 20);
   tmp_str[20] = 0;
 
-  remove_leading_spaces(tmp_str);
-  remove_trailing_spaces(tmp_str);
+  trim_spaces(tmp_str);
 
   if(strlen(tmp_str))
   {
@@ -486,8 +483,7 @@ struct
   strncpy(tmp_str, hdr + 232, 40);
   tmp_str[40] = 0;
 
-  remove_leading_spaces(tmp_str);
-  remove_trailing_spaces(tmp_str);
+  trim_spaces(tmp_str);
 
   if(strlen(tmp_str))
   {

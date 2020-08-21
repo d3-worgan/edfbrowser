@@ -171,8 +171,7 @@ void UI_hypnogram_window::start_button_clicked()
 
   for(i=0; i<6; i++)
   {
-    remove_trailing_spaces(dock_param.stage_name[i]);
-    remove_leading_spaces(dock_param.stage_name[i]);
+    trim_spaces(dock_param.stage_name[i]);
 
     strlcpy(mainwindow->hypnogram_stage_name[i], dock_param.stage_name[i], 32);
   }
@@ -186,8 +185,7 @@ void UI_hypnogram_window::start_button_clicked()
 
   for(i=0; i<6; i++)
   {
-    remove_trailing_spaces(dock_param.annot_name[i]);
-    remove_leading_spaces(dock_param.annot_name[i]);
+    trim_spaces(dock_param.annot_name[i]);
 
     strlcpy(mainwindow->hypnogram_annot_name[i], dock_param.annot_name[i], 32);
   }

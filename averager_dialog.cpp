@@ -151,8 +151,7 @@ UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, int annot_nr, struct edf
   annot_ptr = edfplus_annotation_get_item_visible_only(&(edf_hdr->annot_list), annot_nr);
 
   strlcpy(annot_str, annot_ptr->description, MAX_ANNOTATION_LEN + 1);
-  remove_leading_spaces(annot_str);
-  remove_trailing_spaces(annot_str);
+  trim_spaces(annot_str);
 
   annotNameLabel->setText(annot_str);
 
@@ -260,8 +259,7 @@ void UI_AveragerWindow::startButtonClicked()
     {
       strlcpy(str, annot_ptr->description, MAX_ANNOTATION_LEN + 1);
 
-      remove_leading_spaces(str);
-      remove_trailing_spaces(str);
+      trim_spaces(str);
 
       if(!strcmp(str, annot_str))
       {
@@ -355,8 +353,7 @@ void UI_AveragerWindow::startButtonClicked()
       {
         strlcpy(str, annot_ptr->description, MAX_ANNOTATION_LEN + 1);
 
-        remove_leading_spaces(str);
-        remove_trailing_spaces(str);
+        trim_spaces(str);
 
         if(!strcmp(str, annot_str))
         {

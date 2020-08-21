@@ -141,8 +141,7 @@ UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, struct annotationb
 
   sel_annot_ptr = annot;
   strlcpy(sel_annot_str, sel_annot_ptr->description, MAX_ANNOTATION_LEN + 1);
-  remove_leading_spaces(sel_annot_str);
-  remove_trailing_spaces(sel_annot_str);
+  trim_spaces(sel_annot_str);
 
   annotNameLabel->setText(sel_annot_str);
 
@@ -248,8 +247,7 @@ void UI_AnnotFilterWindow::apply_filter()
     annot = edfplus_annotation_get_item(annot_list, i);
 
     strlcpy(annot_str, annot->description, MAX_ANNOTATION_LEN + 1);
-    remove_leading_spaces(sel_annot_str);
-    remove_trailing_spaces(annot_str);
+    trim_spaces(sel_annot_str);
 
     if(strcmp(annot_str, sel_annot_str))
     {

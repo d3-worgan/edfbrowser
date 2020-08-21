@@ -1554,8 +1554,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
         strncpy(pat_dat.pat_id, str, 20);
 
         pat_dat.pat_id[20] = 0;
-        remove_trailing_spaces(pat_dat.pat_id);
-        remove_leading_spaces(pat_dat.pat_id);
+        trim_spaces(pat_dat.pat_id);
       }
 
       if(tag == 0)  // Patient last name
@@ -1563,8 +1562,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
         strncpy(pat_dat.last_name, str, 20);
 
         pat_dat.last_name[20] = 0;
-        remove_trailing_spaces(pat_dat.last_name);
-        remove_leading_spaces(pat_dat.last_name);
+        trim_spaces(pat_dat.last_name);
       }
 
       if(tag == 1)  // Patient first name
@@ -1572,8 +1570,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
         strncpy(pat_dat.first_name, str, 20);
 
         pat_dat.first_name[20] = 0;
-        remove_trailing_spaces(pat_dat.first_name);
-        remove_leading_spaces(pat_dat.first_name);
+        trim_spaces(pat_dat.first_name);
       }
 
       if(tag == 8)  // Patient sex
@@ -1618,8 +1615,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
           strncpy(pat_dat.device_serial, str + i + 1, 48);
           latin1_to_ascii(pat_dat.device_serial, 48);
           pat_dat.device_serial[48] = 0;
-          remove_trailing_spaces(pat_dat.device_serial);
-          remove_leading_spaces(pat_dat.device_serial);
+          trim_spaces(pat_dat.device_serial);
         }
 
         j = 0;
@@ -1635,8 +1631,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
               strncpy(pat_dat.device_ident, str + i + 1, 48);
               latin1_to_ascii(pat_dat.device_ident, 48);
               pat_dat.device_ident[48] = 0;
-              remove_trailing_spaces(pat_dat.device_ident);
-              remove_leading_spaces(pat_dat.device_ident);
+              trim_spaces(pat_dat.device_ident);
             }
 
             if(j == 3)
@@ -1644,8 +1639,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
               strncpy(pat_dat.manufacturer, str + i + 1, 48);
               latin1_to_ascii(pat_dat.manufacturer, 48);
               pat_dat.manufacturer[48] = 0;
-              remove_trailing_spaces(pat_dat.manufacturer);
-              remove_leading_spaces(pat_dat.manufacturer);
+              trim_spaces(pat_dat.manufacturer);
 
               break;
             }

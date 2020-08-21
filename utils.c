@@ -242,6 +242,42 @@ void remove_leading_spaces(char *str)
 }
 
 
+/* removes both leading and trailing spaces */
+void trim_spaces(char *str)
+{
+  int i, diff, len;
+
+  len = strlen(str);
+
+  for(i=0; i<len; i++)
+  {
+    if(str[i] != ' ')
+    {
+      break;
+    }
+  }
+
+  if(i)
+  {
+    diff = i;
+
+    for(; i<=len; i++)
+    {
+      str[i - diff] = str[i];
+    }
+  }
+
+  len = strlen(str);
+
+  for(i=(len-1); i>=0; i--)
+  {
+    if(str[i]!=' ')  break;
+  }
+
+  str[i+1] = 0;
+}
+
+
 
 void remove_trailing_zeros(char *str)
 {

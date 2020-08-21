@@ -44,6 +44,7 @@ extern "C" {
 
 void remove_trailing_spaces(char *);
 void remove_leading_spaces(char *);
+void trim_spaces(char *);
 void remove_trailing_zeros(char *);
 void convert_trailing_zeros_to_spaces(char *);
 void remove_extension_from_filename(char *);  /* removes extension including the dot */

@@ -77,8 +77,7 @@ UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, struct signalcompblock *sign
   if(sf < 199.999)  return;
 
   strlcpy(str, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 32);
-  remove_trailing_spaces(str);
-  remove_leading_spaces(str);
+  trim_spaces(str);
   if((!strcmp(str, "uV")) || (!strcmp(str, "ECG uV")) || (!strcmp(str, "EEG uV")))
   {
     sense = 1;

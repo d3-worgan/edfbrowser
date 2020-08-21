@@ -741,9 +741,7 @@ void UI_Annotationswindow::hide_same_annots(bool)
 
   strlcpy(str1, annot->description, MAX_ANNOTATION_LEN);
 
-  remove_leading_spaces(str1);
-
-  remove_trailing_spaces(str1);
+  trim_spaces(str1);
 
   for(i=0; i<sz; i++)
   {
@@ -751,9 +749,7 @@ void UI_Annotationswindow::hide_same_annots(bool)
 
     strlcpy(str2, annot->description, MAX_ANNOTATION_LEN);
 
-    remove_leading_spaces(str2);
-
-    remove_trailing_spaces(str2);
+    trim_spaces(str2);
 
     if(!strcmp(str1, str2))
     {
@@ -799,9 +795,7 @@ void UI_Annotationswindow::unhide_same_annots(bool)
 
   strlcpy(str1, annot->description, MAX_ANNOTATION_LEN);
 
-  remove_leading_spaces(str1);
-
-  remove_trailing_spaces(str1);
+  trim_spaces(str1);
 
   for(i=0; i<sz; i++)
   {
@@ -809,9 +803,7 @@ void UI_Annotationswindow::unhide_same_annots(bool)
 
     strlcpy(str2, annot->description, MAX_ANNOTATION_LEN);
 
-    remove_leading_spaces(str2);
-
-    remove_trailing_spaces(str2);
+    trim_spaces(str2);
 
     if(!strcmp(str1, str2))
     {

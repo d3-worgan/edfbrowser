@@ -282,8 +282,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
   raw2edf_var->skipbytes = skipbytes;
 
   strlcpy(raw2edf_var->phys_dim, PhysicalDimensionLineEdit->text().toLatin1().data(), 16);
-  remove_leading_spaces(raw2edf_var->phys_dim);
-  remove_trailing_spaces(raw2edf_var->phys_dim);
+  trim_spaces(raw2edf_var->phys_dim);
 
   if(!(strlen(PatientnameLineEdit->text().toLatin1().data())))
   {
@@ -659,8 +658,7 @@ void UI_RAW2EDFapp::savebuttonpressed()
   raw2edf_var->skipbytes = skipbytesSpinbox->value();
 
   strlcpy(raw2edf_var->phys_dim, PhysicalDimensionLineEdit->text().toLatin1().data(), 16);
-  remove_leading_spaces(raw2edf_var->phys_dim);
-  remove_trailing_spaces(raw2edf_var->phys_dim);
+  trim_spaces(raw2edf_var->phys_dim);
 
   path[0] = 0;
   if(recent_savedir[0]!=0)
@@ -896,8 +894,7 @@ void UI_RAW2EDFapp::loadbuttonpressed()
     strncpy(raw2edf_var->phys_dim, result, 16);
     latin1_to_ascii(raw2edf_var->phys_dim, 16);
     raw2edf_var->phys_dim[15] = 0;
-    remove_leading_spaces(raw2edf_var->phys_dim);
-    remove_trailing_spaces(raw2edf_var->phys_dim);
+    trim_spaces(raw2edf_var->phys_dim);
 
     xml_go_up(xml_hdl);
   }

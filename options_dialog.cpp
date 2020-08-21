@@ -2306,8 +2306,7 @@ void UI_OptionsDialog::lineedit4_1_changed(const QString qstr)
   char str[32];
 
   strlcpy(str, qstr.toLatin1().data(), 32);
-  remove_leading_spaces(str);
-  remove_trailing_spaces(str);
+  trim_spaces(str);
   len = strlen(str);
 
   cp = lineedit4_1->cursorPosition();

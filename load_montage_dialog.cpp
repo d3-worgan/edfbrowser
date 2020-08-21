@@ -413,8 +413,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         strncpy(newsignalcomp->alias, result, 16);
         newsignalcomp->alias[16] = 0;
         latin1_to_ascii(newsignalcomp->alias, strlen(newsignalcomp->alias));
-        remove_trailing_spaces(newsignalcomp->alias);
-        remove_leading_spaces(newsignalcomp->alias);
+        trim_spaces(newsignalcomp->alias);
       }
       xml_go_up(xml_hdl);
     }
@@ -1608,8 +1607,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         if(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f >= 199.999)
         {
           strlcpy(str2, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension, 32);
-          remove_trailing_spaces(str2);
-          remove_leading_spaces(str2);
+          trim_spaces(str2);
           sense = 0;
           if((!strcmp(str2, "uV")) || (!strcmp(str2, "ECG uV")) || (!strcmp(str2, "EEG uV")))
           {

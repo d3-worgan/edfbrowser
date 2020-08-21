@@ -378,8 +378,7 @@ void hrv_curve_widget::paintEvent(QPaintEvent *)
     }
 
     strlcpy(str, annot->description, 48);
-    remove_trailing_spaces(str);
-    remove_leading_spaces(str);
+    trim_spaces(str);
 
     if(!strcmp(str, param.annot_name))
     {

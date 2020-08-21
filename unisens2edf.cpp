@@ -1827,9 +1827,7 @@ int UI_UNISENS2EDFwindow::get_events_from_csv_files(int max_files, int edf_hdl, 
               annotation[--len2] = 0;
             }
 
-            remove_leading_spaces(annotation);
-
-            remove_trailing_spaces(annotation);
+            trim_spaces(annotation);
 
             onset *= 10000LL;
 
@@ -1981,9 +1979,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
 
   physdim[file_nr][8] = 0;
 
-  remove_leading_spaces(physdim[file_nr]);
-
-  remove_trailing_spaces(physdim[file_nr]);
+  trim_spaces(physdim[file_nr]);
 
   if(xml_get_attribute_of_element(xml_hdl, "sampleRate", str, 255) < 0)
   {

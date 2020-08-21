@@ -1374,8 +1374,7 @@ void UI_Mainwindow::read_general_settings()
         return;
       }
 
-      remove_leading_spaces(result);
-      remove_trailing_spaces(result);
+      trim_spaces(result);
       if(strlen(result))
       {
         strlcpy(ecg_qrs_rpeak_descr, result, 32);
@@ -1868,8 +1867,7 @@ void UI_Mainwindow::read_general_settings()
       strncpy(raw2edf_var.phys_dim, result, 16);
       latin1_to_ascii(raw2edf_var.phys_dim, 16);
       raw2edf_var.phys_dim[15] = 0;
-      remove_leading_spaces(raw2edf_var.phys_dim);
-      remove_trailing_spaces(raw2edf_var.phys_dim);
+      trim_spaces(raw2edf_var.phys_dim);
 
       xml_go_up(xml_hdl);
     }
