@@ -41,15 +41,15 @@ Check_for_updates::Check_for_updates()
   manager = new QNetworkAccessManager(this);
 
   request.setUrl(QUrl("http://www.teuniz.net/edfbrowser/latest_version.txt"));
-  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " OS_UNKNOWN");
+  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " OS_UNKNOWN " THIS_APP_BITS_W);
 #ifdef Q_OS_LINUX
-  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_LINUX");
+  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_LINUX " THIS_APP_BITS_W);
 #elif defined (Q_OS_MAC)
-  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_MAC");
+  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_MAC " THIS_APP_BITS_W);
 #elif defined (Q_OS_WIN32)
-  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_WIN32");
+  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_WIN32 " THIS_APP_BITS_W);
 #else
-  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_OTHER");
+  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_OTHER " THIS_APP_BITS_W);
 #endif
   request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
 

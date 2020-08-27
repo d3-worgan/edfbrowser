@@ -63,8 +63,10 @@ UI_Aboutwindow::UI_Aboutwindow(UI_Mainwindow *mainwindow)
   textedit1->setPlainText(
         "\n " PROGRAM_NAME " version " PROGRAM_VERSION " " PROGRAM_BETA_SUFFIX "    " THIS_APP_BITS_W "\n"
         "\n This program is made by Teunis van Beelen.\n"
-        "\n Copyright (C) 2007 - 2020 Teunis van Beelen.\n"
-        "\n Email: teuniz@protonmail.com\n"
+        " Copyright (C) 2007 - 2020 Teunis van Beelen.\n"
+        "\n website: https://www.teuniz.net/edfbrowser/\n"
+        " git repo: https://gitlab.com/Teuniz/EDFbrowser\n"
+        " email: teuniz@protonmail.com\n"
         "\n Disclaimer:\n"
         " Despite this software is intend to be useful, there is no warranty, use this software at your own risk!\n"
         " EDFbrowser may NOT be used in safety-critical applications, such as life-support medical systems.\n"
