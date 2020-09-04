@@ -44,11 +44,11 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
 
   file = NULL;
 
-  setMinimumSize(690, 560);
-  setMaximumSize(690, 560);
+  setMinimumSize(710, 560);
+  setMaximumSize(710, 560);
 
   tabholder = new QTabWidget(this);
-  tabholder->setGeometry(0, 0, 690, 490);
+  tabholder->setGeometry(0, 0, 710, 490);
 
   tab1 = new QWidget;
   tab2 = new QWidget;
@@ -57,64 +57,64 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
   fileNameLabel->setGeometry(10, 10, 670, 25);
 
   startTimeDateLabel = new QLabel(tab1);
-  startTimeDateLabel->setGeometry(10, 45, 80, 25);
+  startTimeDateLabel->setGeometry(10, 45, 100, 25);
   startTimeDateLabel->setText("Starttime");
   startTimeDateLabel->setVisible(false);
 
   startTimeDate = new QDateTimeEdit(tab1);
-  startTimeDate->setGeometry(100, 45, 250, 25);
+  startTimeDate->setGeometry(120, 45, 250, 25);
   startTimeDate->setDisplayFormat("dd.MM.yyyy hh:mm:ss");
   startTimeDate->setMinimumDate(QDate(1970, 1, 1));
   startTimeDate->setMaximumDate(QDate(2299, 12, 31));
   startTimeDate->setVisible(false);
 
   label1 = new QLabel(tab1);
-  label1->setGeometry(10, 80, 80, 25);
+  label1->setGeometry(10, 80, 100, 25);
   label1->setText("Subject");
   label1->setVisible(false);
 
   lineEdit1 = new QLineEdit(tab1);
-  lineEdit1->setGeometry(100, 80, 580, 25);
+  lineEdit1->setGeometry(120, 80, 580, 25);
   lineEdit1->setMaxLength(80);
   lineEdit1->setVisible(false);
 
   label2 = new QLabel(tab1);
-  label2->setGeometry(10, 115, 80, 25);
+  label2->setGeometry(10, 115, 100, 25);
   label2->setText("Recording");
   label2->setVisible(false);
 
   lineEdit2 = new QLineEdit(tab1);
-  lineEdit2->setGeometry(100, 115, 580, 25);
+  lineEdit2->setGeometry(120, 115, 580, 25);
   lineEdit2->setMaxLength(80);
   lineEdit2->setVisible(false);
 
   label3 = new QLabel(tab1);
-  label3->setGeometry(10, 80, 80, 25);
+  label3->setGeometry(10, 80, 100, 25);
   label3->setText("Subject code");
   label3->setVisible(false);
 
   lineEdit3 = new QLineEdit(tab1);
-  lineEdit3->setGeometry(100, 80, 580, 25);
+  lineEdit3->setGeometry(120, 80, 580, 25);
   lineEdit3->setMaxLength(80);
   lineEdit3->setVisible(false);
 
   label4 = new QLabel(tab1);
-  label4->setGeometry(10, 115, 80, 25);
+  label4->setGeometry(10, 115, 100, 25);
   label4->setText("Subject name");
   label4->setVisible(false);
 
   lineEdit4 = new QLineEdit(tab1);
-  lineEdit4->setGeometry(100, 115, 580, 25);
+  lineEdit4->setGeometry(120, 115, 580, 25);
   lineEdit4->setMaxLength(80);
   lineEdit4->setVisible(false);
 
   label11 = new QLabel(tab1);
-  label11->setGeometry(10, 150, 80, 25);
+  label11->setGeometry(10, 150, 100, 25);
   label11->setText("Gender");
   label11->setVisible(false);
 
   comboBox1 = new QComboBox(tab1);
-  comboBox1->setGeometry(100, 150, 125, 25);
+  comboBox1->setGeometry(120, 150, 125, 25);
   comboBox1->addItem("unknown");
   comboBox1->addItem("male");
   comboBox1->addItem("female");
@@ -125,12 +125,12 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
   charsleft1Label->setVisible(false);
 
   label12 = new QLabel(tab1);
-  label12->setGeometry(10, 185, 80, 25);
+  label12->setGeometry(10, 185, 100, 25);
   label12->setText("Birthdate");
   label12->setVisible(false);
 
   dateEdit1 = new QDateEdit(tab1);
-  dateEdit1->setGeometry(100, 185, 125, 25);
+  dateEdit1->setGeometry(120, 185, 125, 25);
   dateEdit1->setDisplayFormat("d MMM yyyy");
   dateEdit1->setVisible(false);
 
@@ -141,52 +141,52 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
   checkBox1->setVisible(false);
 
   label5 = new QLabel(tab1);
-  label5->setGeometry(10, 220, 80, 25);
+  label5->setGeometry(10, 220, 100, 25);
   label5->setText("Additional info");
   label5->setVisible(false);
 
   lineEdit5 = new QLineEdit(tab1);
-  lineEdit5->setGeometry(100, 220, 580, 25);
+  lineEdit5->setGeometry(120, 220, 580, 25);
   lineEdit5->setMaxLength(80);
   lineEdit5->setVisible(false);
 
   label6 = new QLabel(tab1);
-  label6->setGeometry(10, 290, 80, 25);
+  label6->setGeometry(10, 290, 100, 25);
   label6->setText("Admin. code");
   label6->setVisible(false);
 
   lineEdit6 = new QLineEdit(tab1);
-  lineEdit6->setGeometry(100, 290, 580, 25);
+  lineEdit6->setGeometry(120, 290, 580, 25);
   lineEdit6->setMaxLength(80);
   lineEdit6->setVisible(false);
 
   label7 = new QLabel(tab1);
-  label7->setGeometry(10, 325, 80, 25);
+  label7->setGeometry(10, 325, 100, 25);
   label7->setText("Technician");
   label7->setVisible(false);
 
   lineEdit7 = new QLineEdit(tab1);
-  lineEdit7->setGeometry(100, 325, 580, 25);
+  lineEdit7->setGeometry(120, 325, 580, 25);
   lineEdit7->setMaxLength(80);
   lineEdit7->setVisible(false);
 
   label8 = new QLabel(tab1);
-  label8->setGeometry(10, 360, 80, 25);
+  label8->setGeometry(10, 360, 100, 25);
   label8->setText("Device");
   label8->setVisible(false);
 
   lineEdit8 = new QLineEdit(tab1);
-  lineEdit8->setGeometry(100, 360, 580, 25);
+  lineEdit8->setGeometry(120, 360, 580, 25);
   lineEdit8->setMaxLength(80);
   lineEdit8->setVisible(false);
 
   label9 = new QLabel(tab1);
-  label9->setGeometry(10, 395, 80, 25);
+  label9->setGeometry(10, 395, 100, 25);
   label9->setText("Additional info");
   label9->setVisible(false);
 
   lineEdit9 = new QLineEdit(tab1);
-  lineEdit9->setGeometry(100, 395, 580, 25);
+  lineEdit9->setGeometry(120, 395, 580, 25);
   lineEdit9->setMaxLength(80);
   lineEdit9->setVisible(false);
 
@@ -195,7 +195,7 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
   charsleft2Label->setVisible(false);
 
   signallist = new QTableWidget(tab2);
-  signallist->setGeometry(10, 10, 670, 430);
+  signallist->setGeometry(10, 10, 690, 430);
   signallist->setSelectionMode(QAbstractItemView::NoSelection);
   signallist->setEditTriggers(QAbstractItemView::NoEditTriggers);
   signallist->setColumnCount(4);
@@ -1591,7 +1591,7 @@ void UI_headerEditorWindow::calculate_chars_left_name(int)
 
 int UI_headerEditorWindow::calculate_chars_left_name(const QString &)
 {
-  int n = 61;
+  int n = 62;
 
   int len;
 
@@ -1646,6 +1646,14 @@ int UI_headerEditorWindow::calculate_chars_left_name(const QString &)
   snprintf(str, 128, "Characters left:  %i", n);
 
   charsleft1Label->setText(str);
+  if(n < 0)
+  {
+    charsleft1Label->setStyleSheet("color: red;");
+  }
+  else
+  {
+    charsleft1Label->setStyleSheet("color: black;");
+  }
 
   return n;
 }
@@ -1714,6 +1722,14 @@ int UI_headerEditorWindow::calculate_chars_left_recording(const QString &)
   snprintf(str, 128, "Characters left:  %i", n);
 
   charsleft2Label->setText(str);
+  if(n < 0)
+  {
+    charsleft2Label->setStyleSheet("color: red;");
+  }
+  else
+  {
+    charsleft2Label->setStyleSheet("color: black;");
+  }
 
   return n;
 }
