@@ -543,6 +543,20 @@ void UI_Mainwindow::read_general_settings()
     return;
   }
 
+  if(!(xml_goto_nth_element_inside(xml_hdl, "fontsize_factor", 0)))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+    fontsize_factor = atof(result);
+    if(fontsize_factor < 1.0)  fontsize_factor = 1.0;
+    if(fontsize_factor > 3.0)  fontsize_factor = 3.0;
+
+    xml_go_up(xml_hdl);
+  }
+
   if(xml_goto_nth_element_inside(xml_hdl, "pixelsizefactor", 0))
   {
     xml_close(xml_hdl);
@@ -2098,7 +2112,8 @@ void UI_Mainwindow::write_settings()
                      "<config>\n"
                      "  <cfg_app_version>" PROGRAM_NAME " " PROGRAM_VERSION "</cfg_app_version>\n"
                      "  <UI>\n"
-                     "    <colors>\n");
+                     "    <fontsize_factor>%.1f</fontsize_factor>\n"
+                     "    <colors>\n", fontsize_factor);
 
     fprintf(cfgfile, "      <backgroundcolor>\n"
                     "        <red>%i</red>\n"

@@ -271,6 +271,7 @@ public:
       auto_update_annot_onset,
       average_period,
       font_size,
+      monofont_size,
       use_diverse_signal_colors;
 
   unsigned long long pagetime,
@@ -295,7 +296,8 @@ public:
   double pixelsizefactor,
          x_pixelsizefactor,
          default_amplitude,
-         cdsa_max_voltage;
+         cdsa_max_voltage,
+         fontsize_factor;
 
   struct{
           double crossoverfreq;

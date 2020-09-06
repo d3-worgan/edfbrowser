@@ -50,41 +50,6 @@ UI_Mainwindow::UI_Mainwindow()
 
   startup_timer = NULL;
 
-#ifdef Q_OS_WIN32
-  myfont->setFamily("Tahoma");
-  myfont->setPixelSize(11);
-
-  monofont->setFamily("courier");
-  monofont->setPixelSize(12);
-
-  QApplication::setFont(*myfont);
-#else
-  myfont->setFamily("Noto Sans");
-  for(i=20; i>7; i--)
-  {
-    myfont->setPixelSize(i);
-
-    p_aint.setFont(*myfont);
-
-    pxw = p_aint.boundingRect(0, 0, 500, 100, Qt::AlignLeft | Qt::TextSingleLine, "ABCDEFGHIJKLMNOPQRSTUVWXYZ").width();
-
-//    printf("i is: %i    width is: %i\n", i, pxw);
-
-    if(pxw < 203)  break;
-  }
-  font_size = i;
-
-  myfont->setPixelSize(font_size);
-
-  monofont->setFamily("andale mono");
-  monofont->setPixelSize(12);
-
-  QApplication::setFont(*myfont);
-
-  snprintf(str, 1024, "font: %ipx;", font_size);
-  setStyleSheet(str);
-#endif
-
   setMinimumSize(640, 480);
   setWindowTitle(PROGRAM_NAME);
   setWindowIcon(QIcon(":/images/edf.png"));
@@ -334,7 +299,56 @@ UI_Mainwindow::UI_Mainwindow()
 
   vlc_sock = NULL;
 
+  fontsize_factor = 1;
+
   read_general_settings();
+
+#ifdef Q_OS_WIN32
+  myfont->setFamily("Tahoma");
+  myfont->setPixelSize(11);
+
+  monofont->setFamily("courier");
+  monofont->setPixelSize(12);
+
+  QApplication::setFont(*myfont);
+#else
+  myfont->setFamily("Noto Sans");
+  for(i=40; i>7; i--)
+  {
+    myfont->setPixelSize(i);
+
+    p_aint.setFont(*myfont);
+
+    pxw = p_aint.boundingRect(0, 0, 1000, 200, Qt::AlignLeft | Qt::TextSingleLine, "ABCDEFGHIJKLMNOPQRSTUVWXYZ").width();
+
+//    printf("i is: %i    width is: %i\n", i, pxw);
+
+    if(pxw < (203 * fontsize_factor))  break;
+  }
+  font_size = i;
+  myfont->setPixelSize(font_size);
+
+  monofont->setFamily("andale mono");
+  for(i=40; i>7; i--)
+  {
+    monofont->setPixelSize(i);
+
+    p_aint.setFont(*monofont);
+
+    pxw = p_aint.boundingRect(0, 0, 1000, 200, Qt::AlignLeft | Qt::TextSingleLine, "ABCDEFGHIJKLMNOPQRSTUVWXYZ").width();
+
+//    printf("i is: %i    width is: %i\n", i, pxw);
+
+    if(pxw < (203 * fontsize_factor))  break;
+  }
+  monofont_size = i;
+  monofont->setPixelSize(monofont_size);
+
+  QApplication::setFont(*myfont);
+
+  snprintf(str, 1024, "font: %ipx;", font_size);
+  setStyleSheet(str);
+#endif
 
   maincurve = new ViewCurve(this);
 
