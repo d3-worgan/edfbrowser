@@ -304,6 +304,8 @@ UI_Mainwindow::UI_Mainwindow()
   read_general_settings();
 
 #ifdef Q_OS_WIN32
+  qApp->setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 5; }");
+
   myfont->setFamily("Tahoma");
   myfont->setPixelSize(11);
 
@@ -349,9 +351,14 @@ UI_Mainwindow::UI_Mainwindow()
   snprintf(str, 1024, "font: %ipx;", font_size);
   setStyleSheet(str);
 
-  snprintf(str, 1024, "QCheckBox::indicator { width: %ipx; height: %ipx; }", (int)(fontsize_factor * 8 + 4), (int)(fontsize_factor * 8 + 4));
+  snprintf(str, 1024, "QMessageBox { messagebox-text-interaction-flags: 5; }\n"
+                      "QCheckBox::indicator { width: %ipx; height: %ipx; }\n"
+                      "QRadioButton::indicator { width: %ipx; height: %ipx; }\n",
+                       (int)(fontsize_factor * 8 + 4),
+                       (int)(fontsize_factor * 8 + 4),
+                       (int)(fontsize_factor * 8 + 4),
+                       (int)(fontsize_factor * 8 + 4));
   qApp->setStyleSheet(str);
-
 #endif
 
   maincurve = new ViewCurve(this);

@@ -434,21 +434,21 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   tab3 = new QWidget;
 
   label1_3 = new QLabel(tab3);
-  label1_3->setGeometry(20, 20, 230 * fsz, 5 + (15 * fsz));
+  label1_3->setGeometry(20, 20, 230 * fsz, 10 + (12 * fsz));
   label1_3->setText("Frequency regions of the colorbars:");
 
   colorBarTable = new QTableWidget(tab3);
-  colorBarTable->setGeometry(20, 40 + (15 * fsz), 370 * fsz, 400);
+  colorBarTable->setGeometry(20, 40 + (12 * fsz), 100 + (270 * fsz), 400);
   colorBarTable->setSelectionMode(QAbstractItemView::NoSelection);
   colorBarTable->setColumnCount(4);
   colorBarTable->setColumnWidth(0, 20);
-  colorBarTable->setColumnWidth(1, 100 * fsz);
+  colorBarTable->setColumnWidth(1, 10 + (100 * fsz));
   colorBarTable->setColumnWidth(2, 80);
   colorBarTable->setColumnWidth(3, 100 * fsz);
   colorBarTable->setRowCount(MAXSPECTRUMMARKERS);
   for(i=0; i < MAXSPECTRUMMARKERS; i++)
   {
-    colorBarTable->setRowHeight(i, 20 * fsz);
+    colorBarTable->setRowHeight(i, 10 + (12 * fsz));
 
     colorBarTable->setCellWidget(i, 0, new QCheckBox);
    ((QCheckBox *)(colorBarTable->cellWidget(i, 0)))->setTristate(false);
@@ -487,11 +487,11 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   colorBarTable->setHorizontalHeaderLabels(horizontallabels);
 
   label2_3 = new QLabel(tab3);
-  label2_3->setGeometry(20, 460 + (15 * fsz), 220 * fsz, 5 + (15 * fsz));
+  label2_3->setGeometry(20, 460 + (12 * fsz), 220 * fsz, 10 + (12 * fsz));
   label2_3->setText("Height of colorbars are relative to the");
 
   radiobutton1 = new QRadioButton(tab3);
-  radiobutton1->setGeometry(20, 480 + (30 * fsz), 200 * fsz, 25 * fsz);
+  radiobutton1->setGeometry(20, 480 + (24 * fsz), 200 * fsz, 10 + (12 * fsz));
   radiobutton1->setText("sum");
   if(mainwindow->spectrum_colorbar->method == 0)
   {
@@ -499,7 +499,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   }
 
   radiobutton2 = new QRadioButton(tab3);
-  radiobutton2->setGeometry(20, 500 + (55 * fsz), 200 * fsz, 25 * fsz);
+  radiobutton2->setGeometry(20, 500 + (36 * fsz), 200 * fsz, 10 + (12 * fsz));
   radiobutton2->setText("peak");
   if(mainwindow->spectrum_colorbar->method == 1)
   {
@@ -507,7 +507,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   }
 
   radiobutton3 = new QRadioButton(tab3);
-  radiobutton2->setGeometry(20, 520 + (80 * fsz), 200 * fsz, 25 * fsz);
+  radiobutton3->setGeometry(20, 520 + (48 * fsz), 200 * fsz, 10 + (12 * fsz));
   radiobutton3->setText("average");
   if(mainwindow->spectrum_colorbar->method == 2)
   {
@@ -515,15 +515,15 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   }
 
   label3_3 = new QLabel(tab3);
-  label3_3->setGeometry(20, 540 + (105 * fsz), 220 * fsz, 20 * fsz);
+  label3_3->setGeometry(20, 540 + (60 * fsz), 220 * fsz, 10 + (12 * fsz));
   label3_3->setText("of the power in the colorbar region.");
 
   label3_4 = new QLabel(tab3);
-  label3_4->setGeometry(20, 560 + (125 * fsz), 120 * fsz, 20 * fsz);
+  label3_4->setGeometry(20, 580 + (72 * fsz), 120 * fsz, 10 + (12 * fsz));
   label3_4->setText("FFT blocksize:");
 
   spinbox3_1 = new QSpinBox(tab3);
-  spinbox3_1->setGeometry(40 + (120 * fsz), 560 + (125 * fsz), 140 * fsz, 25 * fsz);
+  spinbox3_1->setGeometry(40 + (120 * fsz), 580 + (72 * fsz), 140 * fsz, 10 + (12 * fsz));
   spinbox3_1->setSuffix(" samples");
   spinbox3_1->setMinimum(10);
   spinbox3_1->setMaximum(1000);
@@ -531,17 +531,17 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   spinbox3_1->setValue(mainwindow->maxdftblocksize);
 
   label3_5 = new QLabel(tab3);
-  label3_5->setGeometry(20, 590, 120, 25);
+  label3_5->setGeometry(20, 620 + (84 * fsz), 120 * fsz, 10 + (12 * fsz));
   label3_5->setText("Colorbar sensitivity:");
 
   dspinbox3_2 = new QDoubleSpinBox(tab3);
-  dspinbox3_2->setGeometry(140, 590, 140, 25);
+  dspinbox3_2->setGeometry(40 + (120 * fsz), 620 + (84 * fsz), 140 * fsz, 10 + (12 * fsz));
   dspinbox3_2->setMinimum(0.0001);
   dspinbox3_2->setMaximum(100000.0);
   dspinbox3_2->setValue(mainwindow->spectrum_colorbar->max_colorbar_value);
 
   checkbox3_1 = new QCheckBox("Auto", tab3);
-  checkbox3_1->setGeometry(300, 592, 100, 20);
+  checkbox3_1->setGeometry(60 + (260 * fsz), 620 + (84 * fsz), 100 * fsz, 10 + (12 * fsz));
   checkbox3_1->setTristate(false);
   if(mainwindow->spectrum_colorbar->auto_adjust)
   {
@@ -554,14 +554,14 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
     checkbox3_1->setCheckState(Qt::Unchecked);
   }
 
-  DefaultButton2 = new QPushButton(tab3);
-  DefaultButton2->setGeometry(245, 650, 100, 25);
-  DefaultButton2->setText("Restore default");
-
   ApplyButton2 = new QPushButton(tab3);
-  ApplyButton2->setGeometry(20, 650, 100, 25);
+  ApplyButton2->setGeometry(20, 700 + (96 * fsz), 120 * fsz, 13 + (12 * fsz));
   ApplyButton2->setText("Apply");
   ApplyButton2->setEnabled(false);
+
+  DefaultButton2 = new QPushButton(tab3);
+  DefaultButton2->setGeometry(60 + (120 * fsz), 700 + (96 * fsz), 120 * fsz, 13 + (12 * fsz));
+  DefaultButton2->setText("Restore default");
 
   QObject::connect(radiobutton1,   SIGNAL(toggled(bool)),        this, SLOT(radioButtonToggled(bool)));
   QObject::connect(radiobutton2,   SIGNAL(toggled(bool)),        this, SLOT(radioButtonToggled(bool)));
@@ -572,6 +572,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   QObject::connect(DefaultButton2, SIGNAL(clicked()),            this, SLOT(DefaultButton2Clicked()));
   QObject::connect(checkbox3_1,    SIGNAL(stateChanged(int)),    this, SLOT(checkbox3_1Clicked(int)));
 
+  colorBarTable->resizeColumnsToContents();
 
   tabholder->addTab(tab3, "Power Spectrum");
 

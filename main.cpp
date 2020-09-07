@@ -102,8 +102,6 @@ int main(int argc, char *argv[])
   qApp->setStyle(QStyleFactory::create("Fusion"));
 #endif
 #endif
-  qApp->setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 5; }");
-
   class UI_Mainwindow MainWindow;
 
   return app.exec();
