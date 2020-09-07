@@ -347,7 +347,7 @@ UI_Mainwindow::UI_Mainwindow()
   QApplication::setFont(*myfont);
 
   snprintf(str, 1024, "font: %ipx;", font_size);
-  qApp->setStyleSheet(str);
+  setStyleSheet(str);
 
   snprintf(str, 1024, "QCheckBox::indicator { width: %ipx; height: %ipx; }", (int)(fontsize_factor * 8 + 4), (int)(fontsize_factor * 8 + 4));
   qApp->setStyleSheet(str);
