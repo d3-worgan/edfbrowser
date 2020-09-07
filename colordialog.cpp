@@ -31,88 +31,90 @@
 
 
 
-UI_ColorMenuDialog::UI_ColorMenuDialog(int *newColor, QWidget *w_parent, int show_var_colors_button)
+UI_ColorMenuDialog::UI_ColorMenuDialog(int *newColor, QWidget *w_parent, double fsz_, int show_var_colors_button)
 {
-  colormenu_dialog = new QDialog(w_parent);
-
-  colormenu_dialog->setMinimumSize(105, 175);
-  colormenu_dialog->setMaximumSize(105, 175);
-  colormenu_dialog->setWindowTitle("Color");
-  colormenu_dialog->setModal(true);
-  colormenu_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
-
   color = newColor;
+
+  fsz = fsz_;
 
   *color = -1;
 
   show_var_colors = show_var_colors_button;
 
+  colormenu_dialog = new QDialog(w_parent);
+
+  colormenu_dialog->setMinimumSize(65 + (80 * fsz), 111 + (64 * fsz));
+  colormenu_dialog->setMaximumSize(65 + (80 * fsz), 111 + (64 * fsz));
+  colormenu_dialog->setWindowTitle("Color");
+  colormenu_dialog->setModal(true);
+  colormenu_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+
   ColorButton1 = new SpecialButton(colormenu_dialog);
-  ColorButton1->setGeometry(5, 5, 20, 20);
+  ColorButton1->setGeometry(5, 5, 10 + (10 * fsz), 10 + (10 * fsz));
   ColorButton1->setColor(Qt::black);
 
   ColorButton2 = new SpecialButton(colormenu_dialog);
-  ColorButton2->setGeometry(30, 5, 20, 20);
+  ColorButton2->setGeometry(20 + (10 * fsz), 5, 10 + (10 * fsz), 10 + (10 * fsz));
   ColorButton2->setColor(Qt::red);
 
   ColorButton3 = new SpecialButton(colormenu_dialog);
-  ColorButton3->setGeometry(55, 5, 20, 20);
+  ColorButton3->setGeometry(35 + (20 * fsz), 5, 10 + (10 * fsz), 10 + (10 * fsz));
   ColorButton3->setColor(Qt::darkRed);
 
   ColorButton4 = new SpecialButton(colormenu_dialog);
-  ColorButton4->setGeometry(80, 5, 20, 20);
+  ColorButton4->setGeometry(50 + (30 * fsz), 5, 10 + (10 * fsz), 10 + (10 * fsz));
   ColorButton4->setColor(Qt::green);
 
   ColorButton5 = new SpecialButton(colormenu_dialog);
-  ColorButton5->setGeometry(5, 30, 20, 20);
+  ColorButton5->setGeometry(5, 20 + (10 * fsz), 10 + (10 * fsz), 10 + (10 * fsz));
   ColorButton5->setColor(Qt::darkGreen);
 
   ColorButton6 = new SpecialButton(colormenu_dialog);
-  ColorButton6->setGeometry(30, 30, 20, 20);
+  ColorButton6->setGeometry(20 + (10 * fsz), 20 + (10 * fsz), 10 + (10 * fsz), 10 + (10 * fsz));
   ColorButton6->setColor(Qt::blue);
 
   ColorButton7 = new SpecialButton(colormenu_dialog);
-  ColorButton7->setGeometry(55, 30, 20, 20);
+  ColorButton7->setGeometry(35 + (20 * fsz), 20 + (10 * fsz), 10 + (10 * fsz), 10 + (10 * fsz));
   ColorButton7->setColor(Qt::darkBlue);
 
   ColorButton8 = new SpecialButton(colormenu_dialog);
-  ColorButton8->setGeometry(80, 30, 20, 20);
+  ColorButton8->setGeometry(50 + (30 * fsz), 20 + (10 * fsz), 10 + (10 * fsz), 10 + (10 * fsz));
   ColorButton8->setColor(Qt::cyan);
 
   ColorButton9 = new SpecialButton(colormenu_dialog);
-  ColorButton9->setGeometry(5, 55, 20, 20);
+  ColorButton9->setGeometry(5, 35 + (20 * fsz), 10 + (10 * fsz), 10 + (10 * fsz));
   ColorButton9->setColor(Qt::darkCyan);
 
   ColorButton10 = new SpecialButton(colormenu_dialog);
-  ColorButton10->setGeometry(30, 55, 20, 20);
+  ColorButton10->setGeometry(20 + (10 * fsz), 35 + (20 * fsz), 10 + (10 * fsz), 10 + (10 * fsz));
   ColorButton10->setColor(Qt::magenta);
 
   ColorButton11 = new SpecialButton(colormenu_dialog);
-  ColorButton11->setGeometry(55, 55, 20, 20);
+  ColorButton11->setGeometry(35 + (20 * fsz), 35 + (20 * fsz), 10 + (10 * fsz), 10 + (10 * fsz));
   ColorButton11->setColor(Qt::darkMagenta);
 
   ColorButton12 = new SpecialButton(colormenu_dialog);
-  ColorButton12->setGeometry(80, 55, 20, 20);
+  ColorButton12->setGeometry(50 + (30 * fsz), 35 + (20 * fsz), 10 + (10 * fsz), 10 + (10 * fsz));
   ColorButton12->setColor(Qt::yellow);
 
   ColorButton13 = new SpecialButton(colormenu_dialog);
-  ColorButton13->setGeometry(5, 80, 20, 20);
+  ColorButton13->setGeometry(5, 50 + (30 * fsz), 10 + (10 * fsz), 10 + (10 * fsz));
   ColorButton13->setColor(Qt::darkYellow);
 
   ColorButton14 = new SpecialButton(colormenu_dialog);
-  ColorButton14->setGeometry(30, 80, 20, 20);
+  ColorButton14->setGeometry(20 + (10 * fsz), 50 + (30 * fsz), 10 + (10 * fsz), 10 + (10 * fsz));
   ColorButton14->setColor(Qt::gray);
 
   ColorButton15 = new SpecialButton(colormenu_dialog);
-  ColorButton15->setGeometry(55, 80, 20, 20);
+  ColorButton15->setGeometry(35 + (20 * fsz), 50 + (30 * fsz), 10 + (10 * fsz), 10 + (10 * fsz));
   ColorButton15->setColor(Qt::darkGray);
 
   ColorButton16 = new SpecialButton(colormenu_dialog);
-  ColorButton16->setGeometry(80, 80, 20, 20);
+  ColorButton16->setGeometry(50 + (30 * fsz), 50 + (30 * fsz), 10 + (10 * fsz), 10 + (10 * fsz));
   ColorButton16->setColor(Qt::white);
 
   varyColorButton = new QPushButton(colormenu_dialog);
-  varyColorButton->setGeometry(5, 110, 95, 25);
+  varyColorButton->setGeometry(5, 70 + (40 * fsz), 55 + (80 * fsz), 13 + (12 * fsz));
   varyColorButton->setText("Varying colors");
   varyColorButton->setToolTip("Use different colors for every signal");
   if(!show_var_colors)
@@ -122,7 +124,7 @@ UI_ColorMenuDialog::UI_ColorMenuDialog(int *newColor, QWidget *w_parent, int sho
   }
 
   CloseButton = new QPushButton(colormenu_dialog);
-  CloseButton->setGeometry(5, 145, 95, 25);
+  CloseButton->setGeometry(5, 93 + (52 * fsz), 55 + (80 * fsz), 13 + (12 * fsz));
   CloseButton->setText("Close");
 
   QObject::connect(CloseButton,     SIGNAL(clicked()),                colormenu_dialog, SLOT(close()));

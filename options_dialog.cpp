@@ -39,7 +39,9 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
-  double fsz = mainwindow->fontsize_factor;
+  fontsize_factor = mainwindow->fontsize_factor;
+
+  double fsz = fontsize_factor;
 
   optionsdialog = new QDialog(w_parent);
 
@@ -1203,7 +1205,7 @@ void UI_OptionsDialog::colorBarButtonClicked(SpecialButton *button)
 {
   int color;
 
-  UI_ColorMenuDialog colormenudialog(&color, mainwindow);
+  UI_ColorMenuDialog colormenudialog(&color, mainwindow, fontsize_factor);
 
   if(color < 0)  return;
 
@@ -1579,7 +1581,7 @@ void UI_OptionsDialog::SigColorButtonClicked(SpecialButton *)
 {
   int i, color;
 
-  UI_ColorMenuDialog colormenudialog(&color, mainwindow);
+  UI_ColorMenuDialog colormenudialog(&color, mainwindow, fontsize_factor);
 
   if(color < 0)  return;
 
@@ -1619,7 +1621,7 @@ void UI_OptionsDialog::Crh1ColorButtonClicked(SpecialButton *)
 {
   int color;
 
-  UI_ColorMenuDialog colormenudialog(&color, mainwindow);
+  UI_ColorMenuDialog colormenudialog(&color, mainwindow, fontsize_factor);
 
   if(color < 0)  return;
 
@@ -1636,7 +1638,7 @@ void UI_OptionsDialog::Crh2ColorButtonClicked(SpecialButton *)
 {
   int color;
 
-  UI_ColorMenuDialog colormenudialog(&color, mainwindow);
+  UI_ColorMenuDialog colormenudialog(&color, mainwindow, fontsize_factor);
 
   if(color < 0)  return;
 
@@ -1652,7 +1654,7 @@ void UI_OptionsDialog::FrColorButtonClicked(SpecialButton *)
 {
   int color;
 
-  UI_ColorMenuDialog colormenudialog(&color, mainwindow);
+  UI_ColorMenuDialog colormenudialog(&color, mainwindow, fontsize_factor);
 
   if(color < 0)  return;
 

@@ -115,7 +115,8 @@ private:
 
   char physdimension[64];
 
-  double bitvalue;
+  double bitvalue,
+         fsz;
 
   void strip_types_from_label(char *);
 

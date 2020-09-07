@@ -37,6 +37,8 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
+  fsz = mainwindow->fontsize_factor;
+
   smp_per_record = 0;
 
   color_selected = 0;
@@ -198,7 +200,7 @@ void UI_Signalswindow::ColorButtonClicked(SpecialButton *)
 {
   int color;
 
-  UI_ColorMenuDialog colormenudialog(&color, mainwindow, 1);
+  UI_ColorMenuDialog colormenudialog(&color, mainwindow, fsz, 1);
 
   if(color < 0)  return;
 

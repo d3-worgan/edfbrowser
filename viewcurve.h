@@ -172,7 +172,8 @@ public:
 
   long long pan_mov_start_viewtime[MAXFILES];
 
-  double original_screen_offset;
+  double original_screen_offset,
+         fontsize_factor;
 
   struct graphicBufStruct *graphicBuf,
                           *printBuf;

@@ -37,6 +37,8 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
+  fontsize_factor = mainwindow->fontsize_factor;
+
   special_pen = new QPen(Qt::SolidPattern, 0, Qt::DotLine, Qt::SquareCap, Qt::BevelJoin);
 
   annot_marker_pen = new QPen(Qt::SolidPattern, 0, Qt::DashLine, Qt::SquareCap, Qt::BevelJoin);
@@ -4231,7 +4233,7 @@ void ViewCurve::ColorButton()
 
   sidemenu->hide();
 
-  UI_ColorMenuDialog colormenudialog(&color, this);
+  UI_ColorMenuDialog colormenudialog(&color, this, fontsize_factor);
 
   if(color < 0)
   {

@@ -89,6 +89,8 @@ public:
 
 private:
 
+double fontsize_factor;
+
 QDialog        *optionsdialog;
 
 QScrollArea    *scrollarea;
