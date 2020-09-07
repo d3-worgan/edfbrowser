@@ -57,7 +57,8 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
       job_src=0,
       err;
 
-  char stat_str[2048]={""};
+  char stat_str[2048]={""},
+       label[64]={""};
 
   double *beat_interval_list=NULL;
 
@@ -153,8 +154,8 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
 
   if(job_src == STAT_JOB_SRC_SIGNAL)
   {
-    StatDialog->setMinimumSize(300, 400);
-    StatDialog->setMaximumSize(300, 400);
+    StatDialog->setMinimumSize(300, 440);
+    StatDialog->setMaximumSize(300, 440);
   }
 
   Label1 = new QLabel(StatDialog);
@@ -192,63 +193,51 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
 
   if(job_src == STAT_JOB_SRC_SIGNAL)
   {
-    if((signalcomp->stat_cnt < 1) || (pagetime < 10LL))
+    if(signalcomp->alias[0] != 0)
     {
-      if(signalcomp->alias[0] != 0)
-      {
-        snprintf(stat_str, 2048, "Signal:  %s\n\nSamples:   0\n\nSum:       0 %s\n\nMean:      0 %s\n\nRMS:       0 %s\n\nMRS:       0 %s\n\nZero crossings:  0\n\nFrequency:  0 Hz",
-                signalcomp->alias,
-                signalcomp->physdimension,
-                signalcomp->physdimension,
-                signalcomp->physdimension,
-                signalcomp->physdimension);
-      }
-      else
-      {
-        snprintf(stat_str, 2048, "Signal:  %s\n\nSamples:   0\n\nSum:       0 %s\n\nMean:      0 %s\n\nRMS:       0 %s\n\nMRS:       0 %s\n\nZero crossings:  0\n\nFrequency:  0 Hz",
-                signalcomp->signallabel,
-                signalcomp->physdimension,
-                signalcomp->physdimension,
-                signalcomp->physdimension,
-                signalcomp->physdimension);
-      }
+      strlcpy(label, signalcomp->alias, 64);
     }
     else
     {
-      if(signalcomp->alias[0] != 0)
-      {
-        snprintf(stat_str, 2048, "Signal:  %s\n\nSamples:   %i\n\nSum:       %f %s\n\nMean:      %f %s\n\nRMS:       %f %s\n\nMRS:       %f %s\n\nZero crossings:  %i\n\nFrequency:  %f Hz",
-                signalcomp->alias,
-                signalcomp->stat_cnt,
-                signalcomp->stat_sum * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue,
-                signalcomp->physdimension,
-                (signalcomp->stat_sum * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue) / signalcomp->stat_cnt,
-                signalcomp->physdimension,
-                fabs(sqrt(signalcomp->stat_sum_sqr / signalcomp->stat_cnt) * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue),
-                signalcomp->physdimension,
-                fabs((signalcomp->stat_sum_rectified / signalcomp->stat_cnt) * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue),
-                signalcomp->physdimension,
-                signalcomp->stat_zero_crossing_cnt,
-                (((double)signalcomp->stat_zero_crossing_cnt / 2.0)) / ((double)pagetime / (double)TIME_DIMENSION)
-              );
-      }
-      else
-      {
-        snprintf(stat_str, 2048, "Signal:  %s\n\nSamples:   %i\n\nSum:       %f %s\n\nMean:      %f %s\n\nRMS:       %f %s\n\nMRS:       %f %s\n\nZero crossings:  %i\n\nFrequency:  %f Hz",
-                signalcomp->signallabel,
-                signalcomp->stat_cnt,
-                signalcomp->stat_sum * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue,
-                signalcomp->physdimension,
-                (signalcomp->stat_sum * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue) / signalcomp->stat_cnt,
-                signalcomp->physdimension,
-                fabs(sqrt(signalcomp->stat_sum_sqr / signalcomp->stat_cnt) * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue),
-                signalcomp->physdimension,
-                fabs((signalcomp->stat_sum_rectified / signalcomp->stat_cnt) * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue),
-                signalcomp->physdimension,
-                signalcomp->stat_zero_crossing_cnt,
-                (((double)signalcomp->stat_zero_crossing_cnt / 2.0)) / ((double)pagetime / (double)TIME_DIMENSION)
-              );
-      }
+      strlcpy(label, signalcomp->signallabel, 64);
+    }
+
+    if((signalcomp->stat_cnt < 1) || (pagetime < 10LL))
+    {
+      snprintf(stat_str, 2048, "Signal:  %s\n\nSamples:   0\n\nSum:       0 %s\n\nMean:      0 %s\n\nRMS:       0 %s\n\nMRS:       0 %s\n\nZero crossings:  0\n\nFrequency:  0 Hz\n\n"
+                               "Max. peak:  0 %s\n\nMin. peak:  0 %s\n\nPeak to peak:  0 %s",
+              label,
+              signalcomp->physdimension,
+              signalcomp->physdimension,
+              signalcomp->physdimension,
+              signalcomp->physdimension,
+              signalcomp->physdimension,
+              signalcomp->physdimension,
+              signalcomp->physdimension);
+    }
+    else
+    {
+      snprintf(stat_str, 2048, "Signal:  %s\n\nSamples:   %i\n\nSum:       %f %s\n\nMean:      %f %s\n\nRMS:       %f %s\n\nMRS:       %f %s\n\nZero crossings:  %i\n\nFrequency:  %f Hz\n\n"
+                               "Max. peak:  %f %s\n\nMin. peak:  %f %s\n\nPeak to peak:  %f %s",
+              label,
+              signalcomp->stat_cnt,
+              signalcomp->stat_sum * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue,
+              signalcomp->physdimension,
+              (signalcomp->stat_sum * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue) / signalcomp->stat_cnt,
+              signalcomp->physdimension,
+              fabs(sqrt(signalcomp->stat_sum_sqr / signalcomp->stat_cnt) * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue),
+              signalcomp->physdimension,
+              fabs((signalcomp->stat_sum_rectified / signalcomp->stat_cnt) * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue),
+              signalcomp->physdimension,
+              signalcomp->stat_zero_crossing_cnt,
+              (((double)signalcomp->stat_zero_crossing_cnt / 2.0)) / ((double)pagetime / (double)TIME_DIMENSION),
+              signalcomp->max_dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue,
+              signalcomp->physdimension,
+              signalcomp->min_dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue,
+              signalcomp->physdimension,
+              (signalcomp->max_dig_value - signalcomp->min_dig_value) * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue,
+              signalcomp->physdimension
+            );
     }
   }
 

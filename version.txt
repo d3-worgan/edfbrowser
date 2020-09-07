@@ -9,6 +9,8 @@
 
  - Organize Signals dialog: Make it possible to edit the signal/trace properties and show the alias.
 
+ - Statistics dialog: Show also max. peak, min. peak and peak to peak values.
+
 
 
  version 1.77      June 24, 2020
