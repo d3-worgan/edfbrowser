@@ -62,6 +62,7 @@
 #include <QFileDialog>
 #include <QGroupBox>
 #include <QToolTip>
+#include <QSpacerItem>
 
 #include "global.h"
 #include "mainwindow.h"
@@ -165,6 +166,7 @@ QLabel         *label1,
                *label4_12,
                *label4_13,
                *label4_14,
+               *label4_15,
                *label2_2,
                *label2_4,
                *label1_3,
@@ -181,7 +183,8 @@ QSpinBox       *spinbox2_1,
                *spinbox4_3;
 
 QDoubleSpinBox *dspinbox3_2,
-               *dspinbox4_4;
+               *dspinbox4_4,
+               *dspinbox4_5;
 
 QComboBox      *combobox4_1,
                *combobox4_2,
@@ -271,6 +274,7 @@ void loadColorSchema_NK();
 void loadColorSchema_Dark();
 void loadColorSchema_blue_gray();
 void dspinbox4_4ValueChanged(double);
+void dspinbox4_5ValueChanged(double);
 void lineedit4_1_changed(const QString);
 };
 
