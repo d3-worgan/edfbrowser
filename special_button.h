@@ -55,6 +55,7 @@ public slots:
   void setGlobalColor(int);
   int globalColor();
   void setText(const char *);
+  int heightForWidth(int);
 
 protected:
   void paintEvent(QPaintEvent *);

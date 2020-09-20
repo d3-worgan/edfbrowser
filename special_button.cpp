@@ -73,6 +73,12 @@ void SpecialButton::paintEvent(QPaintEvent *)
 }
 
 
+int SpecialButton::heightForWidth(int w)
+{
+  return w;
+}
+
+
 void SpecialButton::setColor(QColor newColor)
 {
   ButtonColor = newColor;

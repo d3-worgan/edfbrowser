@@ -35,8 +35,7 @@ UI_ColorMenuDialog::UI_ColorMenuDialog(int *newColor, QWidget *w_parent, int sho
 {
   colormenu_dialog = new QDialog(w_parent);
 
-  colormenu_dialog->setMinimumSize(105, 175);
-  colormenu_dialog->setMaximumSize(105, 175);
+  colormenu_dialog->setMinimumSize(200, 265);
   colormenu_dialog->setWindowTitle("Color");
   colormenu_dialog->setModal(true);
   colormenu_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -47,83 +46,119 @@ UI_ColorMenuDialog::UI_ColorMenuDialog(int *newColor, QWidget *w_parent, int sho
 
   show_var_colors = show_var_colors_button;
 
-  ColorButton1 = new SpecialButton(colormenu_dialog);
-  ColorButton1->setGeometry(5, 5, 20, 20);
+  ColorButton1 = new SpecialButton;
+  ColorButton1->setMinimumSize(30, 30);
   ColorButton1->setColor(Qt::black);
 
-  ColorButton2 = new SpecialButton(colormenu_dialog);
-  ColorButton2->setGeometry(30, 5, 20, 20);
+  ColorButton2 = new SpecialButton;
+  ColorButton2->setMinimumSize(30, 30);
   ColorButton2->setColor(Qt::red);
 
-  ColorButton3 = new SpecialButton(colormenu_dialog);
-  ColorButton3->setGeometry(55, 5, 20, 20);
+  ColorButton3 = new SpecialButton;
+  ColorButton3->setMinimumSize(30, 30);
   ColorButton3->setColor(Qt::darkRed);
 
-  ColorButton4 = new SpecialButton(colormenu_dialog);
-  ColorButton4->setGeometry(80, 5, 20, 20);
+  ColorButton4 = new SpecialButton;
+  ColorButton4->setMinimumSize(30, 30);
   ColorButton4->setColor(Qt::green);
 
-  ColorButton5 = new SpecialButton(colormenu_dialog);
-  ColorButton5->setGeometry(5, 30, 20, 20);
+  ColorButton5 = new SpecialButton;
+  ColorButton5->setMinimumSize(30, 30);
   ColorButton5->setColor(Qt::darkGreen);
 
-  ColorButton6 = new SpecialButton(colormenu_dialog);
-  ColorButton6->setGeometry(30, 30, 20, 20);
+  ColorButton6 = new SpecialButton;
+  ColorButton6->setMinimumSize(30, 30);
   ColorButton6->setColor(Qt::blue);
 
-  ColorButton7 = new SpecialButton(colormenu_dialog);
-  ColorButton7->setGeometry(55, 30, 20, 20);
+  ColorButton7 = new SpecialButton;
+  ColorButton7->setMinimumSize(30, 30);
   ColorButton7->setColor(Qt::darkBlue);
 
-  ColorButton8 = new SpecialButton(colormenu_dialog);
-  ColorButton8->setGeometry(80, 30, 20, 20);
+  ColorButton8 = new SpecialButton;
+  ColorButton8->setMinimumSize(30, 30);
   ColorButton8->setColor(Qt::cyan);
 
-  ColorButton9 = new SpecialButton(colormenu_dialog);
-  ColorButton9->setGeometry(5, 55, 20, 20);
+  ColorButton9 = new SpecialButton;
+  ColorButton9->setMinimumSize(30, 30);
   ColorButton9->setColor(Qt::darkCyan);
 
-  ColorButton10 = new SpecialButton(colormenu_dialog);
-  ColorButton10->setGeometry(30, 55, 20, 20);
+  ColorButton10 = new SpecialButton;
+  ColorButton10->setMinimumSize(30, 30);
   ColorButton10->setColor(Qt::magenta);
 
-  ColorButton11 = new SpecialButton(colormenu_dialog);
-  ColorButton11->setGeometry(55, 55, 20, 20);
+  ColorButton11 = new SpecialButton;
+  ColorButton11->setMinimumSize(30, 30);
   ColorButton11->setColor(Qt::darkMagenta);
 
-  ColorButton12 = new SpecialButton(colormenu_dialog);
-  ColorButton12->setGeometry(80, 55, 20, 20);
+  ColorButton12 = new SpecialButton;
+  ColorButton12->setMinimumSize(30, 30);
   ColorButton12->setColor(Qt::yellow);
 
-  ColorButton13 = new SpecialButton(colormenu_dialog);
-  ColorButton13->setGeometry(5, 80, 20, 20);
+  ColorButton13 = new SpecialButton;
+  ColorButton13->setMinimumSize(30, 30);
   ColorButton13->setColor(Qt::darkYellow);
 
-  ColorButton14 = new SpecialButton(colormenu_dialog);
-  ColorButton14->setGeometry(30, 80, 20, 20);
+  ColorButton14 = new SpecialButton;
+  ColorButton14->setMinimumSize(30, 30);
   ColorButton14->setColor(Qt::gray);
 
-  ColorButton15 = new SpecialButton(colormenu_dialog);
-  ColorButton15->setGeometry(55, 80, 20, 20);
+  ColorButton15 = new SpecialButton;
+  ColorButton15->setMinimumSize(30, 30);
   ColorButton15->setColor(Qt::darkGray);
 
-  ColorButton16 = new SpecialButton(colormenu_dialog);
-  ColorButton16->setGeometry(80, 80, 20, 20);
+  ColorButton16 = new SpecialButton;
+  ColorButton16->setMinimumSize(30, 30);
   ColorButton16->setColor(Qt::white);
 
-  varyColorButton = new QPushButton(colormenu_dialog);
-  varyColorButton->setGeometry(5, 110, 95, 25);
-  varyColorButton->setText("Varying colors");
-  varyColorButton->setToolTip("Use different colors for every signal");
-  if(!show_var_colors)
+  QGridLayout *gr = new QGridLayout;
+  gr->addWidget(ColorButton1, 0, 0);
+  gr->addWidget(ColorButton2, 0, 1);
+  gr->addWidget(ColorButton3, 0, 2);
+  gr->addWidget(ColorButton4, 0, 3);
+  gr->addWidget(ColorButton5, 1, 0);
+  gr->addWidget(ColorButton6, 1, 1);
+  gr->addWidget(ColorButton7, 1, 2);
+  gr->addWidget(ColorButton8, 1, 3);
+  gr->addWidget(ColorButton9, 2, 0);
+  gr->addWidget(ColorButton10, 2, 1);
+  gr->addWidget(ColorButton11, 2, 2);
+  gr->addWidget(ColorButton12, 2, 3);
+  gr->addWidget(ColorButton13, 3, 0);
+  gr->addWidget(ColorButton14, 3, 1);
+  gr->addWidget(ColorButton15, 3, 2);
+  gr->addWidget(ColorButton16, 3, 3);
+  gr->setColumnStretch(4, 1000);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  if(show_var_colors)
   {
-    varyColorButton->setEnabled(false);
-    varyColorButton->hide();
+    varyColorButton = new QPushButton;
+    varyColorButton->setText("Varying colors");
+    varyColorButton->setToolTip("Use different colors for every signal");
+    hlayout1->addWidget(varyColorButton);
+    hlayout1->addStretch(1000);
   }
 
-  CloseButton = new QPushButton(colormenu_dialog);
-  CloseButton->setGeometry(5, 145, 95, 25);
+  CloseButton = new QPushButton;
   CloseButton->setText("Close");
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addStretch(1000);
+  hlayout2->addWidget(CloseButton);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addLayout(gr);
+  if(show_var_colors)
+  {
+    vlayout1->addSpacing(10);
+    vlayout1->addLayout(hlayout1);
+    vlayout1->addSpacing(10);
+  }
+  vlayout1->addStretch(1000);
+  vlayout1->addSpacing(10);
+  vlayout1->addLayout(hlayout2);
+  vlayout1->addSpacing(10);
+
+  colormenu_dialog->setLayout(vlayout1);
 
   QObject::connect(CloseButton,     SIGNAL(clicked()),                colormenu_dialog, SLOT(close()));
   QObject::connect(ColorButton1,    SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton1_pressed(SpecialButton *)));

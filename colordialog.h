@@ -38,6 +38,9 @@
 #include <QWidget>
 #include <QDialog>
 #include <QPushButton>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 #include "global.h"
 #include "special_button.h"
