@@ -2222,6 +2222,42 @@ int strlcat(char *dst, const char *src, int sz)
 #endif
 
 
+void str_insert_substr(char *str, int pos, int len, const char *substr, int subpos, int sublen)
+{
+  int i, slen;
+
+  if((pos >= len) || (pos < 0) || (len < 1) || (subpos >= sublen) || (subpos < 0) || (sublen < 1))  return;
+
+  slen = strlen(str);
+
+  if(pos > slen)  return;
+
+  if(sublen > (signed)strlen(substr))  sublen = strlen(substr);
+
+  for(i=((slen+sublen)-1); i>=(pos + sublen); i--)
+  {
+    if(i < len)  str[i] = str[i-sublen];
+  }
+
+  for(i=0; i<sublen; i++)
+  {
+    if(((pos + i) >= len) || ((subpos + i) >= sublen))  break;
+
+    str[pos + i] = substr[subpos + i];
+  }
+
+  if((slen + sublen) < len)
+  {
+    str[slen + sublen] = 0;
+  }
+  else
+  {
+    str[len-1] = 0;
+  }
+}
+
+
+
 
 
 
