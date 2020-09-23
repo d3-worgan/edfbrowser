@@ -49,9 +49,15 @@ void remove_trailing_zeros(char *);
 void convert_trailing_zeros_to_spaces(char *);
 
 /* Inserts a copy of substr into str. The substring is the portion of substr that begins at */
-/* the character position subpos and spans sublen characters (or until the end of substr, */
-/* if either substr is too short or if sublen is npos). */
+/* the character position subpos and spans sublen characters (or until the end of substr */
+/* if substr is too short). */
 void str_insert_substr(char *str, int pos, int len, const char *substr, int subpos, int sublen);
+
+/* Replaces the nth occurence of dest_substr in str with src_substr. */
+/* If n = -1, all occurrences will be replaced. */
+/* len is the buffer length, not the string length! */
+/* Returns the number of substrings replaced. */
+int str_replace_substr(char *str, int len, int n, const char *dest_substr, const char *src_substr);
 
 void remove_extension_from_filename(char *);  /* removes extension including the dot */
 int get_filename_from_path(char *dest, const char *src, int size);  /* size is size of destination, returns length of filename */

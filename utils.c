@@ -2257,8 +2257,74 @@ void str_insert_substr(char *str, int pos, int len, const char *substr, int subp
 }
 
 
+int str_replace_substr(char *str, int len, int n, const char *dest_substr, const char *src_substr)
+{
+  int i, pos, slen, destlen, srclen, occurrence=0, cnt=0, lendiff;
 
+  slen = strlen(str);
 
+  destlen = strlen(dest_substr);
+
+  srclen = strlen(src_substr);
+
+  lendiff = srclen - destlen;
+
+  for(pos=0; pos<slen; pos++)
+  {
+    if(!strncmp(str + pos, dest_substr, destlen))
+    {
+      if((n == occurrence) || (n == -1))
+      {
+        if(lendiff > 0)
+        {
+          for(i=((slen+lendiff)-1); i>=(pos + lendiff); i--)
+          {
+            if(i < len)  str[i] = str[i-lendiff];
+          }
+        }
+        else if(lendiff < 0)
+          {
+            for(i=(pos + srclen); i<(slen+lendiff); i++)
+            {
+              if(i < len)  str[i] = str[i-lendiff];
+            }
+          }
+
+        for(i=0; i<srclen; i++)
+        {
+          if((pos + i) >= len)  break;
+
+          str[pos + i] = src_substr[i];
+        }
+
+        if((slen + lendiff) < len)
+        {
+          slen += lendiff;
+
+          str[slen] = 0;
+
+          pos += lendiff;
+        }
+        else
+        {
+          str[len-1] = 0;
+
+          slen = len;
+
+          break;
+        }
+
+        cnt++;
+
+        if(n != -1)  break;
+      }
+
+      occurrence++;
+    }
+  }
+
+  return cnt;
+}
 
 
 
