@@ -44,59 +44,68 @@ UI_SignalChooser::UI_SignalChooser(QWidget *w_parent, int job, int *sgnl_nr)
   if(task == 3)
   {
     signalchooser_dialog->setMinimumSize(435, 420);
-    signalchooser_dialog->setMaximumSize(435, 420);
     signalchooser_dialog->setWindowTitle("Organize signals");
   }
   else
   {
     signalchooser_dialog->setMinimumSize(200, 420);
-    signalchooser_dialog->setMaximumSize(200, 420);
     signalchooser_dialog->setWindowTitle("Signals");
   }
   signalchooser_dialog->setModal(true);
   signalchooser_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  list = new QListWidget(signalchooser_dialog);
+  list = new QListWidget;
   if(task == 3)
   {
-    list->setGeometry(10, 10, 300, 365);
     list->setSelectionBehavior(QAbstractItemView::SelectRows);
     list->setSelectionMode(QAbstractItemView::ExtendedSelection);
     list->setToolTip("Double-click on an item to edit properties");
   }
   else
   {
-    list->setGeometry(10, 10, 130, 365);
     list->setSelectionBehavior(QAbstractItemView::SelectRows);
     list->setSelectionMode(QAbstractItemView::SingleSelection);
   }
 
-  CloseButton = new QPushButton(signalchooser_dialog);
-  CloseButton->setGeometry(10, 385, 130, 25);
+  CloseButton = new QPushButton;
   CloseButton->setText("Close");
 
   if(task == 3)
   {
-    EditButton = new QPushButton(signalchooser_dialog);
-    EditButton->setGeometry(325, 140, 100, 25);
+    EditButton = new QPushButton;
     EditButton->setText("Edit");
 
-    UpButton = new QPushButton(signalchooser_dialog);
-    UpButton->setGeometry(325, 180, 100, 25);
+    UpButton = new QPushButton;
     UpButton->setText("Up");
 
-    DownButton = new QPushButton(signalchooser_dialog);
-    DownButton->setGeometry(325, 220, 100, 25);
+    DownButton = new QPushButton;
     DownButton->setText("Down");
 
-    InvertButton = new QPushButton(signalchooser_dialog);
-    InvertButton->setGeometry(325, 260, 100, 25);
+    InvertButton = new QPushButton;
     InvertButton->setText("Invert");
 
-    DeleteButton = new QPushButton(signalchooser_dialog);
-    DeleteButton->setGeometry(325, 300, 100, 25);
+    DeleteButton = new QPushButton;
     DeleteButton->setText("Remove");
   }
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  if(task == 3)
+  {
+    vlayout1->addStretch(1000);
+    vlayout1->addWidget(EditButton);
+    vlayout1->addWidget(UpButton);
+    vlayout1->addWidget(DownButton);
+    vlayout1->addWidget(InvertButton);
+    vlayout1->addWidget(DeleteButton);
+  }
+  vlayout1->addStretch(1000);
+  vlayout1->addWidget(CloseButton);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(list);
+  hlayout1->addLayout(vlayout1);
+
+  signalchooser_dialog->setLayout(hlayout1);
 
   load_signalcomps();
 

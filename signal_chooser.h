@@ -43,6 +43,10 @@
 #include <QVariant>
 #include <QMessageBox>
 #include <QToolTip>
+#include <QFormLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
 
 #include "global.h"
 #include "mainwindow.h"
