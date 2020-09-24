@@ -42,6 +42,10 @@
 #include <QDoubleSpinBox>
 #include <QPushButton>
 #include <QMessageBox>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include "global.h"
 #include "mainwindow.h"
@@ -86,9 +90,9 @@ UI_Mainwindow  *mainwindow;
 
 ViewCurve      *maincurve;
 
-QDialog        *filtersettings_dialog;
+QFormLayout    *flayout;
 
-QLabel         *label[5];
+QDialog        *filtersettings_dialog;
 
 QComboBox      *filterbox,
                *stepsizebox;

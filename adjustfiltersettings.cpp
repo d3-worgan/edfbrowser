@@ -54,8 +54,6 @@ model:
 
 AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, QWidget *w_parent)
 {
-  int i;
-
   char txtbuf[2048];
 
   signalcomp = signal_comp;
@@ -66,8 +64,7 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
 
   filtersettings_dialog = new QDialog(w_parent);
 
-  filtersettings_dialog->setMinimumSize(460, 255);
-  filtersettings_dialog->setMaximumSize(460, 255);
+  filtersettings_dialog->setMinimumSize(350, 250);
   strlcpy(txtbuf, "Filter settings ", 2048);
   if(signalcomp->alias[0] != 0)
   {
@@ -81,31 +78,16 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
   filtersettings_dialog->setModal(true);
   filtersettings_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  for(i=0; i<5; i++)
-  {
-    label[i] = new QLabel(filtersettings_dialog);
-    label[i]->setGeometry(10, 10 + (i * 35), 100, 25);
-  }
-  label[0]->setText("Filter");
-  label[1]->setText("Order");
-  label[2]->setText("Frequency");
-  label[3]->setText("Frequency 2");
-  label[3]->setVisible(false);
-  label[4]->setText("Stepsize");
+  filterbox = new QComboBox;
 
-  filterbox = new QComboBox(filtersettings_dialog);
-  filterbox->setGeometry(120, 10, 330, 25);
-
-  orderbox = new QSpinBox(filtersettings_dialog);
-  orderbox->setGeometry(120, 45, 100, 25);
+  orderbox = new QSpinBox;
   orderbox->setSuffix("th order");
   orderbox->setMinimum(1);
   orderbox->setMaximum(8);
   orderbox->setValue(1);
   orderbox->setSingleStep(1);
 
-  freq1box = new QDoubleSpinBox(filtersettings_dialog);
-  freq1box->setGeometry(120, 80, 180, 25);
+  freq1box = new QDoubleSpinBox;
   freq1box->setDecimals(6);
   freq1box->setSuffix(" Hz");
   freq1box->setMinimum(0.0001);
@@ -113,18 +95,15 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
   freq1box->setValue(1.0);
   freq1box->setSingleStep(1.0);
 
-  freq2box = new QDoubleSpinBox(filtersettings_dialog);
-  freq2box->setGeometry(120, 115, 180, 25);
+  freq2box = new QDoubleSpinBox;
   freq2box->setDecimals(6);
   freq2box->setSuffix(" Hz");
   freq2box->setMinimum(0.0001);
   freq2box->setMaximum(100000.0);
   freq2box->setValue(2.0);
-  freq2box->setVisible(false);
   freq2box->setSingleStep(1.0);
 
-  stepsizebox = new QComboBox(filtersettings_dialog);
-  stepsizebox->setGeometry(120, 150, 80, 25);
+  stepsizebox = new QComboBox;
   stepsizebox->addItem("0.01Hz");
   stepsizebox->addItem("0.1Hz");
   stepsizebox->addItem("1Hz");
@@ -132,13 +111,31 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
   stepsizebox->addItem("100Hz");
   stepsizebox->setCurrentIndex(2);
 
-  RemoveButton = new QPushButton(filtersettings_dialog);
-  RemoveButton->setGeometry(120, 220, 80, 25);
+  RemoveButton = new QPushButton;
   RemoveButton->setText("Remove");
 
-  CloseButton = new QPushButton(filtersettings_dialog);
-  CloseButton->setGeometry(360, 220, 80, 25);
+  CloseButton = new QPushButton;
   CloseButton->setText("Close");
+
+  flayout = new QFormLayout;
+  flayout->addRow("Filter", filterbox);
+  flayout->addRow("Order", orderbox);
+  flayout->addRow("Frequency", freq1box);
+  flayout->addRow("Frequency 2", freq2box);
+  flayout->addRow("Stepsize", stepsizebox);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(RemoveButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(CloseButton);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addLayout(flayout);
+  vlayout1->addStretch(1000);
+  vlayout1->addSpacing(10);
+  vlayout1->addLayout(hlayout1);
+
+  filtersettings_dialog->setLayout(vlayout1);
 
   filter_cnt = 0;
 
@@ -384,8 +381,8 @@ void AdjustFilterSettings::filterboxchanged(int i)
 
     freq1box->setValue(frequency1);
 
-    label[1]->setText("Order");
-    label[2]->setText("Frequency");
+    ((QLabel *)(flayout->labelForField(orderbox)))->setText("Order");
+    ((QLabel *)(flayout->labelForField(freq1box)))->setText("Frequency");
     freq1box->setVisible(true);
     stepsizebox->clear();
     stepsizebox->addItem("0.01Hz");
@@ -398,8 +395,8 @@ void AdjustFilterSettings::filterboxchanged(int i)
     if((type == 3) || (type == 4))
     {
       freq2box->setValue(frequency2);
-      label[3]->setVisible(true);
       freq2box->setVisible(true);
+      ((QLabel *)(flayout->labelForField(freq2box)))->setText("Frequency 2");
       orderbox->setMinimum(2);
       orderbox->setSingleStep(2);
       orderbox->setMaximum(16);
@@ -407,8 +404,8 @@ void AdjustFilterSettings::filterboxchanged(int i)
     else
     {
       freq2box->setValue(0.0);
-      label[3]->setVisible(false);
       freq2box->setVisible(false);
+      ((QLabel *)(flayout->labelForField(freq2box)))->setText("");
       orderbox->setMinimum(1);
       orderbox->setSingleStep(1);
       orderbox->setMaximum(8);
@@ -445,10 +442,10 @@ void AdjustFilterSettings::filterboxchanged(int i)
     stepsizebox->addItem("1000");
     stepsizebox->setCurrentIndex(0);
 
-    label[1]->setText("Size");
-    label[2]->setText("");
+    ((QLabel *)(flayout->labelForField(orderbox)))->setText("Size");
+    ((QLabel *)(flayout->labelForField(freq1box)))->setText("");
+    ((QLabel *)(flayout->labelForField(freq2box)))->setText("");
     freq1box->setVisible(false);
-    label[3]->setVisible(false);
     freq2box->setVisible(false);
     orderbox->setMinimum(2);
     orderbox->setSingleStep(1);
