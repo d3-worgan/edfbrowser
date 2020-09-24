@@ -3633,9 +3633,7 @@ void drawCurve_stage_1_thread::run()
 
 void ViewCurve::exec_sidemenu(int signal_nr_intern)
 {
-  int i;
-
-  char str[32]={0,0,0,0,0,0,0,0,0,0,0,0};
+  char str[32]={""};
 
   signal_nr = signal_nr_intern;
 
@@ -3682,11 +3680,9 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
     ScaleBox->setValue(mainwindow->signalcomp[signal_nr]->voltpercm);
   }
   strlcpy(str, mainwindow->signalcomp[signal_nr]->physdimension, 32);
-  for(i=1; i<4; i++)
-  {
-    if(str[i]==' ')  break;
-  }
-  strlcpy(str + i, "/cm", 32 - i);
+  trim_spaces(str);
+  str_insert_substr(str, 0, 32, " ", 0, 1);
+  strlcat(str, "/cm", 32);
   ScaleBox->setSuffix(str);
 
   ScaleBox2 = new QDoubleSpinBox(sidemenu);
@@ -3696,6 +3692,10 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   ScaleBox2->setMinimum(-1000000.0);
   ScaleBox2->setValue(-mainwindow->signalcomp[signal_nr]->screen_offset * mainwindow->pixelsizefactor * mainwindow->signalcomp[signal_nr]->voltpercm);
   ScaleBox2->setSuffix(mainwindow->signalcomp[signal_nr]->physdimension);
+  strlcpy(str, mainwindow->signalcomp[signal_nr]->physdimension, 32);
+  trim_spaces(str);
+  str_insert_substr(str, 0, 32, " ", 0, 1);
+  ScaleBox2->setSuffix(str);
 
   sidemenuButton1 = new QPushButton(sidemenu);
   sidemenuButton1->setGeometry(45, 125, 100, 25);
