@@ -43,14 +43,12 @@ UI_activeFileChooserWindow::UI_activeFileChooserWindow(int *file_nr, QWidget *ma
 
   chooserDialog = new QDialog;
 
-  chooserDialog->setMinimumSize(800, 200);
-  chooserDialog->setMaximumSize(800, 200);
+  chooserDialog->setMinimumSize(600, 150);
   chooserDialog->setWindowTitle("Choose file");
   chooserDialog->setModal(true);
   chooserDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  filelist = new QListWidget(chooserDialog);
-  filelist->setGeometry(10, 10, 780, 110);
+  filelist = new QListWidget;
   filelist->setSelectionBehavior(QAbstractItemView::SelectRows);
   filelist->setSelectionMode(QAbstractItemView::SingleSelection);
   for(i=0; i<mainwindow->files_open; i++)
@@ -58,13 +56,23 @@ UI_activeFileChooserWindow::UI_activeFileChooserWindow(int *file_nr, QWidget *ma
     new QListWidgetItem(QString::fromLocal8Bit(mainwindow->edfheaderlist[i]->filename), filelist);
   }
 
-  okButton = new QPushButton(chooserDialog);
-  okButton->setGeometry(10, 140, 100, 25);
+  okButton = new QPushButton;
   okButton->setText("OK");
 
-  cancelButton = new QPushButton(chooserDialog);
-  cancelButton->setGeometry(690, 140, 100, 25);
+  cancelButton = new QPushButton;
   cancelButton->setText("Cancel");
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(okButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(cancelButton);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addWidget(filelist, 1000);
+  vlayout1->addSpacing(10);
+  vlayout1->addLayout(hlayout1);
+
+  chooserDialog->setLayout(vlayout1);
 
   QObject::connect(cancelButton, SIGNAL(clicked()), chooserDialog, SLOT(close()));
   QObject::connect(okButton,     SIGNAL(clicked()), this,          SLOT(okButtonClicked()));

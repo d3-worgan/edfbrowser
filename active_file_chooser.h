@@ -39,7 +39,10 @@
 #include <QDialog>
 #include <QPushButton>
 #include <QString>
-
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include "global.h"
 #include "mainwindow.h"
