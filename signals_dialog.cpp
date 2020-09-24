@@ -68,84 +68,67 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
   SignalsDialog = new QDialog;
 
   SignalsDialog->setMinimumSize(850, 500);
-  SignalsDialog->setMaximumSize(800, 500);
-  SignalsDialog->setWindowTitle("Signals");
+  SignalsDialog->setWindowTitle("Add signals");
   SignalsDialog->setModal(true);
   SignalsDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  filelist = new QListWidget(SignalsDialog);
-  filelist->setGeometry(10, 10, 780, 75);
+  filelist = new QListWidget;
+  filelist->setMaximumHeight(75);
   for(i=0; i<mainwindow->files_open; i++)
   {
     new QListWidgetItem(QString::fromLocal8Bit(mainwindow->edfheaderlist[i]->filename), filelist);
   }
 
-  label1 = new QLabel(SignalsDialog);
-  label1->setGeometry(10, 95, 760, 25);
+  label1 = new QLabel;
 
-  label2 = new QLabel(SignalsDialog);
-  label2->setGeometry(10, 120, 760, 25);
+  label2 = new QLabel;
 
-  label3 = new QLabel(SignalsDialog);
-  label3->setGeometry(10, 145, 250, 25);
+  label3 = new QLabel;
 
-  label4 = new QLabel(SignalsDialog);
-  label4->setGeometry(270, 145, 250, 25);
+  label4 = new QLabel;
 
-  label5 = new QLabel(SignalsDialog);
-  label5->setGeometry(10, 190, 120, 25);
+  label5 = new QLabel;
   label5->setText("Signals in file");
 
-  label6 = new QLabel(SignalsDialog);
-  label6->setGeometry(430, 190, 120, 25);
+  label6 = new QLabel;
   label6->setText("Signal Composition");
 
-  colorlabel = new QLabel(SignalsDialog);
-  colorlabel->setGeometry(320, 380, 100, 25);
+  colorlabel = new QLabel;
   colorlabel->setText("  Trace color");
 
-  signallist = new QListWidget(SignalsDialog);
-  signallist->setGeometry(10, 210, 300, 225);
+  signallist = new QListWidget;
   signallist->setFont(*mainwindow->monofont);
   signallist->setSelectionBehavior(QAbstractItemView::SelectRows);
   signallist->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-  CloseButton = new QPushButton(SignalsDialog);
-  CloseButton->setGeometry(690, 455, 100, 25);
+  CloseButton = new QPushButton;
   CloseButton->setText("&Close");
 
-  SelectAllButton = new QPushButton(SignalsDialog);
-  SelectAllButton->setGeometry(10, 455, 100, 25);
+  SelectAllButton = new QPushButton;
   SelectAllButton->setText("&Select All");
 
-  HelpButton = new QPushButton(SignalsDialog);
-  HelpButton->setGeometry(690, 120, 100, 25);
+  HelpButton = new QPushButton;
   HelpButton->setText("&Help");
 
-  DisplayButton = new QPushButton(SignalsDialog);
-  DisplayButton->setGeometry(150, 455, 160, 25);
+  DisplayButton = new QPushButton;
   DisplayButton->setText("&Add signal(s)");
   DisplayButton->setToolTip("Add the above selected signals to the screen (unipolar)");
 
-  DisplayCompButton = new QPushButton(SignalsDialog);
-  DisplayCompButton->setGeometry(430, 455, 160, 25);
+  DisplayCompButton = new QPushButton;
   DisplayCompButton->setText("&Make derivation");
   DisplayCompButton->setToolTip("Make a derivation of the above selected signals");
 
-  AddButton = new QPushButton(SignalsDialog);
-  AddButton->setGeometry(320, 250, 100, 25);
+  AddButton = new QPushButton;
   AddButton->setText("Add->");
 
-  SubtractButton = new QPushButton(SignalsDialog);
-  SubtractButton->setGeometry(320, 285, 100, 25);
+  SubtractButton = new QPushButton;
   SubtractButton->setText("Subtract->");
 
-  RemoveButton = new QPushButton(SignalsDialog);
-  RemoveButton->setGeometry(320, 320, 100, 25);
+  RemoveButton = new QPushButton;
   RemoveButton->setText("Remove<-");
 
-  ColorButton = new SpecialButton(SignalsDialog);
-  ColorButton->setGeometry(320, 405, 100, 25);
+  ColorButton = new SpecialButton;
+  ColorButton->setMinimumHeight(25);
   if(mainwindow->use_diverse_signal_colors)
   {
     ColorButton->setColor(127);
@@ -156,8 +139,7 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
   }
   ColorButton->setToolTip("Click to select the trace color");
 
-  compositionlist = new QTableWidget(SignalsDialog);
-  compositionlist->setGeometry(430, 210, 410, 225);
+  compositionlist = new QTableWidget;
   compositionlist->setSelectionBehavior(QAbstractItemView::SelectRows);
   compositionlist->setSelectionMode(QAbstractItemView::ExtendedSelection);
   compositionlist->setColumnCount(4);
@@ -172,6 +154,65 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
   horizontallabels += "Factor";
   horizontallabels += "Samplerate";
   compositionlist->setHorizontalHeaderLabels(horizontallabels);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(label1);
+  hlayout1->addStretch(1000);
+
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addWidget(label2);
+  hlayout2->addStretch(1000);
+  hlayout2->addWidget(HelpButton);
+
+  QHBoxLayout *hlayout3 = new QHBoxLayout;
+  hlayout3->addWidget(label3);
+  hlayout3->addStretch(1000);
+
+  QHBoxLayout *hlayout5 = new QHBoxLayout;
+  hlayout5->addWidget(SelectAllButton);
+  hlayout5->addStretch(1000);
+  hlayout5->addWidget(DisplayButton);
+
+  QHBoxLayout *hlayout6 = new QHBoxLayout;
+  hlayout6->addWidget(DisplayCompButton);
+  hlayout6->addStretch(1000);
+  hlayout6->addWidget(CloseButton);
+
+  QVBoxLayout *vlayout2 = new QVBoxLayout;
+  vlayout2->addWidget(label5);
+  vlayout2->addWidget(signallist, 1000);
+  vlayout2->addSpacing(35);
+  vlayout2->addLayout(hlayout5);
+
+  QVBoxLayout *vlayout3 = new QVBoxLayout;
+  vlayout3->addStretch(1000);
+  vlayout3->addWidget(AddButton);
+  vlayout3->addWidget(SubtractButton);
+  vlayout3->addWidget(RemoveButton);
+  vlayout3->addSpacing(35);
+  vlayout3->addWidget(ColorButton);
+  vlayout3->addStretch(1000);
+
+  QVBoxLayout *vlayout4 = new QVBoxLayout;
+  vlayout4->addWidget(label6);
+  vlayout4->addWidget(compositionlist, 1000);
+  vlayout4->addSpacing(35);
+  vlayout4->addLayout(hlayout6);
+
+  QHBoxLayout *hlayout4 = new QHBoxLayout;
+  hlayout4->addLayout(vlayout2);
+  hlayout4->addLayout(vlayout3);
+  hlayout4->addLayout(vlayout4);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addWidget(filelist);
+  vlayout1->addLayout(hlayout1);
+  vlayout1->addLayout(hlayout2);
+  vlayout1->addLayout(hlayout3);
+  vlayout1->addSpacing(10);
+  vlayout1->addLayout(hlayout4, 1000);
+
+  SignalsDialog->setLayout(vlayout1);
 
   QObject::connect(CloseButton,       SIGNAL(clicked()),                SignalsDialog, SLOT(close()));
   QObject::connect(SelectAllButton,   SIGNAL(clicked()),                this,          SLOT(SelectAllButtonClicked()));
