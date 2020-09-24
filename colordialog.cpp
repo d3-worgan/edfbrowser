@@ -177,7 +177,10 @@ UI_ColorMenuDialog::UI_ColorMenuDialog(int *newColor, QWidget *w_parent, int sho
   QObject::connect(ColorButton14,   SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton14_pressed(SpecialButton *)));
   QObject::connect(ColorButton15,   SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton15_pressed(SpecialButton *)));
   QObject::connect(ColorButton16,   SIGNAL(clicked(SpecialButton *)), this,             SLOT(ColorButton16_pressed(SpecialButton *)));
-  QObject::connect(varyColorButton, SIGNAL(clicked()),                this,             SLOT(varyColorButtonClicked()));
+  if(show_var_colors)
+  {
+    QObject::connect(varyColorButton, SIGNAL(clicked()), this, SLOT(varyColorButtonClicked()));
+  }
 
   colormenu_dialog->exec();
 }
