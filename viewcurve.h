@@ -58,6 +58,10 @@
 #include <QList>
 #include <QShortcut>
 #include <QKeySequence>
+#include <QFormLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -243,11 +247,6 @@ private:
 
   QDoubleSpinBox *ScaleBox,
                  *ScaleBox2;
-
-  QLabel      *SidemenuLabel,
-              *AmpLabel,
-              *AliasLabel,
-              *OffsetLabel;
 
   QLineEdit   *AliasLineEdit;
 

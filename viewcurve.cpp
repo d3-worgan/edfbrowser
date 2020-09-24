@@ -3640,34 +3640,21 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   sidemenu = new QDialog(this);
 
   sidemenu->setMinimumSize(190, 575);
-  sidemenu->setMaximumSize(190, 575);
-  sidemenu->setWindowTitle("Signal");
+  sidemenu->setWindowTitle("Signal properties");
   sidemenu->setModal(true);
   sidemenu->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  SidemenuLabel = new QLabel(sidemenu);
-  SidemenuLabel->setGeometry(45, 5, 100, 25);
+  QLabel *SidemenuLabel = new QLabel(sidemenu);
   SidemenuLabel->setText(mainwindow->signalcomp[signal_nr]->signallabel);
 
-  AliasLabel = new QLabel(sidemenu);
-  AliasLabel->setGeometry(5, 35, 35, 25);
-  AliasLabel->setText("Alias");
+  QFormLayout *flayout = new QFormLayout;
 
   AliasLineEdit = new QLineEdit(sidemenu);
-  AliasLineEdit->setGeometry(45, 35, 140, 25);
   AliasLineEdit->setText(mainwindow->signalcomp[signal_nr]->alias);
   AliasLineEdit->setMaxLength(16);
-
-  AmpLabel = new QLabel(sidemenu);
-  AmpLabel->setGeometry(5, 65, 35, 25);
-  AmpLabel->setText("Ampl.");
-
-  OffsetLabel = new QLabel(sidemenu);
-  OffsetLabel->setGeometry(5, 95, 35, 25);
-  OffsetLabel->setText("Offset");
+  flayout->addRow("Alias", AliasLineEdit);
 
   ScaleBox = new QDoubleSpinBox(sidemenu);
-  ScaleBox->setGeometry(45, 65, 140, 25);
   ScaleBox->setDecimals(8);
   ScaleBox->setMaximum(1000000.0);
   ScaleBox->setMinimum(0.0000001);
@@ -3684,9 +3671,9 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   str_insert_substr(str, 0, 32, " ", 0, 1);
   strlcat(str, "/cm", 32);
   ScaleBox->setSuffix(str);
+  flayout->addRow("Amplitude", ScaleBox);
 
   ScaleBox2 = new QDoubleSpinBox(sidemenu);
-  ScaleBox2->setGeometry(45, 95, 140, 25);
   ScaleBox2->setDecimals(8);
   ScaleBox2->setMaximum(1000000.0);
   ScaleBox2->setMinimum(-1000000.0);
@@ -3696,65 +3683,52 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   trim_spaces(str);
   str_insert_substr(str, 0, 32, " ", 0, 1);
   ScaleBox2->setSuffix(str);
+  flayout->addRow("Offset", ScaleBox2);
 
   sidemenuButton1 = new QPushButton(sidemenu);
-  sidemenuButton1->setGeometry(45, 125, 100, 25);
   sidemenuButton1->setText("Ruler");
 
   sidemenuButton2 = new QPushButton(sidemenu);
-  sidemenuButton2->setGeometry(45, 155, 100, 25);
   sidemenuButton2->setText("Crosshair");
 
   sidemenuButton3 = new QPushButton(sidemenu);
-  sidemenuButton3->setGeometry(45, 185, 100, 25);
   sidemenuButton3->setText("Fit to pane");
 
   sidemenuButton4 = new QPushButton(sidemenu);
-  sidemenuButton4->setGeometry(45, 215, 100, 25);
   sidemenuButton4->setText("Color");
 
   sidemenuButton5 = new QPushButton(sidemenu);
-  sidemenuButton5->setGeometry(45, 245, 100, 25);
   sidemenuButton5->setText("Invert");
 
   sidemenuButton6 = new QPushButton(sidemenu);
-  sidemenuButton6->setGeometry(45, 275, 100, 25);
   sidemenuButton6->setText("Spectrum");
 
   sidemenuButton7 = new QPushButton(sidemenu);
-  sidemenuButton7->setGeometry(45, 305, 100, 25);
   sidemenuButton7->setText("Z-EEG");
 
   sidemenuButton8 = new QPushButton(sidemenu);
-  sidemenuButton8->setGeometry(45, 335, 100, 25);
   sidemenuButton8->setText("Remove filter");
 
   sidemenuButton9 = new QPushButton(sidemenu);
-  sidemenuButton9->setGeometry(45, 365, 100, 25);
   sidemenuButton9->setText("Remove signal");
 
   sidemenuButton10 = new QPushButton(sidemenu);
-  sidemenuButton10->setGeometry(45, 395, 100, 25);
   sidemenuButton10->setText("Adjust filter");
 
   sidemenuButton11 = new QPushButton(sidemenu);
-  sidemenuButton11->setGeometry(45, 425, 100, 25);
   sidemenuButton11->setText("Statistics");
 
   sidemenuButton12 = new QPushButton(sidemenu);
-  sidemenuButton12->setGeometry(45, 455, 100, 25);
-  sidemenuButton12->setText("QRS det.");
+  sidemenuButton12->setText("QRS detector");
   if(mainwindow->live_stream_active)
   {
     sidemenuButton12->setEnabled(false);
   }
 
   sidemenuButton13 = new QPushButton(sidemenu);
-  sidemenuButton13->setGeometry(45, 485, 100, 25);
   sidemenuButton13->setText("Heart Rate");
 
   sidemenuButton14 = new QPushButton(sidemenu);
-  sidemenuButton14->setGeometry(45, 515, 100, 25);
   sidemenuButton14->setText("CDSA");
   if(mainwindow->live_stream_active)
   {
@@ -3762,8 +3736,108 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   }
 
   sidemenuButton15 = new QPushButton(sidemenu);
-  sidemenuButton15->setGeometry(45, 545, 100, 25);
   sidemenuButton15->setText("Close");
+
+  QGridLayout *gr = new QGridLayout;
+  gr->addWidget(sidemenuButton1, 0, 1);
+  gr->addWidget(sidemenuButton2, 1, 1);
+  gr->addWidget(sidemenuButton3, 2, 1);
+  gr->addWidget(sidemenuButton4, 3, 1);
+  gr->addWidget(sidemenuButton5, 4, 1);
+  gr->addWidget(sidemenuButton6, 5, 1);
+  gr->addWidget(sidemenuButton7, 6, 1);
+  gr->addWidget(sidemenuButton8, 7, 1);
+  gr->addWidget(sidemenuButton9, 8, 1);
+  gr->addWidget(sidemenuButton10, 9, 1);
+  gr->addWidget(sidemenuButton11, 10, 1);
+  gr->addWidget(sidemenuButton12, 11, 1);
+  gr->addWidget(sidemenuButton13, 12, 1);
+  gr->addWidget(sidemenuButton14, 13, 1);
+  gr->addWidget(sidemenuButton15, 14, 1);
+  gr->setColumnStretch(0, 1000);
+  gr->setColumnStretch(2, 1000);
+
+//   QHBoxLayout *hlayout1 = new QHBoxLayout;
+//   hlayout1->addStretch(1000);
+//   hlayout1->addWidget(sidemenuButton1);
+//   hlayout1->addStretch(1000);
+//   QHBoxLayout *hlayout2 = new QHBoxLayout;
+//   hlayout2->addStretch(1000);
+//   hlayout2->addWidget(sidemenuButton2);
+//   hlayout2->addStretch(1000);
+//   QHBoxLayout *hlayout3 = new QHBoxLayout;
+//   hlayout3->addStretch(1000);
+//   hlayout3->addWidget(sidemenuButton3);
+//   hlayout3->addStretch(1000);
+//   QHBoxLayout *hlayout4 = new QHBoxLayout;
+//   hlayout4->addStretch(1000);
+//   hlayout4->addWidget(sidemenuButton4);
+//   hlayout4->addStretch(1000);
+//   QHBoxLayout *hlayout5 = new QHBoxLayout;
+//   hlayout5->addStretch(1000);
+//   hlayout5->addWidget(sidemenuButton5);
+//   hlayout5->addStretch(1000);
+//   QHBoxLayout *hlayout6 = new QHBoxLayout;
+//   hlayout6->addStretch(1000);
+//   hlayout6->addWidget(sidemenuButton6);
+//   hlayout6->addStretch(1000);
+//   QHBoxLayout *hlayout7 = new QHBoxLayout;
+//   hlayout7->addStretch(1000);
+//   hlayout7->addWidget(sidemenuButton7);
+//   hlayout7->addStretch(1000);
+//   QHBoxLayout *hlayout8 = new QHBoxLayout;
+//   hlayout8->addStretch(1000);
+//   hlayout8->addWidget(sidemenuButton8);
+//   hlayout8->addStretch(1000);
+//   QHBoxLayout *hlayout9 = new QHBoxLayout;
+//   hlayout9->addStretch(1000);
+//   hlayout9->addWidget(sidemenuButton9);
+//   hlayout9->addStretch(1000);
+//   QHBoxLayout *hlayout10 = new QHBoxLayout;
+//   hlayout10->addStretch(1000);
+//   hlayout10->addWidget(sidemenuButton10);
+//   hlayout10->addStretch(1000);
+//   QHBoxLayout *hlayout11 = new QHBoxLayout;
+//   hlayout11->addStretch(1000);
+//   hlayout11->addWidget(sidemenuButton11);
+//   hlayout11->addStretch(1000);
+//   QHBoxLayout *hlayout12 = new QHBoxLayout;
+//   hlayout12->addStretch(1000);
+//   hlayout12->addWidget(sidemenuButton12);
+//   hlayout12->addStretch(1000);
+//   QHBoxLayout *hlayout13 = new QHBoxLayout;
+//   hlayout13->addStretch(1000);
+//   hlayout13->addWidget(sidemenuButton13);
+//   hlayout13->addStretch(1000);
+//   QHBoxLayout *hlayout14 = new QHBoxLayout;
+//   hlayout14->addStretch(1000);
+//   hlayout14->addWidget(sidemenuButton14);
+//   hlayout14->addStretch(1000);
+//   QHBoxLayout *hlayout15 = new QHBoxLayout;
+//   hlayout15->addStretch(1000);
+//   hlayout15->addWidget(sidemenuButton15);
+//   hlayout15->addStretch(1000);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addWidget(SidemenuLabel);
+  vlayout1->addLayout(flayout);
+  vlayout1->addLayout(gr);
+//   vlayout1->addLayout(hlayout1);
+//   vlayout1->addLayout(hlayout2);
+//   vlayout1->addLayout(hlayout3);
+//   vlayout1->addLayout(hlayout4);
+//   vlayout1->addLayout(hlayout5);
+//   vlayout1->addLayout(hlayout6);
+//   vlayout1->addLayout(hlayout7);
+//   vlayout1->addLayout(hlayout8);
+//   vlayout1->addLayout(hlayout9);
+//   vlayout1->addLayout(hlayout10);
+//   vlayout1->addLayout(hlayout11);
+//   vlayout1->addLayout(hlayout12);
+//   vlayout1->addLayout(hlayout13);
+//   vlayout1->addLayout(hlayout14);
+//   vlayout1->addLayout(hlayout15);
+  sidemenu->setLayout(vlayout1);
 
   QObject::connect(ScaleBox,          SIGNAL(valueChanged(double)),     this,     SLOT(ScaleBoxChanged(double)));
   QObject::connect(ScaleBox2,         SIGNAL(valueChanged(double)),     this,     SLOT(ScaleBox2Changed(double)));
