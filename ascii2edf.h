@@ -47,12 +47,15 @@
 #include <QCursor>
 #include <QCheckBox>
 #include <QRadioButton>
-#include <QVBoxLayout>
 #include <QGroupBox>
 #include <QMessageBox>
 #include <QPixmap>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -85,22 +88,10 @@ private:
 
 QDialog       *ascii2edfDialog;
 
-QLabel        *SeparatorLabel,
-              *NumsignalsLabel,
-              *DatastartLabel,
-              *SamplefreqLabel,
-              *PatientnameLabel,
-              *RecordingLabel,
-              *DatetimeLabel,
-              *SignalsLabel,
-              *autoPhysicalMaximumLabel;
-
 QRadioButton  *edfButton,
               *bdfButton;
 
 QGroupBox     *groupbox1;
-
-QVBoxLayout   *vbox1;
 
 QLineEdit     *SeparatorLineEdit,
               *PatientnameLineEdit,

@@ -42,116 +42,66 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(QWidget *w_parent, char *recent_dir, char *save
   edf_format = 1;
 
   ascii2edfDialog = new QDialog;
-
-  ascii2edfDialog->setMinimumSize(720, 520);
-  ascii2edfDialog->setMaximumSize(720, 520);
+  ascii2edfDialog->setMinimumSize(600, 450);
   ascii2edfDialog->setWindowTitle("ASCII to EDF/BDF converter");
   ascii2edfDialog->setModal(true);
   ascii2edfDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  SeparatorLabel = new QLabel(ascii2edfDialog);
-  SeparatorLabel->setGeometry(20, 20, 140, 25);
-  SeparatorLabel->setText("Column separator");
-
-  NumsignalsLabel = new QLabel(ascii2edfDialog);
-  NumsignalsLabel->setGeometry(20, 55, 140, 25);
-  NumsignalsLabel->setText("Number of columns");
-
-  DatastartLabel = new QLabel(ascii2edfDialog);
-  DatastartLabel->setGeometry(20, 90, 140, 25);
-  DatastartLabel->setText("Data starts at line");
-
-  SamplefreqLabel = new QLabel(ascii2edfDialog);
-  SamplefreqLabel->setGeometry(20, 125, 140, 25);
-  SamplefreqLabel->setText("Samplefrequency");
-
-  PatientnameLabel = new QLabel(ascii2edfDialog);
-  PatientnameLabel->setGeometry(20, 160, 140, 25);
-  PatientnameLabel->setText("Subject name");
-
-  RecordingLabel = new QLabel(ascii2edfDialog);
-  RecordingLabel->setGeometry(20, 195, 140, 25);
-  RecordingLabel->setText("Recording");
-
-  DatetimeLabel = new QLabel(ascii2edfDialog);
-  DatetimeLabel->setGeometry(20, 230, 140, 25);
-  DatetimeLabel->setText("Startdate and time");
-
-  autoPhysicalMaximumLabel = new QLabel(ascii2edfDialog);
-  autoPhysicalMaximumLabel->setGeometry(360, 265, 180, 25);
-  autoPhysicalMaximumLabel->setText("Auto detect physical maximum");
-
-  SignalsLabel = new QLabel(ascii2edfDialog);
-  SignalsLabel->setGeometry(20, 300, 140, 25);
-  SignalsLabel->setText("Signals");
-
-  groupbox1 = new QGroupBox(ascii2edfDialog);
-  groupbox1->setGeometry(530, 20, 160, 90);
+  groupbox1 = new QGroupBox;
   groupbox1->setTitle("Output format");
 
   edfButton = new QRadioButton("EDF (16-bit)");
   bdfButton = new QRadioButton("BDF (24-bit)");
   edfButton->setChecked(true);
 
-  vbox1 = new QVBoxLayout;
-  vbox1->addWidget(edfButton);
-  vbox1->addStretch(1);
-  vbox1->addWidget(bdfButton);
-  vbox1->addStretch(1);
+  QVBoxLayout *vlayout2 = new QVBoxLayout;
+  vlayout2->addWidget(edfButton);
+  vlayout2->addStretch(1000);
+  vlayout2->addWidget(bdfButton);
+  vlayout2->addStretch(1000);
 
-  groupbox1->setLayout(vbox1);
+  groupbox1->setLayout(vlayout2);
 
-  SeparatorLineEdit = new QLineEdit(ascii2edfDialog);
-  SeparatorLineEdit->setGeometry(160, 20, 30, 25);
+  QVBoxLayout *vlayout3 = new QVBoxLayout;
+  vlayout3->addWidget(groupbox1);
+  vlayout3->addStretch(1000);
+
+  SeparatorLineEdit = new QLineEdit;
   SeparatorLineEdit->setMaxLength(3);
   SeparatorLineEdit->setText("tab");
 
-  NumcolumnsSpinbox = new QSpinBox(ascii2edfDialog);
-  NumcolumnsSpinbox->setGeometry(160, 55, 70, 25);
+  NumcolumnsSpinbox = new QSpinBox;
   NumcolumnsSpinbox->setRange(1,256);
   NumcolumnsSpinbox->setValue(1);
 
-  DatastartSpinbox = new QSpinBox(ascii2edfDialog);
-  DatastartSpinbox->setGeometry(160, 90, 70, 25);
+  DatastartSpinbox = new QSpinBox;
   DatastartSpinbox->setRange(1,100);
   DatastartSpinbox->setValue(1);
 
-  SamplefreqSpinbox = new QDoubleSpinBox(ascii2edfDialog);
-  SamplefreqSpinbox->setGeometry(160, 125, 140, 25);
+  SamplefreqSpinbox = new QDoubleSpinBox;
   SamplefreqSpinbox->setDecimals(7);
   SamplefreqSpinbox->setRange(0.0000001,1000000.0);
   SamplefreqSpinbox->setSuffix(" Hz");
   SamplefreqSpinbox->setValue(1.0);
 
-  PatientnameLineEdit = new QLineEdit(ascii2edfDialog);
-  PatientnameLineEdit->setGeometry(160, 160, 540, 25);
+  PatientnameLineEdit = new QLineEdit;
   PatientnameLineEdit->setMaxLength(80);
 
-  RecordingLineEdit = new QLineEdit(ascii2edfDialog);
-  RecordingLineEdit->setGeometry(160, 195, 540, 25);
+  RecordingLineEdit = new QLineEdit;
   RecordingLineEdit->setMaxLength(80);
 
-  StartDatetimeedit = new QDateTimeEdit(ascii2edfDialog);
-  StartDatetimeedit->setGeometry(160, 230, 140, 25);
+  StartDatetimeedit = new QDateTimeEdit;
   StartDatetimeedit->setDisplayFormat("dd/MM/yyyy hh:mm:ss");
   StartDatetimeedit->setDateTime(QDateTime::currentDateTime());
 
-  autoPhysicalMaximumCheckbox = new QCheckBox(ascii2edfDialog);
-  autoPhysicalMaximumCheckbox->setGeometry(560, 265, 20, 25);
+  autoPhysicalMaximumCheckbox = new QCheckBox;
   autoPhysicalMaximumCheckbox->setTristate(false);
   autoPhysicalMaximumCheckbox->setCheckState(Qt::Checked);
 
-  SignalsTablewidget = new QTableWidget(ascii2edfDialog);
-  SignalsTablewidget->setGeometry(160, 300, 540, 140);
+  SignalsTablewidget = new QTableWidget;
   SignalsTablewidget->setSelectionMode(QAbstractItemView::NoSelection);
   SignalsTablewidget->setColumnCount(5);
-  SignalsTablewidget->setColumnWidth(0, 20);
-  SignalsTablewidget->setColumnWidth(1, 120);
-  SignalsTablewidget->setColumnWidth(2, 120);
-  SignalsTablewidget->setColumnWidth(3, 120);
-  SignalsTablewidget->setColumnWidth(4, 120);
   SignalsTablewidget->setRowCount(1);
-  SignalsTablewidget->setRowHeight(0, 25);
   SignalsTablewidget->setCellWidget(0, 0, new QCheckBox);
   ((QCheckBox *)SignalsTablewidget->cellWidget(0, 0))->setCheckState(Qt::Checked);
   SignalsTablewidget->setCellWidget(0, 1, new QLineEdit);
@@ -173,28 +123,67 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(QWidget *w_parent, char *recent_dir, char *save
   horizontallabels += "Physical dimension";
   horizontallabels += "Multiplier";
   SignalsTablewidget->setHorizontalHeaderLabels(horizontallabels);
+  SignalsTablewidget->resizeColumnsToContents();
 
-  GoButton = new QPushButton(ascii2edfDialog);
-  GoButton->setGeometry(20, 480, 75, 25);
+  GoButton = new QPushButton;
   GoButton->setText("Start");
 
-  CloseButton = new QPushButton(ascii2edfDialog);
-  CloseButton->setGeometry(160, 480, 75, 25);
+  CloseButton = new QPushButton;
   CloseButton->setText("Cancel");
 
-  SaveButton = new QPushButton(ascii2edfDialog);
-  SaveButton->setGeometry(485, 480, 75, 25);
+  SaveButton = new QPushButton;
   SaveButton->setText("Save");
   SaveButton->setToolTip("Save settings as a template");
 
-  LoadButton = new QPushButton(ascii2edfDialog);
-  LoadButton->setGeometry(625, 480, 75, 25);
+  LoadButton = new QPushButton;
   LoadButton->setText("Load");
   LoadButton->setToolTip("Load settings from a template");
 
-  helpButton = new QPushButton(ascii2edfDialog);
-  helpButton->setGeometry(20, 380, 75, 25);
+  helpButton = new QPushButton;
   helpButton->setText("Help");
+
+  QFormLayout *flayout1 = new QFormLayout;
+  flayout1->addRow("Column separator", SeparatorLineEdit);
+  flayout1->addRow("Number of columns", NumcolumnsSpinbox);
+  flayout1->addRow("Data starts at line", DatastartSpinbox);
+  flayout1->addRow("Samplefrequency", SamplefreqSpinbox);
+
+  QFormLayout *flayout2 = new QFormLayout;
+  flayout2->addRow("Subject name", PatientnameLineEdit);
+  flayout2->addRow("Recording", RecordingLineEdit);
+  flayout2->addRow("Startdate and time", StartDatetimeedit);
+  flayout2->addRow("Auto detect physical maximum", autoPhysicalMaximumCheckbox);
+
+  QFormLayout *flayout4 = new QFormLayout;
+  flayout4->addRow("Signals", SignalsTablewidget);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addLayout(flayout1);
+  hlayout1->addStretch(1000);
+  hlayout1->addLayout(vlayout3);
+
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addWidget(GoButton);
+  hlayout2->addStretch(300);
+  hlayout2->addWidget(CloseButton);
+  hlayout2->addStretch(1000);
+  hlayout2->addWidget(helpButton);
+  hlayout2->addStretch(1000);
+  hlayout2->addWidget(SaveButton);
+  hlayout2->addStretch(300);
+  hlayout2->addWidget(LoadButton);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addSpacing(10);
+  vlayout1->addLayout(hlayout1);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(flayout2);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(flayout4, 1000);
+  vlayout1->addSpacing(30);
+  vlayout1->addLayout(hlayout2);
+
+  ascii2edfDialog->setLayout(vlayout1);
 
   columns = 1;
 
@@ -249,8 +238,6 @@ void UI_ASCII2EDFapp::numofcolumnschanged(int cnt)
 
     for(i=columns; i<cnt; i++)
     {
-      SignalsTablewidget->setRowHeight(i, 25);
-
       SignalsTablewidget->setCellWidget(i, 0, new QCheckBox);
       ((QCheckBox *)SignalsTablewidget->cellWidget(i, 0))->setCheckState(Qt::Checked);
       SignalsTablewidget->setCellWidget(i, 1, new QLineEdit);
