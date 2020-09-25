@@ -41,7 +41,12 @@
 #include <QMessageBox>
 #include <QSpinBox>
 #include <QCheckBox>
+#include <QLineEdit>
 #include <QToolTip>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -75,10 +80,7 @@ private:
 
 QDialog     *annot_filter_dialog;
 
-QLabel      *annotLabel,
-            *annotNameLabel,
-            *t1Label,
-            *t2Label;
+QLineEdit   *annot_lineedit;
 
 QPushButton *CloseButton,
             *ApplyButton,

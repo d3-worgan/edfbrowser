@@ -49,47 +49,28 @@ UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, struct annotationb
 
   annots_dock = mainwindow->annotations_dock[n];
 
-  annot_filter_dialog->setMinimumSize(430, 400);
-  annot_filter_dialog->setMaximumSize(430, 400);
+  annot_filter_dialog->setMinimumSize(350, 250);
   annot_filter_dialog->setWindowTitle("Filter annotations");
   annot_filter_dialog->setModal(true);
   annot_filter_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  annotLabel = new QLabel(annot_filter_dialog);
-  annotLabel->setGeometry(20, 20, 100, 25);
-  annotLabel->setText("Filter annotation:");
-  annotLabel->setToolTip("Label of the annotation to be filtered");
+  annot_lineedit = new QLineEdit;
+  annot_lineedit->setReadOnly(true);
+  annot_lineedit->setToolTip("Label of the annotation to be filtered");
 
-  annotNameLabel = new QLabel(annot_filter_dialog);
-  annotNameLabel->setGeometry(160, 20, 200, 25);
-  annotNameLabel->setToolTip("Label of the annotation to be filtered");
-
-  t1Label = new QLabel(annot_filter_dialog);
-  t1Label->setGeometry(20, 65, 120, 25);
-  t1Label->setText("Minimum interval:");
-  t1Label->setToolTip("Minimum interval between two consegutive annotations");
-
-  t1_spinbox = new QSpinBox(annot_filter_dialog);
-  t1_spinbox->setGeometry(160, 65, 100, 25);
+  t1_spinbox = new QSpinBox;
   t1_spinbox->setRange(1, 500000);
   t1_spinbox->setSuffix(" mSec");
   t1_spinbox->setValue(filter_params->tmin);
   t1_spinbox->setToolTip("Minimum interval between two consegutive annotations");
 
-  t2Label = new QLabel(annot_filter_dialog);
-  t2Label->setGeometry(20, 110, 120, 25);
-  t2Label->setText("Maximum interval:");
-  t2Label->setToolTip("Maximum interval between two consegutive annotations");
-
-  t2_spinbox = new QSpinBox(annot_filter_dialog);
-  t2_spinbox->setGeometry(160, 110, 100, 25);
+  t2_spinbox = new QSpinBox;
   t2_spinbox->setRange(1, 500000);
   t2_spinbox->setSuffix(" mSec");
   t2_spinbox->setValue(filter_params->tmax);
   t2_spinbox->setToolTip("Maximum interval between two consegutive annotations");
 
-  invert_checkbox = new QCheckBox("Invert ", annot_filter_dialog);
-  invert_checkbox->setGeometry(20, 155, 200, 25);
+  invert_checkbox = new QCheckBox;
   invert_checkbox->setTristate(false);
   invert_checkbox->setToolTip("Invert the filter result");
   if(filter_params->invert)
@@ -101,8 +82,7 @@ UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, struct annotationb
     invert_checkbox->setCheckState(Qt::Unchecked);
   }
 
-  hide_other_checkbox = new QCheckBox("Hide other annotations ", annot_filter_dialog);
-  hide_other_checkbox->setGeometry(20, 200, 200, 25);
+  hide_other_checkbox = new QCheckBox;
   hide_other_checkbox->setTristate(false);
   hide_other_checkbox->setToolTip("Hide annotations with a different label");
   if(filter_params->hide_other)
@@ -114,8 +94,7 @@ UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, struct annotationb
     hide_other_checkbox->setCheckState(Qt::Unchecked);
   }
 
-  hide_in_list_checkbox = new QCheckBox("Filter list only ", annot_filter_dialog);
-  hide_in_list_checkbox->setGeometry(20, 245, 200, 25);
+  hide_in_list_checkbox = new QCheckBox;
   hide_in_list_checkbox->setTristate(false);
   hide_in_list_checkbox->setToolTip("Filter affects the annotationlist only, not the annotation markers in the signal window");
   if(filter_params->hide_in_list_only)
@@ -127,23 +106,43 @@ UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, struct annotationb
     hide_in_list_checkbox->setCheckState(Qt::Unchecked);
   }
 
-  ApplyButton = new QPushButton(annot_filter_dialog);
-  ApplyButton->setGeometry(20, 355, 100, 25);
+  ApplyButton = new QPushButton;
   ApplyButton->setText("Apply");
 
-  UndoButton = new QPushButton(annot_filter_dialog);
-  UndoButton->setGeometry(165, 355, 100, 25);
+  UndoButton = new QPushButton;
   UndoButton->setText("Undo");
 
-  CloseButton = new QPushButton(annot_filter_dialog);
-  CloseButton->setGeometry(310, 355, 100, 25);
+  CloseButton = new QPushButton;
   CloseButton->setText("Close");
 
   sel_annot_ptr = annot;
   strlcpy(sel_annot_str, sel_annot_ptr->description, MAX_ANNOTATION_LEN + 1);
   trim_spaces(sel_annot_str);
 
-  annotNameLabel->setText(sel_annot_str);
+  annot_lineedit->setText(sel_annot_str);
+
+  QFormLayout *flayout = new QFormLayout;
+  flayout->addRow("Filter annotation:", annot_lineedit);
+  flayout->addRow("Minimum interval:", t1_spinbox);
+  flayout->addRow("Maximum interval:", t2_spinbox);
+  flayout->addRow("Invert", invert_checkbox);
+  flayout->addRow("Hide other annotations", hide_other_checkbox);
+  flayout->addRow("Filter list only", hide_in_list_checkbox);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(ApplyButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(UndoButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(CloseButton);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addLayout(flayout);
+  vlayout1->addStretch(1000);
+  vlayout1->addSpacing(10);
+  vlayout1->addLayout(hlayout1);
+
+  annot_filter_dialog->setLayout(vlayout1);
 
   QObject::connect(CloseButton, SIGNAL(clicked()), annot_filter_dialog, SLOT(close()));
   QObject::connect(ApplyButton, SIGNAL(clicked()), this,                SLOT(apply_filter()));
