@@ -42,8 +42,7 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
                                              char *annotation,
                                              int avg__period)
 {
-  char str[1024];
-
+  char str[1024]={""};
 
   averager_curve_dialog_is_destroyed = 0;
 
@@ -190,19 +189,17 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
   hlayout1 = new QHBoxLayout;
   hlayout1->setSpacing(20);
   hlayout1->addLayout(vlayout2);
-  hlayout1->addWidget(curve1, 100);
+  hlayout1->addWidget(curve1, 1000);
 
   hlayout2 = new QHBoxLayout;
   hlayout2->setSpacing(20);
   hlayout2->addWidget(spanLabel);
-  hlayout2->addWidget(spanSlider);
-  hlayout2->addStretch(100);
+  hlayout2->addWidget(spanSlider, 1000);
 
   hlayout3 = new QHBoxLayout;
   hlayout3->setSpacing(20);
   hlayout3->addWidget(centerLabel);
-  hlayout3->addWidget(centerSlider);
-  hlayout3->addStretch(100);
+  hlayout3->addWidget(centerSlider, 1000);
 
   vlayout1 = new QVBoxLayout;
   vlayout1->setSpacing(20);

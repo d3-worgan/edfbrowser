@@ -36,13 +36,15 @@
 #include <QObject>
 #include <QWidget>
 #include <QDialog>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QSlider>
 #include <QLabel>
 #include <QString>
 #include <QMessageBox>
 #include <QCheckBox>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <string.h>
