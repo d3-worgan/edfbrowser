@@ -42,7 +42,7 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(QWidget *w_parent, char *recent_dir, char *save
   edf_format = 1;
 
   ascii2edfDialog = new QDialog;
-  ascii2edfDialog->setMinimumSize(600, 450);
+  ascii2edfDialog->setMinimumSize(550, 500);
   ascii2edfDialog->setWindowTitle("ASCII to EDF/BDF converter");
   ascii2edfDialog->setModal(true);
   ascii2edfDialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -154,9 +154,6 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(QWidget *w_parent, char *recent_dir, char *save
   flayout2->addRow("Startdate and time", StartDatetimeedit);
   flayout2->addRow("Auto detect physical maximum", autoPhysicalMaximumCheckbox);
 
-  QFormLayout *flayout4 = new QFormLayout;
-  flayout4->addRow("Signals", SignalsTablewidget);
-
   QHBoxLayout *hlayout1 = new QHBoxLayout;
   hlayout1->addLayout(flayout1);
   hlayout1->addStretch(1000);
@@ -179,7 +176,7 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(QWidget *w_parent, char *recent_dir, char *save
   vlayout1->addSpacing(20);
   vlayout1->addLayout(flayout2);
   vlayout1->addSpacing(20);
-  vlayout1->addLayout(flayout4, 1000);
+  vlayout1->addWidget(SignalsTablewidget, 1000);
   vlayout1->addSpacing(30);
   vlayout1->addLayout(hlayout2);
 
