@@ -67,7 +67,6 @@ UI_Annotationswindow::UI_Annotationswindow(struct edfhdrblock *e_hdr, QWidget *w
   dialog1 = new QDialog;
 
   checkbox1 = new QCheckBox("Relative ");
-  checkbox1->setGeometry(2, 2, 10, 10);
   checkbox1->setTristate(false);
   checkbox1->setCheckState(Qt::Checked);
 
@@ -78,12 +77,10 @@ UI_Annotationswindow::UI_Annotationswindow(struct edfhdrblock *e_hdr, QWidget *w
   search_line_edit->setMaxLength(16);
 
   checkbox2 = new QCheckBox("Inv.");
-  checkbox2->setGeometry(2, 2, 10, 10);
   checkbox2->setTristate(false);
   checkbox2->setCheckState(Qt::Unchecked);
 
   more_button = new QPushButton("More");
-  more_button->setMaximumWidth(40);
 
   list = new QListWidget(dialog1);
   list->setFont(*mainwindow->monofont);
@@ -122,17 +119,16 @@ UI_Annotationswindow::UI_Annotationswindow(struct edfhdrblock *e_hdr, QWidget *w
   list->insertAction(NULL, show_stats_act);
   list->insertAction(NULL, show_heart_rate_act);
 
-  h_layout = new QHBoxLayout;
+  QHBoxLayout *h_layout = new QHBoxLayout;
   h_layout->addWidget(checkbox1);
   h_layout->addWidget(label1);
-  h_layout->addWidget(search_line_edit);
+  h_layout->addWidget(search_line_edit, 1000);
   h_layout->addWidget(checkbox2);
   h_layout->addWidget(more_button);
 
-  v_layout = new QVBoxLayout(dialog1);
+  QVBoxLayout *v_layout = new QVBoxLayout(dialog1);
   v_layout->addLayout(h_layout);
   v_layout->addWidget(list);
-  v_layout->setSpacing(1);
 
   delayed_list_filter_update_timer = new QTimer(this);
   delayed_list_filter_update_timer->setSingleShot(true);

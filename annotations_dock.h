@@ -45,12 +45,15 @@
 #include <QTimer>
 #include <QString>
 #include <QDialog>
-#include <QVBoxLayout>
 #include <QCheckBox>
 #include <QAction>
 #include <QMessageBox>
 #include <QVariant>
 #include <QPushButton>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -99,10 +102,6 @@ private:
   struct edfhdrblock *edf_hdr;
 
   QDialog *dialog1;
-
-  QHBoxLayout *h_layout;
-
-  QVBoxLayout *v_layout;
 
   QCheckBox *checkbox1,
             *checkbox2;
