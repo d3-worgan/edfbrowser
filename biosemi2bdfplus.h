@@ -44,6 +44,10 @@
 #include <QMessageBox>
 #include <QString>
 #include <QPixmap>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -72,11 +76,6 @@ public:
   UI_Mainwindow *mainwindow;
 
 private:
-
-QLabel       *label1[16],
-             *label2,
-             *label3,
-             *label4;
 
 QLineEdit    *lineEdit1[16];
 

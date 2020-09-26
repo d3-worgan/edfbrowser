@@ -31,14 +31,11 @@
 
 
 
-
-
 UI_BIOSEMI2BDFPLUSwindow::UI_BIOSEMI2BDFPLUSwindow(QWidget *w_parent)
 {
   int i;
 
-  char str[128];
-
+  char str[128]={""};
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
@@ -47,60 +44,83 @@ UI_BIOSEMI2BDFPLUSwindow::UI_BIOSEMI2BDFPLUSwindow(QWidget *w_parent)
 
   myobjectDialog = new QDialog;
 
-  myobjectDialog->setMinimumSize(600, 630);
-  myobjectDialog->setMaximumSize(600, 630);
+  myobjectDialog->setMinimumSize(500, 530);
   myobjectDialog->setWindowTitle("Biosemi to BDF+ converter");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  label2 = new QLabel(myobjectDialog);
-  label2->setGeometry(20, 20, 200, 25);
+  QLabel *label2 = new QLabel;
   label2->setText("Trigger Input descriptions:");
 
-  label3 = new QLabel(myobjectDialog);
-  label3->setGeometry(290, 350, 200, 25);
+  QLabel *label3 = new QLabel;
   label3->setText("Annotations will be generated at");
 
-  label4 = new QLabel(myobjectDialog);
-  label4->setGeometry(290, 440, 200, 25);
+  QLabel *label4 = new QLabel;
   label4->setText("of trigger input.");
+
+  QFormLayout *flayout = new QFormLayout;
 
   for(i=0; i<16; i++)
   {
-    label1[i] = new QLabel(myobjectDialog);
-    label1[i]->setGeometry(20, 50 + (i * 30), 20, 25);
     snprintf(str, 128, "%i", i + 1);
-    label1[i]->setText(str);
 
-    lineEdit1[i] = new QLineEdit(myobjectDialog);
-    lineEdit1[i]->setGeometry(70, 50 + (i * 30), 120, 25);
+    lineEdit1[i] = new QLineEdit;
     snprintf(str, 128, "Trigger Input %i", i + 1);
     lineEdit1[i]->setText(str);
     lineEdit1[i]->setMaxLength(16);
+
+    flayout->addRow(str, lineEdit1[i]);
   }
 
-  radioButton1 = new QRadioButton(myobjectDialog);
-  radioButton1->setGeometry(290, 385, 150, 20);
+  radioButton1 = new QRadioButton;
   radioButton1->setText("rising edge");
   radioButton1->setChecked(true);
 
-  radioButton2 = new QRadioButton(myobjectDialog);
-  radioButton2->setGeometry(290, 415, 150, 20);
+  radioButton2 = new QRadioButton;
   radioButton2->setText("falling edge");
 
-  checkBox1 = new QCheckBox(myobjectDialog);
-  checkBox1->setGeometry(290, 500, 200, 20);
+  checkBox1 = new QCheckBox;
   checkBox1->setText("measure event duration");
   checkBox1->setTristate(false);
   checkBox1->setChecked(false);
 
-  selectButton = new QPushButton(myobjectDialog);
-  selectButton->setGeometry(20, 584, 100, 25);
+  selectButton = new QPushButton;
   selectButton->setText("Select File");
 
-  closeButton = new QPushButton(myobjectDialog);
-  closeButton->setGeometry(480, 584, 100, 25);
+  closeButton = new QPushButton;
   closeButton->setText("Close");
+
+  QVBoxLayout *vlayout2 = new QVBoxLayout;
+  vlayout2->addWidget(label2);
+  vlayout2->addLayout(flayout);
+
+  QVBoxLayout *vlayout3 = new QVBoxLayout;
+  vlayout3->addStretch(1000);
+  vlayout3->addWidget(label3);
+  vlayout3->addWidget(radioButton1);
+  vlayout3->addWidget(radioButton2);
+  vlayout3->addWidget(label4);
+  vlayout3->addStretch(400);
+  vlayout3->addWidget(checkBox1);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addLayout(vlayout2);
+  hlayout1->addStretch(1000);
+  hlayout1->addLayout(vlayout3);
+  hlayout1->addStretch(1000);
+
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addWidget(selectButton);
+  hlayout2->addStretch(1000);
+  hlayout2->addWidget(closeButton);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addLayout(hlayout1);
+  vlayout1->addStretch(1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout2);
+
+  myobjectDialog->setLayout(vlayout1);
 
   QObject::connect(selectButton,   SIGNAL(clicked()),   this,           SLOT(SelectFileButton()));
   QObject::connect(closeButton,    SIGNAL(clicked()),   myobjectDialog, SLOT(close()));
