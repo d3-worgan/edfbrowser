@@ -46,24 +46,17 @@ UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, int annot_nr, struct edf
   averager_dialog = new QDialog(w_parent);
 
   averager_dialog->setMinimumSize(600, 400);
-  averager_dialog->setMaximumSize(600, 400);
   averager_dialog->setWindowTitle("Average waveforms");
   averager_dialog->setModal(true);
   averager_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  annotLabel = new QLabel(averager_dialog);
-  annotLabel->setGeometry(20, 20, 100, 25);
-  annotLabel->setText("Use annotation:");
+  annot_name_line_edit = new QLineEdit;
+  annot_name_line_edit->setReadOnly(true);
 
-  annotNameLabel = new QLabel(averager_dialog);
-  annotNameLabel->setGeometry(130, 20, 200, 25);
-
-  signalLabel = new QLabel(averager_dialog);
-  signalLabel->setGeometry(340, 20, 100, 25);
+  QLabel *signalLabel = new QLabel;
   signalLabel->setText("Select signal(s):");
 
-  list = new QListWidget(averager_dialog);
-  list->setGeometry(450, 20, 130, 360);
+  list = new QListWidget;
   list->setSelectionBehavior(QAbstractItemView::SelectRows);
   list->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
@@ -73,65 +66,39 @@ UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, int annot_nr, struct edf
 
   time2.setHMS((recording_duration / 3600) % 24, (recording_duration % 3600) / 60, recording_duration % 60, 0);
 
-  time1Label = new QLabel(averager_dialog);
-  time1Label->setGeometry(20, 55, 130, 50);
-  time1Label->setText("From\n(d:hh:mm:ss.mmm)");
-
-  day_spinbox1 = new QSpinBox(averager_dialog);
-  day_spinbox1->setGeometry(160, 65, 35, 25);
+  day_spinbox1 = new QSpinBox;
   day_spinbox1->setRange(0, 9);
   day_spinbox1->setToolTip("Days (24-hour units)");
 
-  timeEdit1 = new QTimeEdit(averager_dialog);
-  timeEdit1->setGeometry(200, 65, 110, 25);
+  timeEdit1 = new QTimeEdit;
   timeEdit1->setDisplayFormat("hh:mm:ss.zzz");
   timeEdit1->setMinimumTime(QTime(0, 0, 0, 0));
 
-  time2Label = new QLabel(averager_dialog);
-  time2Label->setGeometry(20, 100, 130, 50);
-  time2Label->setText("To\n(d:hh:mm:ss.mmm)");
-
-  day_spinbox2 = new QSpinBox(averager_dialog);
-  day_spinbox2->setGeometry(160, 110, 35, 25);
+  day_spinbox2 = new QSpinBox;
   day_spinbox2->setRange(0, 9);
   day_spinbox2->setToolTip("Days (24-hour units)");
   day_spinbox2->setValue((int)(recording_duration / (86400)));
 
-  timeEdit2 = new QTimeEdit(averager_dialog);
-  timeEdit2->setGeometry(200, 110, 110, 25);
+  timeEdit2 = new QTimeEdit;
   timeEdit2->setDisplayFormat("hh:mm:ss.zzz");
   timeEdit2->setMinimumTime(QTime(0, 0, 0, 0));
   timeEdit2->setTime(time2);
 
-  ratioLabel = new QLabel(averager_dialog);
-  ratioLabel->setGeometry(20, 155, 100, 75);
-  ratioLabel->setText("Ratio of time\n"
-                      "before and after\n"
-                      "trigger:");
-
-  ratioBox = new QComboBox(averager_dialog);
-  ratioBox->setGeometry(130, 180, 100, 25);
+  ratioBox = new QComboBox;
   ratioBox->addItem("10 / 90");
   ratioBox->addItem("25 / 75");
   ratioBox->addItem("50 / 50");
   ratioBox->setCurrentIndex(mainwindow->average_ratio);
 
-  bufsizeLabel = new QLabel(averager_dialog);
-  bufsizeLabel->setGeometry(20, 250, 100, 25);
-  bufsizeLabel->setText("Average period:");
-
-  avg_periodspinbox = new QSpinBox(averager_dialog);
-  avg_periodspinbox->setGeometry(130, 250, 100, 25);
+  avg_periodspinbox = new QSpinBox;
   avg_periodspinbox->setRange(10, 300000);
   avg_periodspinbox->setSuffix(" mSec");
   avg_periodspinbox->setValue(mainwindow->average_period);
 
-  CloseButton = new QPushButton(averager_dialog);
-  CloseButton->setGeometry(20, 355, 100, 25);
+  CloseButton = new QPushButton;
   CloseButton->setText("Cancel");
 
-  StartButton = new QPushButton(averager_dialog);
-  StartButton->setGeometry(310, 355, 100, 25);
+  StartButton = new QPushButton;
   StartButton->setText("Start");
 
   for(i=0; i<mainwindow->signalcomps; i++)
@@ -153,7 +120,51 @@ UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, int annot_nr, struct edf
   strlcpy(annot_str, annot_ptr->description, MAX_ANNOTATION_LEN + 1);
   trim_spaces(annot_str);
 
-  annotNameLabel->setText(annot_str);
+  annot_name_line_edit->setText(annot_str);
+
+  QHBoxLayout *hlayout3 = new QHBoxLayout;
+  hlayout3->addWidget(day_spinbox1);
+  hlayout3->addWidget(timeEdit1);
+
+  QHBoxLayout *hlayout4 = new QHBoxLayout;
+  hlayout4->addWidget(day_spinbox2);
+  hlayout4->addWidget(timeEdit2);
+
+  QFormLayout *flayout = new QFormLayout;
+  flayout->addRow(" ", (QWidget *)NULL);
+  flayout->addRow("Use annotation:", annot_name_line_edit);
+  flayout->addRow(" ", (QWidget *)NULL);
+  flayout->addRow("From: (d:hh:mm:ss.mmm)", hlayout3);
+  flayout->addRow(" ", (QWidget *)NULL);
+  flayout->addRow("To: (d:hh:mm:ss.mmm)", hlayout4);
+  flayout->addRow(" ", (QWidget *)NULL);
+  flayout->addRow("Ratio of time before and after trigger:", ratioBox);
+  flayout->addRow(" ", (QWidget *)NULL);
+  flayout->addRow("Average period:", avg_periodspinbox);
+  flayout->addRow(" ", (QWidget *)NULL);
+
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addWidget(CloseButton);
+  hlayout2->addStretch(1000);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addLayout(flayout);
+  vlayout1->addStretch(1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout2);
+
+  QVBoxLayout *vlayout2 = new QVBoxLayout;
+  vlayout2->addWidget(signalLabel);
+  vlayout2->addStretch(1000);
+  vlayout2->addWidget(StartButton);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addLayout(vlayout1);
+  hlayout1->addSpacing(20);
+  hlayout1->addLayout(vlayout2);
+  hlayout1->addWidget(list);
+
+  averager_dialog->setLayout(hlayout1);
 
   QObject::connect(CloseButton, SIGNAL(clicked()), averager_dialog, SLOT(close()));
   QObject::connect(StartButton, SIGNAL(clicked()), this,            SLOT(startButtonClicked()));

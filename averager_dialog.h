@@ -47,6 +47,11 @@
 #include <QTimeEdit>
 #include <QSpinBox>
 #include <QToolTip>
+#include <QLineEdit>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -80,13 +85,7 @@ private:
 
 QDialog     *averager_dialog;
 
-QLabel      *annotLabel,
-            *annotNameLabel,
-            *signalLabel,
-            *ratioLabel,
-            *bufsizeLabel,
-            *time1Label,
-            *time2Label;
+QLineEdit   *annot_name_line_edit;
 
 QPushButton *CloseButton,
             *StartButton;
