@@ -7,8 +7,6 @@
 #include <QPixmap>
 #include <QSplashScreen>
 #include <QTimer>
-#include <QStyle>
-#include <QStyleFactory>
 #include <QPen>
 #include <QColor>
 #include <QFont>
@@ -97,11 +95,6 @@ int main(int argc, char *argv[])
     evlp.exec();
   }
 
-#if QT_VERSION >= 0x050000
-#ifdef Q_OS_LINUX
-  qApp->setStyle(QStyleFactory::create("Fusion"));
-#endif
-#endif
   qApp->setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 5; }");
 
   class UI_Mainwindow MainWindow;

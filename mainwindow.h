@@ -37,21 +37,9 @@
 #include <QFont>
 #include <QToolBar>
 #include <QSlider>
-#include <QStyle>
 #include <QCloseEvent>
 #include <QDialog>
 #include <QLabel>
-
-#if QT_VERSION < 0x050000
-  #include <QPlastiqueStyle>
-  #include <QGtkStyle>
-  #include <QWindowsStyle>
-  #ifdef Q_OS_MAC
-    #include <QMacStyle>
-  #endif
-#else
-  #include <QStyleFactory>
-#endif
 
 #ifdef Q_OS_WIN32
   #include <windows.h>

@@ -40,11 +40,6 @@
 #include <QFileDialog>
 #include <QCheckBox>
 #include <QCursor>
-#include <QStyle>
-#if QT_VERSION < 0x050000
-#include <QPlastiqueStyle>
-#include <QWindowsStyle>
-#endif
 #include <QMessageBox>
 #include <QString>
 #include <QPixmap>

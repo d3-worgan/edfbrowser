@@ -42,7 +42,6 @@
 #include <QListWidgetItem>
 #include <QLabel>
 #include <QFrame>
-#include <QStyle>
 #include <QPushButton>
 #include <QString>
 #include <QStringList>

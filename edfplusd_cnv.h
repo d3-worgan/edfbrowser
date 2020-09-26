@@ -37,11 +37,6 @@
 #include <QTextEdit>
 #include <QFileDialog>
 #include <QProgressDialog>
-#include <QStyle>
-#if QT_VERSION < 0x050000
-#include <QPlastiqueStyle>
-#include <QWindowsStyle>
-#endif
 #include <QString>
 #include <QByteArray>
 
