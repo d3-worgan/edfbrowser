@@ -48,6 +48,10 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QTextEdit>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdlib.h>
 #include <stdio.h>

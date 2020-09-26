@@ -41,6 +41,10 @@
 #include <QProgressDialog>
 #include <QString>
 #include <QByteArray>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>

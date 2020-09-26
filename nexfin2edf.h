@@ -44,6 +44,10 @@
 #include <QMessageBox>
 #include <QString>
 #include <QPixmap>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -70,10 +74,6 @@ QDialog       *myobjectDialog;
 
 QPushButton   *pushButton1,
               *pushButton2;
-
-QLabel        *PatientnameLabel,
-              *RecordingLabel,
-              *DatetimeLabel;
 
 QLineEdit     *PatientnameLineEdit,
               *RecordingLineEdit;

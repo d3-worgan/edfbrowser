@@ -44,26 +44,34 @@ UI_SCPECG2EDFwindow::UI_SCPECG2EDFwindow(char *recent_dir, char *save_dir)
   myobjectDialog = new QDialog;
 
   myobjectDialog->setMinimumSize(600, 480);
-  myobjectDialog->setMaximumSize(600, 480);
   myobjectDialog->setWindowTitle("SCP-ECG to EDF+ converter");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  pushButton1 = new QPushButton(myobjectDialog);
-  pushButton1->setGeometry(20, 430, 100, 25);
+  pushButton1 = new QPushButton;
   pushButton1->setText("Select File");
 
-  pushButton2 = new QPushButton(myobjectDialog);
-  pushButton2->setGeometry(480, 430, 100, 25);
+  pushButton2 = new QPushButton;
   pushButton2->setText("Close");
 
-  textEdit1 = new QTextEdit(myobjectDialog);
-  textEdit1->setGeometry(20, 20, 560, 380);
+  textEdit1 = new QTextEdit;
   textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
   textEdit1->append("SCP-ECG to EDF+ converter.\n");
 
   crc_ccitt_init();
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(pushButton1);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(pushButton2);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addWidget(textEdit1, 1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  myobjectDialog->setLayout(vlayout1);
 
   QObject::connect(pushButton1, SIGNAL(clicked()), this, SLOT(SelectFileButton()));
   QObject::connect(pushButton2, SIGNAL(clicked()), myobjectDialog, SLOT(close()));

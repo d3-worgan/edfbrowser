@@ -38,62 +38,65 @@ UI_WAV2EDFwindow::UI_WAV2EDFwindow(char *recent_dir, char *save_dir)
   myobjectDialog = new QDialog;
 
   myobjectDialog->setMinimumSize(600, 300);
-  myobjectDialog->setMaximumSize(600, 300);
   myobjectDialog->setWindowTitle("Wave to EDF converter");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  PatientnameLabel = new QLabel(myobjectDialog);
-  PatientnameLabel->setGeometry(20, 20, 140, 25);
-  PatientnameLabel->setText("Subject");
-
-  RecordingLabel = new QLabel(myobjectDialog);
-  RecordingLabel->setGeometry(20, 55, 140, 25);
-  RecordingLabel->setText("Recording");
-
-  DatetimeLabel = new QLabel(myobjectDialog);
-  DatetimeLabel->setGeometry(20, 90, 140, 25);
-  DatetimeLabel->setText("Startdate and time");
-
-  PhysDimLabel = new QLabel(myobjectDialog);
-  PhysDimLabel->setGeometry(20, 125, 140, 25);
-  PhysDimLabel->setText("Physical dimension");
-
-  PhysMaxLabel = new QLabel(myobjectDialog);
-  PhysMaxLabel->setGeometry(20, 160, 140, 25);
-  PhysMaxLabel->setText("Physical maximum");
-
-  PatientnameLineEdit = new QLineEdit(myobjectDialog);
-  PatientnameLineEdit->setGeometry(160, 20, 420, 25);
+  PatientnameLineEdit = new QLineEdit;
   PatientnameLineEdit->setMaxLength(80);
 
-  RecordingLineEdit = new QLineEdit(myobjectDialog);
-  RecordingLineEdit->setGeometry(160, 55, 420, 25);
+  RecordingLineEdit = new QLineEdit;
   RecordingLineEdit->setMaxLength(80);
 
-  StartDatetimeedit = new QDateTimeEdit(myobjectDialog);
-  StartDatetimeedit->setGeometry(160, 90, 140, 25);
+  StartDatetimeedit = new QDateTimeEdit;
   StartDatetimeedit->setDisplayFormat("dd/MM/yyyy hh:mm:ss");
   StartDatetimeedit->setDateTime(QDateTime::currentDateTime());
 
-  PhysDimLineEdit = new QLineEdit(myobjectDialog);
-  PhysDimLineEdit->setGeometry(160, 125, 140, 25);
+  PhysDimLineEdit = new QLineEdit;
   PhysDimLineEdit->setMaxLength(8);
   PhysDimLineEdit->setText("mV");
 
-  PhysMaxSpinBox = new QDoubleSpinBox(myobjectDialog);
-  PhysMaxSpinBox->setGeometry(160, 160, 140, 25);
+  PhysMaxSpinBox = new QDoubleSpinBox;
   PhysMaxSpinBox->setDecimals(5);
   PhysMaxSpinBox->setRange(1.0, 1000000.0);
   PhysMaxSpinBox->setValue(2000.0);
 
-  pushButton1 = new QPushButton(myobjectDialog);
-  pushButton1->setGeometry(20, 250, 100, 25);
+  pushButton1 = new QPushButton;
   pushButton1->setText("Select File");
 
-  pushButton2 = new QPushButton(myobjectDialog);
-  pushButton2->setGeometry(480, 250, 100, 25);
+  pushButton2 = new QPushButton;
   pushButton2->setText("Close");
+
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addWidget(StartDatetimeedit);
+  hlayout2->addStretch(1000);
+
+  QHBoxLayout *hlayout3 = new QHBoxLayout;
+  hlayout3->addWidget(PhysDimLineEdit);
+  hlayout3->addStretch(1000);
+
+  QHBoxLayout *hlayout4 = new QHBoxLayout;
+  hlayout4->addWidget(PhysMaxSpinBox);
+  hlayout4->addStretch(1000);
+
+  QFormLayout *flayout =  new QFormLayout;
+  flayout->addRow("Subject", PatientnameLineEdit);
+  flayout->addRow("Recording", RecordingLineEdit);
+  flayout->addRow("Startdate and time", hlayout2);
+  flayout->addRow("Physical dimension", hlayout3);
+  flayout->addRow("Physical maximum", hlayout4);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(pushButton1);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(pushButton2);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addLayout(flayout, 1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  myobjectDialog->setLayout(vlayout1);
 
   QObject::connect(pushButton1, SIGNAL(clicked()), this,           SLOT(SelectFileButton()));
   QObject::connect(pushButton2, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
