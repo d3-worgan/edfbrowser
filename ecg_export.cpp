@@ -37,18 +37,15 @@ UI_ECGExport::UI_ECGExport(QWidget *w_parent)
   myobjectDialog = new QDialog(w_parent);
 
   myobjectDialog->setMinimumSize(400, 445);
-  myobjectDialog->setMaximumSize(400, 445);
   myobjectDialog->setWindowTitle("Export RR-intervals");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  list = new QListWidget(myobjectDialog);
-  list->setGeometry(20, 20, 130, 350);
+  list = new QListWidget;
   list->setSelectionBehavior(QAbstractItemView::SelectRows);
   list->setSelectionMode(QAbstractItemView::SingleSelection);
 
-  groupBox1 = new QGroupBox(myobjectDialog);
-  groupBox1->setGeometry(170, 20, 210, 120);
+  groupBox1 = new QGroupBox;
   groupBox1->setTitle("Output format");
 
   radioButton1 = new QRadioButton("RR interval");
@@ -57,13 +54,11 @@ UI_ECGExport::UI_ECGExport(QWidget *w_parent)
   radioButton2->setChecked(true);
 
   checkBox1 = new QCheckBox("Whole recording", myobjectDialog);
-  checkBox1->setGeometry(170, 160, 210, 25);
   checkBox1->setTristate(false);
 
   checkBox2 = new QCheckBox("Don't write to file,\n"
                             "import as annotations instead",
                             myobjectDialog);
-  checkBox2->setGeometry(170, 200, 210, 40);
   checkBox2->setTristate(false);
 
   vbox1 = new QVBoxLayout;
@@ -73,19 +68,45 @@ UI_ECGExport::UI_ECGExport(QWidget *w_parent)
 
   groupBox1->setLayout(vbox1);
 
-  startButton = new QPushButton(myobjectDialog);
-  startButton->setGeometry(20, 400, 150, 25);
+  startButton = new QPushButton;
   startButton->setText("Import/Export");
 
-  cancelButton = new QPushButton(myobjectDialog);
-  cancelButton->setGeometry(280, 400, 100, 25);
+  cancelButton = new QPushButton;
   cancelButton->setText("Cancel");
 
-  helpButton = new QPushButton(myobjectDialog);
-  helpButton->setGeometry(280, 300, 100, 25);
+  helpButton = new QPushButton;
   helpButton->setText("Help");
 
   load_signalcomps();
+
+  QHBoxLayout *hlayout3 = new QHBoxLayout;
+  hlayout3->addStretch(1000);
+  hlayout3->addWidget(helpButton);
+
+  QVBoxLayout *vlayout2 = new QVBoxLayout;
+  vlayout2->addWidget(groupBox1);
+  vlayout2->addSpacing(20);
+  vlayout2->addWidget(checkBox1);
+  vlayout2->addWidget(checkBox2);
+  vlayout2->addStretch(1000);
+  vlayout2->addLayout(hlayout3);
+  vlayout2->addStretch(1000);
+
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addWidget(list, 1000);
+  hlayout2->addLayout(vlayout2);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(startButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(cancelButton);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addLayout(hlayout2);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  myobjectDialog->setLayout(vlayout1);
 
   QObject::connect(cancelButton, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
   QObject::connect(startButton,  SIGNAL(clicked()), this,           SLOT(Export_RR_intervals()));

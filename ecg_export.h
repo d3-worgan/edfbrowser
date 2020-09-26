@@ -43,7 +43,6 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QGroupBox>
-#include <QVBoxLayout>
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QList>
@@ -53,6 +52,10 @@
 #include <QCheckBox>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>
