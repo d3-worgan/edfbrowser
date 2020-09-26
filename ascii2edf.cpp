@@ -123,6 +123,8 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(QWidget *w_parent, char *recent_dir, char *save
   horizontallabels += "Physical dimension";
   horizontallabels += "Multiplier";
   SignalsTablewidget->setHorizontalHeaderLabels(horizontallabels);
+  SignalsTablewidget->setToolTip("The rows in this list represent the columns in the ASCII file.\n"
+                                 "Uncheck a row if you want to exclude that column.");
   SignalsTablewidget->resizeColumnsToContents();
 
   GoButton = new QPushButton;

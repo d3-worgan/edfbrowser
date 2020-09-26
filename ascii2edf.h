@@ -56,6 +56,7 @@
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QFormLayout>
+#include <QToolTip>
 
 #include <stdio.h>
 #include <stdlib.h>
