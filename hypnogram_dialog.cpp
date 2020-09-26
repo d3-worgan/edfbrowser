@@ -42,70 +42,52 @@ UI_hypnogram_window::UI_hypnogram_window(QWidget *w_parent, struct edfhdrblock *
 
   myobjectDialog = new QDialog;
 
-  myobjectDialog->setMinimumSize(600, 525);
-  myobjectDialog->setMaximumSize(600, 525);
+  myobjectDialog->setMinimumSize(400, 400);
   myobjectDialog->setWindowTitle("Hypnogram");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  stage_label = new QLabel(myobjectDialog);
-  stage_label->setGeometry(20, 20, 150, 25);
+  stage_label = new QLabel;
   stage_label->setText("Stage");
   stage_label->setToolTip("The labels as how they will be displayed in the hypnogram");
 
-  annot_label = new QLabel(myobjectDialog);
-  annot_label->setGeometry(200, 20, 150, 25);
+  annot_label = new QLabel;
   annot_label->setText("Annotation");
   annot_label->setToolTip("The annotations that will be mapped to the labels in the left column");
 
-  stage1_edit = new QLineEdit(myobjectDialog);
-  stage1_edit->setGeometry(20, 65, 150, 25);
+  stage1_edit = new QLineEdit;
   stage1_edit->setToolTip("The label as how it will be displayed in the hypnogram");
-  stage2_edit = new QLineEdit(myobjectDialog);
-  stage2_edit->setGeometry(20, 110, 150, 25);
+  stage2_edit = new QLineEdit;
   stage2_edit->setToolTip("The label as how it will be displayed in the hypnogram");
-  stage3_edit = new QLineEdit(myobjectDialog);
-  stage3_edit->setGeometry(20, 155, 150, 25);
+  stage3_edit = new QLineEdit;
   stage3_edit->setToolTip("The label as how it will be displayed in the hypnogram");
-  stage4_edit = new QLineEdit(myobjectDialog);
-  stage4_edit->setGeometry(20, 200, 150, 25);
+  stage4_edit = new QLineEdit;
   stage4_edit->setToolTip("The label as how it will be displayed in the hypnogram");
-  stage5_edit = new QLineEdit(myobjectDialog);
-  stage5_edit->setGeometry(20, 245, 150, 25);
+  stage5_edit = new QLineEdit;
   stage5_edit->setToolTip("The label as how it will be displayed in the hypnogram");
-  stage6_edit = new QLineEdit(myobjectDialog);
-  stage6_edit->setGeometry(20, 290, 150, 25);
+  stage6_edit = new QLineEdit;
   stage6_edit->setToolTip("The label as how it will be displayed in the hypnogram");
 
-  annot1_edit = new QLineEdit(myobjectDialog);
-  annot1_edit->setGeometry(200, 65, 150, 25);
+  annot1_edit = new QLineEdit;
   annot1_edit->setToolTip("The annotation that will be mapped to the label in the left column");
-  annot2_edit = new QLineEdit(myobjectDialog);
-  annot2_edit->setGeometry(200, 110, 150, 25);
+  annot2_edit = new QLineEdit;
   annot2_edit->setToolTip("The annotation that will be mapped to the label in the left column");
-  annot3_edit = new QLineEdit(myobjectDialog);
-  annot3_edit->setGeometry(200, 155, 150, 25);
+  annot3_edit = new QLineEdit;
   annot3_edit->setToolTip("The annotation that will be mapped to the label in the left column");
-  annot4_edit = new QLineEdit(myobjectDialog);
-  annot4_edit->setGeometry(200, 200, 150, 25);
+  annot4_edit = new QLineEdit;
   annot4_edit->setToolTip("The annotation that will be mapped to the label in the left column");
-  annot5_edit = new QLineEdit(myobjectDialog);
-  annot5_edit->setGeometry(200, 245, 150, 25);
+  annot5_edit = new QLineEdit;
   annot5_edit->setToolTip("The annotation that will be mapped to the label in the left column");
-  annot6_edit = new QLineEdit(myobjectDialog);
-  annot6_edit->setGeometry(200, 290, 150, 25);
+  annot6_edit = new QLineEdit;
   annot6_edit->setToolTip("The annotation that will be mapped to the label in the left column");
 
-  close_button = new QPushButton(myobjectDialog);
-  close_button->setGeometry(20, 470, 100, 25);
+  close_button = new QPushButton;
   close_button->setText("Close");
 
-  default_button = new QPushButton(myobjectDialog);
-  default_button->setGeometry(250, 470, 100, 25);
+  default_button = new QPushButton;
   default_button->setText("Default");
 
-  start_button = new QPushButton(myobjectDialog);
-  start_button->setGeometry(480, 470, 100, 25);
+  start_button = new QPushButton;
   start_button->setText("Start");
 
   stage1_edit->setText(mainwindow->hypnogram_stage_name[0]);
@@ -122,9 +104,48 @@ UI_hypnogram_window::UI_hypnogram_window(QWidget *w_parent, struct edfhdrblock *
   annot5_edit->setText(mainwindow->hypnogram_annot_name[4]);
   annot6_edit->setText(mainwindow->hypnogram_annot_name[5]);
 
-  QObject::connect(close_button,         SIGNAL(clicked()),  myobjectDialog, SLOT(close()));
-  QObject::connect(default_button,       SIGNAL(clicked()),            this, SLOT(default_button_clicked()));
-  QObject::connect(start_button,         SIGNAL(clicked()),            this, SLOT(start_button_clicked()));
+  QVBoxLayout *vlayout2 = new QVBoxLayout;
+  vlayout2->addWidget(stage_label);
+  vlayout2->addWidget(stage1_edit);
+  vlayout2->addWidget(stage2_edit);
+  vlayout2->addWidget(stage3_edit);
+  vlayout2->addWidget(stage4_edit);
+  vlayout2->addWidget(stage5_edit);
+  vlayout2->addWidget(stage6_edit);
+
+  QVBoxLayout *vlayout3 = new QVBoxLayout;
+  vlayout3->addWidget(annot_label);
+  vlayout3->addWidget(annot1_edit);
+  vlayout3->addWidget(annot2_edit);
+  vlayout3->addWidget(annot3_edit);
+  vlayout3->addWidget(annot4_edit);
+  vlayout3->addWidget(annot5_edit);
+  vlayout3->addWidget(annot6_edit);
+
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addLayout(vlayout2);
+  hlayout2->addStretch(100);
+  hlayout2->addLayout(vlayout3);
+  hlayout2->addStretch(1000);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(close_button);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(default_button);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(start_button);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addLayout(hlayout2);
+  vlayout1->addStretch(1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  myobjectDialog->setLayout(vlayout1);
+
+  QObject::connect(close_button,   SIGNAL(clicked()), myobjectDialog, SLOT(close()));
+  QObject::connect(default_button, SIGNAL(clicked()),           this, SLOT(default_button_clicked()));
+  QObject::connect(start_button,   SIGNAL(clicked()),           this, SLOT(start_button_clicked()));
 
   myobjectDialog->exec();
 }

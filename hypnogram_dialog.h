@@ -56,8 +56,11 @@
 #include <QPen>
 #include <QColor>
 #include <QDockWidget>
-#include <QGridLayout>
 #include <QToolTip>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdlib.h>
 #include <stdio.h>

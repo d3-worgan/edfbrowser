@@ -38,44 +38,43 @@ UI_FINO2EDFwindow::UI_FINO2EDFwindow(char *recent_dir, char *save_dir)
   myobjectDialog = new QDialog;
 
   myobjectDialog->setMinimumSize(600, 240);
-  myobjectDialog->setMaximumSize(600, 240);
   myobjectDialog->setWindowTitle("Finometer to EDF converter");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  PatientnameLabel = new QLabel(myobjectDialog);
-  PatientnameLabel->setGeometry(20, 20, 140, 25);
-  PatientnameLabel->setText("Subject name");
-
-  RecordingLabel = new QLabel(myobjectDialog);
-  RecordingLabel->setGeometry(20, 55, 140, 25);
-  RecordingLabel->setText("Recording");
-
-  DatetimeLabel = new QLabel(myobjectDialog);
-  DatetimeLabel->setGeometry(20, 90, 140, 25);
-  DatetimeLabel->setText("Startdate and time");
-
-  PatientnameLineEdit = new QLineEdit(myobjectDialog);
-  PatientnameLineEdit->setGeometry(160, 20, 420, 25);
+  PatientnameLineEdit = new QLineEdit;
   PatientnameLineEdit->setMaxLength(80);
 
-  RecordingLineEdit = new QLineEdit(myobjectDialog);
-  RecordingLineEdit->setGeometry(160, 55, 420, 25);
+  RecordingLineEdit = new QLineEdit;
   RecordingLineEdit->setMaxLength(80);
   RecordingLineEdit->setText("Finometer");
 
-  StartDatetimeedit = new QDateTimeEdit(myobjectDialog);
-  StartDatetimeedit->setGeometry(160, 90, 140, 25);
+  StartDatetimeedit = new QDateTimeEdit;
   StartDatetimeedit->setDisplayFormat("dd/MM/yyyy hh:mm:ss");
   StartDatetimeedit->setDateTime(QDateTime::currentDateTime());
 
-  pushButton1 = new QPushButton(myobjectDialog);
-  pushButton1->setGeometry(20, 190, 100, 25);
+  pushButton1 = new QPushButton;
   pushButton1->setText("Select File");
 
-  pushButton2 = new QPushButton(myobjectDialog);
-  pushButton2->setGeometry(480, 190, 100, 25);
+  pushButton2 = new QPushButton;
   pushButton2->setText("Close");
+
+  QFormLayout *flayout =  new QFormLayout;
+  flayout->addRow("Subject name", PatientnameLineEdit);
+  flayout->addRow("Recording", RecordingLineEdit);
+  flayout->addRow("Startdate and time", StartDatetimeedit);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(pushButton1);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(pushButton2);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addLayout(flayout, 1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  myobjectDialog->setLayout(vlayout1);
 
   QObject::connect(pushButton1, SIGNAL(clicked()), this,           SLOT(SelectFileButton()));
   QObject::connect(pushButton2, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
