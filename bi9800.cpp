@@ -38,18 +38,26 @@ UI_BI98002EDFwindow::UI_BI98002EDFwindow(char *recent_dir, char *save_dir)
   myobjectDialog = new QDialog;
 
   myobjectDialog->setMinimumSize(300, 75);
-  myobjectDialog->setMaximumSize(300, 75);
   myobjectDialog->setWindowTitle("BI9800 to EDF+ converter");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  pushButton1 = new QPushButton(myobjectDialog);
-  pushButton1->setGeometry(20, 30, 100, 25);
+  pushButton1 = new QPushButton;
   pushButton1->setText("Select File");
 
-  pushButton2 = new QPushButton(myobjectDialog);
-  pushButton2->setGeometry(180, 30, 100, 25);
+  pushButton2 = new QPushButton;
   pushButton2->setText("Close");
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(pushButton1);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(pushButton2);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addStretch(1000);
+  vlayout1->addLayout(hlayout1);
+
+  myobjectDialog->setLayout(vlayout1);
 
   QObject::connect(pushButton1, SIGNAL(clicked()), this,           SLOT(SelectFileButton()));
   QObject::connect(pushButton2, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
