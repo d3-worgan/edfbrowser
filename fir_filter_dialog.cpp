@@ -65,7 +65,6 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
   textEdit = new QPlainTextEdit(firfilterdialog);
   textEdit->setGeometry(20, 45, 250, 300);
-  textEdit->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   textEdit->setReadOnly(false);
 
   list = new QListWidget(firfilterdialog);

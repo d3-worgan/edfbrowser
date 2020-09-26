@@ -50,7 +50,6 @@ UI_IshneEDFwindow::UI_IshneEDFwindow(QWidget *w_parent, char *recent_dir, char *
 
   textEdit1 = new QTextEdit(myobjectDialog);
   textEdit1->setGeometry(20, 20, 560, 380);
-  textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
   textEdit1->append("ISHNE ECG to EDF converter\n");

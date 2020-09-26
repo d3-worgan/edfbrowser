@@ -57,7 +57,6 @@ UI_Aboutwindow::UI_Aboutwindow(UI_Mainwindow *mainwindow)
   AboutDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   textedit1 = new QTextEdit;
-  textedit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   textedit1->setReadOnly(true);
   textedit1->setLineWrapMode(QTextEdit::NoWrap);
   textedit1->setPlainText(
