@@ -173,16 +173,13 @@ void UI_cdsa_dock::contextmenu_requested(QPoint)
 
   QDialog *myobjectDialog = new QDialog;
   myobjectDialog->setMinimumSize(300, 215);
-  myobjectDialog->setMaximumSize(300, 215);
   myobjectDialog->setWindowTitle(str);
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  QLabel *label = new QLabel(myobjectDialog);
-  label->setGeometry(10, 10, 280, 160);
+  QLabel *label = new QLabel;
 
-  QPushButton *pushButton1 = new QPushButton(myobjectDialog);
-  pushButton1->setGeometry(180, 180, 100, 25);
+  QPushButton *pushButton1 = new QPushButton;
   pushButton1->setText("Close");
 
   if(param.log)
@@ -225,6 +222,18 @@ void UI_cdsa_dock::contextmenu_requested(QPoint)
   }
 
   label->setText(str);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(pushButton1);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addWidget(label);
+  vlayout1->addStretch(1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  myobjectDialog->setLayout(vlayout1);
 
   QObject::connect(pushButton1, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
 

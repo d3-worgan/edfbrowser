@@ -56,8 +56,11 @@
 #include <QPen>
 #include <QColor>
 #include <QDockWidget>
-#include <QGridLayout>
 #include <QToolTip>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -92,16 +95,7 @@ private:
 
   QDialog       *myobjectDialog;
 
-  QLabel        *segmentlen_label,
-                *blocklen_label,
-                *overlap_label,
-                *windowfunc_label,
-                *log_label,
-                *min_hz_label,
-                *max_hz_label,
-                *max_pwr_label,
-                *min_pwr_label,
-                *pwr_voltage_label;
+  QFormLayout   *flayout;
 
   QSpinBox      *segmentlen_spinbox,
                 *blocklen_spinbox,

@@ -52,19 +52,12 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
 
   myobjectDialog = new QDialog;
 
-  myobjectDialog->setMinimumSize(600, 525);
-  myobjectDialog->setMaximumSize(600, 525);
+  myobjectDialog->setMinimumSize(350, 400);
   myobjectDialog->setWindowTitle(str);
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  segmentlen_label = new QLabel(myobjectDialog);
-  segmentlen_label->setGeometry(20, 20, 150, 25);
-  segmentlen_label->setText("Segment length");
-  segmentlen_label->setToolTip("Time resolution of the CDSA");
-
-  segmentlen_spinbox = new QSpinBox(myobjectDialog);
-  segmentlen_spinbox->setGeometry(170, 20, 100, 25);
+  segmentlen_spinbox = new QSpinBox;
   segmentlen_spinbox->setSuffix(" sec");
   segmentlen_spinbox->setMinimum(5);
   if(signalcomp->edfhdr->recording_len_sec < 300)
@@ -78,26 +71,14 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   segmentlen_spinbox->setValue(mainwindow->cdsa_segmentlen);
   segmentlen_spinbox->setToolTip("Time resolution of the CDSA");
 
-  blocklen_label = new QLabel(myobjectDialog);
-  blocklen_label->setGeometry(20, 65, 150, 25);
-  blocklen_label->setText("Block length");
-  blocklen_label->setToolTip("FFT block length in seconds, affects the FFT resolution");
-
-  blocklen_spinbox = new QSpinBox(myobjectDialog);
-  blocklen_spinbox->setGeometry(170, 65, 100, 25);
+  blocklen_spinbox = new QSpinBox;
   blocklen_spinbox->setSuffix(" sec");
   blocklen_spinbox->setMinimum(1);
   blocklen_spinbox->setMaximum(10);
   blocklen_spinbox->setValue(mainwindow->cdsa_blocklen);
   blocklen_spinbox->setToolTip("FFT block length in seconds, affects the FFT resolution");
 
-  overlap_label = new QLabel(myobjectDialog);
-  overlap_label->setGeometry(20, 110, 150, 25);
-  overlap_label->setText("Overlap");
-  overlap_label->setToolTip("Percentage of an FFT block that will overlap the next FFT block");
-
-  overlap_combobox = new QComboBox(myobjectDialog);
-  overlap_combobox->setGeometry(170, 110, 100, 25);
+  overlap_combobox = new QComboBox;
   overlap_combobox->addItem(" 0 %");
   overlap_combobox->addItem("50 %");
   overlap_combobox->addItem("67 %");
@@ -106,13 +87,7 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   overlap_combobox->setCurrentIndex(mainwindow->cdsa_overlap -1);
   overlap_combobox->setToolTip("Percentage of an FFT block that will overlap the next FFT block");
 
-  windowfunc_label = new QLabel(myobjectDialog);
-  windowfunc_label->setGeometry(20, 155, 150, 25);
-  windowfunc_label->setText("Window");
-  windowfunc_label->setToolTip("Smoothing (taper) function that will be applied before the FFT");
-
-  windowfunc_combobox = new QComboBox(myobjectDialog);
-  windowfunc_combobox->setGeometry(170, 155, 100, 25);
+  windowfunc_combobox = new QComboBox;
   windowfunc_combobox->addItem("Rectangular");
   windowfunc_combobox->addItem("Hamming");
   windowfunc_combobox->addItem("4-term Blackman-Harris");
@@ -129,43 +104,25 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   windowfunc_combobox->setCurrentIndex(mainwindow->cdsa_window_func);
   windowfunc_combobox->setToolTip("Smoothing (taper) function that will be applied before the FFT");
 
-  min_hz_label = new QLabel(myobjectDialog);
-  min_hz_label->setGeometry(20, 200, 150, 25);
-  min_hz_label->setText("Min. freq.");
-  min_hz_label->setToolTip("Lowest frequency output (bin) of the FFT that will be used to display the CDSA");
-
-  min_hz_spinbox = new QSpinBox(myobjectDialog);
-  min_hz_spinbox->setGeometry(170, 200, 100, 25);
+  min_hz_spinbox = new QSpinBox;
   min_hz_spinbox->setSuffix(" Hz");
   min_hz_spinbox->setMinimum(0);
   min_hz_spinbox->setMaximum((sf / 2) - 1);
   min_hz_spinbox->setValue(mainwindow->cdsa_min_hz);
   min_hz_spinbox->setToolTip("Lowest frequency output (bin) of the FFT that will be used to display the CDSA");
 
-  max_hz_label = new QLabel(myobjectDialog);
-  max_hz_label->setGeometry(20, 245, 150, 25);
-  max_hz_label->setText("Max. freq.");
-  max_hz_label->setToolTip("Highest frequency output (bin) of the FFT that will be used to display the CDSA");
-
-  max_hz_spinbox = new QSpinBox(myobjectDialog);
-  max_hz_spinbox->setGeometry(170, 245, 100, 25);
+  max_hz_spinbox = new QSpinBox;
   max_hz_spinbox->setSuffix(" Hz");
   max_hz_spinbox->setMinimum(1);
   max_hz_spinbox->setMaximum(sf / 2);
   max_hz_spinbox->setValue(mainwindow->cdsa_max_hz);
   max_hz_spinbox->setToolTip("Highest frequency output (bin) of the FFT that will be used to display the CDSA");
 
-  max_pwr_label = new QLabel(myobjectDialog);
-  max_pwr_label->setGeometry(20, 290, 150, 25);
-  max_pwr_label->setText("Max. level");
-  max_pwr_label->setToolTip("The highest level that can be displayed (white). Higher levels will clip to white");
-
   strlcpy(str, " ", 128);
   strlcat(str, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 128);
   remove_trailing_spaces(str);
 
-  max_voltage_spinbox = new QDoubleSpinBox(myobjectDialog);
-  max_voltage_spinbox->setGeometry(170, 290, 180, 25);
+  max_voltage_spinbox = new QDoubleSpinBox;
   max_voltage_spinbox->setSuffix(str);
   max_voltage_spinbox->setDecimals(7);
   max_voltage_spinbox->setMinimum(0.0000001);
@@ -177,56 +134,39 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   strlcat(str, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 128);
   remove_trailing_spaces(str);
 
-  max_pwr_spinbox = new QSpinBox(myobjectDialog);
-  max_pwr_spinbox->setGeometry(170, 290, 120, 25);
+  max_pwr_spinbox = new QSpinBox;
   max_pwr_spinbox->setSuffix(str);
   max_pwr_spinbox->setMinimum(-159);
   max_pwr_spinbox->setMaximum(160);
   max_pwr_spinbox->setValue(mainwindow->cdsa_max_pwr);
   max_pwr_spinbox->setToolTip("The highest level that can be displayed (white). Higher levels will clip to white");
 
-  min_pwr_label = new QLabel(myobjectDialog);
-  min_pwr_label->setGeometry(20, 335, 150, 25);
-  min_pwr_label->setText("Min. level");
-  min_pwr_label->setToolTip("The lowest level that can be displayed (black). Lower levels will clip to black");
-
-  min_pwr_spinbox = new QSpinBox(myobjectDialog);
-  min_pwr_spinbox->setGeometry(170, 335, 120, 25);
+  min_pwr_spinbox = new QSpinBox;
   min_pwr_spinbox->setSuffix(str);
   min_pwr_spinbox->setMinimum(-160);
   min_pwr_spinbox->setMaximum(159);
   min_pwr_spinbox->setValue(mainwindow->cdsa_min_pwr);
   min_pwr_spinbox->setToolTip("The lowest level that can be displayed (black). Lower levels will clip to black");
 
-  log_label = new QLabel(myobjectDialog);
-  log_label->setGeometry(20, 380, 150, 25);
-  log_label->setText("Logarithmic");
-  log_label->setToolTip("Use the base-10 logarithm of the output of the FFT (can be used to increase the dynamic range)");
-
-  log_checkbox = new QCheckBox(myobjectDialog);
-  log_checkbox->setGeometry(170, 380, 20, 25);
+  log_checkbox = new QCheckBox;
   log_checkbox->setTristate(false);
   if(mainwindow->cdsa_log)
   {
-    max_voltage_spinbox->setVisible(false);
     log_checkbox->setCheckState(Qt::Checked);
+    max_pwr_spinbox->setEnabled(true);
+    min_pwr_spinbox->setEnabled(true);
+    max_voltage_spinbox->setEnabled(false);
   }
   else
   {
-    min_pwr_label->setVisible(false);
-    max_pwr_spinbox->setVisible(false);
-    min_pwr_spinbox->setVisible(false);
     log_checkbox->setCheckState(Qt::Unchecked);
+    max_pwr_spinbox->setEnabled(false);
+    min_pwr_spinbox->setEnabled(false);
+    max_voltage_spinbox->setEnabled(true);
   }
   log_checkbox->setToolTip("Use the base-10 logarithm of the output of the FFT (can be used to increase the dynamic range)");
 
-  pwr_voltage_label = new QLabel(myobjectDialog);
-  pwr_voltage_label->setGeometry(20, 425, 150, 25);
-  pwr_voltage_label->setText("Power");
-  pwr_voltage_label->setToolTip("Display power instead of voltage");
-
-  pwr_voltage_checkbox = new QCheckBox(myobjectDialog);
-  pwr_voltage_checkbox->setGeometry(170, 425, 20, 25);
+  pwr_voltage_checkbox = new QCheckBox;
   pwr_voltage_checkbox->setTristate(false);
   if(mainwindow->cdsa_pwr_voltage)
   {
@@ -243,17 +183,45 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
     pwr_voltage_checkbox->setEnabled(false);
   }
 
-  close_button = new QPushButton(myobjectDialog);
-  close_button->setGeometry(20, 470, 100, 25);
+  close_button = new QPushButton;
   close_button->setText("Close");
 
-  default_button = new QPushButton(myobjectDialog);
-  default_button->setGeometry(250, 470, 100, 25);
+  default_button = new QPushButton;
   default_button->setText("Default");
 
-  start_button = new QPushButton(myobjectDialog);
-  start_button->setGeometry(480, 470, 100, 25);
+  start_button = new QPushButton;
   start_button->setText("Start");
+
+  flayout = new QFormLayout;
+  flayout->addRow("Segment length", segmentlen_spinbox);
+  flayout->addRow("Block length", blocklen_spinbox);
+  flayout->addRow("Overlap", overlap_combobox);
+  flayout->addRow("Window", windowfunc_combobox);
+  flayout->addRow("Min. freq.", min_hz_spinbox);
+  flayout->addRow("Max. freq.", max_hz_spinbox);
+  flayout->addRow("Max. level", max_pwr_spinbox);
+  flayout->addRow("Min. level", min_pwr_spinbox);
+  flayout->addRow("Max. level", max_voltage_spinbox);
+  flayout->addRow("Logarithmic", log_checkbox);
+  flayout->addRow("Power", pwr_voltage_checkbox);
+
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addLayout(flayout, 1000);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(close_button);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(default_button);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(start_button);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addLayout(hlayout2);
+  vlayout1->addStretch(1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  myobjectDialog->setLayout(vlayout1);
 
   QObject::connect(close_button, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
 
@@ -356,20 +324,22 @@ void UI_cdsa_window::log_checkbox_changed(int state)
 {
   if(state == Qt::Checked)
   {
-    max_voltage_spinbox->setVisible(false);
-    min_pwr_label->setVisible(true);
-    max_pwr_spinbox->setVisible(true);
-    min_pwr_spinbox->setVisible(true);
     pwr_voltage_checkbox->setCheckState(Qt::Checked);
     pwr_voltage_checkbox->setEnabled(false);
+    mainwindow->cdsa_log = 1;
+
+    max_pwr_spinbox->setEnabled(true);
+    min_pwr_spinbox->setEnabled(true);
+    max_voltage_spinbox->setEnabled(false);
   }
   else
   {
-    max_pwr_spinbox->setVisible(false);
-    min_pwr_spinbox->setVisible(false);
-    min_pwr_label->setVisible(false);
-    max_voltage_spinbox->setVisible(true);
     pwr_voltage_checkbox->setEnabled(true);
+    mainwindow->cdsa_log = 0;
+
+    max_pwr_spinbox->setEnabled(false);
+    min_pwr_spinbox->setEnabled(false);
+    max_voltage_spinbox->setEnabled(true);
   }
 }
 
@@ -377,11 +347,6 @@ void UI_cdsa_window::log_checkbox_changed(int state)
 void UI_cdsa_window::default_button_clicked()
 {
   QObject::blockSignals(true);
-
-  min_pwr_label->setVisible(true);
-  max_voltage_spinbox->setVisible(false);
-  max_pwr_spinbox->setVisible(true);
-  min_pwr_spinbox->setVisible(true);
 
   segmentlen_spinbox->setValue(30);
   blocklen_spinbox->setValue(2);
@@ -395,6 +360,9 @@ void UI_cdsa_window::default_button_clicked()
   log_checkbox->setCheckState(Qt::Checked);
   pwr_voltage_checkbox->setCheckState(Qt::Checked);
   pwr_voltage_checkbox->setEnabled(false);
+  max_pwr_spinbox->setEnabled(true);
+  min_pwr_spinbox->setEnabled(true);
+  max_voltage_spinbox->setEnabled(false);
 
   mainwindow->cdsa_segmentlen = 30;
   mainwindow->cdsa_blocklen = 2;
