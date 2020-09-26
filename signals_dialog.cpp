@@ -154,6 +154,7 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
   horizontallabels += "Factor";
   horizontallabels += "Samplerate";
   compositionlist->setHorizontalHeaderLabels(horizontallabels);
+  compositionlist->resizeColumnsToContents();
 
   QHBoxLayout *hlayout1 = new QHBoxLayout;
   hlayout1->addWidget(label1);
@@ -634,6 +635,8 @@ void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
       ((QLabel *)(compositionlist->cellWidget(k, 3)))->setAlignment(Qt::AlignCenter);
     }
   }
+
+  compositionlist->resizeColumnsToContents();
 }
 
 
