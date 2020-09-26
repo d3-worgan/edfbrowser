@@ -44,6 +44,10 @@
 #include <QMessageBox>
 #include <QString>
 #include <QPixmap>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -38,14 +38,12 @@ UI_EDFCompatwindow::UI_EDFCompatwindow(QWidget *w_parent)
 
   EDFCompatDialog = new QDialog;
 
-  EDFCompatDialog->setMinimumSize(800, 180);
-  EDFCompatDialog->setMaximumSize(800, 180);
+  EDFCompatDialog->setMinimumSize(600, 180);
   EDFCompatDialog->setWindowTitle("Check EDF(+) / BDF(+) compatibility");
   EDFCompatDialog->setModal(true);
   EDFCompatDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  filelist = new QListWidget(EDFCompatDialog);
-  filelist->setGeometry(10, 10, 780, 75);
+  filelist = new QListWidget;
   filelist->setSelectionBehavior(QAbstractItemView::SelectRows);
   filelist->setSelectionMode(QAbstractItemView::SingleSelection);
   for(i=0; i<mainwindow->files_open; i++)
@@ -56,13 +54,23 @@ UI_EDFCompatwindow::UI_EDFCompatwindow(QWidget *w_parent)
     }
   }
 
-  CheckButton = new QPushButton(EDFCompatDialog);
-  CheckButton->setGeometry(10, 140, 100, 25);
+  CheckButton = new QPushButton;
   CheckButton->setText("Check");
 
-  CloseButton = new QPushButton(EDFCompatDialog);
-  CloseButton->setGeometry(690, 140, 100, 25);
+  CloseButton = new QPushButton;
   CloseButton->setText("Close");
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(CheckButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(CloseButton);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addWidget(filelist, 1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  EDFCompatDialog->setLayout(vlayout1);
 
   QObject::connect(CloseButton,  SIGNAL(clicked()), EDFCompatDialog, SLOT(close()));
   QObject::connect(CheckButton,  SIGNAL(clicked()), this,            SLOT(CheckButtonClicked()));
