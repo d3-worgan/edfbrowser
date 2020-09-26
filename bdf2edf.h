@@ -39,17 +39,16 @@
 #include <QTableWidget>
 #include <QFileDialog>
 #include <QCursor>
-#include <QStyle>
-#if QT_VERSION < 0x050000
-#include <QPlastiqueStyle>
-#include <QWindowsStyle>
-#endif
 #include <QString>
 #include <QStringList>
 #include <QByteArray>
 #include <QDoubleSpinBox>
 #include <QMessageBox>
 #include <QProgressDialog>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -79,9 +78,7 @@ public:
 
 private:
 
-QLabel       *label1,
-             *label2,
-             *label3;
+QLabel       *label1;
 
 QPushButton  *pushButton1,
              *pushButton2,
