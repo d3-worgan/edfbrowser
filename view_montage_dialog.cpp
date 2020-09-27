@@ -25,10 +25,7 @@
 */
 
 
-
 #include "view_montage_dialog.h"
-
-
 
 
 
@@ -45,9 +42,7 @@ UI_ViewMontagewindow::UI_ViewMontagewindow(QWidget *w_parent)
   }
 
   ViewMontageDialog = new QDialog;
-
   ViewMontageDialog->setMinimumSize(500, 300);
-  ViewMontageDialog->resize(500, 440);
   ViewMontageDialog->setWindowTitle("View montage");
   ViewMontageDialog->setModal(true);
   ViewMontageDialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -65,20 +60,22 @@ UI_ViewMontagewindow::UI_ViewMontagewindow(QWidget *w_parent)
   tree->setAlternatingRowColors(true);
 
   SelectButton = new QPushButton;
-  SelectButton->setFixedSize(100, 25);
   SelectButton->setText("Select montage");
 
   CloseButton = new QPushButton;
-  CloseButton->setFixedSize(100, 25);
   CloseButton->setText("Close");
 
-  hbox = new QHBoxLayout;
-  hbox->addWidget(SelectButton, 0, Qt::AlignLeft);
-  hbox->addWidget(CloseButton, 0, Qt::AlignRight);
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(SelectButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(CloseButton);
 
-  box = new QBoxLayout(QBoxLayout::TopToBottom, ViewMontageDialog);
-  box->addWidget(tree);
-  box->addLayout(hbox);
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addWidget(tree, 1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  ViewMontageDialog->setLayout(vlayout1);
 
   QObject::connect(CloseButton,  SIGNAL(clicked()), ViewMontageDialog, SLOT(close()));
   QObject::connect(SelectButton, SIGNAL(clicked()), this,              SLOT(SelectButtonClicked()));

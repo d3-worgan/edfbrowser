@@ -78,14 +78,7 @@ UI_ZScoreWindow::UI_ZScoreWindow(QWidget *w_parent, UI_ZScoreWindow **w_zscoredi
   zscore_dialog->setSizeGripEnabled(true);
   zscore_dialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
 
-  crossoverbinLabel = new QLabel;
-  crossoverbinLabel->setMinimumSize(100, 25);
-  crossoverbinLabel->setMaximumSize(100, 25);
-  crossoverbinLabel->setText("Cross-over");
-
   crossoverSpinbox = new QDoubleSpinBox;
-  crossoverSpinbox->setMinimumSize(100, 25);
-  crossoverSpinbox->setMaximumSize(100, 25);
   crossoverSpinbox->setRange(5.0, 9.5);
   crossoverSpinbox->setDecimals(1);
   crossoverSpinbox->setSingleStep(0.5);
@@ -93,40 +86,22 @@ UI_ZScoreWindow::UI_ZScoreWindow(QWidget *w_parent, UI_ZScoreWindow **w_zscoredi
   crossoverSpinbox->setValue(mainwindow->z_score_var.crossoverfreq);
   crossoverSpinbox->setToolTip("Threshold between low-frequency and high-frequency");
 
-  thresholdLabel = new QLabel;
-  thresholdLabel->setMinimumSize(100, 25);
-  thresholdLabel->setMaximumSize(100, 25);
-  thresholdLabel->setText("Z-threshold");
-
   thresholdSpinbox = new QDoubleSpinBox;
-  thresholdSpinbox->setMinimumSize(100, 25);
-  thresholdSpinbox->setMaximumSize(100, 25);
   thresholdSpinbox->setRange(-0.5, 0.5);
   thresholdSpinbox->setDecimals(2);
   thresholdSpinbox->setSingleStep(0.05);
   thresholdSpinbox->setValue(mainwindow->z_score_var.z_threshold);
 
-  pagelenLabel = new QLabel;
-  pagelenLabel->setMinimumSize(100, 25);
-  pagelenLabel->setMaximumSize(100, 25);
-  pagelenLabel->setText("Z-page");
-
   pagelenSpinbox = new QSpinBox;
-  pagelenSpinbox->setMinimumSize(100, 25);
-  pagelenSpinbox->setMaximumSize(100, 25);
   pagelenSpinbox->setRange(10, 60);
   pagelenSpinbox->setSingleStep(2);
   pagelenSpinbox->setSuffix(" sec");
   pagelenSpinbox->setValue(mainwindow->z_score_var.zscore_page_len);
 
 //   errordetectionLabel = new QLabel;
-//   errordetectionLabel->setMinimumSize(100, 25);
-//   errordetectionLabel->setMaximumSize(100, 25);
 //   errordetectionLabel->setText("Error detection");
 //
 //   errordetectionSpinbox = new QSpinBox;
-//   errordetectionSpinbox->setMinimumSize(100, 25);
-//   errordetectionSpinbox->setMaximumSize(100, 25);
 //   errordetectionSpinbox->setRange(50, 100);
 //   errordetectionSpinbox->setSingleStep(1);
 //   errordetectionSpinbox->setSuffix(" \%");
@@ -136,14 +111,7 @@ UI_ZScoreWindow::UI_ZScoreWindow(QWidget *w_parent, UI_ZScoreWindow **w_zscoredi
 //                                     "exceeds this percent of total power.\n"
 //                                     "This value will be evaluated when annotating.");
 
-  hysteresisLabel = new QLabel;
-  hysteresisLabel->setMinimumSize(100, 25);
-  hysteresisLabel->setMaximumSize(100, 25);
-  hysteresisLabel->setText("Sleep/Wake\ndifferentiation");
-
   hysteresisSpinbox = new QDoubleSpinBox;
-  hysteresisSpinbox->setMinimumSize(100, 25);
-  hysteresisSpinbox->setMaximumSize(100, 25);
   hysteresisSpinbox->setDecimals(2);
   hysteresisSpinbox->setRange(0.0, 0.25);
   hysteresisSpinbox->setSingleStep(0.01);
@@ -160,122 +128,75 @@ UI_ZScoreWindow::UI_ZScoreWindow(QWidget *w_parent, UI_ZScoreWindow **w_zscoredi
   curve1->setUpsidedownEnabled(true);
 
   StartButton = new QPushButton;
-  StartButton->setMinimumSize(100, 25);
-  StartButton->setMaximumSize(100, 25);
   StartButton->setText("Calculate");
   StartButton->setToolTip("Plot the Z-ratio / Z-pages");
 
   jumpButton = new QPushButton;
-  jumpButton->setMinimumSize(100, 25);
-  jumpButton->setMaximumSize(100, 25);
   jumpButton->setText("Jump");
   jumpButton->setToolTip("Jump to cursor-position");
 
   get_annotButton = new QPushButton;
-  get_annotButton->setMinimumSize(100, 25);
-  get_annotButton->setMaximumSize(100, 25);
   get_annotButton->setText("Annotate");
   get_annotButton->setToolTip("Create annotations from the Z-EEG");
 
   defaultButton = new QPushButton;
-  defaultButton->setMinimumSize(100, 25);
-  defaultButton->setMaximumSize(100, 25);
   defaultButton->setText("Default");
   defaultButton->setToolTip("Set parameters to default values");
 
   CloseButton = new QPushButton;
-  CloseButton->setMinimumSize(100, 25);
-  CloseButton->setMaximumSize(100, 25);
   CloseButton->setText("Close");
   CloseButton->setToolTip("Close this window");
 
   addTraceButton = new QPushButton;
-  addTraceButton->setMinimumSize(100, 25);
-  addTraceButton->setMaximumSize(100, 25);
   addTraceButton->setText("Add Trace");
   addTraceButton->setToolTip("Add this Z-ratio trace to the mainwindow");
 
   epochRadioButton = new QRadioButton;
-  epochRadioButton->setMinimumSize(100, 25);
-  epochRadioButton->setMaximumSize(100, 25);
   epochRadioButton->setText("Epochs");
 
   pageRadioButton = new QRadioButton;
-  pageRadioButton->setMinimumSize(100, 25);
-  pageRadioButton->setMaximumSize(100, 25);
   pageRadioButton->setText("Pages");
 
   wakesleepRadioButton = new QRadioButton;
-  wakesleepRadioButton->setMinimumSize(100, 25);
-  wakesleepRadioButton->setMaximumSize(100, 25);
   wakesleepRadioButton->setText("Sleep/Wake");
 
   pageRadioButton->setChecked(true);
 
   plot_type = 1;
 
-  hlayout1 = new QHBoxLayout;
-  hlayout1->setSpacing(20);
-  hlayout1->addWidget(crossoverbinLabel);
-  hlayout1->addWidget(crossoverSpinbox);
-  hlayout1->addStretch(100);
-  hlayout1->addWidget(epochRadioButton);
-  hlayout1->addStretch(100);
-  hlayout1->addWidget(StartButton);
+  QFormLayout *flayout = new QFormLayout;
+  flayout->addRow("Cross-over", crossoverSpinbox);
+  flayout->addRow("Z-threshold", thresholdSpinbox);
+  flayout->addRow("Z-page", pagelenSpinbox);
+  flayout->addRow("Sleep/Wake\ndifferentiation", hysteresisSpinbox);
 
-  hlayout2 = new QHBoxLayout;
-  hlayout2->setSpacing(20);
-  hlayout2->addWidget(thresholdLabel);
-  hlayout2->addWidget(thresholdSpinbox);
-  hlayout2->addStretch(100);
-  hlayout2->addWidget(pageRadioButton);
-  hlayout2->addStretch(100);
-  hlayout2->addWidget(jumpButton);
+  QVBoxLayout *vlayout2 = new QVBoxLayout;
+  vlayout2->addWidget(epochRadioButton);
+  vlayout2->addWidget(pageRadioButton);
+  vlayout2->addWidget(wakesleepRadioButton);
+  vlayout2->addStretch(1000);
+  vlayout2->addWidget(defaultButton);
 
-  hlayout3 = new QHBoxLayout;
-  hlayout3->setSpacing(20);
-  hlayout3->addWidget(pagelenLabel);
-  hlayout3->addWidget(pagelenSpinbox);
-  hlayout3->addStretch(100);
-  hlayout3->addWidget(wakesleepRadioButton);
-  hlayout3->addStretch(100);
-  hlayout3->addWidget(get_annotButton);
+  QVBoxLayout *vlayout3 = new QVBoxLayout;
+  vlayout3->addWidget(StartButton);
+  vlayout3->addWidget(jumpButton);
+  vlayout3->addWidget(get_annotButton);
+  vlayout3->addWidget(addTraceButton);
+  vlayout3->addWidget(CloseButton);
 
-//   hlayout4 = new QHBoxLayout;
-//   hlayout4->setSpacing(20);
-//   hlayout4->addWidget(errordetectionLabel);
-//   hlayout4->addWidget(errordetectionSpinbox);
-//   hlayout4->addStretch(100);
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addLayout(flayout);
+  hlayout1->addStretch(1000);
+  hlayout1->addLayout(vlayout2);
+  hlayout1->addStretch(1000);
+  hlayout1->addLayout(vlayout3);
 
-  hlayout4 = new QHBoxLayout;
-  hlayout4->setSpacing(20);
-  hlayout4->addStretch(100);
-  hlayout4->addWidget(addTraceButton);
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addWidget(curve1, 1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
 
-  hlayout5 = new QHBoxLayout;
-  hlayout5->setSpacing(20);
-  hlayout5->addWidget(hysteresisLabel);
-  hlayout5->addWidget(hysteresisSpinbox);
-  hlayout5->addStretch(100);
-  hlayout5->addWidget(defaultButton);
-  hlayout5->addStretch(100);
-  hlayout5->addWidget(CloseButton);
-
-  vlayout2 = new QVBoxLayout;
-  vlayout2->setSpacing(20);
-  vlayout2->addLayout(hlayout1);
-  vlayout2->addLayout(hlayout2);
-  vlayout2->addLayout(hlayout3);
-  vlayout2->addLayout(hlayout4);
-  vlayout2->addLayout(hlayout5);
-
-  vlayout3 = new QVBoxLayout;
-  vlayout3->setSpacing(20);
-  vlayout3->setContentsMargins(20, 20, 20, 20);
-  vlayout3->addWidget(curve1);
-  vlayout3->addLayout(vlayout2);
-
-  zscore_dialog->setLayout(vlayout3);
+  zscore_dialog->setLayout(vlayout1);
 
   shift_page_left_Act = new QAction(this);
   shift_page_left_Act->setShortcut(QKeySequence::MoveToPreviousChar);

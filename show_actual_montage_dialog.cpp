@@ -54,9 +54,7 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
   mainwindow = (UI_Mainwindow *)w_parent;
 
   ShowMontageDialog = new QDialog;
-
   ShowMontageDialog->setMinimumSize(500, 300);
-  ShowMontageDialog->resize(500, 440);
   ShowMontageDialog->setWindowTitle("Show montage");
   ShowMontageDialog->setModal(true);
   ShowMontageDialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -71,12 +69,18 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
   tree->setAlternatingRowColors(true);
 
   CloseButton = new QPushButton;
-  CloseButton->setFixedSize(100, 25);
   CloseButton->setText("Close");
 
-  box = new QBoxLayout(QBoxLayout::TopToBottom, ShowMontageDialog);
-  box->addWidget(tree);
-  box->addWidget(CloseButton, 0, Qt::AlignRight);
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(CloseButton);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addWidget(tree, 1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  ShowMontageDialog->setLayout(vlayout1);
 
   QObject::connect(CloseButton,  SIGNAL(clicked()), ShowMontageDialog, SLOT(close()));
 

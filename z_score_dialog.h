@@ -25,11 +25,8 @@
 */
 
 
-
-
 #ifndef ZSCORE_FORM1_H
 #define ZSCORE_FORM1_H
-
 
 
 #include <QtGlobal>
@@ -48,9 +45,11 @@
 #include <QDoubleSpinBox>
 #include <QRadioButton>
 #include <QMessageBox>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QAction>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -70,10 +69,7 @@
 #include "third_party/kiss_fft/kiss_fftr.h"
 
 
-
-
 class UI_Mainwindow;
-
 
 
 class UI_ZScoreWindow : public QObject
@@ -88,23 +84,7 @@ public:
 
   QDialog     *zscore_dialog;
 
-
 private:
-
-QHBoxLayout *hlayout1,
-            *hlayout2,
-            *hlayout3,
-            *hlayout4,
-            *hlayout5;
-
-QVBoxLayout *vlayout2,
-            *vlayout3;
-
-QLabel      *crossoverbinLabel,
-            *thresholdLabel,
-            *pagelenLabel,
-            *hysteresisLabel;
-//            *errordetectionLabel;
 
 QPushButton *CloseButton,
             *StartButton,
@@ -114,7 +94,6 @@ QPushButton *CloseButton,
             *addTraceButton;
 
 QSpinBox    *pagelenSpinbox;
-//            *errordetectionSpinbox;
 
 QDoubleSpinBox *thresholdSpinbox,
                *crossoverSpinbox,
