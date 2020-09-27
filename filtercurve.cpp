@@ -49,21 +49,11 @@ FilterCurve::FilterCurve(QWidget *w_parent) : QWidget(w_parent)
 
   marker_1 = 0;
   marker_2 = 0;
-
-  filtcurve_font = new QFont;
-#ifdef Q_OS_WIN32
-  filtcurve_font->setFamily("Tahoma");
-  filtcurve_font->setPixelSize(11);
-#else
-  filtcurve_font->setFamily("Arial");
-  filtcurve_font->setPixelSize(12);
-#endif
 }
 
 
 FilterCurve::~FilterCurve()
 {
-  delete filtcurve_font;
 }
 
 
@@ -74,11 +64,14 @@ void FilterCurve::paintEvent(QPaintEvent *)
   double v_sens,
          offset,
          h_step,
-         rasterstep;
+         rasterstep,
+         horizontal_marker_ratio;
 
 
   w = width();
   h = height();
+
+  horizontal_marker_ratio = w / 400.0;
 
   QPainter painter(this);
 #if QT_VERSION >= 0x050000
@@ -207,8 +200,6 @@ void FilterCurve::paintEvent(QPaintEvent *)
 
 /////////////////////////////////// draw the markers ///////////////////////////////////////////
 
-  painter.setFont(*filtcurve_font);
-
   if((marker_1) || (marker_2))
   {
     painter.drawText(2, 10, "0 Hz");
@@ -216,34 +207,34 @@ void FilterCurve::paintEvent(QPaintEvent *)
 
   if(marker_1)
   {
-    painter.drawText(2 + marker_1, 10, "F1");
+    painter.drawText(2 + (marker_1 * horizontal_marker_ratio), 10, "F1");
   }
 
   if(marker_2)
   {
-    painter.drawText(1 + marker_2, 10, "F2");
+    painter.drawText(1 + (marker_2 * horizontal_marker_ratio), 10, "F2");
   }
 
   if((marker_1) || (marker_2))
   {
     painter.setPen(SignalColor2);
 
-    painter.drawText(w - 35, 10, "0 degr.");
-    painter.drawText(w - 45, h - 2, "360 degr.");
+    painter.drawText(w - 35, 10, "0 deg.");
+    painter.drawText(w - 45, h - 2, "360 deg.");
   }
 
   if(marker_1)
   {
     painter.setPen(QPen(QBrush(MarkerColor, Qt::SolidPattern), 0, Qt::DotLine, Qt::SquareCap, Qt::BevelJoin));
 
-    painter.drawLine(marker_1, 0, marker_1, h);
+    painter.drawLine(marker_1 * horizontal_marker_ratio, 0, marker_1 * horizontal_marker_ratio, h);
   }
 
   if(marker_2)
   {
     painter.setPen(QPen(QBrush(MarkerColor, Qt::SolidPattern), 0, Qt::DotLine, Qt::SquareCap, Qt::BevelJoin));
 
-    painter.drawLine(marker_2, 0, marker_2, h);
+    painter.drawLine(marker_2 * horizontal_marker_ratio, 0, marker_2 * horizontal_marker_ratio, h);
   }
 }
 

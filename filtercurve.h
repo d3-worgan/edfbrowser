@@ -73,8 +73,6 @@ private:
          RasterColor,
          MarkerColor;
 
-  QFont *filtcurve_font;
-
   double max_value1,
          min_value1,
          *buf1,

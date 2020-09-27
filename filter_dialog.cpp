@@ -84,60 +84,48 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
   mainwindow = (UI_Mainwindow *)w_parent;
 
   filterdialog = new QDialog;
-
   filterdialog->setMinimumSize(620, 365);
-  filterdialog->setMaximumSize(620, 365);
   filterdialog->setWindowTitle("Add a filter");
   filterdialog->setModal(true);
   filterdialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  typeboxlabel = new QLabel(filterdialog);
-  typeboxlabel->setGeometry(20, 20, 120, 25);
+  typeboxlabel = new QLabel;
   typeboxlabel->setText("Type");
 
-  freqboxlabel = new QLabel(filterdialog);
-  freqboxlabel->setGeometry(160, 20, 120, 25);
+  freqboxlabel = new QLabel;
   freqboxlabel->setText("Frequency");
 
-  freqbox2label = new QLabel(filterdialog);
-  freqbox2label->setGeometry(300, 20, 120, 25);
+  freqbox2label = new QLabel;
   freqbox2label->setText("Frequency 2");
   freqbox2label->setVisible(false);
 
-  orderboxlabel = new QLabel(filterdialog);
-  orderboxlabel->setGeometry(160, 80, 120, 25);
+  orderboxlabel = new QLabel;
   orderboxlabel->setText("Order");
 
-  modelboxlabel = new QLabel(filterdialog);
-  modelboxlabel->setGeometry(20, 80, 120, 25);
+  modelboxlabel = new QLabel;
   modelboxlabel->setText("Model");
 
-  orderlabel = new QLabel(filterdialog);
-  orderlabel->setGeometry(300, 80, 120, 25);
+  orderlabel = new QLabel;
   orderlabel->setText("Slope roll-off:");
 
-  ordervaluelabel = new QLabel(filterdialog);
-  ordervaluelabel->setGeometry(300, 105, 120, 25);
+  ordervaluelabel = new QLabel;
   ordervaluelabel->setText("6 dB / octave");
 
-  typebox = new QComboBox(filterdialog);
-  typebox->setGeometry(20, 45, 120, 25);
+  typebox = new QComboBox;
   typebox->addItem("Highpass");
   typebox->addItem("Lowpass");
   typebox->addItem("Notch");
   typebox->addItem("Bandpass");
   typebox->addItem("Bandstop");
 
-  freqbox = new QDoubleSpinBox(filterdialog);
-  freqbox->setGeometry(160, 45, 120, 25);
+  freqbox = new QDoubleSpinBox;
   freqbox->setDecimals(6);
   freqbox->setSuffix(" Hz");
   freqbox->setMinimum(0.0001);
   freqbox->setMaximum(100000000.0);
   freqbox->setValue(1.0);
 
-  freq2box = new QDoubleSpinBox(filterdialog);
-  freq2box->setGeometry(300, 45, 120, 25);
+  freq2box = new QDoubleSpinBox;
   freq2box->setDecimals(6);
   freq2box->setSuffix(" Hz");
   freq2box->setMinimum(0.0001);
@@ -145,22 +133,19 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
   freq2box->setValue(2.0);
   freq2box->setVisible(false);
 
-  orderbox = new QSpinBox(filterdialog);
-  orderbox->setGeometry(160, 105, 120, 25);
+  orderbox = new QSpinBox;
   orderbox->setMinimum(1);
   orderbox->setMaximum(8);
   orderbox->setSingleStep(1);
   orderbox->setValue(1);
 
-  modelbox = new QComboBox(filterdialog);
-  modelbox->setGeometry(20, 105, 120, 25);
+  modelbox = new QComboBox;
   modelbox->addItem("Butterworth");
   modelbox->addItem("Chebyshev");
   modelbox->addItem("Bessel");
   modelbox->addItem("Moving Average");
 
-  ripplebox = new QDoubleSpinBox(filterdialog);
-  ripplebox->setGeometry(300, 105, 120, 25);
+  ripplebox = new QDoubleSpinBox;
   ripplebox->setDecimals(6);
   ripplebox->setSuffix(" dB");
   ripplebox->setMinimum(0.1);
@@ -168,25 +153,20 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
   ripplebox->setValue(1.0);
   ripplebox->setVisible(false);
 
-  listlabel = new QLabel(filterdialog);
-  listlabel->setGeometry(440, 20, 100, 25);
+  listlabel = new QLabel;
   listlabel->setText("Select signals:");
 
-  list = new QListWidget(filterdialog);
-  list->setGeometry(440, 45, 160, 300);
+  list = new QListWidget;
   list->setSelectionBehavior(QAbstractItemView::SelectRows);
   list->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-  CancelButton = new QPushButton(filterdialog);
-  CancelButton->setGeometry(300, 320, 100, 25);
+  CancelButton = new QPushButton;
   CancelButton->setText("&Cancel");
 
-  ApplyButton = new QPushButton(filterdialog);
-  ApplyButton->setGeometry(20, 320, 100, 25);
+  ApplyButton = new QPushButton;
   ApplyButton->setText("&Apply");
 
-  curve1 = new FilterCurve(filterdialog);
-  curve1->setGeometry(20, 145, 400, 150);
+  curve1 = new FilterCurve;
   curve1->setH_RasterSize(10);
   curve1->setV_RasterSize(14);
 
@@ -207,6 +187,58 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
 
   list->setCurrentRow(0);
 
+  QVBoxLayout *vlayout3 = new QVBoxLayout;
+  vlayout3->addWidget(typeboxlabel);
+  vlayout3->addWidget(typebox);
+  vlayout3->addWidget(modelboxlabel);
+  vlayout3->addWidget(modelbox);
+
+  QVBoxLayout *vlayout4 = new QVBoxLayout;
+  vlayout4->addStretch(1000);
+  vlayout4->addWidget(freqboxlabel);
+  vlayout4->addWidget(freqbox);
+  vlayout4->addWidget(orderboxlabel);
+  vlayout4->addWidget(orderbox);
+
+  QVBoxLayout *vlayout5 = new QVBoxLayout;
+  vlayout5->addStretch(1000);
+  vlayout5->addWidget(freqbox2label);
+  vlayout5->addWidget(freq2box);
+  vlayout5->addWidget(orderlabel);
+  vlayout5->addWidget(ordervaluelabel);
+  vlayout5->addWidget(ripplebox);
+
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addLayout(vlayout3);
+  hlayout2->addSpacing(20);
+  hlayout2->addLayout(vlayout4);
+  hlayout2->addSpacing(20);
+  hlayout2->addLayout(vlayout5);
+
+  QHBoxLayout *hlayout6 = new QHBoxLayout;
+  hlayout6->addWidget(ApplyButton);
+  hlayout6->addStretch(1000);
+  hlayout6->addWidget(CancelButton);
+  hlayout6->addSpacing(20);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addLayout(hlayout2);
+  vlayout1->addSpacing(10);
+  vlayout1->addWidget(curve1, 1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout6);
+
+  QVBoxLayout *vlayout2 = new QVBoxLayout;
+  vlayout2->addWidget(listlabel);
+  vlayout2->addWidget(list);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addLayout(vlayout1, 1000);
+  hlayout1->addSpacing(20);
+  hlayout1->addLayout(vlayout2, 300);
+
+  filterdialog->setLayout(hlayout1);
+
   QObject::connect(ApplyButton,  SIGNAL(clicked()),                this,         SLOT(ApplyButtonClicked()));
   QObject::connect(CancelButton, SIGNAL(clicked()),                filterdialog, SLOT(close()));
   QObject::connect(freqbox,      SIGNAL(valueChanged(double)),     this,         SLOT(frequencyboxvaluechanged(double)));
@@ -220,7 +252,6 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
 
   filterdialog->exec();
 }
-
 
 
 void UI_FilterDialog::updatecurve(void)
@@ -390,7 +421,6 @@ void UI_FilterDialog::filtermodelboxvaluechanged(int model)
 {
   int type;
 
-
   QObject::disconnect(orderbox, SIGNAL(valueChanged(int)),        this, SLOT(orderboxvaluechanged(int)));
   QObject::disconnect(modelbox, SIGNAL(currentIndexChanged(int)), this, SLOT(filtermodelboxvaluechanged(int)));
 
@@ -399,6 +429,7 @@ void UI_FilterDialog::filtermodelboxvaluechanged(int model)
   last_model = model;
 
   freqboxlabel->setText("Frequency");
+  freqboxlabel->setVisible(true);
   freqbox->setVisible(true);
 
   if(type != FILTERTYPE_NOTCH)
@@ -447,13 +478,16 @@ void UI_FilterDialog::filtermodelboxvaluechanged(int model)
   if(model == FILTERMODEL_BESSEL)
   {
     ripplebox->setVisible(false);
-    ordervaluelabel->setVisible(false);
-    orderlabel->setVisible(false);
+    ordervaluelabel->setVisible(true);
+    ordervaluelabel->setText("  ");
+    orderlabel->setVisible(true);
+    orderlabel->setText("  ");
   }
 
   if(model == FILTERMODEL_MOVINGAVERAGE)
   {
-    orderlabel->setVisible(false);
+    orderlabel->setVisible(true);
+    orderlabel->setText("  ");
     ordervaluelabel->setVisible(false);
     freqboxlabel->setVisible(false);
     freqbox2label->setVisible(false);
@@ -607,9 +641,10 @@ void UI_FilterDialog::filtertypeboxvaluechanged(int type)
       if((type == FILTERTYPE_HIGHPASS) || (type == FILTERTYPE_LOWPASS))
       {
         ripplebox->setVisible(false);
-        ordervaluelabel->setVisible(false);
-        orderlabel->setVisible(false);
-        ordervaluelabel->setVisible(false);
+        orderlabel->setVisible(true);
+        ordervaluelabel->setVisible(true);
+        orderlabel->setText("  ");
+        ordervaluelabel->setText("  ");
         orderboxlabel->setText("Samples");
         orderboxlabel->setVisible(true);
         orderbox->setMaximum(10000);
@@ -644,8 +679,10 @@ void UI_FilterDialog::filtertypeboxvaluechanged(int type)
     if(last_model == FILTERMODEL_BESSEL)
     {
       ripplebox->setVisible(false);
-      orderlabel->setVisible(false);
-      ordervaluelabel->setVisible(false);
+      orderlabel->setVisible(true);
+      ordervaluelabel->setVisible(true);
+      orderlabel->setText("  ");
+      ordervaluelabel->setText("  ");
     }
 
     modelbox->clear();
