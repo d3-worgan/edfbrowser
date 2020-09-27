@@ -48,45 +48,35 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   recent_savedir = save_dir;
 
   firfilterdialog = new QDialog;
-
-  firfilterdialog->setMinimumSize(620, 415);
-  firfilterdialog->setMaximumSize(620, 415);
+  firfilterdialog->setMinimumSize(400, 400);
   firfilterdialog->setWindowTitle("Add a Custom FIR filter");
   firfilterdialog->setModal(true);
   firfilterdialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  varsLabel = new QLabel(firfilterdialog);
-  varsLabel->setGeometry(20, 20, 100, 25);
+  varsLabel = new QLabel;
   varsLabel->setText("Filter taps: 0");
 
-  listlabel = new QLabel(firfilterdialog);
-  listlabel->setGeometry(440, 20, 100, 25);
+  listlabel = new QLabel;
   listlabel->setText("Select signals:");
 
-  textEdit = new QPlainTextEdit(firfilterdialog);
-  textEdit->setGeometry(20, 45, 250, 300);
+  textEdit = new QPlainTextEdit;
   textEdit->setReadOnly(false);
 
-  list = new QListWidget(firfilterdialog);
-  list->setGeometry(440, 45, 160, 300);
+  list = new QListWidget;
   list->setSelectionBehavior(QAbstractItemView::SelectRows);
   list->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-  CancelButton = new QPushButton(firfilterdialog);
-  CancelButton->setGeometry(20, 370, 100, 25);
+  CancelButton = new QPushButton;
   CancelButton->setText("&Close");
 
-  fileButton = new QPushButton(firfilterdialog);
-  fileButton->setGeometry(160, 370, 100, 25);
+  fileButton = new QPushButton;
   fileButton->setText("&File");
   fileButton->setToolTip("Load values from text file");
 
-  ApplyButton = new QPushButton(firfilterdialog);
-  ApplyButton->setGeometry(300, 370, 100, 25);
+  ApplyButton = new QPushButton;
   ApplyButton->setText("&Apply");
 
-  helpButton = new QPushButton(firfilterdialog);
-  helpButton->setGeometry(440, 370, 100, 25);
+  helpButton = new QPushButton;
   helpButton->setText("Help");
 
   for(i=0; i<mainwindow->signalcomps; i++)
@@ -112,6 +102,34 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
     item->setSelected(true);
   }
+
+  QVBoxLayout *vlayout2 = new QVBoxLayout;
+  vlayout2->addWidget(varsLabel);
+  vlayout2->addWidget(textEdit, 1000);
+
+  QVBoxLayout *vlayout3 = new QVBoxLayout;
+  vlayout3->addWidget(listlabel);
+  vlayout3->addWidget(list, 1000);
+
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addLayout(vlayout2);
+  hlayout2->addLayout(vlayout3);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(CancelButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(fileButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(ApplyButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(helpButton);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addLayout(hlayout2, 1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  firfilterdialog->setLayout(vlayout1);
 
   QObject::connect(ApplyButton,  SIGNAL(clicked()),     this,            SLOT(ApplyButtonClicked()));
   QObject::connect(CancelButton, SIGNAL(clicked()),     firfilterdialog, SLOT(close()));

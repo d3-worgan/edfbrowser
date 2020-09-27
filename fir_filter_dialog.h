@@ -49,6 +49,10 @@
 #include <QUrl>
 #include <QFileDialog>
 #include <QToolTip>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdlib.h>
 #include <string.h>
