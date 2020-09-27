@@ -54,6 +54,10 @@
 #include <QPixmap>
 #include <QIcon>
 #include <QColor>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>

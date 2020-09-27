@@ -53,6 +53,10 @@
 #include <QCompleter>
 #include <QStringList>
 #include <QStringListModel>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>

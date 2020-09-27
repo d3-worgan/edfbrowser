@@ -44,13 +44,15 @@
 #include <QString>
 #include <QRadioButton>
 #include <QGroupBox>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QComboBox>
 #include <QLabel>
 #include <QCheckBox>
 #include <QMessageBox>
 #include <QPixmap>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -111,15 +113,7 @@ private:
                *fileGroupBox,
                *asciiSettingsGroupBox;
 
-  QVBoxLayout  *formatVBoxLayout,
-               *fileVBoxLayout,
-               *asciiSettingsVBoxLayout;
-
-  QHBoxLayout  *asciiSettingsHBoxLayout;
-
   QComboBox    *separatorBox;
-
-  QLabel       *separatorLabel;
 
   QCheckBox    *durationCheckBox;
 

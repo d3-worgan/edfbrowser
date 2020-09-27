@@ -38,14 +38,12 @@ UI_ExportFilteredSignalsWindow::UI_ExportFilteredSignalsWindow(QWidget *w_parent
 
   myobjectDialog = new QDialog;
 
-  myobjectDialog->setMinimumSize(715, 578);
-  myobjectDialog->setMaximumSize(715, 578);
+  myobjectDialog->setMinimumSize(600, 500);
   myobjectDialog->setWindowTitle("Export Filtered Signals");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  tree = new QTreeView(myobjectDialog);
-  tree->setGeometry(20, 66, 405, 432);
+  tree = new QTreeView;
   tree->setHeaderHidden(true);
   tree->setIndentation(30);
   tree->setSelectionMode(QAbstractItemView::NoSelection);
@@ -56,64 +54,95 @@ UI_ExportFilteredSignalsWindow::UI_ExportFilteredSignalsWindow(QWidget *w_parent
 
   t_model = new QStandardItemModel(this);
 
-  label1 = new QLabel(myobjectDialog);
-  label1->setGeometry(20, 20, 685, 25);
+  label1 = new QLabel;
 
-  label2 = new QLabel(myobjectDialog);
-  label2->setGeometry(485, 359, 100, 25);
+  label2 = new QLabel;
   label2->setText("from datarecord");
   label2->setEnabled(false);
 
-  label3 = new QLabel(myobjectDialog);
-  label3->setGeometry(485, 424, 100, 25);
+  label3 = new QLabel;
   label3->setText("to datarecord");
   label3->setEnabled(false);
 
-  label4 = new QLabel(myobjectDialog);
-  label4->setGeometry(605, 382, 100, 25);
+  label4 = new QLabel;
   label4->setEnabled(false);
 
-  label5 = new QLabel(myobjectDialog);
-  label5->setGeometry(605, 447, 100, 25);
+  label5 = new QLabel;
   label5->setEnabled(false);
 
   radioButton1 = new QRadioButton("whole duration", myobjectDialog);
-  radioButton1->setGeometry(485, 299, 120, 25);
   radioButton1->setChecked(true);
   radioButton1->setEnabled(false);
 
   radioButton2 = new QRadioButton("selection", myobjectDialog);
-  radioButton2->setGeometry(485, 324, 100, 25);
   radioButton2->setEnabled(false);
 
-  spinBox1 = new QSpinBox(myobjectDialog);
-  spinBox1->setGeometry(485, 384, 100, 25);
+  spinBox1 = new QSpinBox;
   spinBox1->setRange(1, 2147483647);
   spinBox1->setValue(1);
   spinBox1->setEnabled(false);
 
-  spinBox2 = new QSpinBox(myobjectDialog);
-  spinBox2->setGeometry(485, 449, 100, 25);
+  spinBox2 = new QSpinBox;
   spinBox2->setRange(1, 2147483647);
   spinBox2->setValue(2147483647);
   spinBox2->setEnabled(false);
 
-  pushButton1 = new QPushButton(myobjectDialog);
-  pushButton1->setGeometry(20, 528, 100, 25);
+  pushButton1 = new QPushButton;
   pushButton1->setText("Select File");
   if(mainwindow->files_open < 2)
   {
     pushButton1->setEnabled(false);
   }
 
-  pushButton2 = new QPushButton(myobjectDialog);
-  pushButton2->setGeometry(575, 528, 100, 25);
+  pushButton2 = new QPushButton;
   pushButton2->setText("Close");
 
-  pushButton3 = new QPushButton(myobjectDialog);
-  pushButton3->setGeometry(200, 528, 100, 25);
+  pushButton3 = new QPushButton;
   pushButton3->setText("Export");
   pushButton3->setEnabled(false);
+
+  QVBoxLayout *vlayout4 = new QVBoxLayout;
+  vlayout4->addStretch(1000);
+  vlayout4->addWidget(label4);
+  vlayout4->addStretch(1000);
+  vlayout4->addWidget(label5);
+
+  QVBoxLayout *vlayout3 = new QVBoxLayout;
+  vlayout3->addWidget(label2);
+  vlayout3->addWidget(spinBox1);
+  vlayout3->addWidget(label3);
+  vlayout3->addWidget(spinBox2);
+
+  QHBoxLayout *hlayout3 = new QHBoxLayout;
+  hlayout3->addLayout(vlayout3);
+  hlayout3->addLayout(vlayout4);
+
+  QVBoxLayout *vlayout2 = new QVBoxLayout;
+  vlayout2->addStretch(1000);
+  vlayout2->addWidget(radioButton1);
+  vlayout2->addWidget(radioButton2);
+  vlayout2->addStretch(100);
+  vlayout2->addLayout(hlayout3);
+  vlayout2->addStretch(400);
+
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addWidget(tree, 1000);
+  hlayout2->addLayout(vlayout2);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(pushButton1);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(pushButton3);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(pushButton2);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addWidget(label1);
+  vlayout1->addLayout(hlayout2, 1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  myobjectDialog->setLayout(vlayout1);
 
   QObject::connect(pushButton1,  SIGNAL(clicked()),         this,           SLOT(SelectFileButton()));
   QObject::connect(pushButton2,  SIGNAL(clicked()),         myobjectDialog, SLOT(close()));

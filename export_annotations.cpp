@@ -37,14 +37,12 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent)
 
   ExportAnnotsDialog = new QDialog;
 
-  ExportAnnotsDialog->setMinimumSize(800, 570);
-  ExportAnnotsDialog->setMaximumSize(800, 570);
+  ExportAnnotsDialog->setMinimumSize(600, 550);
   ExportAnnotsDialog->setWindowTitle("Export annotations");
   ExportAnnotsDialog->setModal(true);
   ExportAnnotsDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   filelist = new QListWidget(ExportAnnotsDialog);
-  filelist->setGeometry(10, 10, 780, 75);
   filelist->setSelectionBehavior(QAbstractItemView::SelectRows);
   filelist->setSelectionMode(QAbstractItemView::SingleSelection);
   for(i=0; i<mainwindow->files_open; i++)
@@ -53,7 +51,6 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent)
   }
 
   formatGroupBox = new QGroupBox("output format", ExportAnnotsDialog);
-  formatGroupBox->setGeometry(10, 120, 200, 135);
 
   CSVRadioButton = new QRadioButton("ASCII/CSV");
 
@@ -61,30 +58,25 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent)
 
   XMLRadioButton = new QRadioButton("XML");
 
-  formatVBoxLayout = new QVBoxLayout;
+  QVBoxLayout *formatVBoxLayout = new QVBoxLayout;
   formatVBoxLayout->addWidget(CSVRadioButton);
   formatVBoxLayout->addWidget(EDFplusRadioButton);
   formatVBoxLayout->addWidget(XMLRadioButton);
   formatGroupBox->setLayout(formatVBoxLayout);
 
   fileGroupBox = new QGroupBox("export annotations", ExportAnnotsDialog);
-  fileGroupBox->setGeometry(320, 120, 200, 90);
 
   selectRadioButton = new QRadioButton("from selected file");
   selectRadioButton->setChecked(true);
 
   mergeRadioButton = new QRadioButton("from all files (merge)");
 
-  fileVBoxLayout = new QVBoxLayout;
+  QVBoxLayout *fileVBoxLayout = new QVBoxLayout;
   fileVBoxLayout->addWidget(selectRadioButton);
   fileVBoxLayout->addWidget(mergeRadioButton);
   fileGroupBox->setLayout(fileVBoxLayout);
 
   asciiSettingsGroupBox = new QGroupBox("ASCII settings", ExportAnnotsDialog);
-  asciiSettingsGroupBox->setGeometry(10, 270, 300, 290);
-
-  separatorLabel = new QLabel(ExportAnnotsDialog);
-  separatorLabel->setText("separator:");
 
   separatorBox = new QComboBox(ExportAnnotsDialog);
   separatorBox->addItem("comma");
@@ -106,12 +98,11 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent)
   durationCheckBox->setTristate(false);
   durationCheckBox->setCheckState(Qt::Unchecked);
 
-  asciiSettingsHBoxLayout = new QHBoxLayout;
-  asciiSettingsHBoxLayout->addWidget(separatorLabel);
-  asciiSettingsHBoxLayout->addWidget(separatorBox);
+  QFormLayout *asciiSettingsflayout = new QFormLayout;
+  asciiSettingsflayout->addRow("separator:", separatorBox);
 
-  asciiSettingsVBoxLayout = new QVBoxLayout;
-  asciiSettingsVBoxLayout->addLayout(asciiSettingsHBoxLayout);
+  QVBoxLayout *asciiSettingsVBoxLayout = new QVBoxLayout;
+  asciiSettingsVBoxLayout->addLayout(asciiSettingsflayout);
   asciiSettingsVBoxLayout->addWidget(asciiSecondsRadioButton);
   asciiSettingsVBoxLayout->addWidget(asciiISOtimeRadioButton);
   asciiSettingsVBoxLayout->addWidget(asciiISOtimedateRadioButton);
@@ -121,11 +112,9 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent)
   asciiSettingsGroupBox->setLayout(asciiSettingsVBoxLayout);
 
   ExportButton = new QPushButton(ExportAnnotsDialog);
-  ExportButton->setGeometry(500, 530, 100, 25);
   ExportButton->setText("Export");
 
   CloseButton = new QPushButton(ExportAnnotsDialog);
-  CloseButton->setGeometry(690, 530, 100, 25);
   CloseButton->setText("Close");
 
   separatorBox->setCurrentIndex(mainwindow->export_annotations_var->separator);
@@ -174,6 +163,39 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent)
   {
     durationCheckBox->setChecked(false);
   }
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(ExportButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(CloseButton);
+
+  QVBoxLayout *vlayout3 = new QVBoxLayout;
+  vlayout3->addWidget(fileGroupBox);
+  vlayout3->addStretch(1000);
+
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addWidget(formatGroupBox);
+  hlayout2->addStretch(300);
+  hlayout2->addLayout(vlayout3);
+  hlayout2->addStretch(1000);
+
+  QVBoxLayout *vlayout2 = new QVBoxLayout;
+  vlayout2->addStretch(1000);
+  vlayout2->addLayout(hlayout1);
+
+  QHBoxLayout *hlayout3 = new QHBoxLayout;
+  hlayout3->addWidget(asciiSettingsGroupBox);
+  hlayout3->addLayout(vlayout2);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addWidget(filelist, 1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout2);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout3);
+
+  ExportAnnotsDialog->setLayout(vlayout1);
 
   QObject::connect(CloseButton,    SIGNAL(clicked()),     ExportAnnotsDialog, SLOT(close()));
   QObject::connect(ExportButton,   SIGNAL(clicked()),     this,               SLOT(ExportButtonClicked()));
