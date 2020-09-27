@@ -35,54 +35,73 @@ UI_JumpMenuDialog::UI_JumpMenuDialog(QWidget *w_parent)
 {
   mainwindow = (UI_Mainwindow *)w_parent;
 
+  starttime = 0LL;
+
   jump_dialog = new QDialog(w_parent);
 
   jump_dialog->setMinimumSize(435, 200);
-  jump_dialog->setMaximumSize(435, 200);
   jump_dialog->setWindowTitle("Jump to");
   jump_dialog->setModal(true);
   jump_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  label1 = new QLabel(jump_dialog);
-  label1->setGeometry(10, 10, 155, 25);
-  label1->setText(" dd      hh:mm:ss.ms ");
-
-  daybox1 = new QSpinBox(jump_dialog);
-  daybox1->setGeometry(10, 45, 45, 25);
+  daybox1 = new QSpinBox;
   daybox1->setRange(0, 30);
   daybox1->setEnabled(false);
 
-  daybox2 = new QSpinBox(jump_dialog);
-  daybox2->setGeometry(10, 80, 45, 25);
+  daybox2 = new QSpinBox;
   daybox2->setRange(0, 30);
   daybox2->setEnabled(false);
 
-  timeEdit1 = new QTimeEdit(jump_dialog);
-  timeEdit1->setGeometry(65, 45, 110, 25);
+  timeEdit1 = new QTimeEdit;
   timeEdit1->setDisplayFormat("hh:mm:ss.zzz");
   timeEdit1->setMinimumTime(QTime(0, 0, 0, 0));
   timeEdit1->setEnabled(false);
 
-  timeEdit2 = new QTimeEdit(jump_dialog);
-  timeEdit2->setGeometry(65, 80, 110, 25);
+  timeEdit2 = new QTimeEdit;
   timeEdit2->setDisplayFormat("hh:mm:ss.zzz");
   timeEdit2->setMinimumTime(QTime(0, 0, 0, 0));
   timeEdit2->setEnabled(false);
 
-  label2 = new QLabel("Offset from start of recording", jump_dialog);
-  label2->setGeometry(185, 45, 250, 25);
-
-  label3 = new QLabel("Absolute time", jump_dialog);
-  label3->setGeometry(185, 80, 250, 25);
-
-  jumpButton = new QPushButton(jump_dialog);
-  jumpButton->setGeometry(10, 165, 100, 25);
+  jumpButton = new QPushButton;
   jumpButton->setText("Jump");
   jumpButton->setEnabled(false);
 
-  CloseButton = new QPushButton(jump_dialog);
-  CloseButton->setGeometry(325, 165, 100, 25);
+  CloseButton = new QPushButton;
   CloseButton->setText("Cancel");
+
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addWidget(new QLabel("dd"));
+  hlayout2->addWidget(new QLabel("hh:mm:ss.ms"));
+
+  QHBoxLayout *hlayout3 = new QHBoxLayout;
+  hlayout3->addWidget(daybox1);
+  hlayout3->addWidget(timeEdit1);
+
+  QHBoxLayout *hlayout4 = new QHBoxLayout;
+  hlayout4->addWidget(daybox2);
+  hlayout4->addWidget(timeEdit2);
+
+  QFormLayout *flayout = new QFormLayout;
+  flayout->addRow(" ", hlayout2);
+  flayout->addRow("Offset from start of recording", hlayout3);
+  flayout->addRow("Absolute time", hlayout4);
+
+  QHBoxLayout *hlayout5 = new QHBoxLayout;
+  hlayout5->addLayout(flayout);
+  hlayout5->addStretch(1000);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(jumpButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(CloseButton);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addLayout(hlayout5);
+  vlayout1->addStretch(1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  jump_dialog->setLayout(vlayout1);
 
   if(mainwindow->files_open)
   {

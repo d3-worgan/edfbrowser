@@ -43,6 +43,10 @@
 #include <QTime>
 #include <QSpinBox>
 #include <QMessageBox>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <string.h>
 
@@ -71,10 +75,6 @@ QDialog      *jump_dialog;
 
 QPushButton  *CloseButton,
              *jumpButton;
-
-QLabel       *label1,
-             *label2,
-             *label3;
 
 QTimeEdit    *timeEdit1,
              *timeEdit2;
