@@ -51,7 +51,6 @@ UI_ViewMontagewindow::UI_ViewMontagewindow(QWidget *w_parent)
 
   tree = new QTreeView;
   tree->setHeaderHidden(true);
-  tree->setIndentation(30);
   tree->setSelectionMode(QAbstractItemView::NoSelection);
   tree->setEditTriggers(QAbstractItemView::NoEditTriggers);
   tree->setSortingEnabled(false);
