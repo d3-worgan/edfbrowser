@@ -37,345 +37,171 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
   mainwindow = (UI_Mainwindow *)w_parent;
 
   EDFhdrDialog = new QDialog;
-
   EDFhdrDialog->setMinimumSize(770, 680);
-
-  EDFhdrDialog->setWindowTitle("File Info");
+  EDFhdrDialog->setWindowTitle("EDF header info");
   EDFhdrDialog->setModal(true);
   EDFhdrDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  filelist = new QListWidget(EDFhdrDialog);
-  filelist->setMinimumSize(670, 75);
-  filelist->setMaximumHeight(75);
+  filelist = new QListWidget;
+  filelist->setMinimumSize(600, 75);
   for(i=0; i<mainwindow->files_open; i++)
   {
     new QListWidgetItem(QString::fromLocal8Bit(mainwindow->edfheaderlist[i]->filename), filelist);
   }
 
-  tabholder = new QTabWidget(EDFhdrDialog);
-
-  tab1 = new QWidget;
-  tab2 = new QWidget;
-
-  label1 = new QLabel(EDFhdrDialog);
-  label1->setMinimumSize(130, 25);
-  label1->setMaximumSize(130, 25);
-  label1->setText("Subject");
-
-  label1a = new QLabel(EDFhdrDialog);
-  label1a->setMinimumSize(580, 25);
-  label1a->setMaximumSize(580, 25);
-  label1a->setTextInteractionFlags(Qt::TextSelectableByMouse);
-  label1a->setStyleSheet("QLabel { background-color : white; color : black; }");
-  label1a->setFrameStyle(QFrame::Box);
-
-  label2 = new QLabel(EDFhdrDialog);
-  label2->setMinimumSize(130, 25);
-  label2->setMaximumSize(130, 25);
-  label2->setText("Recording");
-
-  label2a = new QLabel(EDFhdrDialog);
-  label2a->setMinimumSize(580, 25);
-  label2a->setMaximumSize(580, 25);
-  label2a->setTextInteractionFlags(Qt::TextSelectableByMouse);
-  label2a->setStyleSheet("QLabel { background-color : white; color : black; }");
-  label2a->setFrameStyle(QFrame::Box);
-
-  label3 = new QLabel(EDFhdrDialog);
-  label3->setMinimumSize(130, 25);
-  label3->setMaximumSize(130, 25);
-  label3->setText("Start");
-
-  label3a = new QLabel(EDFhdrDialog);
-  label3a->setMinimumSize(580, 25);
-  label3a->setMaximumSize(580, 25);
-  label3a->setTextInteractionFlags(Qt::TextSelectableByMouse);
-  label3a->setStyleSheet("QLabel { background-color : white; color : black; }");
-  label3a->setFrameStyle(QFrame::Box);
-
-  label4 = new QLabel(EDFhdrDialog);
-  label4->setMinimumSize(130, 25);
-  label4->setMaximumSize(130, 25);
-  label4->setText("Duration");
-
-  label4a = new QLabel(EDFhdrDialog);
-  label4a->setMinimumSize(580, 25);
-  label4a->setMaximumSize(580, 25);
-  label4a->setTextInteractionFlags(Qt::TextSelectableByMouse);
-  label4a->setStyleSheet("QLabel { background-color : white; color : black; }");
-  label4a->setFrameStyle(QFrame::Box);
-
-  label5 = new QLabel(EDFhdrDialog);
-  label5->setMinimumSize(130, 25);
-  label5->setMaximumSize(130, 25);
-  label5->setText("Reserved");
-
-  label5a = new QLabel(EDFhdrDialog);
-  label5a->setMinimumSize(580, 25);
-  label5a->setMaximumSize(580, 25);
-  label5a->setTextInteractionFlags(Qt::TextSelectableByMouse);
-  label5a->setStyleSheet("QLabel { background-color : white; color : black; }");
-  label5a->setFrameStyle(QFrame::Box);
-
-  label6 = new QLabel(EDFhdrDialog);
-  label6->setMinimumSize(130, 25);
-  label6->setMaximumSize(130, 25);
-  label6->setText("Birthdate");
-  label6->setVisible(false);
-
-  label6a = new QLabel(EDFhdrDialog);
-  label6a->setMinimumSize(580, 25);
-  label6a->setMaximumSize(580, 25);
-  label6a->setTextInteractionFlags(Qt::TextSelectableByMouse);
-  label6a->setVisible(false);
-  label6a->setStyleSheet("QLabel { background-color : white; color : black; }");
-  label6a->setFrameStyle(QFrame::Box);
-
-  label7 = new QLabel(EDFhdrDialog);
-  label7->setMinimumSize(130, 25);
-  label7->setMaximumSize(130, 25);
-  label7->setText("Subject name");
-  label7->setVisible(false);
-
-  label7a = new QLabel(EDFhdrDialog);
-  label7a->setMinimumSize(580, 25);
-  label7a->setMaximumSize(580, 25);
-  label7a->setTextInteractionFlags(Qt::TextSelectableByMouse);
-  label7a->setVisible(false);
-  label7a->setStyleSheet("QLabel { background-color : white; color : black; }");
-  label7a->setFrameStyle(QFrame::Box);
-
-  label8 = new QLabel(EDFhdrDialog);
-  label8->setMinimumSize(130, 25);
-  label8->setMaximumSize(130, 25);
-  label8->setText("Additional info");
-  label8->setVisible(false);
-
-  label8a = new QLabel(EDFhdrDialog);
-  label8a->setMinimumSize(580, 25);
-  label8a->setMaximumSize(580, 25);
-  label8a->setTextInteractionFlags(Qt::TextSelectableByMouse);
-  label8a->setVisible(false);
-  label8a->setStyleSheet("QLabel { background-color : white; color : black; }");
-  label8a->setFrameStyle(QFrame::Box);
-
-  label9 = new QLabel(EDFhdrDialog);
-  label9->setMinimumSize(130, 25);
-  label9->setMaximumSize(130, 25);
-  label9->setText("Startdate");
-  label9->setVisible(false);
-
-  label9a = new QLabel(EDFhdrDialog);
-  label9a->setMinimumSize(580, 25);
-  label9a->setMaximumSize(580, 25);
-  label9a->setTextInteractionFlags(Qt::TextSelectableByMouse);
-  label9a->setVisible(false);
-  label9a->setStyleSheet("QLabel { background-color : white; color : black; }");
-  label9a->setFrameStyle(QFrame::Box);
-
-  label10 = new QLabel(EDFhdrDialog);
-  label10->setMinimumSize(130, 25);
-  label10->setMaximumSize(130, 25);
-  label10->setText("Administr. code");
-  label10->setVisible(false);
-
-  label10a = new QLabel(EDFhdrDialog);
-  label10a->setMinimumSize(580, 25);
-  label10a->setMaximumSize(580, 25);
-  label10a->setTextInteractionFlags(Qt::TextSelectableByMouse);
-  label10a->setVisible(false);
-  label10a->setStyleSheet("QLabel { background-color : white; color : black; }");
-  label10a->setFrameStyle(QFrame::Box);
-
-  label11 = new QLabel(EDFhdrDialog);
-  label11->setMinimumSize(130, 25);
-  label11->setMaximumSize(130, 25);
-  label11->setText("Technician");
-  label11->setVisible(false);
-
-  label11a = new QLabel(EDFhdrDialog);
-  label11a->setMinimumSize(580, 25);
-  label11a->setMaximumSize(580, 25);
-  label11a->setTextInteractionFlags(Qt::TextSelectableByMouse);
-  label11a->setVisible(false);
-  label11a->setStyleSheet("QLabel { background-color : white; color : black; }");
-  label11a->setFrameStyle(QFrame::Box);
-
-  label12 = new QLabel(EDFhdrDialog);
-  label12->setMinimumSize(130, 25);
-  label12->setMaximumSize(130, 25);
-  label12->setText("Device");
-  label12->setVisible(false);
-
-  label12a = new QLabel(EDFhdrDialog);
-  label12a->setMinimumSize(580, 25);
-  label12a->setMaximumSize(580, 25);
-  label12a->setTextInteractionFlags(Qt::TextSelectableByMouse);
-  label12a->setVisible(false);
-  label12a->setStyleSheet("QLabel { background-color : white; color : black; }");
-  label12a->setFrameStyle(QFrame::Box);
-
-  label13 = new QLabel(EDFhdrDialog);
-  label13->setMinimumSize(130, 25);
-  label13->setMaximumSize(130, 25);
-  label13->setText("Additional info");
-  label13->setVisible(false);
-
-  label13a = new QLabel(EDFhdrDialog);
-  label13a->setMinimumSize(580, 25);
-  label13a->setMaximumSize(580, 25);
-  label13a->setTextInteractionFlags(Qt::TextSelectableByMouse);
-  label13a->setVisible(false);
-  label13a->setStyleSheet("QLabel { background-color : white; color : black; }");
-  label13a->setFrameStyle(QFrame::Box);
-
-  label20 = new QLabel(EDFhdrDialog);
-  label20->setMinimumSize(130, 25);
-  label20->setMaximumSize(130, 25);
-  label20->setText("Datarecord duration");
-
-  label20a = new QLabel(EDFhdrDialog);
-  label20a->setMinimumSize(580, 25);
-  label20a->setMaximumSize(580, 25);
-  label20a->setTextInteractionFlags(Qt::TextSelectableByMouse);
-  label20a->setStyleSheet("QLabel { background-color : white; color : black; }");
-  label20a->setFrameStyle(QFrame::Box);
-
-  label21 = new QLabel(EDFhdrDialog);
-  label21->setMinimumSize(130, 25);
-  label21->setMaximumSize(130, 25);
-  label21->setText("Version");
-
-  label21a = new QLabel(EDFhdrDialog);
-  label21a->setMinimumSize(580, 25);
-  label21a->setMaximumSize(580, 25);
-  label21a->setTextInteractionFlags(Qt::TextSelectableByMouse);
-  label21a->setStyleSheet("QLabel { background-color : white; color : black; }");
-  label21a->setFrameStyle(QFrame::Box);
-
-  signallist = new QTableWidget(EDFhdrDialog);
-  signallist->setMinimumSize(670, 100);
+  signallist = new QTableWidget;
   signallist->setSelectionMode(QAbstractItemView::NoSelection);
   signallist->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-  pushButton1 = new QPushButton(EDFhdrDialog);
-  pushButton1->setMinimumSize(100, 25);
-  pushButton1->setMaximumSize(100, 25);
+  pushButton1 = new QPushButton;
   pushButton1->setText("Close");
 
-  generalHBoxLayout1 = new QHBoxLayout;
-  generalHBoxLayout1->addWidget(label1);
-  generalHBoxLayout1->addWidget(label1a);
-  generalHBoxLayout1->addStretch(1000);
+  label1 = new QLabel("Subject code");
+  label2 = new QLabel("Sex");
+  label3 = new QLabel("Start");
+  label4 = new QLabel("Duration");
+  label5 = new QLabel("Reserved");
+  label6 = new QLabel("Birthdate");
+  label7 = new QLabel("Subject name");
+  label8 = new QLabel("Additional info");
+  label9 = new QLabel("Startdate");
+  label10 = new QLabel("Administr. code");
+  label11 = new QLabel("Technician");
+  label12 = new QLabel("Device");
+  label13 = new QLabel("Additional info");
+  label20 = new QLabel("Datarecord duration");
+  label21 = new QLabel("Version");
 
-  generalHBoxLayout2 = new QHBoxLayout;
-  generalHBoxLayout2->addWidget(label2);
-  generalHBoxLayout2->addWidget(label2a);
-  generalHBoxLayout2->addStretch(1000);
+  line_edit1 = new QLineEdit;
+  line_edit1->setReadOnly(true);
+  line_edit2 = new QLineEdit;
+  line_edit2->setReadOnly(true);
+  line_edit3 = new QLineEdit;
+  line_edit3->setReadOnly(true);
+  line_edit4 = new QLineEdit;
+  line_edit4->setReadOnly(true);
+  line_edit5 = new QLineEdit;
+  line_edit5->setReadOnly(true);
+  line_edit6 = new QLineEdit;
+  line_edit6->setReadOnly(true);
+  line_edit7 = new QLineEdit;
+  line_edit7->setReadOnly(true);
+  line_edit8 = new QLineEdit;
+  line_edit8->setReadOnly(true);
+  line_edit9 = new QLineEdit;
+  line_edit9->setReadOnly(true);
+  line_edit10 = new QLineEdit;
+  line_edit10->setReadOnly(true);
+  line_edit11 = new QLineEdit;
+  line_edit11->setReadOnly(true);
+  line_edit12 = new QLineEdit;
+  line_edit12->setReadOnly(true);
+  line_edit13 = new QLineEdit;
+  line_edit13->setReadOnly(true);
+  line_edit20 = new QLineEdit;
+  line_edit20->setReadOnly(true);
+  line_edit21 = new QLineEdit;
+  line_edit21->setReadOnly(true);
 
-  generalHBoxLayout3 = new QHBoxLayout;
-  generalHBoxLayout3->addWidget(label3);
-  generalHBoxLayout3->addWidget(label3a);
-  generalHBoxLayout3->addStretch(1000);
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addWidget(label1);
+  hlayout2->addWidget(line_edit1);
 
-  generalHBoxLayout4 = new QHBoxLayout;
-  generalHBoxLayout4->addWidget(label4);
-  generalHBoxLayout4->addWidget(label4a);
-  generalHBoxLayout4->addStretch(1000);
+  QHBoxLayout *hlayout3 = new QHBoxLayout;
+  hlayout3->addWidget(label2);
+  hlayout3->addWidget(line_edit2);
 
-  generalHBoxLayout5 = new QHBoxLayout;
-  generalHBoxLayout5->addWidget(label5);
-  generalHBoxLayout5->addWidget(label5a);
-  generalHBoxLayout5->addStretch(1000);
+  QHBoxLayout *hlayout4 = new QHBoxLayout;
+  hlayout4->addWidget(label3);
+  hlayout4->addWidget(line_edit3);
 
-  generalHBoxLayout6 = new QHBoxLayout;
-  generalHBoxLayout6->addWidget(label6);
-  generalHBoxLayout6->addWidget(label6a);
-  generalHBoxLayout6->addStretch(1000);
+  QHBoxLayout *hlayout5 = new QHBoxLayout;
+  hlayout5->addWidget(label4);
+  hlayout5->addWidget(line_edit4);
 
-  generalHBoxLayout7 = new QHBoxLayout;
-  generalHBoxLayout7->addWidget(label7);
-  generalHBoxLayout7->addWidget(label7a);
-  generalHBoxLayout7->addStretch(1000);
+  QHBoxLayout *hlayout6 = new QHBoxLayout;
+  hlayout6->addWidget(label5);
+  hlayout6->addWidget(line_edit5);
 
-  generalHBoxLayout8 = new QHBoxLayout;
-  generalHBoxLayout8->addWidget(label8);
-  generalHBoxLayout8->addWidget(label8a);
-  generalHBoxLayout8->addStretch(1000);
+  QHBoxLayout *hlayout7 = new QHBoxLayout;
+  hlayout7->addWidget(label6);
+  hlayout7->addWidget(line_edit6);
 
-  generalHBoxLayout9 = new QHBoxLayout;
-  generalHBoxLayout9->addWidget(label9);
-  generalHBoxLayout9->addWidget(label9a);
-  generalHBoxLayout9->addStretch(1000);
+  QHBoxLayout *hlayout8 = new QHBoxLayout;
+  hlayout8->addWidget(label7);
+  hlayout8->addWidget(line_edit7);
 
-  generalHBoxLayout10 = new QHBoxLayout;
-  generalHBoxLayout10->addWidget(label10);
-  generalHBoxLayout10->addWidget(label10a);
-  generalHBoxLayout10->addStretch(1000);
+  QHBoxLayout *hlayout9 = new QHBoxLayout;
+  hlayout9->addWidget(label8);
+  hlayout9->addWidget(line_edit8);
 
-  generalHBoxLayout11 = new QHBoxLayout;
-  generalHBoxLayout11->addWidget(label11);
-  generalHBoxLayout11->addWidget(label11a);
-  generalHBoxLayout11->addStretch(1000);
+  QHBoxLayout *hlayout10 = new QHBoxLayout;
+  hlayout10->addWidget(label9);
+  hlayout10->addWidget(line_edit9);
 
-  generalHBoxLayout12 = new QHBoxLayout;
-  generalHBoxLayout12->addWidget(label12);
-  generalHBoxLayout12->addWidget(label12a);
-  generalHBoxLayout12->addStretch(1000);
+  QHBoxLayout *hlayout11 = new QHBoxLayout;
+  hlayout11->addWidget(label10);
+  hlayout11->addWidget(line_edit10);
 
-  generalHBoxLayout13 = new QHBoxLayout;
-  generalHBoxLayout13->addWidget(label13);
-  generalHBoxLayout13->addWidget(label13a);
-  generalHBoxLayout13->addStretch(1000);
+  QHBoxLayout *hlayout12 = new QHBoxLayout;
+  hlayout12->addWidget(label11);
+  hlayout12->addWidget(line_edit11);
 
-  generalHBoxLayout14 = new QHBoxLayout;
-  generalHBoxLayout14->addWidget(label20);
-  generalHBoxLayout14->addWidget(label20a);
-  generalHBoxLayout14->addStretch(1000);
+  QHBoxLayout *hlayout13 = new QHBoxLayout;
+  hlayout13->addWidget(label12);
+  hlayout13->addWidget(line_edit12);
 
-  generalHBoxLayout15 = new QHBoxLayout;
-  generalHBoxLayout15->addWidget(label21);
-  generalHBoxLayout15->addWidget(label21a);
-  generalHBoxLayout15->addStretch(1000);
+  QHBoxLayout *hlayout14 = new QHBoxLayout;
+  hlayout14->addWidget(label13);
+  hlayout14->addWidget(line_edit13);
 
-  generalVBoxLayout1 = new QVBoxLayout;
-  generalVBoxLayout1->addLayout(generalHBoxLayout1);
-  generalVBoxLayout1->addLayout(generalHBoxLayout2);
-  generalVBoxLayout1->addLayout(generalHBoxLayout3);
-  generalVBoxLayout1->addLayout(generalHBoxLayout4);
-  generalVBoxLayout1->addLayout(generalHBoxLayout5);
-  generalVBoxLayout1->addLayout(generalHBoxLayout6);
-  generalVBoxLayout1->addLayout(generalHBoxLayout7);
-  generalVBoxLayout1->addLayout(generalHBoxLayout8);
-  generalVBoxLayout1->addLayout(generalHBoxLayout9);
-  generalVBoxLayout1->addLayout(generalHBoxLayout10);
-  generalVBoxLayout1->addLayout(generalHBoxLayout11);
-  generalVBoxLayout1->addLayout(generalHBoxLayout12);
-  generalVBoxLayout1->addLayout(generalHBoxLayout13);
-  generalVBoxLayout1->addLayout(generalHBoxLayout14);
-  generalVBoxLayout1->addLayout(generalHBoxLayout15);
-  generalVBoxLayout1->addStretch(1000);
-  tab1->setLayout(generalVBoxLayout1);
+  QHBoxLayout *hlayout15 = new QHBoxLayout;
+  hlayout15->addWidget(label20);
+  hlayout15->addWidget(line_edit20);
 
-  signalsHBoxLayout1 = new QHBoxLayout;
-  signalsHBoxLayout1->addWidget(signallist);
-  tab2->setLayout(signalsHBoxLayout1);
+  QHBoxLayout *hlayout16 = new QHBoxLayout;
+  hlayout16->addWidget(label21);
+  hlayout16->addWidget(line_edit21);
+
+  QVBoxLayout *vlayout2 = new QVBoxLayout;
+  vlayout2->addLayout(hlayout2);
+  vlayout2->addLayout(hlayout3);
+  vlayout2->addLayout(hlayout4);
+  vlayout2->addLayout(hlayout5);
+  vlayout2->addLayout(hlayout6);
+  vlayout2->addLayout(hlayout7);
+  vlayout2->addLayout(hlayout8);
+  vlayout2->addLayout(hlayout9);
+  vlayout2->addLayout(hlayout10);
+  vlayout2->addLayout(hlayout11);
+  vlayout2->addLayout(hlayout12);
+  vlayout2->addLayout(hlayout13);
+  vlayout2->addLayout(hlayout14);
+  vlayout2->addLayout(hlayout15);
+  vlayout2->addLayout(hlayout16);
+  vlayout2->addStretch(1000);
+
+  QTabWidget *tabholder = new QTabWidget;
+
+  tab1 = new QWidget;
 
   tabholder->addTab(tab1, "General");
-  tabholder->addTab(tab2, "Signals");
+  tabholder->addTab(signallist, "Signals");
 
-  mainHBoxLayout1 = new QHBoxLayout;
-  mainHBoxLayout1->addStretch(100);
-  mainHBoxLayout1->addWidget(pushButton1);
+  tab1->setLayout(vlayout2);
 
-  mainVBoxLayout1 = new QVBoxLayout;
-  mainVBoxLayout1->addWidget(filelist);
-  mainVBoxLayout1->addSpacing(10);
-  mainVBoxLayout1->addWidget(tabholder, 1000);
-  mainVBoxLayout1->addSpacing(10);
-  mainVBoxLayout1->addLayout(mainHBoxLayout1);
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(pushButton1);
 
-  EDFhdrDialog->setLayout(mainVBoxLayout1);
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addWidget(filelist);
+  vlayout1->addSpacing(20);
+  vlayout1->addWidget(tabholder, 1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  EDFhdrDialog->setLayout(vlayout1);
 
   QObject::connect(pushButton1, SIGNAL(clicked()),              EDFhdrDialog, SLOT(close()));
   QObject::connect(filelist,    SIGNAL(currentRowChanged(int)), this,         SLOT(show_params(int)));
@@ -402,73 +228,63 @@ void UI_EDFhdrwindow::show_params(int row)
 
   if(mainwindow->edfheaderlist[row]->edfplus || mainwindow->edfheaderlist[row]->bdfplus)
   {
-    label1a->setText(mainwindow->edfheaderlist[row]->plus_patientcode);
-    label1a->setText(mainwindow->edfheaderlist[row]->plus_patientcode);
-
     label1->setText("Subject code");
-
-    label2a->setText(mainwindow->edfheaderlist[row]->plus_gender);
-
     label2->setText("Sex");
 
     label6->setVisible(true);
-    label6a->setVisible(true);
-    label6a->setText(mainwindow->edfheaderlist[row]->plus_birthdate);
-
     label7->setVisible(true);
-    label7a->setVisible(true);
-    label7a->setText(mainwindow->edfheaderlist[row]->plus_patient_name);
-
     label8->setVisible(true);
-    label8a->setVisible(true);
-    label8a->setText(mainwindow->edfheaderlist[row]->plus_patient_additional);
-
     label9->setVisible(true);
-    label9a->setVisible(true);
-    label9a->setText(mainwindow->edfheaderlist[row]->plus_startdate);
-
     label10->setVisible(true);
-    label10a->setVisible(true);
-    label10a->setText(mainwindow->edfheaderlist[row]->plus_admincode);
-
     label11->setVisible(true);
-    label11a->setVisible(true);
-    label11a->setText(mainwindow->edfheaderlist[row]->plus_technician);
-
     label12->setVisible(true);
-    label12a->setVisible(true);
-    label12a->setText(mainwindow->edfheaderlist[row]->plus_equipment);
-
     label13->setVisible(true);
-    label13a->setVisible(true);
-    label13a->setText(mainwindow->edfheaderlist[row]->plus_recording_additional);
+
+    line_edit6->setVisible(true);
+    line_edit7->setVisible(true);
+    line_edit8->setVisible(true);
+    line_edit9->setVisible(true);
+    line_edit10->setVisible(true);
+    line_edit11->setVisible(true);
+    line_edit12->setVisible(true);
+    line_edit13->setVisible(true);
+
+    line_edit1->setText(mainwindow->edfheaderlist[row]->plus_patientcode);
+    line_edit2->setText(mainwindow->edfheaderlist[row]->plus_gender);
+    line_edit6->setText(mainwindow->edfheaderlist[row]->plus_birthdate);
+    line_edit7->setText(mainwindow->edfheaderlist[row]->plus_patient_name);
+    line_edit8->setText(mainwindow->edfheaderlist[row]->plus_patient_additional);
+    line_edit9->setText(mainwindow->edfheaderlist[row]->plus_startdate);
+    line_edit10->setText(mainwindow->edfheaderlist[row]->plus_admincode);
+    line_edit11->setText(mainwindow->edfheaderlist[row]->plus_technician);
+    line_edit12->setText(mainwindow->edfheaderlist[row]->plus_equipment);
+    line_edit13->setText(mainwindow->edfheaderlist[row]->plus_recording_additional);
   }
   else // old EDF
   {
-    label6->setVisible(false);
-    label6a->setVisible(false);
-    label7->setVisible(false);
-    label7a->setVisible(false);
-    label8->setVisible(false);
-    label8a->setVisible(false);
-    label9->setVisible(false);
-    label9a->setVisible(false);
-    label10->setVisible(false);
-    label10a->setVisible(false);
-    label11->setVisible(false);
-    label11a->setVisible(false);
-    label12->setVisible(false);
-    label12a->setVisible(false);
-    label13->setVisible(false);
-    label13a->setVisible(false);
-
     label1->setText("Subject");
-
-    label1a->setText(mainwindow->edfheaderlist[row]->patient);
-
     label2->setText("Recording");
 
-    label2a->setText(mainwindow->edfheaderlist[row]->recording);
+    label6->setVisible(false);
+    label7->setVisible(false);
+    label8->setVisible(false);
+    label9->setVisible(false);
+    label10->setVisible(false);
+    label11->setVisible(false);
+    label12->setVisible(false);
+    label13->setVisible(false);
+
+    line_edit6->setVisible(false);
+    line_edit7->setVisible(false);
+    line_edit8->setVisible(false);
+    line_edit9->setVisible(false);
+    line_edit10->setVisible(false);
+    line_edit11->setVisible(false);
+    line_edit12->setVisible(false);
+    line_edit13->setVisible(false);
+
+    line_edit1->setText(mainwindow->edfheaderlist[row]->patient);
+    line_edit2->setText(mainwindow->edfheaderlist[row]->recording);
   }
 
   utc_to_date_time(mainwindow->edfheaderlist[row]->utc_starttime, &date_time);
@@ -496,7 +312,7 @@ void UI_EDFhdrwindow::show_params(int row)
     remove_trailing_zeros(str);
   }
 
-  label3a->setText(str);
+  line_edit3->setText(str);
 
   file_duration = mainwindow->edfheaderlist[row]->long_data_record_duration * mainwindow->edfheaderlist[row]->datarecords;
 
@@ -518,33 +334,23 @@ void UI_EDFhdrwindow::show_params(int row)
             (int)((file_duration % TIME_DIMENSION) / 10LL));
   }
 
-  label4a->setText(str);
+  line_edit4->setText(str);
 
-  label5a->setText(mainwindow->edfheaderlist[row]->reserved);
+  line_edit5->setText(mainwindow->edfheaderlist[row]->reserved);
 
   snprintf(str,  512, "%.12f", mainwindow->edfheaderlist[row]->data_record_duration);
 
   remove_trailing_zeros(str);
 
-  label20a->setText(str);
+  line_edit20->setText(str);
 
-  label21a->setText(mainwindow->edfheaderlist[row]->version);
+  line_edit21->setText(mainwindow->edfheaderlist[row]->version);
 
   signal_cnt = mainwindow->edfheaderlist[row]->edfsignals;
 
   signallist->setColumnCount(10);
   signallist->setRowCount(signal_cnt);
   signallist->setSelectionMode(QAbstractItemView::NoSelection);
-  signallist->setColumnWidth(0, 180);
-  signallist->setColumnWidth(1, 120);
-  signallist->setColumnWidth(2, 120);
-  signallist->setColumnWidth(3, 120);
-  signallist->setColumnWidth(4, 120);
-  signallist->setColumnWidth(5, 120);
-  signallist->setColumnWidth(6, 120);
-  signallist->setColumnWidth(7, 120);
-  signallist->setColumnWidth(8, 520);
-  signallist->setColumnWidth(9, 520);
   QStringList horizontallabels;
   horizontallabels += "Label";
   horizontallabels += "Samplefrequency";
@@ -616,6 +422,8 @@ void UI_EDFhdrwindow::show_params(int row)
     ql->setTextInteractionFlags(Qt::TextSelectableByMouse);
     signallist->setCellWidget(i, 9, ql);
   }
+
+  signallist->resizeColumnsToContents();
 }
 
 

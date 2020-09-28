@@ -47,6 +47,8 @@
 #include <QStringList>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include "global.h"
 #include "mainwindow.h"
@@ -71,70 +73,45 @@ private:
 
 QDialog      *EDFhdrDialog;
 
-QVBoxLayout    *generalVBoxLayout1,
-               *signalsVBoxLayout,
-               *mainVBoxLayout1;
-
-QHBoxLayout    *generalHBoxLayout1,
-               *generalHBoxLayout2,
-               *generalHBoxLayout3,
-               *generalHBoxLayout4,
-               *generalHBoxLayout5,
-               *generalHBoxLayout6,
-               *generalHBoxLayout7,
-               *generalHBoxLayout8,
-               *generalHBoxLayout9,
-               *generalHBoxLayout10,
-               *generalHBoxLayout11,
-               *generalHBoxLayout12,
-               *generalHBoxLayout13,
-               *generalHBoxLayout14,
-               *generalHBoxLayout15,
-               *signalsHBoxLayout1,
-               *mainHBoxLayout1;
-
-QTabWidget   *tabholder;
-
-QWidget      *tab1,
-             *tab2;
+QWidget      *tab1;
 
 QListWidget  *filelist;
 
 QTableWidget *signallist;
 
-QLabel       *label1,
-             *label2,
-             *label6,
-             *label7,
-             *label8,
-             *label9,
-             *label10,
-             *label11,
-             *label12,
-             *label13,
-             *label3,
-             *label4,
-             *label5,
-             *label20,
-             *label21,
-             *label1a,
-             *label2a,
-             *label6a,
-             *label7a,
-             *label8a,
-             *label9a,
-             *label10a,
-             *label11a,
-             *label12a,
-             *label13a,
-             *label3a,
-             *label4a,
-             *label5a,
-             *label20a,
-             *label21a;
-
 QPushButton  *pushButton1;
 
+QLabel *label1,
+       *label2,
+       *label3,
+       *label4,
+       *label5,
+       *label6,
+       *label7,
+       *label8,
+       *label9,
+       *label10,
+       *label11,
+       *label12,
+       *label13,
+       *label20,
+       *label21;
+
+QLineEdit *line_edit1,
+          *line_edit2,
+          *line_edit3,
+          *line_edit4,
+          *line_edit5,
+          *line_edit6,
+          *line_edit7,
+          *line_edit8,
+          *line_edit9,
+          *line_edit10,
+          *line_edit11,
+          *line_edit12,
+          *line_edit13,
+          *line_edit20,
+          *line_edit21;
 
 private slots:
 
