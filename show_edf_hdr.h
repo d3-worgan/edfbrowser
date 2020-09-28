@@ -49,6 +49,7 @@
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QFormLayout>
+#include <QStackedLayout>
 
 #include "global.h"
 #include "mainwindow.h"
@@ -73,7 +74,8 @@ private:
 
 QDialog      *EDFhdrDialog;
 
-QWidget      *tab1;
+QWidget      *tab1,
+             *tab1a;
 
 QListWidget  *filelist;
 
@@ -81,27 +83,18 @@ QTableWidget *signallist;
 
 QPushButton  *pushButton1;
 
-QLabel *label1,
-       *label2,
-       *label3,
-       *label4,
-       *label5,
-       *label6,
-       *label7,
-       *label8,
-       *label9,
-       *label10,
-       *label11,
-       *label12,
-       *label13,
-       *label20,
-       *label21;
+QStackedWidget *stackwidget;
 
 QLineEdit *line_edit1,
+          *line_edit1a,
           *line_edit2,
+          *line_edit2a,
           *line_edit3,
+          *line_edit3a,
           *line_edit4,
+          *line_edit4a,
           *line_edit5,
+          *line_edit5a,
           *line_edit6,
           *line_edit7,
           *line_edit8,
@@ -111,7 +104,9 @@ QLineEdit *line_edit1,
           *line_edit12,
           *line_edit13,
           *line_edit20,
-          *line_edit21;
+          *line_edit20a,
+          *line_edit21,
+          *line_edit21a;
 
 private slots:
 
