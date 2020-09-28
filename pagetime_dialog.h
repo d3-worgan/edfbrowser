@@ -43,6 +43,10 @@
 #include <QTime>
 #include <QSpinBox>
 #include <QMessageBox>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <string.h>
 
@@ -68,8 +72,6 @@ public:
 private:
 
 QDialog      *set_diplaytime_dialog;
-
-QLabel       *label1;
 
 QPushButton  *CloseButton,
              *OKButton;

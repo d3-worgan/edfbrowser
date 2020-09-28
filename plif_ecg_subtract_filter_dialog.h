@@ -48,6 +48,10 @@
 #include <QVariant>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdlib.h>
 #include <string.h>
@@ -82,9 +86,6 @@ QPushButton    *CancelButton,
                *helpButton;
 
 QListWidget    *list;
-
-QLabel         *listlabel,
-               *plfLabel;
 
 QComboBox      *plfBox;
 

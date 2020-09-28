@@ -52,18 +52,15 @@ UI_LoadMontagewindow::UI_LoadMontagewindow(QWidget *w_parent, char *path)
 
   LoadMontageDialog = new QDialog;
 
-  LoadMontageDialog->setMinimumSize(800, 180);
-  LoadMontageDialog->setMaximumSize(800, 180);
+  LoadMontageDialog->setMinimumSize(600, 180);
   LoadMontageDialog->setWindowTitle("Load montage");
   LoadMontageDialog->setModal(true);
   LoadMontageDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  label1 = new QLabel(LoadMontageDialog);
-  label1->setGeometry(10, 10, 780, 25);
+  QLabel *label1 = new QLabel;
   label1->setText("Choose to which file you want to apply the montage:");
 
-  filelist = new QListWidget(LoadMontageDialog);
-  filelist->setGeometry(10, 35, 780, 75);
+  filelist = new QListWidget;
   filelist->setSelectionBehavior(QAbstractItemView::SelectRows);
   filelist->setSelectionMode(QAbstractItemView::SingleSelection);
   for(i=0; i<mainwindow->files_open; i++)
@@ -71,18 +68,29 @@ UI_LoadMontagewindow::UI_LoadMontagewindow(QWidget *w_parent, char *path)
     new QListWidgetItem(QString::fromLocal8Bit(mainwindow->edfheaderlist[i]->filename), filelist);
   }
 
-  LoadButton = new QPushButton(LoadMontageDialog);
-  LoadButton->setGeometry(10, 140, 100, 25);
+  LoadButton = new QPushButton;
   LoadButton->setText("Load");
 
-  CloseButton = new QPushButton(LoadMontageDialog);
-  CloseButton->setGeometry(690, 140, 100, 25);
+  CloseButton = new QPushButton;
   CloseButton->setText("Close");
 
-  QObject::connect(CloseButton,  SIGNAL(clicked()), LoadMontageDialog, SLOT(close()));
-  QObject::connect(LoadButton,   SIGNAL(clicked()), this,              SLOT(LoadButtonClicked()));
+  QObject::connect(CloseButton, SIGNAL(clicked()), LoadMontageDialog, SLOT(close()));
+  QObject::connect(LoadButton,  SIGNAL(clicked()), this,              SLOT(LoadButtonClicked()));
 
   filelist->setCurrentRow(mainwindow->files_open - 1);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(LoadButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(CloseButton);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addWidget(label1);
+  vlayout1->addWidget(filelist, 1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  LoadMontageDialog->setLayout(vlayout1);
 
   LoadMontageDialog->exec();
 }

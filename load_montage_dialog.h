@@ -43,6 +43,10 @@
 #include <QList>
 #include <QMessageBox>
 #include <QString>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -79,8 +83,6 @@ public:
 private:
 
   QDialog      *LoadMontageDialog;
-
-  QLabel       *label1;
 
   QListWidget  *filelist;
 
