@@ -137,9 +137,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   }
 
   ImportAnnotsDialog = new QDialog;
-
-  ImportAnnotsDialog->setMinimumSize(520, 500);
-  ImportAnnotsDialog->setMaximumSize(520, 500);
+  ImportAnnotsDialog->setMinimumSize(550, 375);
   ImportAnnotsDialog->setWindowTitle("Import annotations/events");
   ImportAnnotsDialog->setModal(true);
   ImportAnnotsDialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -157,235 +155,184 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
     tab[i] = new QWidget;
   }
 
-  SeparatorLabel = new QLabel(ImportAnnotsDialog);
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+  SeparatorLabel = new QLabel;
   SeparatorLabel->setText("Column separator");
-  SeparatorLabel->setMinimumSize(200, 25);
 
-  OnsetColumnLabel = new QLabel(ImportAnnotsDialog);
+  OnsetColumnLabel = new QLabel;
   OnsetColumnLabel->setText("Onset column");
-  OnsetColumnLabel->setMinimumSize(200, 25);
 
-  DatastartLabel = new QLabel(ImportAnnotsDialog);
+  DatastartLabel = new QLabel;
   DatastartLabel->setText("Data starts at line");
-  DatastartLabel->setMinimumSize(200, 25);
 
-  OnsetTimeLabel = new QLabel(ImportAnnotsDialog);
+  OnsetTimeLabel = new QLabel;
   OnsetTimeLabel->setText("Onset time coding is");
-  OnsetTimeLabel->setMinimumSize(200, 25);
 
-  SeparatorLineEdit = new QLineEdit(ImportAnnotsDialog);
+  SeparatorLineEdit = new QLineEdit;
   SeparatorLineEdit->setMaxLength(3);
   SeparatorLineEdit->setText("tab");
-  SeparatorLineEdit->setMinimumSize(80, 25);
 
-  DescriptionLineEdit = new QLineEdit(ImportAnnotsDialog);
+  DescriptionLineEdit = new QLineEdit;
   DescriptionLineEdit->setMaxLength(20);
   DescriptionLineEdit->setEnabled(false);
-  DescriptionLineEdit->setMinimumSize(80, 25);
 
-  OnsetColumnSpinBox = new QSpinBox(ImportAnnotsDialog);
+  OnsetColumnSpinBox = new QSpinBox;
   OnsetColumnSpinBox->setRange(1,256);
   OnsetColumnSpinBox->setValue(1);
-  OnsetColumnSpinBox->setMinimumSize(80, 25);
 
-  DurationColumnSpinBox = new QSpinBox(ImportAnnotsDialog);
+  DurationColumnSpinBox = new QSpinBox;
   DurationColumnSpinBox->setRange(1,256);
   DurationColumnSpinBox->setValue(3);
-  DurationColumnSpinBox->setMinimumSize(80, 25);
 
-  DescriptionColumnSpinBox = new QSpinBox(ImportAnnotsDialog);
+  DescriptionColumnSpinBox = new QSpinBox;
   DescriptionColumnSpinBox->setRange(1,256);
   DescriptionColumnSpinBox->setValue(2);
-  DescriptionColumnSpinBox->setMinimumSize(80, 25);
 
-  DatastartSpinbox = new QSpinBox(ImportAnnotsDialog);
+  DatastartSpinbox = new QSpinBox;
   DatastartSpinbox->setRange(1,100);
   DatastartSpinbox->setValue(1);
-  DatastartSpinbox->setMinimumSize(80, 25);
 
-  RelativeTimeComboBox = new QComboBox(ImportAnnotsDialog);
+  RelativeTimeComboBox = new QComboBox;
   RelativeTimeComboBox->addItem("in seconds, relative to start of file");
   RelativeTimeComboBox->addItem("hh:mm:ss");
   RelativeTimeComboBox->addItem("hh:mm:ss.xxx");
   RelativeTimeComboBox->addItem("yyyy-mm-ddThh:mm:ss");
   RelativeTimeComboBox->addItem("yyyy-mm-ddThh:mm:ss.xxx");
-  RelativeTimeComboBox->setMinimumSize(200, 25);
 
   DescriptionColumnRadioButton = new QRadioButton("Description column");
-  DescriptionColumnRadioButton->setMinimumSize(198, 25);
   DescriptionColumnRadioButton->setChecked(true);
   UseManualDescriptionRadioButton = new QRadioButton("Manual description");
-  UseManualDescriptionRadioButton->setMinimumSize(198, 25);
 
   DurationCheckBox = new QCheckBox(" Duration column", ImportAnnotsDialog);
   DurationCheckBox->setTristate(false);
   DurationCheckBox->setCheckState(Qt::Unchecked);
-  DurationCheckBox->setMinimumSize(198, 25);
 
-  asciiSettingsHBoxLayout1 = new QHBoxLayout;
-  asciiSettingsHBoxLayout1->addWidget(SeparatorLabel);
-  asciiSettingsHBoxLayout1->addWidget(SeparatorLineEdit);
-  asciiSettingsHBoxLayout1->addStretch(100);
+  QHBoxLayout *asciiSettingsHBoxLayout1 = new QHBoxLayout;
+  asciiSettingsHBoxLayout1->addWidget(DescriptionColumnRadioButton);
+  asciiSettingsHBoxLayout1->addWidget(DescriptionColumnSpinBox);
+  asciiSettingsHBoxLayout1->addStretch(1000);
 
-  asciiSettingsHBoxLayout2 = new QHBoxLayout;
-  asciiSettingsHBoxLayout2->addWidget(OnsetColumnLabel);
-  asciiSettingsHBoxLayout2->addWidget(OnsetColumnSpinBox);
-  asciiSettingsHBoxLayout2->addStretch(100);
+  QHBoxLayout *asciiSettingsHBoxLayout2 = new QHBoxLayout;
+  asciiSettingsHBoxLayout2->addWidget(UseManualDescriptionRadioButton);
+  asciiSettingsHBoxLayout2->addWidget(DescriptionLineEdit);
+  asciiSettingsHBoxLayout2->addStretch(1000);
 
-  asciiSettingsHBoxLayout3 = new QHBoxLayout;
-  asciiSettingsHBoxLayout3->addWidget(DescriptionColumnRadioButton);
-  asciiSettingsHBoxLayout3->addWidget(DescriptionColumnSpinBox);
-  asciiSettingsHBoxLayout3->addStretch(100);
+  QHBoxLayout *asciiSettingsHBoxLayout3 = new QHBoxLayout;
+  asciiSettingsHBoxLayout3->addWidget(DurationCheckBox);
+  asciiSettingsHBoxLayout3->addWidget(DurationColumnSpinBox);
+  asciiSettingsHBoxLayout3->addStretch(1000);
 
-  asciiSettingsHBoxLayout4 = new QHBoxLayout;
-  asciiSettingsHBoxLayout4->addWidget(UseManualDescriptionRadioButton);
-  asciiSettingsHBoxLayout4->addWidget(DescriptionLineEdit);
-  asciiSettingsHBoxLayout4->addStretch(100);
+  QFormLayout *asciiSettingsflayout = new QFormLayout;
+  asciiSettingsflayout->addRow(SeparatorLabel, SeparatorLineEdit);
+  asciiSettingsflayout->addRow(OnsetColumnLabel, OnsetColumnSpinBox);
+  asciiSettingsflayout->addRow(" ", asciiSettingsHBoxLayout1);
+  asciiSettingsflayout->addRow(" ", asciiSettingsHBoxLayout2);
+  asciiSettingsflayout->addRow(" ", asciiSettingsHBoxLayout3);
+  asciiSettingsflayout->addRow(DatastartLabel, DatastartSpinbox);
+  asciiSettingsflayout->addRow(OnsetTimeLabel, RelativeTimeComboBox);
 
-  asciiSettingsHBoxLayout7 = new QHBoxLayout;
-  asciiSettingsHBoxLayout7->addWidget(DurationCheckBox);
-  asciiSettingsHBoxLayout7->addWidget(DurationColumnSpinBox);
-  asciiSettingsHBoxLayout7->addStretch(100);
+  QHBoxLayout *asciiSettingsHBoxLayout20 = new QHBoxLayout;
+  asciiSettingsHBoxLayout20->addLayout(asciiSettingsflayout);
+  asciiSettingsHBoxLayout20->addStretch(1000);
 
-  asciiSettingsHBoxLayout5 = new QHBoxLayout;
-  asciiSettingsHBoxLayout5->addWidget(DatastartLabel);
-  asciiSettingsHBoxLayout5->addWidget(DatastartSpinbox);
-  asciiSettingsHBoxLayout5->addStretch(100);
+  QVBoxLayout *asciiSettingsVBoxLayout = new QVBoxLayout;
+  asciiSettingsVBoxLayout->addLayout(asciiSettingsHBoxLayout20);
+  asciiSettingsVBoxLayout->addStretch(1000);
 
-  asciiSettingsHBoxLayout6 = new QHBoxLayout;
-  asciiSettingsHBoxLayout6->addWidget(OnsetTimeLabel);
-  asciiSettingsHBoxLayout6->addWidget(RelativeTimeComboBox);
-  asciiSettingsHBoxLayout6->addStretch(100);
-
-  asciiSettingsVBoxLayout = new QVBoxLayout;
-  asciiSettingsVBoxLayout->addLayout(asciiSettingsHBoxLayout1);
-  asciiSettingsVBoxLayout->addLayout(asciiSettingsHBoxLayout2);
-  asciiSettingsVBoxLayout->addLayout(asciiSettingsHBoxLayout3);
-  asciiSettingsVBoxLayout->addLayout(asciiSettingsHBoxLayout4);
-  asciiSettingsVBoxLayout->addLayout(asciiSettingsHBoxLayout7);
-  asciiSettingsVBoxLayout->addLayout(asciiSettingsHBoxLayout5);
-  asciiSettingsVBoxLayout->addLayout(asciiSettingsHBoxLayout6);
   tab[tab_index_array[ASCIICSV_FORMAT]]->setLayout(asciiSettingsVBoxLayout);
 
-  DCEventSignalLabel = new QLabel(ImportAnnotsDialog);
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+  DCEventSignalLabel = new QLabel;
   DCEventSignalLabel->setText("Signal");
-  DCEventSignalLabel->setMinimumSize(130, 25);
 
-  DCEventBitTimeLabel = new QLabel(ImportAnnotsDialog);
+  DCEventBitTimeLabel = new QLabel;
   DCEventBitTimeLabel->setText("Bit Time");
-  DCEventBitTimeLabel->setMinimumSize(130, 25);
 
-  DCEventTriggerLevelLabel = new QLabel(ImportAnnotsDialog);
+  DCEventTriggerLevelLabel = new QLabel;
   DCEventTriggerLevelLabel->setText("Trigger Level");
-  DCEventTriggerLevelLabel->setMinimumSize(130, 25);
 
-  DCEventSignalComboBox = new QComboBox(ImportAnnotsDialog);
+  DCEventSignalComboBox = new QComboBox;
   for(i=0; i<mainwindow->signalcomps; i++)
   {
     DCEventSignalComboBox->addItem(mainwindow->signalcomp[i]->signallabel);
   }
-  DCEventSignalComboBox->setMinimumSize(130, 25);
 
-  BitTimeSpinbox = new QSpinBox(ImportAnnotsDialog);
+  BitTimeSpinbox = new QSpinBox;
   BitTimeSpinbox->setRange(1,1000);
   BitTimeSpinbox->setSuffix(" mS");
   BitTimeSpinbox->setValue(10);
-  BitTimeSpinbox->setMinimumSize(130, 25);
 
-  DCEventTriggerLevelSpinBox = new QDoubleSpinBox(ImportAnnotsDialog);
+  DCEventTriggerLevelSpinBox = new QDoubleSpinBox;
   DCEventTriggerLevelSpinBox->setDecimals(3);
   DCEventTriggerLevelSpinBox->setRange(-10000.0, 10000.0);
   DCEventTriggerLevelSpinBox->setValue(500.0);
-  DCEventTriggerLevelSpinBox->setMinimumSize(130, 25);
 
   if(mainwindow->signalcomps)
   {
     DCEventSignalChanged(0);
   }
 
-  DCEventHBoxLayout1 = new QHBoxLayout;
-  DCEventHBoxLayout1->addWidget(DCEventSignalLabel);
-  DCEventHBoxLayout1->addWidget(DCEventSignalComboBox);
-  DCEventHBoxLayout1->addStretch(2);
+  QFormLayout *DCEventflayout = new QFormLayout;
+  DCEventflayout->addRow(DCEventSignalLabel, DCEventSignalComboBox);
+  DCEventflayout->addRow(DCEventBitTimeLabel, BitTimeSpinbox);
+  DCEventflayout->addRow(DCEventTriggerLevelLabel, DCEventTriggerLevelSpinBox);
 
-  DCEventHBoxLayout2 = new QHBoxLayout;
-  DCEventHBoxLayout2->addWidget(DCEventBitTimeLabel);
-  DCEventHBoxLayout2->addWidget(BitTimeSpinbox);
-  DCEventHBoxLayout2->addStretch(2);
+  QHBoxLayout *DCEventHBoxLayout20 = new QHBoxLayout;
+  DCEventHBoxLayout20->addLayout(DCEventflayout);
+  DCEventHBoxLayout20->addStretch(1000);
 
-  DCEventHBoxLayout3 = new QHBoxLayout;
-  DCEventHBoxLayout3->addWidget(DCEventTriggerLevelLabel);
-  DCEventHBoxLayout3->addWidget(DCEventTriggerLevelSpinBox);
-  DCEventHBoxLayout3->addStretch(2);
-
-  DCEventVBoxLayout = new QVBoxLayout;
-  DCEventVBoxLayout->addStretch(10);
-  DCEventVBoxLayout->addLayout(DCEventHBoxLayout1);
-  DCEventVBoxLayout->addStretch(2);
-  DCEventVBoxLayout->addLayout(DCEventHBoxLayout2);
-  DCEventVBoxLayout->addStretch(2);
-  DCEventVBoxLayout->addLayout(DCEventHBoxLayout3);
-  DCEventVBoxLayout->addStretch(10);
+  QVBoxLayout *DCEventVBoxLayout = new QVBoxLayout;
+  DCEventVBoxLayout->addLayout(DCEventHBoxLayout20);
+  DCEventVBoxLayout->addStretch(1000);
 
   tab[tab_index_array[DCEVENT_FORMAT]]->setLayout(DCEventVBoxLayout);
 
-  SampleTimeLabel = new QLabel(ImportAnnotsDialog);
-  SampleTimeLabel->setText("Samplefrequency:");
-  SampleTimeLabel->setMinimumSize(130, 25);
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
-  SampleTimeSpinbox = new QSpinBox(ImportAnnotsDialog);
+  SampleTimeLabel = new QLabel;
+  SampleTimeLabel->setText("Samplefrequency:");
+
+  SampleTimeSpinbox = new QSpinBox;
   SampleTimeSpinbox->setRange(0,100000);
   SampleTimeSpinbox->setSuffix(" Hz");
-  SampleTimeSpinbox->setMinimumSize(130, 25);
   SampleTimeSpinbox->setValue(get_samplefreq_inf());
   if(SampleTimeSpinbox->value() > 0)
   {
     SampleTimeSpinbox->setEnabled(false);
   }
 
-  importStandardLabel  = new QLabel(ImportAnnotsDialog);
+  importStandardLabel  = new QLabel;
   importStandardLabel->setText("Import Standard Annotations:");
-  importStandardLabel->setMinimumSize(130, 25);
 
   importStandardCheckBox = new QCheckBox;
-  importStandardCheckBox->setMinimumSize(30, 30);
   importStandardCheckBox->setTristate(false);
   importStandardCheckBox->setCheckState(Qt::Checked);
 
-  importAuxLabel  = new QLabel(ImportAnnotsDialog);
+  importAuxLabel  = new QLabel;
   importAuxLabel->setText("Import Auxiliary Info:");
-  importAuxLabel->setMinimumSize(130, 25);
 
   importAuxCheckBox = new QCheckBox;
-  importAuxCheckBox->setMinimumSize(30, 30);
   importAuxCheckBox->setTristate(false);
   importAuxCheckBox->setCheckState(Qt::Checked);
 
-  mitwfdbHBoxLayout1 = new QHBoxLayout;
-  mitwfdbHBoxLayout1->addWidget(SampleTimeLabel);
-  mitwfdbHBoxLayout1->addWidget(SampleTimeSpinbox);
-  mitwfdbHBoxLayout1->addStretch(2);
+  QFormLayout *mitwfdbflayout = new QFormLayout;
+  mitwfdbflayout->addRow(SampleTimeLabel, SampleTimeSpinbox);
+  mitwfdbflayout->addRow(importStandardLabel, importStandardCheckBox);
+  mitwfdbflayout->addRow(importAuxLabel, importAuxCheckBox);
 
-  mitwfdbHBoxLayout2 = new QHBoxLayout;
-  mitwfdbHBoxLayout2->addWidget(importStandardLabel);
-  mitwfdbHBoxLayout2->addWidget(importStandardCheckBox);
-  mitwfdbHBoxLayout2->addStretch(2);
+  QHBoxLayout *mitwfdbHBoxLayout20 = new QHBoxLayout;
+  mitwfdbHBoxLayout20->addLayout(mitwfdbflayout);
+  mitwfdbHBoxLayout20->addStretch(1000);
 
-  mitwfdbHBoxLayout3 = new QHBoxLayout;
-  mitwfdbHBoxLayout3->addWidget(importAuxLabel);
-  mitwfdbHBoxLayout3->addWidget(importAuxCheckBox);
-  mitwfdbHBoxLayout3->addStretch(2);
-
-  mitwfdbVBoxLayout1 = new QVBoxLayout;
-  mitwfdbVBoxLayout1->addStretch(100);
-  mitwfdbVBoxLayout1->addLayout(mitwfdbHBoxLayout1);
-  mitwfdbVBoxLayout1->addStretch(30);
-  mitwfdbVBoxLayout1->addLayout(mitwfdbHBoxLayout2);
-  mitwfdbVBoxLayout1->addStretch(30);
-  mitwfdbVBoxLayout1->addLayout(mitwfdbHBoxLayout3);
-  mitwfdbVBoxLayout1->addStretch(100);
+  QVBoxLayout *mitwfdbVBoxLayout1 = new QVBoxLayout;
+  mitwfdbVBoxLayout1->addLayout(mitwfdbHBoxLayout20);
+  mitwfdbVBoxLayout1->addStretch(1000);
 
   tab[tab_index_array[MITWFDB_FORMAT]]->setLayout(mitwfdbVBoxLayout1);
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
   tabholder->addTab(tab[tab_index_array[ASCIICSV_FORMAT]], "ASCII / CSV");
   tabholder->addTab(tab[tab_index_array[DCEVENT_FORMAT]],  "DC-event (8-bit serial code)");
@@ -394,37 +341,30 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   tabholder->addTab(tab[tab_index_array[MITWFDB_FORMAT]],  "MIT / WFDB");
 
   IgnoreConsecutiveCheckBox = new QCheckBox(" Ignore consecutive events with the\n same description");
-  IgnoreConsecutiveCheckBox->setMinimumSize(300, 40);
   IgnoreConsecutiveCheckBox->setTristate(false);
   IgnoreConsecutiveCheckBox->setCheckState(Qt::Unchecked);
 
-  ImportButton = new QPushButton(ImportAnnotsDialog);
-  ImportButton->setMinimumSize(80, 25);
+  ImportButton = new QPushButton;
   ImportButton->setText("Import");
 
-  CloseButton = new QPushButton(ImportAnnotsDialog);
-  CloseButton->setMinimumSize(80, 25);
+  CloseButton = new QPushButton;
   CloseButton->setText("Cancel");
 
-  helpButton = new QPushButton(ImportAnnotsDialog);
-  helpButton->setMinimumSize(80, 25);
+  helpButton = new QPushButton;
   helpButton->setText("Help");
 
-  horLayout = new QHBoxLayout;
-  horLayout->addSpacing(30);
-  horLayout->addWidget(ImportButton, 1);
-  horLayout->addSpacing(120);
-  horLayout->addWidget(helpButton, 1);
-  horLayout->addSpacing(120);
-  horLayout->addWidget(CloseButton, 1);
-  horLayout->addSpacing(30);
+  QHBoxLayout *horLayout = new QHBoxLayout;
+  horLayout->addWidget(ImportButton);
+  horLayout->addStretch(1000);
+  horLayout->addWidget(helpButton);
+  horLayout->addStretch(1000);
+  horLayout->addWidget(CloseButton);
 
-  mainLayout = new QVBoxLayout;
-  mainLayout->addWidget(tabholder, 300);
-  mainLayout->addSpacing(30);
-  mainLayout->addWidget(IgnoreConsecutiveCheckBox, 30);
-  mainLayout->addSpacing(30);
-  mainLayout->addLayout(horLayout, 30);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  mainLayout->addWidget(tabholder, 1000);
+  mainLayout->addWidget(IgnoreConsecutiveCheckBox);
+  mainLayout->addSpacing(20);
+  mainLayout->addLayout(horLayout);
 
   ImportAnnotsDialog->setLayout(mainLayout);
 

@@ -45,8 +45,6 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QCheckBox>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QMessageBox>
 #include <QString>
 #include <QPixmap>
@@ -54,6 +52,10 @@
 #include <QCursor>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -141,26 +143,6 @@ QDoubleSpinBox *DCEventTriggerLevelSpinBox;
 
 QComboBox      *RelativeTimeComboBox,
                *DCEventSignalComboBox;
-
-QVBoxLayout    *asciiSettingsVBoxLayout,
-               *DCEventVBoxLayout,
-               *mitwfdbVBoxLayout1,
-               *mainLayout;
-
-QHBoxLayout    *asciiSettingsHBoxLayout1,
-               *asciiSettingsHBoxLayout2,
-               *asciiSettingsHBoxLayout3,
-               *asciiSettingsHBoxLayout4,
-               *asciiSettingsHBoxLayout5,
-               *asciiSettingsHBoxLayout6,
-               *asciiSettingsHBoxLayout7,
-               *DCEventHBoxLayout1,
-               *DCEventHBoxLayout2,
-               *DCEventHBoxLayout3,
-               *mitwfdbHBoxLayout1,
-               *mitwfdbHBoxLayout2,
-               *mitwfdbHBoxLayout3,
-               *horLayout;
 
 QRadioButton   *DescriptionColumnRadioButton,
                *UseManualDescriptionRadioButton;

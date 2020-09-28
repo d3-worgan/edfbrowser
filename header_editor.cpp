@@ -193,8 +193,6 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
   helpButton = new QPushButton;
   helpButton->setText("Help");
 
-  tab1 = new QWidget;
-
   QHBoxLayout *hlayout2 = new QHBoxLayout;
   hlayout2->addWidget(dateEdit1);
   hlayout2->addSpacing(20);
@@ -228,6 +226,7 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
   vlayout2->addLayout(flayout);
   vlayout2->addStretch(1000);
 
+  tab1 = new QWidget;
   tab1->setLayout(vlayout2);
 
   tabholder = new QTabWidget;
