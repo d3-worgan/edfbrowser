@@ -52,6 +52,10 @@
 #include <QFile>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -78,10 +82,11 @@ public:
 
 private:
 
-QTabWidget     *tabholder;
+QDialog      *myobjectDialog;
 
-QWidget        *tab1,
-               *tab2;
+QTabWidget   *tabholder;
+
+QWidget      *tab1;
 
 QTableWidget *signallist;
 

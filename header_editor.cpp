@@ -34,7 +34,12 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
 {
   mainwindow = (UI_Mainwindow *)w_parent;
 
-  setWindowTitle("EDF+/BDF+ header editor");
+  myobjectDialog = new QDialog;
+  myobjectDialog->setMinimumSize(600, 500);
+  myobjectDialog->setWindowTitle("EDF header editor");
+  myobjectDialog->setSizeGripEnabled(true);
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   edf = 0;
   bdf = 0;
@@ -44,205 +49,217 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
 
   file = NULL;
 
-  setMinimumSize(710, 560);
-  setMaximumSize(710, 560);
+/************************************* TAB 1 *********************************/
 
-  tabholder = new QTabWidget(this);
-  tabholder->setGeometry(0, 0, 710, 490);
+  fileNameLabel = new QLabel;
 
-  tab1 = new QWidget;
-  tab2 = new QWidget;
-
-  fileNameLabel = new QLabel(tab1);
-  fileNameLabel->setGeometry(10, 10, 670, 25);
-
-  startTimeDateLabel = new QLabel(tab1);
-  startTimeDateLabel->setGeometry(10, 45, 100, 25);
-  startTimeDateLabel->setText("Starttime");
+  startTimeDateLabel = new QLabel;
+  startTimeDateLabel->setText("Startdate/time");
   startTimeDateLabel->setVisible(false);
 
-  startTimeDate = new QDateTimeEdit(tab1);
-  startTimeDate->setGeometry(120, 45, 250, 25);
+  startTimeDate = new QDateTimeEdit;
   startTimeDate->setDisplayFormat("dd.MM.yyyy hh:mm:ss");
   startTimeDate->setMinimumDate(QDate(1970, 1, 1));
   startTimeDate->setMaximumDate(QDate(2299, 12, 31));
   startTimeDate->setVisible(false);
 
-  label1 = new QLabel(tab1);
-  label1->setGeometry(10, 80, 100, 25);
+  label1 = new QLabel;
   label1->setText("Subject");
   label1->setVisible(false);
 
-  lineEdit1 = new QLineEdit(tab1);
-  lineEdit1->setGeometry(120, 80, 580, 25);
+  lineEdit1 = new QLineEdit;
   lineEdit1->setMaxLength(80);
   lineEdit1->setVisible(false);
 
-  label2 = new QLabel(tab1);
-  label2->setGeometry(10, 115, 100, 25);
+  label2 = new QLabel;
   label2->setText("Recording");
   label2->setVisible(false);
 
-  lineEdit2 = new QLineEdit(tab1);
-  lineEdit2->setGeometry(120, 115, 580, 25);
+  lineEdit2 = new QLineEdit;
   lineEdit2->setMaxLength(80);
   lineEdit2->setVisible(false);
 
-  label3 = new QLabel(tab1);
-  label3->setGeometry(10, 80, 100, 25);
+  label3 = new QLabel;
   label3->setText("Subject code");
   label3->setVisible(false);
 
-  lineEdit3 = new QLineEdit(tab1);
-  lineEdit3->setGeometry(120, 80, 580, 25);
+  lineEdit3 = new QLineEdit;
   lineEdit3->setMaxLength(80);
   lineEdit3->setVisible(false);
 
-  label4 = new QLabel(tab1);
-  label4->setGeometry(10, 115, 100, 25);
+  label4 = new QLabel;
   label4->setText("Subject name");
   label4->setVisible(false);
 
-  lineEdit4 = new QLineEdit(tab1);
-  lineEdit4->setGeometry(120, 115, 580, 25);
+  lineEdit4 = new QLineEdit;
   lineEdit4->setMaxLength(80);
   lineEdit4->setVisible(false);
 
-  label11 = new QLabel(tab1);
-  label11->setGeometry(10, 150, 100, 25);
+  label11 = new QLabel;
   label11->setText("Gender");
   label11->setVisible(false);
 
-  comboBox1 = new QComboBox(tab1);
-  comboBox1->setGeometry(120, 150, 125, 25);
+  comboBox1 = new QComboBox;
   comboBox1->addItem("unknown");
   comboBox1->addItem("male");
   comboBox1->addItem("female");
   comboBox1->setVisible(false);
 
-  charsleft1Label = new QLabel(tab1);
-  charsleft1Label->setGeometry(500, 150, 120, 25);
+  charsleft1Label = new QLabel;
   charsleft1Label->setVisible(false);
 
-  label12 = new QLabel(tab1);
-  label12->setGeometry(10, 185, 100, 25);
+  label12 = new QLabel;
   label12->setText("Birthdate");
   label12->setVisible(false);
 
-  dateEdit1 = new QDateEdit(tab1);
-  dateEdit1->setGeometry(120, 185, 125, 25);
+  dateEdit1 = new QDateEdit;
   dateEdit1->setDisplayFormat("d MMM yyyy");
   dateEdit1->setVisible(false);
 
-  checkBox1 = new QCheckBox("No birthdate", tab1);
-  checkBox1->setGeometry(245, 185, 125, 25);
+  checkBox1 = new QCheckBox("No birthdate");
   checkBox1->setTristate(false);
   checkBox1->setCheckState(Qt::Unchecked);
   checkBox1->setVisible(false);
 
-  label5 = new QLabel(tab1);
-  label5->setGeometry(10, 220, 100, 25);
+  label5 = new QLabel;
   label5->setText("Additional info");
   label5->setVisible(false);
 
-  lineEdit5 = new QLineEdit(tab1);
-  lineEdit5->setGeometry(120, 220, 580, 25);
+  lineEdit5 = new QLineEdit;
   lineEdit5->setMaxLength(80);
   lineEdit5->setVisible(false);
 
-  label6 = new QLabel(tab1);
-  label6->setGeometry(10, 290, 100, 25);
+  label6 = new QLabel;
   label6->setText("Admin. code");
   label6->setVisible(false);
 
-  lineEdit6 = new QLineEdit(tab1);
-  lineEdit6->setGeometry(120, 290, 580, 25);
+  lineEdit6 = new QLineEdit;
   lineEdit6->setMaxLength(80);
   lineEdit6->setVisible(false);
 
-  label7 = new QLabel(tab1);
-  label7->setGeometry(10, 325, 100, 25);
+  label7 = new QLabel;
   label7->setText("Technician");
   label7->setVisible(false);
 
-  lineEdit7 = new QLineEdit(tab1);
-  lineEdit7->setGeometry(120, 325, 580, 25);
+  lineEdit7 = new QLineEdit;
   lineEdit7->setMaxLength(80);
   lineEdit7->setVisible(false);
 
-  label8 = new QLabel(tab1);
-  label8->setGeometry(10, 360, 100, 25);
+  label8 = new QLabel;
   label8->setText("Device");
   label8->setVisible(false);
 
-  lineEdit8 = new QLineEdit(tab1);
-  lineEdit8->setGeometry(120, 360, 580, 25);
+  lineEdit8 = new QLineEdit;
   lineEdit8->setMaxLength(80);
   lineEdit8->setVisible(false);
 
-  label9 = new QLabel(tab1);
-  label9->setGeometry(10, 395, 100, 25);
+  label9 = new QLabel;
   label9->setText("Additional info");
   label9->setVisible(false);
 
-  lineEdit9 = new QLineEdit(tab1);
-  lineEdit9->setGeometry(120, 395, 580, 25);
+  lineEdit9 = new QLineEdit;
   lineEdit9->setMaxLength(80);
   lineEdit9->setVisible(false);
 
-  charsleft2Label = new QLabel(tab1);
-  charsleft2Label->setGeometry(500, 430, 120, 25);
+  charsleft2Label = new QLabel;
   charsleft2Label->setVisible(false);
 
-  signallist = new QTableWidget(tab2);
-  signallist->setGeometry(10, 10, 690, 430);
+/************************************* TAB 2 *********************************/
+
+  signallist = new QTableWidget;
   signallist->setSelectionMode(QAbstractItemView::NoSelection);
   signallist->setEditTriggers(QAbstractItemView::NoEditTriggers);
   signallist->setColumnCount(4);
   signallist->setSelectionMode(QAbstractItemView::NoSelection);
-  signallist->setColumnWidth(0, 180);
-  signallist->setColumnWidth(1, 120);
-  signallist->setColumnWidth(2, 520);
-  signallist->setColumnWidth(3, 520);
   QStringList horizontallabels;
   horizontallabels += "Label";
   horizontallabels += "Physical dimension";
   horizontallabels += "Prefilter";
   horizontallabels += "Transducer";
   signallist->setHorizontalHeaderLabels(horizontallabels);
+  signallist->resizeColumnsToContents();
 
-  pushButton1 = new QPushButton(this);
-  pushButton1->setGeometry(580, 510, 100, 25);
+  pushButton1 = new QPushButton;
   pushButton1->setText("Close");
 
-  pushButton2 = new QPushButton(this);
-  pushButton2->setGeometry(200, 510, 100, 25);
+  pushButton2 = new QPushButton;
   pushButton2->setText("Save");
   pushButton2->setToolTip("By clicking on \"Save\", the file will be checked for\n"
                           "errors and, if found, it will try to correct them.");
 
-  pushButton3 = new QPushButton(this);
-  pushButton3->setGeometry(10, 510, 100, 25);
+  pushButton3 = new QPushButton;
   pushButton3->setText("Select file");
 
-  helpButton = new QPushButton(this);
-  helpButton->setGeometry(380, 510, 100, 25);
+  helpButton = new QPushButton;
   helpButton->setText("Help");
 
-  connect(pushButton1, SIGNAL(clicked()), this, SLOT(close()));
-  connect(pushButton2, SIGNAL(clicked()), this, SLOT(save_hdr()));
-  connect(pushButton3, SIGNAL(clicked()), this, SLOT(open_file()));
-  connect(helpButton,  SIGNAL(clicked()), this, SLOT(helpbuttonpressed()));
+  tab1 = new QWidget;
 
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addWidget(dateEdit1);
+  hlayout2->addSpacing(20);
+  hlayout2->addWidget(checkBox1);
+  hlayout2->addStretch(1000);
+
+  QHBoxLayout *hlayout3 = new QHBoxLayout;
+  hlayout3->addWidget(startTimeDate);
+  hlayout3->addStretch(1000);
+
+  QFormLayout *flayout = new QFormLayout;
+  flayout->addRow(startTimeDateLabel, hlayout3);
+  flayout->addRow(label1, lineEdit1);
+  flayout->addRow(label2, lineEdit2);
+  flayout->addRow(label3, lineEdit3);
+  flayout->addRow(label4, lineEdit4);
+  flayout->addRow(label11, comboBox1);
+  flayout->addRow(label12, hlayout2);
+  flayout->addRow(label5, lineEdit5);
+  flayout->addRow(NULL, charsleft1Label);
+  flayout->addRow(" ", (QWidget *)NULL);
+  flayout->addRow(label6, lineEdit6);
+  flayout->addRow(label7, lineEdit7);
+  flayout->addRow(label8, lineEdit8);
+  flayout->addRow(label9, lineEdit9);
+  flayout->addRow(NULL, charsleft2Label);
+
+  QVBoxLayout *vlayout2 = new QVBoxLayout;
+  vlayout2->addWidget(fileNameLabel);
+  vlayout2->addSpacing(20);
+  vlayout2->addLayout(flayout);
+  vlayout2->addStretch(1000);
+
+  tab1->setLayout(vlayout2);
+
+  tabholder = new QTabWidget;
   tabholder->addTab(tab1, "Header");
-  tabholder->addTab(tab2, "Signals");
+  tabholder->addTab(signallist, "Signals");
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(pushButton3);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(pushButton2);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(helpButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(pushButton1);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addWidget(tabholder, 1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  myobjectDialog->setLayout(vlayout1);
 
   hdr = (char *)malloc(256 * 2050);
 
-  QMessageBox messagewindow(QMessageBox::Warning, "Warning", "Always make a backup copy of your file before using this tool!");
-  messagewindow.exec();
+  QMessageBox::warning(myobjectDialog, "Warning", "Always make a backup copy of your file before using this tool");
 
-  exec();
+  connect(pushButton1, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
+  connect(pushButton2, SIGNAL(clicked()), this,           SLOT(save_hdr()));
+  connect(pushButton3, SIGNAL(clicked()), this,           SLOT(open_file()));
+  connect(helpButton,  SIGNAL(clicked()), this,           SLOT(helpbuttonpressed()));
+
+  myobjectDialog->exec();
 }
 
 
@@ -884,6 +901,8 @@ void UI_headerEditorWindow::read_header()
       }
     }
   }
+
+  signallist->resizeColumnsToContents();
 
   if(recordsize < 1)
   {
