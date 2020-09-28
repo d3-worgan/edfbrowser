@@ -42,175 +42,153 @@ UI_RAW2EDFapp::UI_RAW2EDFapp(QWidget *w_parent, struct raw2edf_var_struct *raw2e
   edf_format = 1;
 
   raw2edfDialog = new QDialog;
-
-  raw2edfDialog->setMinimumSize(600, 480);
-  raw2edfDialog->setMaximumSize(600, 480);
+  raw2edfDialog->setMinimumSize(525, 375);
   raw2edfDialog->setWindowTitle("Binary/raw data to EDF converter");
   raw2edfDialog->setModal(true);
   raw2edfDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  SamplefreqLabel = new QLabel(raw2edfDialog);
-  SamplefreqLabel->setGeometry(20, 20, 140, 25);
-  SamplefreqLabel->setText("Samplefrequency");
-
-  SamplefreqSpinbox = new QSpinBox(raw2edfDialog);
-  SamplefreqSpinbox->setGeometry(160, 20, 120, 25);
+  SamplefreqSpinbox = new QSpinBox;
   SamplefreqSpinbox->setRange(1,1000000);
   SamplefreqSpinbox->setSuffix(" Hz");
   SamplefreqSpinbox->setValue(raw2edf_var->sf);
   SamplefreqSpinbox->setToolTip("Samplerate");
 
-  SignalsLabel = new QLabel(raw2edfDialog);
-  SignalsLabel->setGeometry(20, 60, 140, 25);
-  SignalsLabel->setText("Number of signals");
-
-  SignalsSpinbox = new QSpinBox(raw2edfDialog);
-  SignalsSpinbox->setGeometry(160, 60, 120, 25);
+  SignalsSpinbox = new QSpinBox;
   SignalsSpinbox->setRange(1,256);
   SignalsSpinbox->setValue(raw2edf_var->chns);
   SignalsSpinbox->setToolTip("Number of channels");
 
-  SampleSizeLabel = new QLabel(raw2edfDialog);
-  SampleSizeLabel->setGeometry(20, 100, 140, 25);
-  SampleSizeLabel->setText("Sample size");
-
-  SampleSizeSpinbox = new QSpinBox(raw2edfDialog);
-  SampleSizeSpinbox->setGeometry(160, 100, 120, 25);
+  SampleSizeSpinbox = new QSpinBox;
   SampleSizeSpinbox->setRange(1,2);
   SampleSizeSpinbox->setValue(raw2edf_var->samplesize);
   SampleSizeSpinbox->setSuffix(" byte(s)");
   SampleSizeSpinbox->setToolTip("Bytes per sample");
 
-  OffsetLabel = new QLabel(raw2edfDialog);
-  OffsetLabel->setGeometry(20, 140, 140, 25);
-  OffsetLabel->setText("Offset");
-
-  OffsetSpinbox = new QSpinBox(raw2edfDialog);
-  OffsetSpinbox->setGeometry(160, 140, 120, 25);
+  OffsetSpinbox = new QSpinBox;
   OffsetSpinbox->setRange(0,1000000);
   OffsetSpinbox->setValue(raw2edf_var->offset);
   OffsetSpinbox->setToolTip("Bytes to skip from start of file to data startpoint");
 
-  EncodingLabel = new QLabel(raw2edfDialog);
-  EncodingLabel->setGeometry(20, 180, 140, 25);
-  EncodingLabel->setText("Encoding");
-
-  EncodingCombobox = new QComboBox(raw2edfDialog);
-  EncodingCombobox->setGeometry(160, 180, 120, 25);
+  EncodingCombobox = new QComboBox;
   EncodingCombobox->addItem("2's complement");
   EncodingCombobox->addItem("bipolar offset binary");
   EncodingCombobox->setCurrentIndex(raw2edf_var->straightbinary);
   EncodingCombobox->setToolTip("bipolar offset binary or\n"
                                "2's complement");
 
-  EndiannessLabel = new QLabel(raw2edfDialog);
-  EndiannessLabel->setGeometry(20, 220, 140, 25);
-  EndiannessLabel->setText("Endianness");
-
-  EndiannessCombobox = new QComboBox(raw2edfDialog);
-  EndiannessCombobox->setGeometry(160, 220, 120, 25);
+  EndiannessCombobox = new QComboBox;
   EndiannessCombobox->addItem("little endian");
   EndiannessCombobox->addItem("big endian");
   EndiannessCombobox->setCurrentIndex(raw2edf_var->endianness);
   EndiannessCombobox->setToolTip("little endian: least significant byte comes first\n"
                                  "big endian: most significant byte comes first");
 
-  skipblocksizeLabel = new QLabel(raw2edfDialog);
-  skipblocksizeLabel->setGeometry(320, 20, 140, 25);
-  skipblocksizeLabel->setText("Data blocksize");
-
-  skipblocksizeSpinbox = new QSpinBox(raw2edfDialog);
-  skipblocksizeSpinbox->setGeometry(460, 20, 120, 25);
+  skipblocksizeSpinbox = new QSpinBox;
   skipblocksizeSpinbox->setRange(0, 1000000);
   skipblocksizeSpinbox->setValue(raw2edf_var->skipblocksize);
   skipblocksizeSpinbox->setToolTip("Skip after every n databytes");
 
-  skipbytesLabel = new QLabel(raw2edfDialog);
-  skipbytesLabel->setGeometry(320, 60, 140, 25);
-  skipbytesLabel->setText("Skip bytes");
-
-  skipbytesSpinbox = new QSpinBox(raw2edfDialog);
-  skipbytesSpinbox->setGeometry(460, 60, 120, 25);
+  skipbytesSpinbox = new QSpinBox;
   skipbytesSpinbox->setRange(1, 1000000);
   skipbytesSpinbox->setValue(raw2edf_var->skipbytes);
   skipbytesSpinbox->setToolTip("Number of bytes that must be skipped");
 
-  PhysicalMaximumLabel = new QLabel(raw2edfDialog);
-  PhysicalMaximumLabel->setGeometry(320, 100, 140, 25);
-  PhysicalMaximumLabel->setText("Physical maximum");
-
-  PhysicalMaximumSpinbox = new QSpinBox(raw2edfDialog);
-  PhysicalMaximumSpinbox->setGeometry(460, 100, 120, 25);
+  PhysicalMaximumSpinbox = new QSpinBox;
   PhysicalMaximumSpinbox->setRange(1, 10000000);
   PhysicalMaximumSpinbox->setValue(raw2edf_var->phys_max);
   PhysicalMaximumSpinbox->setToolTip("The maximum physical value that can be measured\n"
                                      "e.g. the maximum value of an inputchannel.");
 
-  PhysicalDimensionLabel = new QLabel(raw2edfDialog);
-  PhysicalDimensionLabel->setGeometry(320, 140, 140, 25);
-  PhysicalDimensionLabel->setText("Physical dimension");
-
-  PhysicalDimensionLineEdit = new QLineEdit(raw2edfDialog);
-  PhysicalDimensionLineEdit->setGeometry(460, 140, 120, 25);
+  PhysicalDimensionLineEdit = new QLineEdit;
   PhysicalDimensionLineEdit->setMaxLength(8);
   PhysicalDimensionLineEdit->setText(raw2edf_var->phys_dim);
   PhysicalDimensionLineEdit->setToolTip("uV, bpm, mL, Ltr, etc.");
   PhysicalDimensionLineEdited(PhysicalDimensionLineEdit->text());
 
-  variableTypeLabel = new QLabel(raw2edfDialog);
-  variableTypeLabel->setGeometry(320, 180, 140, 25);
-  variableTypeLabel->setText("sampletype:     i16");
+  variableTypeLineEdit = new QLineEdit;
+  variableTypeLineEdit->setText("i16");
+  variableTypeLineEdit->setReadOnly(true);
 
-  PatientnameLabel = new QLabel(raw2edfDialog);
-  PatientnameLabel->setGeometry(20, 260, 140, 25);
-  PatientnameLabel->setText("Subject name");
-
-  PatientnameLineEdit = new QLineEdit(raw2edfDialog);
-  PatientnameLineEdit->setGeometry(160, 260, 420, 25);
+  PatientnameLineEdit = new QLineEdit;
   PatientnameLineEdit->setMaxLength(80);
 
-  RecordingLabel = new QLabel(raw2edfDialog);
-  RecordingLabel->setGeometry(20, 300, 140, 25);
-  RecordingLabel->setText("Recording");
-
-  RecordingLineEdit = new QLineEdit(raw2edfDialog);
-  RecordingLineEdit->setGeometry(160, 300, 420, 25);
+  RecordingLineEdit = new QLineEdit;
   RecordingLineEdit->setMaxLength(80);
 
-  DatetimeLabel = new QLabel(raw2edfDialog);
-  DatetimeLabel->setGeometry(20, 340, 140, 25);
-  DatetimeLabel->setText("Startdate and time");
-
-  StartDatetimeedit = new QDateTimeEdit(raw2edfDialog);
-  StartDatetimeedit->setGeometry(160, 340, 180, 25);
+  StartDatetimeedit = new QDateTimeEdit;
   StartDatetimeedit->setDisplayFormat("dd/MM/yyyy hh:mm:ss");
   StartDatetimeedit->setDateTime(QDateTime::currentDateTime());
   StartDatetimeedit->setToolTip("dd/MM/yyyy hh:mm:ss");
 
-  GoButton = new QPushButton(raw2edfDialog);
-  GoButton->setGeometry(20, 440, 75, 25);
+  GoButton = new QPushButton;
   GoButton->setText("Start");
   GoButton->setToolTip("Start the conversion");
 
-  CloseButton = new QPushButton(raw2edfDialog);
-  CloseButton->setGeometry(160, 440, 75, 25);
+  CloseButton = new QPushButton;
   CloseButton->setText("Close");
 
-  helpButton = new QPushButton(raw2edfDialog);
-  helpButton->setGeometry(280, 440, 75, 25);
+  helpButton = new QPushButton;
   helpButton->setText("Help");
 
-  SaveButton = new QPushButton(raw2edfDialog);
-  SaveButton->setGeometry(400, 440, 75, 25);
+  SaveButton = new QPushButton;
   SaveButton->setText("Save");
   SaveButton->setToolTip("Save the entered parameters to a template for later use");
 
-  LoadButton = new QPushButton(raw2edfDialog);
-  LoadButton->setGeometry(510, 440, 75, 25);
+  LoadButton = new QPushButton;
   LoadButton->setText("Load");
   LoadButton->setToolTip("Load parameters from a template");
 
   edfsignals = 1;
+
+  QFormLayout *flayout1 = new QFormLayout;
+  flayout1->addRow("Samplefrequency", SamplefreqSpinbox);
+  flayout1->addRow("Number of signals", SignalsSpinbox);
+  flayout1->addRow("Sample size", SampleSizeSpinbox);
+  flayout1->addRow("Offset", OffsetSpinbox);
+  flayout1->addRow("Encoding", EncodingCombobox);
+  flayout1->addRow("Endianness", EndiannessCombobox);
+
+  QFormLayout *flayout2 = new QFormLayout;
+  flayout2->addRow("Data blocksize", skipblocksizeSpinbox);
+  flayout2->addRow("Skip bytes", skipbytesSpinbox);
+  flayout2->addRow("Physical maximum", PhysicalMaximumSpinbox);
+  flayout2->addRow("Physical dimension", PhysicalDimensionLineEdit);
+  flayout2->addRow("sampletype", variableTypeLineEdit);
+
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addLayout(flayout1);
+  hlayout2->addSpacing(20);
+  hlayout2->addLayout(flayout2);
+  hlayout2->addStretch(1000);
+
+  QHBoxLayout *hlayout3 = new QHBoxLayout;
+  hlayout3->addWidget(StartDatetimeedit);
+  hlayout3->addStretch(1000);
+
+  QFormLayout *flayout3 = new QFormLayout;
+  flayout3->addRow("Subject name", PatientnameLineEdit);
+  flayout3->addRow("Recording", RecordingLineEdit);
+  flayout3->addRow("Startdate and time", hlayout3);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(GoButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(CloseButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(helpButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(SaveButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(LoadButton);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addLayout(hlayout2);
+  vlayout1->addLayout(flayout3);
+  vlayout1->addStretch(1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  raw2edfDialog->setLayout(vlayout1);
 
   QObject::connect(GoButton,                    SIGNAL(clicked()),                this,            SLOT(gobuttonpressed()));
   QObject::connect(CloseButton,                 SIGNAL(clicked()),                raw2edfDialog,   SLOT(close()));
@@ -927,11 +905,11 @@ void UI_RAW2EDFapp::sampleTypeChanged(int)
   {
     if(EncodingCombobox->currentIndex() == 0)
     {
-      variableTypeLabel->setText("sampletype:     I8");
+      variableTypeLineEdit->setText("I8");
     }
     else
     {
-      variableTypeLabel->setText("sampletype:     U8");
+      variableTypeLineEdit->setText("U8");
     }
 
     EndiannessCombobox->setEnabled(false);
@@ -940,11 +918,11 @@ void UI_RAW2EDFapp::sampleTypeChanged(int)
   {
     if(EncodingCombobox->currentIndex() == 0)
     {
-      variableTypeLabel->setText("sampletype:     I16");
+      variableTypeLineEdit->setText("I16");
     }
     else
     {
-      variableTypeLabel->setText("sampletype:     U16");
+      variableTypeLineEdit->setText("U16");
     }
 
     EndiannessCombobox->setEnabled(true);

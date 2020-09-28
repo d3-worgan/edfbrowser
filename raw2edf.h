@@ -50,6 +50,10 @@
 #include <QComboBox>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -93,24 +97,10 @@ private:
 
 QDialog       *raw2edfDialog;
 
-QLabel        *SignalsLabel,
-              *OffsetLabel,
-              *SamplefreqLabel,
-              *PatientnameLabel,
-              *RecordingLabel,
-              *DatetimeLabel,
-              *SampleSizeLabel,
-              *skipblocksizeLabel,
-              *skipbytesLabel,
-              *PhysicalMaximumLabel,
-              *PhysicalDimensionLabel,
-              *EncodingLabel,
-              *variableTypeLabel,
-              *EndiannessLabel;
-
 QLineEdit     *PatientnameLineEdit,
               *RecordingLineEdit,
-              *PhysicalDimensionLineEdit;
+              *PhysicalDimensionLineEdit,
+              *variableTypeLineEdit;
 
 QSpinBox      *SignalsSpinbox,
               *OffsetSpinbox,
