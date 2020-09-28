@@ -122,7 +122,6 @@
 #include "emsa2edf.h"
 #include "bdf2edf.h"
 #include "edit_annotation_dock.h"
-#include "popup_save_cancelwindow.h"
 #include "save_annots.h"
 #include "utils.h"
 #include "spectrumanalyzer.h"
