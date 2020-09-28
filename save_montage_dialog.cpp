@@ -43,19 +43,15 @@ UI_SaveMontagewindow::UI_SaveMontagewindow(QWidget *w_parent)
   }
 
   SaveMontageDialog = new QDialog;
-
-  SaveMontageDialog->setMinimumSize(800, 180);
-  SaveMontageDialog->setMaximumSize(800, 180);
+  SaveMontageDialog->setMinimumSize(600, 180);
   SaveMontageDialog->setWindowTitle("Save montage");
   SaveMontageDialog->setModal(true);
   SaveMontageDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  label1 = new QLabel(SaveMontageDialog);
-  label1->setGeometry(10, 10, 780, 25);
+  QLabel *label1 = new QLabel;
   label1->setText("Choose from which file you want to save the montage:");
 
-  filelist = new QListWidget(SaveMontageDialog);
-  filelist->setGeometry(10, 35, 780, 75);
+  filelist = new QListWidget;
   filelist->setSelectionBehavior(QAbstractItemView::SelectRows);
   filelist->setSelectionMode(QAbstractItemView::SingleSelection);
   for(i=0; i<mainwindow->files_open; i++)
@@ -63,18 +59,29 @@ UI_SaveMontagewindow::UI_SaveMontagewindow(QWidget *w_parent)
     new QListWidgetItem(QString::fromLocal8Bit(mainwindow->edfheaderlist[i]->filename), filelist);
   }
 
-  SaveButton = new QPushButton(SaveMontageDialog);
-  SaveButton->setGeometry(10, 140, 100, 25);
+  SaveButton = new QPushButton;
   SaveButton->setText("Save");
 
-  CloseButton = new QPushButton(SaveMontageDialog);
-  CloseButton->setGeometry(690, 140, 100, 25);
+  CloseButton = new QPushButton;
   CloseButton->setText("Close");
 
   QObject::connect(CloseButton,  SIGNAL(clicked()), SaveMontageDialog, SLOT(close()));
   QObject::connect(SaveButton,   SIGNAL(clicked()), this,              SLOT(SaveButtonClicked()));
 
   filelist->setCurrentRow(mainwindow->files_open - 1);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(SaveButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(CloseButton);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addWidget(label1);
+  vlayout1->addWidget(filelist, 1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  SaveMontageDialog->setLayout(vlayout1);
 
   SaveMontageDialog->exec();
 }

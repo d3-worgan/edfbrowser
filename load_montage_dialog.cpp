@@ -29,7 +29,6 @@
 #include "load_montage_dialog.h"
 
 
-
 UI_LoadMontagewindow::UI_LoadMontagewindow(QWidget *w_parent, char *path)
 {
   int i;
