@@ -37,73 +37,58 @@ UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
   recent_savedir = mainwindow->recent_savedir;
 
   myobjectDialog = new QDialog;
-
-  myobjectDialog->setMinimumSize(715, 578);
-  myobjectDialog->setMaximumSize(715, 578);
+  myobjectDialog->setMinimumSize(675, 500);
   myobjectDialog->setWindowTitle("Reduce signals and/or duration");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  label1 = new QLabel(myobjectDialog);
-  label1->setGeometry(20, 20, 685, 25);
+  label1 = new QLabel;
 
-  label2 = new QLabel(myobjectDialog);
-  label2->setGeometry(485, 359, 100, 25);
+  label2 = new QLabel;
   label2->setText("from datarecord");
   label2->setEnabled(false);
 
-  label3 = new QLabel(myobjectDialog);
-  label3->setGeometry(485, 424, 100, 25);
+  label3 = new QLabel;
   label3->setText("to datarecord");
   label3->setEnabled(false);
 
-  label4 = new QLabel(myobjectDialog);
-  label4->setGeometry(605, 382, 100, 25);
+  label4 = new QLabel;
   label4->setEnabled(false);
 
-  label5 = new QLabel(myobjectDialog);
-  label5->setGeometry(605, 447, 100, 25);
+  label5 = new QLabel;
   label5->setEnabled(false);
 
-  label6 = new QLabel(myobjectDialog);
-  label6->setGeometry(445, 232, 140, 25);
+  label6 = new QLabel;
   label6->setText("Anti-aliasing filter order");
 
   radioButton1 = new QRadioButton("whole duration", myobjectDialog);
-  radioButton1->setGeometry(485, 299, 120, 25);
   radioButton1->setChecked(true);
   radioButton1->setEnabled(false);
 
   radioButton2 = new QRadioButton("selection", myobjectDialog);
-  radioButton2->setGeometry(485, 324, 100, 25);
   radioButton2->setEnabled(false);
 
-  spinBox1 = new QSpinBox(myobjectDialog);
-  spinBox1->setGeometry(485, 384, 100, 25);
+  spinBox1 = new QSpinBox;
   spinBox1->setRange(1, 2147483647);
   spinBox1->setValue(1);
   spinBox1->setEnabled(false);
 
-  spinBox2 = new QSpinBox(myobjectDialog);
-  spinBox2->setGeometry(485, 449, 100, 25);
+  spinBox2 = new QSpinBox;
   spinBox2->setRange(1, 2147483647);
   spinBox2->setValue(2147483647);
   spinBox2->setEnabled(false);
 
-  spinBox3 = new QSpinBox(myobjectDialog);
-  spinBox3->setGeometry(595, 170, 100, 25);
+  spinBox3 = new QSpinBox;
   spinBox3->setRange(1, 100000);
   spinBox3->setValue(1);
   spinBox3->setEnabled(false);
 
-  spinBox4 = new QSpinBox(myobjectDialog);
-  spinBox4->setGeometry(595, 232, 100, 25);
+  spinBox4 = new QSpinBox;
   spinBox4->setRange(1, REDUCER_MAX_AA_FILTERS + 1);
   spinBox4->setValue(REDUCER_MAX_AA_FILTERS);
   spinBox4->setEnabled(false);
 
-  SignalsTablewidget = new QTableWidget(myobjectDialog);
-  SignalsTablewidget->setGeometry(20, 66, 405, 432);
+  SignalsTablewidget = new QTableWidget;
   SignalsTablewidget->setSelectionMode(QAbstractItemView::NoSelection);
   SignalsTablewidget->setColumnCount(2);
   SignalsTablewidget->setColumnWidth(0, 180);
@@ -114,41 +99,118 @@ UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
   horizontallabels += "Samplerate divider";
   SignalsTablewidget->setHorizontalHeaderLabels(horizontallabels);
 
-  pushButton1 = new QPushButton(myobjectDialog);
-  pushButton1->setGeometry(20, 528, 100, 25);
+  pushButton1 = new QPushButton;
   pushButton1->setText("Select File");
   if(mainwindow->files_open < 2)
   {
     pushButton1->setEnabled(false);
   }
 
-  pushButton2 = new QPushButton(myobjectDialog);
-  pushButton2->setGeometry(575, 528, 100, 25);
+  pushButton2 = new QPushButton;
   pushButton2->setText("Close");
 
-  pushButton3 = new QPushButton(myobjectDialog);
-  pushButton3->setGeometry(200, 528, 100, 25);
+  pushButton3 = new QPushButton;
   pushButton3->setText("Reduce");
   pushButton3->setEnabled(false);
 
-  pushButton4 = new QPushButton(myobjectDialog);
-  pushButton4->setGeometry(445, 66, 140, 25);
+  pushButton4 = new QPushButton;
   pushButton4->setText("Select all signals");
   pushButton4->setEnabled(false);
 
-  pushButton5 = new QPushButton(myobjectDialog);
-  pushButton5->setGeometry(445, 118, 140, 25);
+  pushButton5 = new QPushButton;
   pushButton5->setText("Deselect all signals");
   pushButton5->setEnabled(false);
 
-  pushButton6 = new QPushButton(myobjectDialog);
-  pushButton6->setGeometry(445, 170, 140, 25);
+  pushButton6 = new QPushButton;
   pushButton6->setText("Set samplerate divider:");
   pushButton6->setEnabled(false);
 
-  helpButton = new QPushButton(myobjectDialog);
-  helpButton->setGeometry(400, 528, 100, 25);
+  helpButton = new QPushButton;
   helpButton->setText("Help");
+
+  QHBoxLayout *hlayout3 = new QHBoxLayout;
+  hlayout3->addWidget(pushButton4);
+  hlayout3->addStretch(1000);
+
+  QHBoxLayout *hlayout4 = new QHBoxLayout;
+  hlayout4->addWidget(pushButton5);
+  hlayout4->addStretch(1000);
+
+  QHBoxLayout *hlayout5 = new QHBoxLayout;
+  hlayout5->addWidget(pushButton6);
+  hlayout5->addWidget(spinBox3);
+  hlayout5->addStretch(1000);
+
+  QHBoxLayout *hlayout6 = new QHBoxLayout;
+  hlayout6->addWidget(label6);
+  hlayout6->addWidget(spinBox4);
+  hlayout6->addStretch(1000);
+
+  QHBoxLayout *hlayout7 = new QHBoxLayout;
+  hlayout7->addWidget(radioButton1);
+  hlayout7->addStretch(1000);
+
+  QHBoxLayout *hlayout8 = new QHBoxLayout;
+  hlayout8->addWidget(radioButton2);
+  hlayout8->addStretch(1000);
+
+  QHBoxLayout *hlayout9 = new QHBoxLayout;
+  hlayout9->addWidget(label2);
+  hlayout9->addStretch(1000);
+
+  QHBoxLayout *hlayout10 = new QHBoxLayout;
+  hlayout10->addWidget(spinBox1);
+  hlayout10->addWidget(label4);
+  hlayout10->addStretch(1000);
+
+  QHBoxLayout *hlayout11 = new QHBoxLayout;
+  hlayout11->addWidget(label3);
+  hlayout11->addStretch(1000);
+
+  QHBoxLayout *hlayout12 = new QHBoxLayout;
+  hlayout12->addWidget(spinBox2);
+  hlayout12->addWidget(label5);
+  hlayout12->addStretch(1000);
+
+  QVBoxLayout *vlayout2 = new QVBoxLayout;
+  vlayout2->addSpacing(20);
+  vlayout2->addLayout(hlayout3);
+  vlayout2->addLayout(hlayout4);
+  vlayout2->addSpacing(20);
+  vlayout2->addLayout(hlayout5);
+  vlayout2->addSpacing(20);
+  vlayout2->addLayout(hlayout6);
+  vlayout2->addSpacing(20);
+  vlayout2->addLayout(hlayout7);
+  vlayout2->addLayout(hlayout8);
+  vlayout2->addLayout(hlayout9);
+  vlayout2->addLayout(hlayout10);
+  vlayout2->addLayout(hlayout11);
+  vlayout2->addLayout(hlayout12);
+  vlayout2->addStretch(1000);
+
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addWidget(SignalsTablewidget, 1000);
+  hlayout2->addSpacing(20);
+  hlayout2->addLayout(vlayout2);
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(pushButton1);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(pushButton3);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(helpButton);
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(pushButton2);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addWidget(label1);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout2, 1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  myobjectDialog->setLayout(vlayout1);
 
   QObject::connect(pushButton1,    SIGNAL(clicked()),         this,           SLOT(SelectFileButton()));
   QObject::connect(pushButton2,    SIGNAL(clicked()),         myobjectDialog, SLOT(close()));

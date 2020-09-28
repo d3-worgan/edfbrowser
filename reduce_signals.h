@@ -48,6 +48,10 @@
 #include <QProgressDialog>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -64,7 +68,7 @@
 #include "edf_helper.h"
 
 
-#define REDUCER_MAX_AA_FILTERS   4
+#define REDUCER_MAX_AA_FILTERS   (4)
 
 
 class UI_Mainwindow;
