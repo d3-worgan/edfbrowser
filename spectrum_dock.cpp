@@ -147,7 +147,6 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   }
 
   flywheel1 = new UI_Flywheel;
-  flywheel1->setMinimumSize(20, 85);
 
   amplitudeSlider = new QSlider;
   amplitudeSlider->setOrientation(Qt::Vertical);
@@ -155,7 +154,6 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   amplitudeSlider->setMaximum(2000);
   amplitudeSlider->setValue(1000);
   amplitudeSlider->setInvertedAppearance(true);
-  amplitudeSlider->setMinimumSize(15, 110);
 
   log_minslider = new QSlider;
   log_minslider->setOrientation(Qt::Vertical);
@@ -163,15 +161,12 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   log_minslider->setMaximum(2000);
   log_minslider->setValue(1000);
   log_minslider->setInvertedAppearance(false);
-  log_minslider->setMinimumSize(15, 110);
 
   amplitudeLabel = new QLabel;
   amplitudeLabel->setText("Amplitude");
-  amplitudeLabel->setMinimumSize(100, 15);
   amplitudeLabel->setAlignment(Qt::AlignHCenter);
 
   sqrtButton = new QCheckBox;
-  sqrtButton->setMinimumSize(50, 20);
   sqrtButton->setText("Amplitude");
   sqrtButton->setTristate(false);
   if(mainwindow->spectrumdock_sqrt)
@@ -184,7 +179,6 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   }
 
   vlogButton = new QCheckBox;
-  vlogButton->setMinimumSize(50, 20);
   vlogButton->setText("Log");
   vlogButton->setTristate(false);
   if(mainwindow->spectrumdock_vlog)
@@ -201,7 +195,6 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   }
 
   colorBarButton = new QCheckBox;
-  colorBarButton->setMinimumSize(50, 20);
   colorBarButton->setText("Colorbar");
   colorBarButton->setTristate(false);
   if(mainwindow->spectrumdock_colorbars)
@@ -214,7 +207,6 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   }
 
   windowBox = new QComboBox;
-  windowBox->setMinimumSize(70, 25);
   windowBox->addItem("Rectangular");
   windowBox->addItem("Hamming");
   windowBox->addItem("4-term Blackman-Harris");
@@ -235,7 +227,6 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   window_type = mainwindow->spectrumdock_window;
 
   overlap_box = new QComboBox;
-  overlap_box->setMinimumSize(70, 25);
   overlap_box->addItem("Overlap: 0%");
   overlap_box->addItem("Overlap: 50%");
   overlap_box->addItem("Overlap: 67%");
@@ -247,10 +238,8 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 
   dftsz_label = new QLabel;
   dftsz_label->setText("Blocksize:");
-  dftsz_label->setMinimumSize(100, 25);
 
   dftsz_spinbox = new QSpinBox;
-  dftsz_spinbox->setMinimumSize(70, 25);
   dftsz_spinbox->setMinimum(10);
   dftsz_spinbox->setMaximum(1000);
   dftsz_spinbox->setSingleStep(2);
@@ -258,19 +247,18 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 
   vlayout3 = new QVBoxLayout;
   vlayout3->addStretch(100);
-  vlayout3->addWidget(flywheel1, 100);
+  vlayout3->addWidget(flywheel1, 400);
   vlayout3->addStretch(100);
 
   hlayout4 = new QHBoxLayout;
-  hlayout4->addStretch(100);
+  hlayout4->addStretch(200);
   hlayout4->addLayout(vlayout3, 100);
-  hlayout4->addStretch(100);
+  hlayout4->addStretch(200);
   hlayout4->addWidget(amplitudeSlider, 300);
   hlayout4->addWidget(log_minslider, 300);
 
   vlayout2 = new QVBoxLayout;
   vlayout2->setSpacing(5);
-  vlayout2->addStretch(100);
   vlayout2->addWidget(amplitudeLabel, 0, Qt::AlignHCenter);
   vlayout2->addLayout(hlayout4, 200);
 //  vlayout2->addWidget(amplitudeSlider, 0, Qt::AlignHCenter);
@@ -287,11 +275,9 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   spanSlider->setMinimum(1);
   spanSlider->setMaximum(1000);
   spanSlider->setValue(1000);
-  spanSlider->setMinimumSize(500, 15);
 
   spanLabel = new QLabel;
   spanLabel->setText("Span");
-  spanLabel->setMinimumSize(100, 15);
   spanLabel->setAlignment(Qt::AlignHCenter);
 
   centerSlider = new QSlider;
@@ -299,11 +285,9 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   centerSlider->setMinimum(0);
   centerSlider->setMaximum(1000);
   centerSlider->setValue(0);
-  centerSlider->setMinimumSize(500, 15);
 
   centerLabel = new QLabel;
   centerLabel->setText("Center");
-  centerLabel->setMinimumSize(100, 15);
   centerLabel->setAlignment(Qt::AlignHCenter);
 
   hlayout1 = new QHBoxLayout;
@@ -317,14 +301,14 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   hlayout2 = new QHBoxLayout;
   hlayout2->setSpacing(20);
   hlayout2->addWidget(spanLabel);
-  hlayout2->addWidget(spanSlider);
-  hlayout2->addStretch(100);
+  hlayout2->addWidget(spanSlider, 500);
+  hlayout2->addStretch(1000);
 
   hlayout3 = new QHBoxLayout;
   hlayout3->setSpacing(20);
   hlayout3->addWidget(centerLabel);
-  hlayout3->addWidget(centerSlider);
-  hlayout3->addStretch(100);
+  hlayout3->addWidget(centerSlider, 500);
+  hlayout3->addStretch(1000);
 
   vlayout1 = new QVBoxLayout;
   vlayout1->setSpacing(20);

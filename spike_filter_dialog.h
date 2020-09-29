@@ -46,6 +46,11 @@
 #include <QString>
 #include <QMessageBox>
 #include <QVariant>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
+#include <QToolTip>
 
 #include <stdlib.h>
 #include <string.h>
@@ -79,10 +84,6 @@ QPushButton    *CancelButton,
                *ApplyButton;
 
 QListWidget    *list;
-
-QLabel         *listlabel,
-               *velocityLabel,
-               *holdOffLabel;
 
 QDoubleSpinBox *velocitySpinBox;
 

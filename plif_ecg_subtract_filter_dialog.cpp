@@ -53,8 +53,7 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
   plfBox->addItem(" 50 Hz");
   plfBox->addItem(" 60 Hz");
 
-  QLabel *listlabel = new QLabel;
-  listlabel->setText("Select signals:");
+  QLabel *listlabel = new QLabel("Select signals:");
 
   list = new QListWidget;
   list->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -132,6 +131,7 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
   flayout->addRow("Powerline frequency", plfBox);
 
   QHBoxLayout *hlayout3 = new QHBoxLayout;
+  hlayout3->addSpacing(30);
   hlayout3->addLayout(flayout);
   hlayout3->addStretch(1000);
 

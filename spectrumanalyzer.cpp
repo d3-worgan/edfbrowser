@@ -144,7 +144,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   SpectrumDialog = new QDialog();
   SpectrumDialog->setAttribute(Qt::WA_DeleteOnClose, true);
-  SpectrumDialog->setMinimumSize(750, 565);
+  SpectrumDialog->setMinimumSize(600, 500);
   SpectrumDialog->setSizeGripEnabled(true);
   SpectrumDialog->setModal(false);
   SpectrumDialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
@@ -196,7 +196,6 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   curve1->setDashBoardEnabled(false);
 
   flywheel1 = new UI_Flywheel;
-  flywheel1->setMinimumSize(20, 85);
 
   amplitudeSlider = new QSlider;
   amplitudeSlider->setOrientation(Qt::Vertical);
@@ -204,7 +203,6 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   amplitudeSlider->setMaximum(2000);
   amplitudeSlider->setValue(1000);
   amplitudeSlider->setInvertedAppearance(true);
-  amplitudeSlider->setMinimumSize(15, 280);
 
   log_minslider = new QSlider;
   log_minslider->setOrientation(Qt::Vertical);
@@ -212,16 +210,12 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   log_minslider->setMaximum(2000);
   log_minslider->setValue(1000);
   log_minslider->setInvertedAppearance(false);
-  log_minslider->setMinimumSize(15, 280);
 
   amplitudeLabel = new QLabel;
   amplitudeLabel->setText("Amplitude");
-  amplitudeLabel->setMinimumSize(100, 25);
   amplitudeLabel->setAlignment(Qt::AlignHCenter);
 
   sqrtCheckBox = new QCheckBox("Ampli-\ntude");
-  sqrtCheckBox->setMinimumSize(60, 30);
-  sqrtCheckBox->setMaximumSize(60, 30);
   sqrtCheckBox->setTristate(false);
   if(mainwindow->spectrum_sqrt)
   {
@@ -233,8 +227,6 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   }
 
   VlogCheckBox = new QCheckBox("Log");
-  VlogCheckBox->setMinimumSize(60, 25);
-  VlogCheckBox->setMaximumSize(60, 25);
   VlogCheckBox->setTristate(false);
   if(mainwindow->spectrum_vlog)
   {
@@ -250,8 +242,6 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   }
 
   BWCheckBox = new QCheckBox("B/W");
-  BWCheckBox->setMinimumSize(60, 25);
-  BWCheckBox->setMaximumSize(60, 25);
   BWCheckBox->setTristate(false);
   if(mainwindow->spectrum_bw == 1)
   {
@@ -263,7 +253,6 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   }
 
   dftsz_box = new QComboBox;
-  dftsz_box->setMinimumSize(70, 25);
   dftsz_box->addItem("Blocksize: user defined");
   dftsz_box->addItem("Blocksize: 1000");
   dftsz_box->addItem("Blocksize: 1024");
@@ -291,7 +280,6 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   dftsz_box->setCurrentIndex(mainwindow->spectrum_blocksize_predefined);
 
   windowBox = new QComboBox;
-  windowBox->setMinimumSize(70, 25);
   windowBox->addItem("Rectangular");
   windowBox->addItem("Hamming");
   windowBox->addItem("4-term Blackman-Harris");
@@ -312,7 +300,6 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   window_type = mainwindow->spectrum_window;
 
   dftsz_spinbox = new QSpinBox;
-  dftsz_spinbox->setMinimumSize(70, 25);
   dftsz_spinbox->setMinimum(10);
   dftsz_spinbox->setSingleStep(2);
   if(mainwindow->spectrum_blocksize_predefined)
@@ -335,7 +322,6 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   }
 
   overlap_box = new QComboBox;
-  overlap_box->setMinimumSize(70, 25);
   overlap_box->addItem("Overlap: 0%");
   overlap_box->addItem("Overlap: 50%");
   overlap_box->addItem("Overlap: 67%");
@@ -347,19 +333,18 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   vlayout3 = new QVBoxLayout;
   vlayout3->addStretch(100);
-  vlayout3->addWidget(flywheel1, 100);
+  vlayout3->addWidget(flywheel1, 200);
   vlayout3->addStretch(100);
 
   hlayout4 = new QHBoxLayout;
-  hlayout4->addStretch(100);
+  hlayout4->addStretch(200);
   hlayout4->addLayout(vlayout3, 100);
-  hlayout4->addStretch(100);
+  hlayout4->addStretch(200);
   hlayout4->addWidget(amplitudeSlider, 300);
   hlayout4->addWidget(log_minslider, 300);
 
   vlayout2 = new QVBoxLayout;
   vlayout2->setSpacing(10);
-  vlayout2->addStretch(100);
   vlayout2->addWidget(amplitudeLabel, 0, Qt::AlignHCenter);
   vlayout2->addLayout(hlayout4, 200);
   vlayout2->addWidget(sqrtCheckBox);
@@ -375,11 +360,9 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   spanSlider->setMinimum(1);
   spanSlider->setMaximum(1000);
   spanSlider->setValue(1000);
-  spanSlider->setMinimumSize(600, 15);
 
   spanLabel = new QLabel;
   spanLabel->setText("Span");
-  spanLabel->setMinimumSize(110, 25);
   spanLabel->setAlignment(Qt::AlignHCenter);
 
   centerSlider = new QSlider;
@@ -387,11 +370,9 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   centerSlider->setMinimum(0);
   centerSlider->setMaximum(1000);
   centerSlider->setValue(0);
-  centerSlider->setMinimumSize(600, 15);
 
   centerLabel = new QLabel;
   centerLabel->setText("Center");
-  centerLabel->setMinimumSize(110, 25);
   centerLabel->setAlignment(Qt::AlignHCenter);
 
   hlayout1 = new QHBoxLayout;
@@ -402,14 +383,12 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   hlayout2 = new QHBoxLayout;
   hlayout2->setSpacing(20);
   hlayout2->addWidget(spanLabel);
-  hlayout2->addWidget(spanSlider);
-  hlayout2->addStretch(100);
+  hlayout2->addWidget(spanSlider, 1000);
 
   hlayout3 = new QHBoxLayout;
   hlayout3->setSpacing(20);
   hlayout3->addWidget(centerLabel);
-  hlayout3->addWidget(centerSlider);
-  hlayout3->addStretch(100);
+  hlayout3->addWidget(centerSlider, 1000);
 
   vlayout1 = new QVBoxLayout;
   vlayout1->setSpacing(20);

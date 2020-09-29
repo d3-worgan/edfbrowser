@@ -33,8 +33,6 @@
 #include <QtGlobal>
 #include <QApplication>
 #include <QDialog>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QTimer>
 #include <QSlider>
 #include <QLabel>
@@ -47,6 +45,10 @@
 #include <QSpinBox>
 #include <QComboBox>
 #include <QToolTip>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <stdio.h>
 #include <string.h>
