@@ -138,6 +138,7 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
     ColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->signal_color);
   }
   ColorButton->setToolTip("Click to select the trace color");
+  ColorButton->setText("Trace color");
 
   compositionlist = new QTableWidget;
   compositionlist->setSelectionBehavior(QAbstractItemView::SelectRows);

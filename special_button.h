@@ -70,8 +70,6 @@ private:
       sz_hint_w,
       sz_hint_h;
 
-  QWidget *p;
-
 signals:
      void clicked(SpecialButton *);
 };

@@ -31,8 +31,6 @@
 
 SpecialButton::SpecialButton(QWidget *w_parent) : QWidget(w_parent)
 {
-  p = w_parent;
-
   ButtonColor = QColor(Qt::white);
   global_Color = Qt::white;
 
@@ -73,7 +71,8 @@ void SpecialButton::paintEvent(QPaintEvent *)
   {
     painter.fillRect(1, 1, w-2, h-2, ButtonColor);
   }
-  if(buttonText[0]!=0)  painter.drawText(5, h/2+5, buttonText);
+  if(buttonText[0]!=0)  painter.drawText(0, 0, w, h, Qt::AlignCenter, buttonText);
+
   painter.restore();
 }
 
@@ -118,7 +117,9 @@ void SpecialButton::setText(const char *str)
 
   if(strlen(buttonText) > 0)
   {
-    QFontMetrics fm(p->font());
+    QFont font;
+
+    QFontMetrics fm(font);
 
     sz_hint_w = fm.width(buttonText) + 40;
     sz_hint_h = fm.height() + 8;
