@@ -34,10 +34,6 @@ UI_Mainwindow::UI_Mainwindow()
 {
   int i, j, k;
 
-  QPixmap pxm(500, 100);
-
-  QPainter p_aint(&pxm);
-
   myfont = new QFont;
   monofont = new QFont;
 #if QT_VERSION >= 0x050200
