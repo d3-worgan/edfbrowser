@@ -36,7 +36,8 @@
 #include <QWidget>
 #include <QPainter>
 #include <QMouseEvent>
-
+#include <QSize>
+#include <QFontMetrics>
 
 
 class SpecialButton: public QWidget
@@ -47,7 +48,7 @@ public:
   SpecialButton(QWidget *parent=0);
 
   QSize sizeHint() const {return minimumSizeHint(); }
-  QSize minimumSizeHint() const {return QSize(30,10); }
+  QSize minimumSizeHint() const;
 
 public slots:
   void setColor(QColor);
@@ -65,7 +66,11 @@ protected:
 private:
   char buttonText[2048];
 
-  int global_Color;
+  int global_Color,
+      sz_hint_w,
+      sz_hint_h;
+
+  QWidget *p;
 
 signals:
      void clicked(SpecialButton *);

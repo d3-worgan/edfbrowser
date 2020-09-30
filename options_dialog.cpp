@@ -313,6 +313,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   QHBoxLayout *hlayout1_1 = new QHBoxLayout;
   hlayout1_1->addLayout(vlayout1_1);
+  hlayout1_1->addSpacing(40);
   hlayout1_1->addLayout(vlayout1_2);
   hlayout1_1->addStretch(500);
   hlayout1_1->addLayout(vlayout1_3);

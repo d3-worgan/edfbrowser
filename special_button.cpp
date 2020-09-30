@@ -31,10 +31,15 @@
 
 SpecialButton::SpecialButton(QWidget *w_parent) : QWidget(w_parent)
 {
+  p = w_parent;
+
   ButtonColor = QColor(Qt::white);
   global_Color = Qt::white;
 
   buttonText[0] = 0;
+
+  sz_hint_w = 50;
+  sz_hint_h = 25;
 }
 
 
@@ -110,6 +115,23 @@ void SpecialButton::setText(const char *str)
 {
   strncpy(buttonText, str, 2047);
   buttonText[2047] = 0;
+
+  if(strlen(buttonText) > 0)
+  {
+    QFontMetrics fm(p->font());
+
+    sz_hint_w = fm.width(buttonText) + 40;
+    sz_hint_h = fm.height() + 8;
+
+    if(sz_hint_w < 50)  sz_hint_w = 50;
+    if(sz_hint_h < 25)  sz_hint_w = 25;
+  }
+  else
+  {
+    sz_hint_w = 50;
+    sz_hint_h = 25;
+  }
+
   update();
 }
 
@@ -123,6 +145,10 @@ void SpecialButton::mouseReleaseEvent(QMouseEvent *release_event)
 }
 
 
+QSize SpecialButton::minimumSizeHint() const
+{
+  return QSize(sz_hint_w, sz_hint_h);
+}
 
 
 
