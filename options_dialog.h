@@ -118,12 +118,6 @@ SpecialButton  *BgColorButton,
                *slabel2_1,
                *slabel2_3;
 
-QLabel         *label1_3,
-               *label2_3,
-               *label3_3,
-               *label3_4,
-               *label3_5;
-
 QSpinBox       *spinbox2_1,
                *spinbox2_2,
                *spinbox3_1,

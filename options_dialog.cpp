@@ -48,14 +48,16 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   CloseButton = new QPushButton;
   CloseButton->setText("Close");
 
+  QHBoxLayout *hlayout_tmp;
+
+  QVBoxLayout *vlayout_tmp;
+
 /////////////////////////////////////// tab 1  Colors ///////////////////////////////////////////////////////////////////////
 
   tab1 = new QWidget;
 
   QFormLayout *flayout1_1 = new QFormLayout;
   flayout1_1->setSpacing(20);
-
-  QHBoxLayout *hlayout_tmp;
 
   BgColorButton = new SpecialButton;
   BgColorButton->setColor(mainwindow->maincurve->backgroundcolor);
@@ -439,6 +441,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   vlayout2_2->addStretch(500);
 
   QHBoxLayout *hlayout2_1 = new QHBoxLayout;
+  hlayout2_1->addSpacing(20);
   hlayout2_1->addLayout(vlayout2_1);
   hlayout2_1->addSpacing(20);
   hlayout2_1->addLayout(vlayout2_2);
@@ -455,23 +458,14 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   tab3 = new QWidget;
 
-  label1_3 = new QLabel(tab3);
-  label1_3->setGeometry(20, 20, 330, 25);
-  label1_3->setText("Frequency regions of the colorbars:");
+  QLabel *label3_1 = new QLabel("Frequency regions of the colorbars:");
 
-  colorBarTable = new QTableWidget(tab3);
-  colorBarTable->setGeometry(20, 50, 370, 350);
+  colorBarTable = new QTableWidget;
   colorBarTable->setSelectionMode(QAbstractItemView::NoSelection);
   colorBarTable->setColumnCount(4);
-  colorBarTable->setColumnWidth(0, 20);
-  colorBarTable->setColumnWidth(1, 140);
-  colorBarTable->setColumnWidth(2, 80);
-  colorBarTable->setColumnWidth(3, 100);
   colorBarTable->setRowCount(MAXSPECTRUMMARKERS);
   for(i=0; i < MAXSPECTRUMMARKERS; i++)
   {
-    colorBarTable->setRowHeight(i, 25);
-
     colorBarTable->setCellWidget(i, 0, new QCheckBox);
    ((QCheckBox *)(colorBarTable->cellWidget(i, 0)))->setTristate(false);
     if(i < mainwindow->spectrum_colorbar->items)
@@ -508,62 +502,52 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   horizontallabels += "Label";
   colorBarTable->setHorizontalHeaderLabels(horizontallabels);
 
-  label2_3 = new QLabel(tab3);
-  label2_3->setGeometry(20, 410, 310, 25);
-  label2_3->setText("Height of colorbars are relative to the");
+  colorBarTable->resizeColumnsToContents();
 
-  radiobutton1 = new QRadioButton(tab3);
-  radiobutton1->setGeometry(20, 435, 200, 25);
+  QLabel *label3_2 = new QLabel("Height of colorbars are relative to the");
+
+  radiobutton1 = new QRadioButton;
   radiobutton1->setText("sum");
   if(mainwindow->spectrum_colorbar->method == 0)
   {
     radiobutton1->setChecked(true);  // sum
   }
 
-  radiobutton2 = new QRadioButton(tab3);
-  radiobutton2->setGeometry(20, 460, 200, 25);
+  radiobutton2 = new QRadioButton;
   radiobutton2->setText("peak");
   if(mainwindow->spectrum_colorbar->method == 1)
   {
     radiobutton2->setChecked(true);  // peak
   }
 
-  radiobutton3 = new QRadioButton(tab3);
-  radiobutton3->setGeometry(20, 485, 200, 25);
+  radiobutton3 = new QRadioButton;
   radiobutton3->setText("average");
   if(mainwindow->spectrum_colorbar->method == 2)
   {
     radiobutton3->setChecked(true);  // average
   }
 
-  label3_3 = new QLabel(tab3);
-  label3_3->setGeometry(20, 515, 310, 25);
-  label3_3->setText("of the power in the colorbar region.");
+  QLabel *label3_3 = new QLabel("of the power in the colorbar region.");
 
-  label3_4 = new QLabel(tab3);
-  label3_4->setGeometry(20, 550, 120, 25);
-  label3_4->setText("FFT blocksize:");
+  QFormLayout *flayout3_1 = new QFormLayout;
+  flayout3_1->setSpacing(20);
 
-  spinbox3_1 = new QSpinBox(tab3);
-  spinbox3_1->setGeometry(140, 550, 140, 25);
+  spinbox3_1 = new QSpinBox;
   spinbox3_1->setSuffix(" samples");
   spinbox3_1->setMinimum(10);
   spinbox3_1->setMaximum(1000);
   spinbox3_1->setSingleStep(2);
   spinbox3_1->setValue(mainwindow->maxdftblocksize);
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(spinbox3_1);
+  hlayout_tmp->addStretch(1000);
+  flayout3_1->addRow("FFT blocksize:", hlayout_tmp);
 
-  label3_5 = new QLabel(tab3);
-  label3_5->setGeometry(20, 590, 120, 25);
-  label3_5->setText("Colorbar sensitivity:");
-
-  dspinbox3_2 = new QDoubleSpinBox(tab3);
-  dspinbox3_2->setGeometry(140, 590, 140, 25);
+  dspinbox3_2 = new QDoubleSpinBox;
   dspinbox3_2->setMinimum(0.0001);
   dspinbox3_2->setMaximum(100000.0);
   dspinbox3_2->setValue(mainwindow->spectrum_colorbar->max_colorbar_value);
-
-  checkbox3_1 = new QCheckBox("Auto", tab3);
-  checkbox3_1->setGeometry(300, 592, 100, 20);
+  checkbox3_1 = new QCheckBox("Auto");
   checkbox3_1->setTristate(false);
   if(mainwindow->spectrum_colorbar->auto_adjust)
   {
@@ -575,15 +559,69 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox3_1->setCheckState(Qt::Unchecked);
   }
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(dspinbox3_2);
+  hlayout_tmp->addSpacing(20);
+  hlayout_tmp->addWidget(checkbox3_1);
+  hlayout_tmp->addStretch(1000);
+  flayout3_1->addRow("Colorbar sensitivity:", hlayout_tmp);
 
-  DefaultButton2 = new QPushButton(tab3);
-  DefaultButton2->setGeometry(245, 650, 100, 25);
+  QHBoxLayout *hlayout3_3 = new QHBoxLayout;
+  hlayout3_3->addWidget(label3_2);
+  hlayout3_3->addStretch(1000);
+
+  QHBoxLayout *hlayout3_4 = new QHBoxLayout;
+  hlayout3_4->addWidget(radiobutton1);
+  hlayout3_4->addStretch(1000);
+
+  QHBoxLayout *hlayout3_5 = new QHBoxLayout;
+  hlayout3_5->addWidget(radiobutton2);
+  hlayout3_5->addStretch(1000);
+
+  QHBoxLayout *hlayout3_6 = new QHBoxLayout;
+  hlayout3_6->addWidget(radiobutton3);
+  hlayout3_6->addStretch(1000);
+
+  QHBoxLayout *hlayout3_7 = new QHBoxLayout;
+  hlayout3_7->addWidget(label3_3);
+  hlayout3_7->addStretch(1000);
+
+  DefaultButton2 = new QPushButton;
   DefaultButton2->setText("Restore default");
 
-  ApplyButton2 = new QPushButton(tab3);
-  ApplyButton2->setGeometry(20, 650, 100, 25);
+  ApplyButton2 = new QPushButton;
   ApplyButton2->setText("Apply");
   ApplyButton2->setEnabled(false);
+
+  QHBoxLayout *hlayout3_2 = new QHBoxLayout;
+  hlayout3_2->addWidget(ApplyButton2);
+  hlayout3_2->addSpacing(20);
+  hlayout3_2->addStretch(500);
+  hlayout3_2->addWidget(DefaultButton2);
+  hlayout3_2->addStretch(500);
+
+  QVBoxLayout *vlayout3_1 = new QVBoxLayout;
+  vlayout3_1->addWidget(label3_1);
+  vlayout3_1->addWidget(colorBarTable, 1000);
+
+  QVBoxLayout *vlayout3_2 = new QVBoxLayout;
+  vlayout3_2->addSpacing(40);
+  vlayout3_2->addLayout(hlayout3_3);
+  vlayout3_2->addLayout(hlayout3_4);
+  vlayout3_2->addLayout(hlayout3_5);
+  vlayout3_2->addLayout(hlayout3_6);
+  vlayout3_2->addLayout(hlayout3_7);
+  vlayout3_2->addSpacing(40);
+  vlayout3_2->addLayout(flayout3_1);
+  vlayout3_2->addStretch(1000);
+  vlayout3_2->addLayout(hlayout3_2);
+
+  QHBoxLayout *hlayout3_1 = new QHBoxLayout;
+  hlayout3_1->addLayout(vlayout3_1, 1000);
+  hlayout3_1->addSpacing(20);
+  hlayout3_1->addLayout(vlayout3_2);
+
+  tab3->setLayout(hlayout3_1);
 
   QObject::connect(radiobutton1,   SIGNAL(toggled(bool)),        this, SLOT(radioButtonToggled(bool)));
   QObject::connect(radiobutton2,   SIGNAL(toggled(bool)),        this, SLOT(radioButtonToggled(bool)));
@@ -593,7 +631,6 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   QObject::connect(ApplyButton2,   SIGNAL(clicked()),            this, SLOT(ApplyButton2Clicked()));
   QObject::connect(DefaultButton2, SIGNAL(clicked()),            this, SLOT(DefaultButton2Clicked()));
   QObject::connect(checkbox3_1,    SIGNAL(stateChanged(int)),    this, SLOT(checkbox3_1Clicked(int)));
-
 
   tabholder->addTab(tab3, "Power Spectrum");
 
@@ -823,10 +860,11 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   hlayout_tmp = new QHBoxLayout;
   hlayout_tmp->addLayout(flayout4_1);
   hlayout_tmp->addSpacing(20);
+  hlayout_tmp->addStretch(300);
   hlayout_tmp->addLayout(flayout4_2);
   hlayout_tmp->addStretch(1000);
 
-  QVBoxLayout *vlayout_tmp = new QVBoxLayout;
+  vlayout_tmp = new QVBoxLayout;
   vlayout_tmp->addLayout(hlayout_tmp);
   vlayout_tmp->addStretch(1000);
 
