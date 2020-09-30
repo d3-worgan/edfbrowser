@@ -34,11 +34,11 @@ FilterCurve::FilterCurve(QWidget *w_parent) : QWidget(w_parent)
   setAttribute(Qt::WA_OpaquePaintEvent);
 
   SignalColor1 = Qt::blue;
-  SignalColor2 = QColor(210, 210, 0);
+  SignalColor2 = Qt::yellow;
   tracewidth = 0;
   BackgroundColor = Qt::gray;
   RasterColor = Qt::darkGray;
-  MarkerColor = Qt::black;
+  MarkerColor = Qt::white;
 
   h_rastersize = 10;
   v_rastersize = 10;
@@ -49,6 +49,9 @@ FilterCurve::FilterCurve(QWidget *w_parent) : QWidget(w_parent)
 
   marker_1 = 0;
   marker_2 = 0;
+
+  sz_hint_w = 150;
+  sz_hint_h = 100;
 }
 
 
@@ -202,25 +205,25 @@ void FilterCurve::paintEvent(QPaintEvent *)
 
   if((marker_1) || (marker_2))
   {
-    painter.drawText(2, 10, "0 Hz");
+    painter.drawText(3, 18, "0 Hz");
   }
 
   if(marker_1)
   {
-    painter.drawText(2 + (marker_1 * horizontal_marker_ratio), 10, "F1");
+    painter.drawText(3 + (marker_1 * horizontal_marker_ratio), 18, "F1");
   }
 
   if(marker_2)
   {
-    painter.drawText(1 + (marker_2 * horizontal_marker_ratio), 10, "F2");
+    painter.drawText(1 + (marker_2 * horizontal_marker_ratio), 18, "F2");
   }
 
   if((marker_1) || (marker_2))
   {
     painter.setPen(SignalColor2);
 
-    painter.drawText(w - 35, 10, "0 deg.");
-    painter.drawText(w - 45, h - 2, "360 deg.");
+    painter.drawText(w - 60, 18, "0 deg.");
+    painter.drawText(w - 80, h - 3, "360 deg.");
   }
 
   if(marker_1)
@@ -356,7 +359,16 @@ void FilterCurve::setV_RasterSize(int newsize)
 }
 
 
+QSize FilterCurve::minimumSizeHint() const
+{
+  return QSize(sz_hint_w, sz_hint_h);
+}
 
+
+int FilterCurve::heightForWidth(int w) const
+{
+  return w / 1.5;
+}
 
 
 

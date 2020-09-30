@@ -321,6 +321,10 @@ UI_Mainwindow::UI_Mainwindow()
   myfont->setPointSize(font_size);
   monofont->setPointSize(monofont_size);
 
+  QFontMetrics fm(*myfont);
+
+  font_pixel_height = fm.height();
+
   QApplication::setFont(*myfont);
 
   maincurve = new ViewCurve(this);

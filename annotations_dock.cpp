@@ -925,14 +925,6 @@ void UI_Annotationswindow::updateList(void)
 
   selected = -1;
 
-#ifdef Q_OS_WIN32
-  QFont specialfont("courier", 11, QFont::Normal, true);
-#else
-  QFont specialfont("andale mono", 12, QFont::Normal, true);
-#endif
-
-  specialfont.setPixelSize(12);
-
   QApplication::setOverrideCursor(Qt::WaitCursor);
 
   list->clear();
@@ -1013,8 +1005,6 @@ void UI_Annotationswindow::updateList(void)
 
     if(annot->modified==1)
     {
-      listitem->setFont(specialfont);
-
       listitem->setForeground(Qt::red);
 
       modified = 1;

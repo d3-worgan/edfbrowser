@@ -83,6 +83,7 @@
 #include <QHostAddress>
 #include <QDir>
 #include <QRect>
+#include <QFontMetrics>
 
 #if QT_VERSION >= 0x050200
 #include <QFontDatabase>
@@ -265,6 +266,7 @@ public:
       monofont_size,
       sys_font_size,
       sys_monofont_size,
+      font_pixel_height,
       use_diverse_signal_colors;
 
   unsigned long long pagetime,

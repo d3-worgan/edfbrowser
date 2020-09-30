@@ -49,15 +49,6 @@ SignalCurve::SignalCurve(QWidget *w_parent) : QWidget(w_parent)
   Marker2Pen.setStyle(Qt::DashLine);
   Marker2Pen.setColor(Qt::yellow);
 
-  sigcurve_font = new QFont;
-#ifdef Q_OS_WIN32
-  sigcurve_font->setFamily("Tahoma");
-  sigcurve_font->setPixelSize(11);
-#else
-  sigcurve_font->setFamily("Arial");
-  sigcurve_font->setPixelSize(12);
-#endif
-
   bufsize = 0;
   dbuf = NULL;
   fbuf = NULL;
@@ -108,7 +99,6 @@ SignalCurve::SignalCurve(QWidget *w_parent) : QWidget(w_parent)
 
 SignalCurve::~SignalCurve()
 {
-  delete sigcurve_font;
 }
 
 
@@ -840,10 +830,7 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
 
   QString q_str;
 
-  QFont curve_font;
-
   QPen printer_pen;
-
 
   curve_w -= 30;
   curve_h -= 30;
@@ -852,10 +839,6 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
 
   bordersize_backup = bordersize;
   bordersize *= p_factor;
-
-  curve_font.setFamily("Arial");
-  curve_font.setPixelSize((int)((double)curve_w / 104.0));
-  painter->setFont(curve_font);
 
   if((curve_w < ((bordersize * 2) + 5)) || (curve_h < ((bordersize * 2) + 5)))
   {
@@ -1057,8 +1040,6 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
   }
 
 /////////////////////////////////// draw the labels ///////////////////////////////////////////
-
-  painter->setFont(curve_font);
 
   if(v_label[0] != 0)
   {
@@ -1403,8 +1384,6 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
   QString q_str;
 
 
-  painter->setFont(*sigcurve_font);
-
   painter->fillRect(0, 0, curve_w, curve_h, BorderColor);
 
   if((curve_w < ((bordersize * 2) + 5)) || (curve_h < ((bordersize * 2) + 5)))
@@ -1629,7 +1608,6 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 /////////////////////////////////// draw the labels ///////////////////////////////////////////
 
   painter->setPen(TextColor);
-  painter->setFont(*sigcurve_font);
 
   if(v_label[0] != 0)
   {
@@ -2188,7 +2166,6 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
     path.lineTo(crosshair_1_x_position, crosshair_1_y_value);
     painter->fillPath(path, QBrush(crosshair_1_color));
 
-    painter->setFont(*sigcurve_font);
     painter->fillRect(crosshair_1_x_position + 6, crosshair_1_y_position - 23, 60, 16, BackgroundColor);
     snprintf(str, 128, "%f", crosshair_1_value);
     painter->drawText(crosshair_1_x_position + 8, crosshair_1_y_position - 10, str);
@@ -2201,7 +2178,6 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 /////////////////////////////////// draw the buttons ///////////////////////////////////////////
 
   painter->setPen(Qt::black);
-  painter->setFont(*sigcurve_font);
   if(printEnabled == true)
   {
     painter->fillRect(curve_w - 43, 3, 40, 18, Qt::gray);

@@ -1531,8 +1531,6 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   struct date_time_struct date_time_str;
 
-  QFont paintersfont;
-
   if(mainwindow->exit_in_progress)
   {
     return;
@@ -1551,10 +1549,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     w = width();
     h = height();
 
-    paintersfont = *mainwindow->myfont;
-    paintersfont.setBold(true);
-    paintersfont.setWeight(QFont::Black);
-    painter->setFont(paintersfont);
+    painter->setFont(*mainwindow->myfont);
 
     printing = 0;
   }

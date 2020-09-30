@@ -47,7 +47,8 @@ public:
   ~FilterCurve();
 
   QSize sizeHint() const {return minimumSizeHint(); }
-  QSize minimumSizeHint() const {return QSize(30,10); }
+  QSize minimumSizeHint() const;
+  int heightForWidth(int) const;
 
   void setSignalColor1(QColor);
   void setSignalColor2(QColor);
@@ -87,7 +88,9 @@ private:
       drawcurve_before_raster,
       tracewidth,
       marker_1,
-      marker_2;
+      marker_2,
+      sz_hint_w,
+      sz_hint_h;
 };
 
 
