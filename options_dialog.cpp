@@ -884,7 +884,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   spinbox5_1->setRange(8, 24);
   spinbox5_1->setValue(mainwindow->font_size);
   textEdit5_1 = new QTextEdit;
-  textEdit5_1->setPlainText("The quick brown fox jumps over the lazy dog.");
+  textEdit5_1->setPlainText("The quick brown fox jumps over the lazy dog. 0123456789 AaBbYyZz");
   hlayout_tmp = new QHBoxLayout;
   hlayout_tmp->addWidget(spinbox5_1);
   hlayout_tmp->addWidget(textEdit5_1, 500);
@@ -896,12 +896,15 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   spinbox5_2->setValue(mainwindow->monofont_size);
   textEdit5_2 = new QTextEdit;
   textEdit5_2->setFont(*mainwindow->monofont);
-  textEdit5_2->setPlainText("The quick brown fox jumps over the lazy dog.");
+  textEdit5_2->setPlainText("The quick brown fox jumps over the lazy dog. 0123456789 AaBbYyZz");
   hlayout_tmp = new QHBoxLayout;
   hlayout_tmp->addWidget(spinbox5_2);
   hlayout_tmp->addWidget(textEdit5_2, 500);
   hlayout_tmp->addStretch(500);
   flayout5_1->addRow("Monofont size", hlayout_tmp);
+
+  DefaultButton5 = new QPushButton;
+  DefaultButton5->setText("System default");
 
   ApplyButton5 = new QPushButton;
   ApplyButton5->setText("Apply");
@@ -909,6 +912,8 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   hlayout_tmp = new QHBoxLayout;
   hlayout_tmp->addWidget(ApplyButton5);
+  hlayout_tmp->addStretch(500);
+  hlayout_tmp->addWidget(DefaultButton5);
   hlayout_tmp->addStretch(1000);
 
   vlayout_tmp = new QVBoxLayout;
@@ -921,9 +926,10 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   tabholder->addTab(tab5, "Font");
 
-  QObject::connect(spinbox5_1,   SIGNAL(valueChanged(int)), this, SLOT(spinBox5_1ValueChanged(int)));
-  QObject::connect(spinbox5_2,   SIGNAL(valueChanged(int)), this, SLOT(spinBox5_2ValueChanged(int)));
-  QObject::connect(ApplyButton5, SIGNAL(clicked()), this, SLOT(ApplyButton5Clicked()));
+  QObject::connect(spinbox5_1,     SIGNAL(valueChanged(int)), this, SLOT(spinBox5_1ValueChanged(int)));
+  QObject::connect(spinbox5_2,     SIGNAL(valueChanged(int)), this, SLOT(spinBox5_2ValueChanged(int)));
+  QObject::connect(ApplyButton5,   SIGNAL(clicked()),         this, SLOT(ApplyButton5Clicked()));
+  QObject::connect(DefaultButton5, SIGNAL(clicked()),         this, SLOT(DefaultButton5Clicked()));
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2449,10 +2455,10 @@ void UI_OptionsDialog::ApplyButton5Clicked()
 
 void UI_OptionsDialog::spinBox5_1ValueChanged(int val)
 {
-  QFont myfont;
+  QFont myfont = *mainwindow->myfont;
   myfont.setPointSize(val);
   textEdit5_1->setFont(myfont);
-  textEdit5_1->setPlainText("The quick brown fox jumps over the lazy dog.");
+  textEdit5_1->setPlainText("The quick brown fox jumps over the lazy dog. 0123456789 AaBbYyZz");
 
   ApplyButton5->setEnabled(true);
 }
@@ -2460,13 +2466,28 @@ void UI_OptionsDialog::spinBox5_1ValueChanged(int val)
 
 void UI_OptionsDialog::spinBox5_2ValueChanged(int val)
 {
-  QFont monofont("Monospace");
+  QFont monofont = *mainwindow->monofont;
   monofont.setPointSize(val);
   textEdit5_2->setFont(monofont);
-  textEdit5_2->setPlainText("The quick brown fox jumps over the lazy dog.");
+  textEdit5_2->setPlainText("The quick brown fox jumps over the lazy dog. 0123456789 AaBbYyZz");
 
   ApplyButton5->setEnabled(true);
 }
+
+
+void UI_OptionsDialog::DefaultButton5Clicked()
+{
+  spinbox5_1->setValue(mainwindow->sys_font_size);
+
+  spinbox5_2->setValue(mainwindow->sys_monofont_size);
+}
+
+
+
+
+
+
+
 
 
 

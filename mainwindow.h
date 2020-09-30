@@ -84,6 +84,10 @@
 #include <QDir>
 #include <QRect>
 
+#if QT_VERSION >= 0x050200
+#include <QFontDatabase>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

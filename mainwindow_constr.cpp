@@ -39,8 +39,25 @@ UI_Mainwindow::UI_Mainwindow()
   QPainter p_aint(&pxm);
 
   myfont = new QFont;
+  monofont = new QFont;
+#if QT_VERSION >= 0x050200
+  *myfont = QFontDatabase::systemFont(QFontDatabase::GeneralFont);
+  *monofont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
+#else
+#ifdef Q_OS_WIN32
+  myfont->setFamily("Tahoma");
+  myfont->setPixelSize(11);
 
-  monofont = new QFont("Monospace");
+  monofont->setFamily("courier");
+  monofont->setPixelSize(12);
+#else
+  myfont->setFamily("Arial");
+  myfont->setPixelSize(11);
+
+  monofont->setFamily("Monospace");
+  monofont->setPixelSize(12);
+#endif
+#endif
 
   splash_pixmap = NULL;
 

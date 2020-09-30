@@ -101,6 +101,7 @@ QPushButton    *CloseButton,
                *DefaultButton2,
                *ApplyButton2,
                *ApplyButton5,
+               *DefaultButton5,
                *saveColorSchemaButton,
                *loadColorSchemaButton;
 
@@ -235,6 +236,7 @@ void lineedit4_1_changed(const QString);
 void spinBox5_1ValueChanged(int);
 void spinBox5_2ValueChanged(int);
 void ApplyButton5Clicked();
+void DefaultButton5Clicked();
 };
 
 
