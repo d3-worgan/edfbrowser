@@ -51,17 +51,19 @@
 #include <QRadioButton>
 #include <QStringList>
 #include <QLineEdit>
-#include <QVBoxLayout>
 #include <QMessageBox>
 #include <QComboBox>
 #include <QString>
 #include <QScrollArea>
 #include <QFrame>
-#include <QGridLayout>
 #include <QDesktopWidget>
 #include <QFileDialog>
 #include <QGroupBox>
 #include <QToolTip>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include "global.h"
 #include "mainwindow.h"
@@ -90,23 +92,6 @@ private:
 
 QDialog        *optionsdialog;
 
-QScrollArea    *scrollarea;
-
-QFrame         *frame;
-
-QGridLayout    *scrolllayout;
-
-QTabWidget     *tabholder;
-
-QWidget        *tab1,
-               *tab2,
-               *tab3,
-               *tab4;
-
-QVBoxLayout    *mainLayout;
-
-QHBoxLayout    *horLayout;
-
 QPushButton    *CloseButton,
                *colorSchema_Blue_on_Gray_Button,
                *colorSchema_NK_Button,
@@ -133,41 +118,7 @@ SpecialButton  *BgColorButton,
                *slabel2_1,
                *slabel2_3;
 
-QLabel         *label1,
-               *label2,
-               *label3,
-               *label4,
-               *label5,
-               *label6,
-               *label7,
-               *label8,
-               *label9,
-               *label10,
-               *label11,
-               *label12,
-               *label12_1,
-               *label12_2,
-               *label12_3,
-               *label13,
-               *label14,
-               *label16,
-               *label4_1,
-               *label4_2,
-               *label4_3,
-               *label4_4,
-               *label4_5,
-               *label4_6,
-               *label4_7,
-               *label4_8,
-               *label4_9,
-               *label4_10,
-               *label4_11,
-               *label4_12,
-               *label4_13,
-               *label4_14,
-               *label2_2,
-               *label2_4,
-               *label1_3,
+QLabel         *label1_3,
                *label2_3,
                *label3_3,
                *label3_4,
@@ -214,6 +165,13 @@ QLineEdit      *lineEdit3_1,
                *lineedit4_1;
 
 QGroupBox      *groupbox1;
+
+QTabWidget     *tabholder;
+
+QWidget        *tab1,
+               *tab2,
+               *tab3,
+               *tab4;
 
 void update_interface(void);
 

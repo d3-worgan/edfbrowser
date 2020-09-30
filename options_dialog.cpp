@@ -33,41 +33,12 @@
 
 UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 {
-  int i,
-      showminimized=0;
+  int i;
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
   optionsdialog = new QDialog(w_parent);
 
-#if QT_VERSION > 0x050C00
-  if(QGuiApplication::primaryScreen()->geometry().height() < 940)
-  {
-    showminimized = 1;
-  }
-#else
-  if(QApplication::desktop()->screenGeometry().height() < 940)
-  {
-    showminimized = 1;
-  }
-#endif
-  if(showminimized)
-  {
-    optionsdialog->setMinimumSize(480, 500);
-    optionsdialog->setMaximumSize(480, 820);
-
-    scrollarea = new QScrollArea;
-    scrollarea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-    frame = new QFrame;
-    frame->setMinimumSize(440, 820);
-    frame->setMaximumSize(440, 820);
-  }
-  else
-  {
-    optionsdialog->setMinimumSize(440, 860);
-    optionsdialog->setMaximumSize(440, 860);
-  }
   optionsdialog->setWindowTitle("Settings");
   optionsdialog->setModal(true);
   optionsdialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -81,61 +52,54 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   tab1 = new QWidget;
 
-  label1 = new QLabel(tab1);
-  label1->setGeometry(20, 15, 200, 25);
-  label1->setText("Background color");
+  QFormLayout *flayout1_1 = new QFormLayout;
+  flayout1_1->setSpacing(20);
 
-  BgColorButton = new SpecialButton(tab1);
-  BgColorButton->setGeometry(240, 20, 60, 15);
+  QHBoxLayout *hlayout_tmp;
+
+  BgColorButton = new SpecialButton;
   BgColorButton->setColor(mainwindow->maincurve->backgroundcolor);
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(BgColorButton);
+  hlayout_tmp->addStretch(1000);
+  flayout1_1->addRow("Background color", hlayout_tmp);
 
-  label2 = new QLabel(tab1);
-  label2->setGeometry(20, 45, 200, 25);
-  label2->setText("Small ruler color");
-
-  SrColorButton = new SpecialButton(tab1);
-  SrColorButton->setGeometry(240, 50, 60, 15);
+  SrColorButton = new SpecialButton;
   SrColorButton->setColor(mainwindow->maincurve->small_ruler_color);
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(SrColorButton);
+  hlayout_tmp->addStretch(1000);
+  flayout1_1->addRow("Small ruler color", hlayout_tmp);
 
-  label3 = new QLabel(tab1);
-  label3->setGeometry(20, 75, 200, 25);
-  label3->setText("Big ruler color");
-
-  BrColorButton = new SpecialButton(tab1);
-  BrColorButton->setGeometry(240, 80, 60, 15);
+  BrColorButton = new SpecialButton;
   BrColorButton->setColor(mainwindow->maincurve->big_ruler_color);
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(BrColorButton);
+  hlayout_tmp->addStretch(1000);
+  flayout1_1->addRow("Big ruler color", hlayout_tmp);
 
-  label4 = new QLabel(tab1);
-  label4->setGeometry(20, 105, 200, 25);
-  label4->setText("Mouse rectangle color");
-
-  MrColorButton = new SpecialButton(tab1);
-  MrColorButton->setGeometry(240, 110, 60, 15);
+  MrColorButton = new SpecialButton;
   MrColorButton->setColor(mainwindow->maincurve->mouse_rect_color);
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(MrColorButton);
+  hlayout_tmp->addStretch(1000);
+  flayout1_1->addRow("Mouse rectangle color", hlayout_tmp);
 
-  label5 = new QLabel(tab1);
-  label5->setGeometry(20, 135, 200, 25);
-  label5->setText("Text color");
-
-  TxtColorButton = new SpecialButton(tab1);
-  TxtColorButton->setGeometry(240, 140, 60, 15);
+  TxtColorButton = new SpecialButton;
   TxtColorButton->setColor(mainwindow->maincurve->text_color);
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(MrColorButton);
+  hlayout_tmp->addStretch(1000);
+  flayout1_1->addRow("Text color", hlayout_tmp);
 
-  label6 = new QLabel(tab1);
-  label6->setGeometry(20, 165, 200, 25);
-  label6->setText("Signals color");
-
-  SigColorButton = new SpecialButton(tab1);
-  SigColorButton->setGeometry(240, 170, 60, 15);
+  SigColorButton = new SpecialButton;
   SigColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->signal_color);
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(SigColorButton);
+  hlayout_tmp->addStretch(1000);
+  flayout1_1->addRow("Signals color", hlayout_tmp);
 
-  label16 = new QLabel(tab1);
-  label16->setGeometry(20, 195, 200, 25);
-  label16->setText("Vary signal colors");
-  label16->setToolTip("When adding signals to the screen, vary the traces' color");
-
-  checkbox16 = new QCheckBox(tab1);
-  checkbox16->setGeometry(200, 198, 20, 20);
+  checkbox16 = new QCheckBox;
   checkbox16->setTristate(false);
   checkbox16->setToolTip("When adding signals to the screen, vary the traces' color");
   if(mainwindow->use_diverse_signal_colors)
@@ -146,13 +110,12 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox16->setCheckState(Qt::Unchecked);
   }
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(checkbox16);
+  hlayout_tmp->addStretch(1000);
+  flayout1_1->addRow("Vary signal colors", hlayout_tmp);
 
-  label7 = new QLabel(tab1);
-  label7->setGeometry(20, 225, 200, 25);
-  label7->setText("Baseline color");
-
-  checkbox3 = new QCheckBox(tab1);
-  checkbox3->setGeometry(200, 228, 20, 20);
+  checkbox3 = new QCheckBox;
   checkbox3->setTristate(false);
   if(mainwindow->show_baselines)
   {
@@ -162,41 +125,39 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox3->setCheckState(Qt::Unchecked);
   }
-
-  BaseColorButton = new SpecialButton(tab1);
-  BaseColorButton->setGeometry(240, 230, 60, 15);
+  BaseColorButton = new SpecialButton;
   BaseColorButton->setColor(mainwindow->maincurve->baseline_color);
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(checkbox3);
+  hlayout_tmp->addWidget(BaseColorButton);
+  hlayout_tmp->addStretch(1000);
+  flayout1_1->addRow("Baseline color", hlayout_tmp);
 
-  label8 = new QLabel(tab1);
-  label8->setGeometry(20, 255, 200, 25);
-  label8->setText("First Crosshair color");
-
-  Crh1ColorButton = new SpecialButton(tab1);
-  Crh1ColorButton->setGeometry(240, 260, 60, 15);
+  Crh1ColorButton = new SpecialButton;
   Crh1ColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->crosshair_1.color);
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(Crh1ColorButton);
+  hlayout_tmp->addStretch(1000);
+  flayout1_1->addRow("First Crosshair color", hlayout_tmp);
 
-  label9 = new QLabel(tab1);
-  label9->setGeometry(20, 285, 200, 25);
-  label9->setText("Second Crosshair color");
+  QFormLayout *flayout1_2 = new QFormLayout;
+  flayout1_2->setSpacing(20);
 
-  Crh2ColorButton = new SpecialButton(tab1);
-  Crh2ColorButton->setGeometry(240, 290, 60, 15);
+  Crh2ColorButton = new SpecialButton;
   Crh2ColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->crosshair_2.color);
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(Crh2ColorButton);
+  hlayout_tmp->addStretch(1000);
+  flayout1_2->addRow("Second Crosshair color", hlayout_tmp);
 
-  label10 = new QLabel(tab1);
-  label10->setGeometry(20, 315, 200, 25);
-  label10->setText("Floating ruler color");
-
-  FrColorButton = new SpecialButton(tab1);
-  FrColorButton->setGeometry(240, 320, 60, 15);
+  FrColorButton = new SpecialButton;
   FrColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->floating_ruler_color);
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(FrColorButton);
+  hlayout_tmp->addStretch(1000);
+  flayout1_2->addRow("Floating ruler color", hlayout_tmp);
 
-  label12 = new QLabel(tab1);
-  label12->setGeometry(20, 345, 200, 25);
-  label12->setText("Annotation marker");
-
-  checkbox2 = new QCheckBox(tab1);
-  checkbox2->setGeometry(200, 348, 20, 20);
+  checkbox2 = new QCheckBox;
   checkbox2->setTristate(false);
   if(mainwindow->show_annot_markers)
   {
@@ -206,17 +167,15 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox2->setCheckState(Qt::Unchecked);
   }
-
-  AnnotMkrButton = new SpecialButton(tab1);
-  AnnotMkrButton->setGeometry(240, 350, 60, 15);
+  AnnotMkrButton = new SpecialButton;
   AnnotMkrButton->setColor(mainwindow->maincurve->annot_marker_color);
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(checkbox2);
+  hlayout_tmp->addWidget(AnnotMkrButton);
+  hlayout_tmp->addStretch(1000);
+  flayout1_2->addRow("Annotation marker", hlayout_tmp);
 
-  label12_2 = new QLabel(tab1);
-  label12_2->setGeometry(20, 375, 200, 25);
-  label12_2->setText("Show duration at marker");
-
-  checkbox2_1 = new QCheckBox(tab1);
-  checkbox2_1->setGeometry(200, 378, 20, 20);
+  checkbox2_1 = new QCheckBox;
   checkbox2_1->setTristate(false);
   if(mainwindow->annotations_show_duration)
   {
@@ -226,29 +185,24 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox2_1->setCheckState(Qt::Unchecked);
   }
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(checkbox2_1);
+  hlayout_tmp->addStretch(1000);
+  flayout1_2->addRow("Show duration at marker", hlayout_tmp);
 
-  label12_1 = new QLabel(tab1);
-  label12_1->setGeometry(20, 405, 200, 25);
-  label12_1->setText("Annotation duration background");
-  label12_1->setToolTip("The second color is used to indicate if it's selected");
-
-  AnnotDurationButton = new SpecialButton(tab1);
-  AnnotDurationButton->setGeometry(240, 410, 60, 15);
+  AnnotDurationButton = new SpecialButton;
   AnnotDurationButton->setColor(mainwindow->maincurve->annot_duration_color);
   AnnotDurationButton->setToolTip("The second color is used to indicate if it's selected");
-
-  AnnotDurationSelectedButton = new SpecialButton(tab1);
-  AnnotDurationSelectedButton->setGeometry(340, 410, 60, 15);
+  AnnotDurationSelectedButton = new SpecialButton;
   AnnotDurationSelectedButton->setColor(mainwindow->maincurve->annot_duration_color_selected);
   AnnotDurationSelectedButton->setToolTip("The second color is used to indicate if it's selected");
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(AnnotDurationButton);
+  hlayout_tmp->addWidget(AnnotDurationSelectedButton);
+  hlayout_tmp->addStretch(1000);
+  flayout1_2->addRow("Annotation duration background", hlayout_tmp);
 
-  label12_3 = new QLabel(tab1);
-  label12_3->setGeometry(20, 435, 200, 25);
-  label12_3->setText("Show only at screen bottom");
-  label12_3->setToolTip("Show the colored background only at the bottom of the screen");
-
-  checkbox2_2 = new QCheckBox(tab1);
-  checkbox2_2->setGeometry(200, 438, 20, 20);
+  checkbox2_2 = new QCheckBox;
   checkbox2_2->setTristate(false);
   if(mainwindow->annotations_duration_background_type)
   {
@@ -259,13 +213,12 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
     checkbox2_2->setCheckState(Qt::Unchecked);
   }
   checkbox2_2->setToolTip("Show the colored background only at the bottom of the screen");
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(checkbox2_2);
+  hlayout_tmp->addStretch(1000);
+  flayout1_2->addRow("Show only at screen bottom", hlayout_tmp);
 
-  label14 = new QLabel(tab1);
-  label14->setGeometry(20, 465, 200, 25);
-  label14->setText("Annotations: filter list only");
-
-  checkbox5 = new QCheckBox(tab1);
-  checkbox5->setGeometry(200, 468, 20, 20);
+  checkbox5 = new QCheckBox;
   checkbox5->setTristate(false);
   checkbox5->setToolTip("Annotation filter affects the annotationlist only, not the annotation markers in the signal window");
   if(mainwindow->annot_filter->hide_in_list_only)
@@ -276,13 +229,12 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox5->setCheckState(Qt::Unchecked);
   }
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(checkbox5);
+  hlayout_tmp->addStretch(1000);
+  flayout1_2->addRow("Annotations: filter list only", hlayout_tmp);
 
-  label11 = new QLabel(tab1);
-  label11->setGeometry(20, 495, 200, 25);
-  label11->setText("Print in grayscale");
-
-  checkbox1 = new QCheckBox(tab1);
-  checkbox1->setGeometry(200, 498, 20, 20);
+  checkbox1 = new QCheckBox;
   checkbox1->setTristate(false);
   if(mainwindow->maincurve->blackwhite_printing)
   {
@@ -292,13 +244,12 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox1->setCheckState(Qt::Unchecked);
   }
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(checkbox1);
+  hlayout_tmp->addStretch(1000);
+  flayout1_2->addRow("Print in grayscale", hlayout_tmp);
 
-  label13 = new QLabel(tab1);
-  label13->setGeometry(20, 525, 200, 25);
-  label13->setText("Clip signals to pane");
-
-  checkbox4 = new QCheckBox(tab1);
-  checkbox4->setGeometry(200, 528, 20, 20);
+  checkbox4 = new QCheckBox;
   checkbox4->setTristate(false);
   if(mainwindow->clip_to_pane)
   {
@@ -308,29 +259,64 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox4->setCheckState(Qt::Unchecked);
   }
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(checkbox4);
+  hlayout_tmp->addStretch(1000);
+  flayout1_2->addRow("Clip signals to pane", hlayout_tmp);
 
-  groupbox1 = new QGroupBox("Colorschema", tab1);
-  groupbox1->setGeometry(120, 570, 180, 195);
-
-  colorSchema_Dark_Button = new QPushButton(tab1);
-  colorSchema_Dark_Button->setGeometry(150, 600, 120, 20);
+  colorSchema_Dark_Button = new QPushButton;
   colorSchema_Dark_Button->setText("\"Dark\"");
 
-  colorSchema_NK_Button = new QPushButton(tab1);
-  colorSchema_NK_Button->setGeometry(150, 630, 120, 20);
+  colorSchema_NK_Button = new QPushButton;
   colorSchema_NK_Button->setText("\"NK\"");
 
-  colorSchema_Blue_on_Gray_Button = new QPushButton(tab1);
-  colorSchema_Blue_on_Gray_Button->setGeometry(150, 660, 120, 20);
+  colorSchema_Blue_on_Gray_Button = new QPushButton;
   colorSchema_Blue_on_Gray_Button->setText("\"Blue on gray\"");
 
-  saveColorSchemaButton = new QPushButton(tab1);
-  saveColorSchemaButton->setGeometry(150, 690, 120, 20);
+  saveColorSchemaButton = new QPushButton;
   saveColorSchemaButton->setText("Save");
 
-  loadColorSchemaButton = new QPushButton(tab1);
-  loadColorSchemaButton->setGeometry(150, 720, 120, 20);
+  loadColorSchemaButton = new QPushButton;
   loadColorSchemaButton->setText("Load");
+
+  QVBoxLayout *vlayout1_4 = new QVBoxLayout;
+  vlayout1_4->addStretch(100);
+  vlayout1_4->addWidget(colorSchema_Dark_Button);
+  vlayout1_4->addWidget(colorSchema_NK_Button);
+  vlayout1_4->addWidget(colorSchema_Blue_on_Gray_Button);
+  vlayout1_4->addWidget(saveColorSchemaButton);
+  vlayout1_4->addWidget(loadColorSchemaButton);
+  vlayout1_4->addStretch(100);
+
+  QHBoxLayout *hlayout1_2 = new QHBoxLayout;
+  hlayout1_2->addStretch(100);
+  hlayout1_2->addLayout(vlayout1_4);
+  hlayout1_2->addStretch(100);
+
+  groupbox1 = new QGroupBox("Colorschema");
+  groupbox1->setLayout(hlayout1_2);
+
+  QVBoxLayout *vlayout1_1 = new QVBoxLayout;
+  vlayout1_1->addLayout(flayout1_1);
+  vlayout1_1->addStretch(1000);
+
+  QVBoxLayout *vlayout1_2 = new QVBoxLayout;
+  vlayout1_2->addLayout(flayout1_2);
+  vlayout1_2->addStretch(1000);
+
+  QVBoxLayout *vlayout1_3 = new QVBoxLayout;
+  vlayout1_3->addStretch(200);
+  vlayout1_3->addWidget(groupbox1);
+  vlayout1_3->addStretch(1000);
+
+  QHBoxLayout *hlayout1_1 = new QHBoxLayout;
+  hlayout1_1->addLayout(vlayout1_1);
+  hlayout1_1->addLayout(vlayout1_2);
+  hlayout1_1->addStretch(500);
+  hlayout1_1->addLayout(vlayout1_3);
+  hlayout1_1->addStretch(500);
+
+  tab1->setLayout(hlayout1_1);
 
   QObject::connect(BgColorButton,           SIGNAL(clicked(SpecialButton *)), this, SLOT(BgColorButtonClicked(SpecialButton *)));
   QObject::connect(SrColorButton,           SIGNAL(clicked(SpecialButton *)), this, SLOT(SrColorButtonClicked(SpecialButton *)));
@@ -365,8 +351,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   tab2 = new QWidget;
 
-  checkbox2_1 = new QCheckBox("Manually override automatic DPI settings", tab2);
-  checkbox2_1->setGeometry(85, 560, 300, 20);
+  checkbox2_1 = new QCheckBox("Manually override automatic DPI settings");
   checkbox2_1->setTristate(false);
   if(mainwindow->auto_dpi)
   {
@@ -377,34 +362,31 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
     checkbox2_1->setCheckState(Qt::Checked);
   }
 
-  slabel2_1 = new SpecialButton(tab2);
-  slabel2_1->setGeometry(30, 20, 10, 445);
+  slabel2_1 = new SpecialButton;
+  slabel2_1->setMinimumSize(10, 445);
+  slabel2_1->setMaximumSize(10, 445);
   slabel2_1->setColor(Qt::black);
 
-  slabel2_3 = new SpecialButton(tab2);
-  slabel2_3->setGeometry(30, 500, 355, 10);
+  slabel2_3 = new SpecialButton;
+  slabel2_3->setMinimumSize(355, 10);
+  slabel2_3->setMaximumSize(355, 10);
   slabel2_3->setColor(Qt::black);
 
-  label2_2 = new QLabel(tab2);
-  label2_2->setGeometry(85, 50, 220, 50);
-  label2_2->setText("Measure the length of the black\nrectangles and enter the values.");
+  QLabel *label2_2 = new QLabel("Measure the length of the black\nrectangles and enter the values.");
 
-  spinbox2_1 = new QSpinBox(tab2);
-  spinbox2_1->setGeometry(85, 240, 100, 25);
+  spinbox2_1 = new QSpinBox;
   spinbox2_1->setSuffix(" mm");
   spinbox2_1->setMinimum(10);
   spinbox2_1->setMaximum(500);
   spinbox2_1->setValue((int)(4450.0 / (1.0 / mainwindow->pixelsizefactor)));
 
-  spinbox2_2 = new QSpinBox(tab2);
-  spinbox2_2->setGeometry(170, 450, 100, 25);
+  spinbox2_2 = new QSpinBox;
   spinbox2_2->setSuffix(" mm");
   spinbox2_2->setMinimum(10);
   spinbox2_2->setMaximum(500);
   spinbox2_2->setValue((int)(3550.0 / (1.0 / mainwindow->x_pixelsizefactor)));
 
-  ApplyButton = new QPushButton(tab2);
-  ApplyButton->setGeometry(85, 600, 100, 25);
+  ApplyButton = new QPushButton;
   ApplyButton->setText("Apply");
 
   if(checkbox2_1->checkState() == Qt::Unchecked)
@@ -413,6 +395,56 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
     spinbox2_2->setEnabled(false);
     ApplyButton->setEnabled(false);
   }
+
+  QVBoxLayout *vlayout2_1 = new QVBoxLayout;
+  vlayout2_1->addWidget(slabel2_1);
+  vlayout2_1->addStretch(1000);
+
+  QHBoxLayout *hlayout2_2 = new QHBoxLayout;
+  hlayout2_2->addWidget(label2_2);
+  hlayout2_2->addStretch(1000);
+
+  QHBoxLayout *hlayout2_3 = new QHBoxLayout;
+  hlayout2_3->addWidget(spinbox2_1);
+  hlayout2_3->addStretch(1000);
+
+  QHBoxLayout *hlayout2_4 = new QHBoxLayout;
+  hlayout2_4->addWidget(slabel2_3);
+  hlayout2_4->addStretch(1000);
+
+  QHBoxLayout *hlayout2_5 = new QHBoxLayout;
+  hlayout2_5->addWidget(spinbox2_2);
+  hlayout2_5->addStretch(1000);
+
+  QHBoxLayout *hlayout2_6 = new QHBoxLayout;
+  hlayout2_6->addWidget(checkbox2_1);
+  hlayout2_6->addStretch(1000);
+
+  QHBoxLayout *hlayout2_7 = new QHBoxLayout;
+  hlayout2_7->addWidget(ApplyButton);
+  hlayout2_7->addStretch(1000);
+
+  QVBoxLayout *vlayout2_2 = new QVBoxLayout;
+  vlayout2_2->addStretch(100);
+  vlayout2_2->addLayout(hlayout2_2);
+  vlayout2_2->addStretch(100);
+  vlayout2_2->addLayout(hlayout2_3);
+  vlayout2_2->addStretch(200);
+  vlayout2_2->addLayout(hlayout2_4);
+  vlayout2_2->addLayout(hlayout2_5);
+  vlayout2_2->addStretch(200);
+  vlayout2_2->addLayout(hlayout2_6);
+  vlayout2_2->addStretch(200);
+  vlayout2_2->addLayout(hlayout2_7);
+  vlayout2_2->addStretch(500);
+
+  QHBoxLayout *hlayout2_1 = new QHBoxLayout;
+  hlayout2_1->addLayout(vlayout2_1);
+  hlayout2_1->addSpacing(20);
+  hlayout2_1->addLayout(vlayout2_2);
+  hlayout2_1->addStretch(1000);
+
+  tab2->setLayout(hlayout2_1);
 
   QObject::connect(ApplyButton, SIGNAL(clicked()),         this, SLOT(ApplyButtonClicked()));
   QObject::connect(checkbox2_1, SIGNAL(stateChanged(int)), this, SLOT(calibrate_checkbox_stateChanged(int)));
@@ -569,12 +601,10 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   tab4 = new QWidget;
 
-  label4_1 = new QLabel(tab4);
-  label4_1->setGeometry(20, 20, 280, 25);
-  label4_1->setText("Reload last used montage");
+  QFormLayout *flayout4_1 = new QFormLayout;
+  flayout4_1->setSpacing(20);
 
-  checkbox4_1 = new QCheckBox(tab4);
-  checkbox4_1->setGeometry(325, 23, 20, 20);
+  checkbox4_1 = new QCheckBox;
   checkbox4_1->setTristate(false);
   if(mainwindow->auto_reload_mtg)
   {
@@ -584,31 +614,27 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox4_1->setCheckState(Qt::Unchecked);
   }
-
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(checkbox4_1);
+  hlayout_tmp->addStretch(1000);
+  flayout4_1->addRow("Reload last used montage", hlayout_tmp);
   QObject::connect(checkbox4_1, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_1Clicked(int)));
 
-  label4_7 = new QLabel(tab4);
-  label4_7->setGeometry(20, 60, 280, 60);
-  label4_7->setText("Do not read annotations, Biosemi Status signal\n"
-                    "or Nihon Kohden triggers when filesize\n"
-                    "is more than:");
-
-  spinbox4_3 = new QSpinBox(tab4);
-  spinbox4_3->setGeometry(200, 100, 140, 25);
+  spinbox4_3 = new QSpinBox;
   spinbox4_3->setSuffix(" MB");
   spinbox4_3->setMinimum(100);
   spinbox4_3->setMaximum(100000);
   spinbox4_3->setSingleStep(1);
   spinbox4_3->setValue((int)(mainwindow->maxfilesize_to_readin_annotations / 1048576LL));
-
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(spinbox4_3);
+  hlayout_tmp->addStretch(1000);
+  flayout4_1->addRow("Do not read annotations, Biosemi Status signal\n"
+                    "or Nihon Kohden triggers when filesize\n"
+                    "is more than:", hlayout_tmp);
   QObject::connect(spinbox4_3, SIGNAL(valueChanged(int)), this, SLOT(spinBox4_3ValueChanged(int)));
 
-  label4_2 = new QLabel(tab4);
-  label4_2->setGeometry(20, 135, 280, 25);
-  label4_2->setText("Read Biosemi Status signal");
-
-  checkbox4_2 = new QCheckBox(tab4);
-  checkbox4_2->setGeometry(325, 138, 20, 20);
+  checkbox4_2 = new QCheckBox;
   checkbox4_2->setTristate(false);
   if(mainwindow->read_biosemi_status_signal)
   {
@@ -618,15 +644,13 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox4_2->setCheckState(Qt::Unchecked);
   }
-
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(checkbox4_2);
+  hlayout_tmp->addStretch(1000);
+  flayout4_1->addRow("Read Biosemi Status signal", hlayout_tmp);
   QObject::connect(checkbox4_2, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_2Clicked(int)));
 
-  label4_6 = new QLabel(tab4);
-  label4_6->setGeometry(20, 175, 280, 25);
-  label4_6->setText("Read Nihon Kohden Trigger/Marker signal");
-
-  checkbox4_3 = new QCheckBox(tab4);
-  checkbox4_3->setGeometry(325, 178, 20, 20);
+  checkbox4_3 = new QCheckBox;
   checkbox4_3->setTristate(false);
   if(mainwindow->read_nk_trigger_signal)
   {
@@ -636,29 +660,25 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox4_3->setCheckState(Qt::Unchecked);
   }
-
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(checkbox4_3);
+  hlayout_tmp->addStretch(1000);
+  flayout4_1->addRow("Read Nihon Kohden Trigger/Marker signal", hlayout_tmp);
   QObject::connect(checkbox4_3, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_3Clicked(int)));
 
-  label4_3 = new QLabel(tab4);
-  label4_3->setGeometry(20, 215, 200, 25);
-  label4_3->setText("livestream update interval");
-
-  spinbox4_1 = new QSpinBox(tab4);
-  spinbox4_1->setGeometry(200, 215, 140, 25);
+  spinbox4_1 = new QSpinBox;
   spinbox4_1->setSuffix(" mSec");
   spinbox4_1->setMinimum(100);
   spinbox4_1->setMaximum(3000);
   spinbox4_1->setSingleStep(1);
   spinbox4_1->setValue(mainwindow->live_stream_update_interval);
-
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(spinbox4_1);
+  hlayout_tmp->addStretch(1000);
+  flayout4_1->addRow("livestream update interval", hlayout_tmp);
   QObject::connect(spinbox4_1, SIGNAL(valueChanged(int)), this, SLOT(spinBox4_1ValueChanged(int)));
 
-  label4_4 = new QLabel(tab4);
-  label4_4->setGeometry(20, 255, 200, 25);
-  label4_4->setText("Powerline Frequency");
-
-  combobox4_1 = new QComboBox(tab4);
-  combobox4_1->setGeometry(200, 255, 140, 25);
+  combobox4_1 = new QComboBox;
   combobox4_1->addItem("50 Hz");
   combobox4_1->addItem("60 Hz");
   if(mainwindow->powerlinefreq == 50)
@@ -669,30 +689,26 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     combobox4_1->setCurrentIndex(1);
   }
-
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(combobox4_1);
+  hlayout_tmp->addStretch(1000);
+  flayout4_1->addRow("Powerline Frequency", hlayout_tmp);
   QObject::connect(combobox4_1, SIGNAL(currentIndexChanged(int)), this, SLOT(combobox4_1IndexChanged(int)));
 
-  label4_4 = new QLabel(tab4);
-  label4_4->setGeometry(20, 295, 200, 40);
-  label4_4->setText("Mousewheel stepsize\n"
-                    "(0 is no scroll)");
-
-  spinbox4_2 = new QSpinBox(tab4);
-  spinbox4_2->setGeometry(200, 295, 140, 25);
+  spinbox4_2 = new QSpinBox;
   spinbox4_2->setPrefix("Timescale / ");
   spinbox4_2->setMinimum(0);
   spinbox4_2->setMaximum(100);
   spinbox4_2->setSingleStep(1);
   spinbox4_2->setValue(mainwindow->mousewheelsens);
-
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(spinbox4_2);
+  hlayout_tmp->addStretch(1000);
+  flayout4_1->addRow("Mousewheel stepsize\n"
+                     "(0 is no scroll)", hlayout_tmp);
   QObject::connect(spinbox4_2, SIGNAL(valueChanged(int)), this, SLOT(spinBox4_2ValueChanged(int)));
 
-  label4_5 = new QLabel(tab4);
-  label4_5->setGeometry(20, 335, 280, 25);
-  label4_5->setText("Use Multi-Threading");
-
-  checkbox4_4 = new QCheckBox(tab4);
-  checkbox4_4->setGeometry(325, 338, 20, 20);
+  checkbox4_4 = new QCheckBox;
   checkbox4_4->setTristate(false);
   if(mainwindow->use_threads)
   {
@@ -702,15 +718,16 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox4_4->setCheckState(Qt::Unchecked);
   }
-
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(checkbox4_4);
+  hlayout_tmp->addStretch(1000);
+  flayout4_1->addRow("Use Multi-Threading", hlayout_tmp);
   QObject::connect(checkbox4_4, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_4Clicked(int)));
 
-  label4_8 = new QLabel(tab4);
-  label4_8->setGeometry(20, 375, 310, 25);
-  label4_8->setText("Check for updates during startup");
+  QFormLayout *flayout4_2 = new QFormLayout;
+  flayout4_2->setSpacing(20);
 
-  checkbox4_5 = new QCheckBox(tab4);
-  checkbox4_5->setGeometry(325, 378, 20, 20);
+  checkbox4_5 = new QCheckBox;
   checkbox4_5->setTristate(false);
   if(mainwindow->check_for_updates)
   {
@@ -720,55 +737,46 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox4_5->setCheckState(Qt::Unchecked);
   }
-
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(checkbox4_5);
+  hlayout_tmp->addStretch(1000);
+  flayout4_2->addRow("Check for updates during startup", hlayout_tmp);
   QObject::connect(checkbox4_5, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_5Clicked(int)));
 
-  label4_9 = new QLabel(tab4);
-  label4_9->setGeometry(20, 415, 310, 25);
-  label4_9->setText("Viewtime / fileposition indicator");
-
-  combobox4_2 = new QComboBox(tab4);
-  combobox4_2->setGeometry(200, 415, 140, 25);
+  combobox4_2 = new QComboBox;
   combobox4_2->addItem("relative");
   combobox4_2->addItem("real (relative)");
   combobox4_2->addItem("date real (relative)");
   combobox4_2->setCurrentIndex(mainwindow->viewtime_indicator_type);
-
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(combobox4_2);
+  hlayout_tmp->addStretch(1000);
+  flayout4_2->addRow("Viewtime / fileposition indicator", hlayout_tmp);
   QObject::connect(combobox4_2, SIGNAL(currentIndexChanged(int)), this, SLOT(combobox4_2IndexChanged(int)));
 
-  label4_10 = new QLabel(tab4);
-  label4_10->setGeometry(20, 455, 310, 25);
-  label4_10->setText("Window title content");
-
-  combobox4_3 = new QComboBox(tab4);
-  combobox4_3->setGeometry(200, 455, 180, 25);
+  combobox4_3 = new QComboBox;
   combobox4_3->addItem("Subject info");
   combobox4_3->addItem("Filename");
   combobox4_3->addItem("Filename with full path");
   combobox4_3->setCurrentIndex(mainwindow->mainwindow_title_type);
-
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(combobox4_3);
+  hlayout_tmp->addStretch(1000);
+  flayout4_2->addRow("Window title content", hlayout_tmp);
   QObject::connect(combobox4_3, SIGNAL(currentIndexChanged(int)), this, SLOT(combobox4_3IndexChanged(int)));
 
-  label4_11 = new QLabel(tab4);
-  label4_11->setGeometry(20, 495, 310, 25);
-  label4_11->setText("Default amplitude");
-
-  dspinbox4_4 = new QDoubleSpinBox(tab4);
-  dspinbox4_4->setGeometry(200, 495, 140, 25);
+  dspinbox4_4 = new QDoubleSpinBox;
   dspinbox4_4->setMinimum(0.001);
   dspinbox4_4->setMaximum(10000000);
   dspinbox4_4->setSuffix(" /cm");
   dspinbox4_4->setValue(mainwindow->default_amplitude);
-
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(dspinbox4_4);
+  hlayout_tmp->addStretch(1000);
+  flayout4_2->addRow("Default amplitude", hlayout_tmp);
   QObject::connect(dspinbox4_4, SIGNAL(valueChanged(double)), this, SLOT(dspinbox4_4ValueChanged(double)));
 
-  label4_12 = new QLabel(tab4);
-  label4_12->setGeometry(20, 535, 310, 25);
-  label4_12->setText("Use linear interpolation for plotting");
-  label4_12->setToolTip("Enabling this option will avoid the \"stairstep\" effect and will make the signal look smoother.");
-
-  checkbox4_6 = new QCheckBox(tab4);
-  checkbox4_6->setGeometry(325, 538, 20, 20);
+  checkbox4_6 = new QCheckBox;
   checkbox4_6->setTristate(false);
   checkbox4_6->setToolTip("Enabling this option will avoid the \"stairstep\" effect and will make the signal look smoother.");
   if(mainwindow->linear_interpol)
@@ -779,17 +787,13 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox4_6->setCheckState(Qt::Unchecked);
   }
-
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(checkbox4_6);
+  hlayout_tmp->addStretch(1000);
+  flayout4_2->addRow("Use linear interpolation for plotting", hlayout_tmp);
   QObject::connect(checkbox4_6, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_6Clicked(int)));
 
-  label4_13 = new QLabel(tab4);
-  label4_13->setGeometry(20, 575, 310, 25);
-  label4_13->setText("Auto update annotation-editor onsettime");
-  label4_13->setToolTip("Enabling this option will automatically update the onsettime field of the annotation-editor\n"
-                        "when scrolling and a cross-hair is active.");
-
-  checkbox4_7 = new QCheckBox(tab4);
-  checkbox4_7->setGeometry(325, 578, 20, 20);
+  checkbox4_7 = new QCheckBox;
   checkbox4_7->setTristate(false);
   checkbox4_7->setToolTip("Enabling this option will automatically update the onsettime field of the annotation-editor\n"
                           "when scrolling and a cross-hair is active.");
@@ -801,47 +805,49 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox4_7->setCheckState(Qt::Unchecked);
   }
-
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(checkbox4_7);
+  hlayout_tmp->addStretch(1000);
+  flayout4_2->addRow("Auto update annotation-editor onsettime", hlayout_tmp);
   QObject::connect(checkbox4_7, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_7Clicked(int)));
 
-  label4_14 = new QLabel(tab4);
-  label4_14->setGeometry(20, 615, 310, 25);
-  label4_14->setText("R-wave description string");
-
-  lineedit4_1 = new QLineEdit(tab4);
-  lineedit4_1->setGeometry(200, 615, 140, 25);
+  lineedit4_1 = new QLineEdit;
   lineedit4_1->setMaxLength(31);
   lineedit4_1->setText(mainwindow->ecg_qrs_rpeak_descr);
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(lineedit4_1);
+  hlayout_tmp->addStretch(1000);
+  flayout4_2->addRow("R-wave description string", hlayout_tmp);
+  QObject::connect(lineedit4_1, SIGNAL(textEdited(const QString)), this, SLOT(lineedit4_1_changed(const QString)));
+
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addLayout(flayout4_1);
+  hlayout_tmp->addSpacing(20);
+  hlayout_tmp->addLayout(flayout4_2);
+  hlayout_tmp->addStretch(1000);
+
+  QVBoxLayout *vlayout_tmp = new QVBoxLayout;
+  vlayout_tmp->addLayout(hlayout_tmp);
+  vlayout_tmp->addStretch(1000);
+
+  tab4->setLayout(vlayout_tmp);
 
   tabholder->addTab(tab4, "Other");
 
-  QObject::connect(lineedit4_1, SIGNAL(textEdited(const QString)), this, SLOT(lineedit4_1_changed(const QString)));
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  horLayout = new QHBoxLayout;
-  horLayout->addSpacing(300);
+  QHBoxLayout *horLayout = new QHBoxLayout;
+  horLayout->addStretch(1000);
   horLayout->addWidget(CloseButton);
 
-  mainLayout = new QVBoxLayout;
+  QVBoxLayout *mainLayout = new QVBoxLayout;
   mainLayout->addWidget(tabholder);
+  mainLayout->addSpacing(20);
   mainLayout->addLayout(horLayout);
 
-  if(showminimized)
-  {
-    frame->setLayout(mainLayout);
+  optionsdialog->setMinimumSize(875, 575);
 
-    scrollarea->setWidget(frame);
-
-    scrolllayout = new QGridLayout;
-    scrolllayout->addWidget(scrollarea, 0, 0);
-
-    optionsdialog->setLayout(scrolllayout);
-  }
-  else
-  {
-    optionsdialog->setLayout(mainLayout);
-  }
+  optionsdialog->setLayout(mainLayout);
 
   QObject::connect(CloseButton, SIGNAL(clicked()), optionsdialog, SLOT(close()));
 
