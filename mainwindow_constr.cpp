@@ -32,9 +32,7 @@
 
 UI_Mainwindow::UI_Mainwindow()
 {
-  int i, j, k, pxw;
-
-  char str[1024]={""};
+  int i, j, k;
 
   QPixmap pxm(500, 100);
 
@@ -42,7 +40,7 @@ UI_Mainwindow::UI_Mainwindow()
 
   myfont = new QFont;
 
-  monofont = new QFont;
+  monofont = new QFont("Monospace");
 
   splash_pixmap = NULL;
 
@@ -299,56 +297,18 @@ UI_Mainwindow::UI_Mainwindow()
 
   vlc_sock = NULL;
 
-  fontsize_factor = 1;
+  font_size = myfont->pointSize();
+  sys_font_size = myfont->pointSize();
+
+  monofont_size = monofont->pointSize();
+  sys_monofont_size = myfont->pointSize();
 
   read_general_settings();
 
-#ifdef Q_OS_WIN32
-  myfont->setFamily("Tahoma");
-  myfont->setPixelSize(11);
-
-  monofont->setFamily("courier");
-  monofont->setPixelSize(12);
+  myfont->setPointSize(font_size);
+  monofont->setPointSize(monofont_size);
 
   QApplication::setFont(*myfont);
-#else
-  myfont->setFamily("Noto Sans");
-  for(i=40; i>7; i--)
-  {
-    myfont->setPixelSize(i);
-
-    p_aint.setFont(*myfont);
-
-    pxw = p_aint.boundingRect(0, 0, 1000, 200, Qt::AlignLeft | Qt::TextSingleLine, "ABCDEFGHIJKLMNOPQRSTUVWXYZ").width();
-
-//    printf("i is: %i    width is: %i\n", i, pxw);
-
-    if(pxw < (203 * fontsize_factor))  break;
-  }
-  font_size = i;
-  myfont->setPixelSize(font_size);
-
-  monofont->setFamily("andale mono");
-  for(i=40; i>7; i--)
-  {
-    monofont->setPixelSize(i);
-
-    p_aint.setFont(*monofont);
-
-    pxw = p_aint.boundingRect(0, 0, 1000, 200, Qt::AlignLeft | Qt::TextSingleLine, "ABCDEFGHIJKLMNOPQRSTUVWXYZ").width();
-
-//    printf("i is: %i    width is: %i\n", i, pxw);
-
-    if(pxw < (203 * fontsize_factor))  break;
-  }
-  monofont_size = i;
-  monofont->setPixelSize(monofont_size);
-
-  QApplication::setFont(*myfont);
-
-  snprintf(str, 1024, "font: %ipx;", font_size);
-  setStyleSheet(str);
-#endif
 
   maincurve = new ViewCurve(this);
 

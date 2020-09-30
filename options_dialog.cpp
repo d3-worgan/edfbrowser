@@ -52,7 +52,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   QVBoxLayout *vlayout_tmp;
 
-/////////////////////////////////////// tab 1  Colors ///////////////////////////////////////////////////////////////////////
+/////////////////////////////////////// tab 1 Colors ///////////////////////////////////////////////////////////////////////
 
   tab1 = new QWidget;
 
@@ -350,7 +350,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   tabholder->addTab(tab1, "Colors");
 
-/////////////////////////////////////// tab 2   Calibration ///////////////////////////////////////////////////////////////////////
+/////////////////////////////////////// tab 2 Calibration ///////////////////////////////////////////////////////////////////////
 
   tab2 = new QWidget;
 
@@ -455,7 +455,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   tabholder->addTab(tab2, "Calibration");
 
-/////////////////////////////////////// tab 3  Powerspectrum ///////////////////////////////////////////////////////////////////////
+/////////////////////////////////////// tab 3 Powerspectrum ///////////////////////////////////////////////////////////////////////
 
   tab3 = new QWidget;
 
@@ -635,7 +635,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   tabholder->addTab(tab3, "Power Spectrum");
 
-/////////////////////////////////////// tab 4  Other ///////////////////////////////////////////////////////////////////////
+/////////////////////////////////////// tab 4 Other ///////////////////////////////////////////////////////////////////////
 
   tab4 = new QWidget;
 
@@ -872,6 +872,58 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   tab4->setLayout(vlayout_tmp);
 
   tabholder->addTab(tab4, "Other");
+
+/////////////////////////////////////// tab 5 Font ///////////////////////////////////////////////////////////////////////
+
+  tab5 = new QWidget;
+
+  QFormLayout *flayout5_1 = new QFormLayout;
+  flayout5_1->setSpacing(20);
+
+  spinbox5_1 = new QSpinBox;
+  spinbox5_1->setRange(8, 24);
+  spinbox5_1->setValue(mainwindow->font_size);
+  textEdit5_1 = new QTextEdit;
+  textEdit5_1->setPlainText("The quick brown fox jumps over the lazy dog.");
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(spinbox5_1);
+  hlayout_tmp->addWidget(textEdit5_1, 500);
+  hlayout_tmp->addStretch(500);
+  flayout5_1->addRow("Font size", hlayout_tmp);
+
+  spinbox5_2 = new QSpinBox;
+  spinbox5_2->setRange(8, 24);
+  spinbox5_2->setValue(mainwindow->monofont_size);
+  textEdit5_2 = new QTextEdit;
+  textEdit5_2->setFont(*mainwindow->monofont);
+  textEdit5_2->setPlainText("The quick brown fox jumps over the lazy dog.");
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(spinbox5_2);
+  hlayout_tmp->addWidget(textEdit5_2, 500);
+  hlayout_tmp->addStretch(500);
+  flayout5_1->addRow("Monofont size", hlayout_tmp);
+
+  ApplyButton5 = new QPushButton;
+  ApplyButton5->setText("Apply");
+  ApplyButton5->setEnabled(false);
+
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->addWidget(ApplyButton5);
+  hlayout_tmp->addStretch(1000);
+
+  vlayout_tmp = new QVBoxLayout;
+  vlayout_tmp->addStretch(1000);
+  vlayout_tmp->addLayout(flayout5_1);
+  vlayout_tmp->addStretch(1000);
+  vlayout_tmp->addLayout(hlayout_tmp);
+
+  tab5->setLayout(vlayout_tmp);
+
+  tabholder->addTab(tab5, "Font");
+
+  QObject::connect(spinbox5_1,   SIGNAL(valueChanged(int)), this, SLOT(spinBox5_1ValueChanged(int)));
+  QObject::connect(spinbox5_2,   SIGNAL(valueChanged(int)), this, SLOT(spinBox5_2ValueChanged(int)));
+  QObject::connect(ApplyButton5, SIGNAL(clicked()), this, SLOT(ApplyButton5Clicked()));
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2384,8 +2436,37 @@ void UI_OptionsDialog::lineedit4_1_changed(const QString qstr)
 }
 
 
+void UI_OptionsDialog::ApplyButton5Clicked()
+{
+  mainwindow->font_size = spinbox5_1->value();
+  mainwindow->monofont_size = spinbox5_2->value();
+
+  QMessageBox::information(optionsdialog, "Font size changed", "You need to restart the application for the changes to take effect.");
+
+  ApplyButton5->setEnabled(false);
+}
 
 
+void UI_OptionsDialog::spinBox5_1ValueChanged(int val)
+{
+  QFont myfont;
+  myfont.setPointSize(val);
+  textEdit5_1->setFont(myfont);
+  textEdit5_1->setPlainText("The quick brown fox jumps over the lazy dog.");
+
+  ApplyButton5->setEnabled(true);
+}
+
+
+void UI_OptionsDialog::spinBox5_2ValueChanged(int val)
+{
+  QFont monofont("Monospace");
+  monofont.setPointSize(val);
+  textEdit5_2->setFont(monofont);
+  textEdit5_2->setPlainText("The quick brown fox jumps over the lazy dog.");
+
+  ApplyButton5->setEnabled(true);
+}
 
 
 

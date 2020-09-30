@@ -543,16 +543,30 @@ void UI_Mainwindow::read_general_settings()
     return;
   }
 
-  if(!(xml_goto_nth_element_inside(xml_hdl, "fontsize_factor", 0)))
+  if(!(xml_goto_nth_element_inside(xml_hdl, "font_size", 0)))
   {
     if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       xml_close(xml_hdl);
       return;
     }
-    fontsize_factor = atof(result);
-    if(fontsize_factor < 1.0)  fontsize_factor = 1.0;
-    if(fontsize_factor > 3.0)  fontsize_factor = 3.0;
+    font_size = atoi(result);
+    if(font_size < 8)  font_size = 8;
+    if(font_size > 24)  font_size = 24;
+
+    xml_go_up(xml_hdl);
+  }
+
+  if(!(xml_goto_nth_element_inside(xml_hdl, "monofont_size", 0)))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+    monofont_size = atoi(result);
+    if(monofont_size < 8)  monofont_size = 8;
+    if(monofont_size > 24)  monofont_size = 24;
 
     xml_go_up(xml_hdl);
   }
@@ -2112,8 +2126,9 @@ void UI_Mainwindow::write_settings()
                      "<config>\n"
                      "  <cfg_app_version>" PROGRAM_NAME " " PROGRAM_VERSION "</cfg_app_version>\n"
                      "  <UI>\n"
-                     "    <fontsize_factor>%.1f</fontsize_factor>\n"
-                     "    <colors>\n", fontsize_factor);
+                     "    <font_size>%i</font_size>\n"
+                     "    <monofont_size>%i</monofont_size>\n"
+                     "    <colors>\n", font_size, monofont_size);
 
     fprintf(cfgfile, "      <backgroundcolor>\n"
                     "        <red>%i</red>\n"

@@ -64,6 +64,7 @@
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QFormLayout>
+#include <QTextEdit>
 
 #include "global.h"
 #include "mainwindow.h"
@@ -99,6 +100,7 @@ QPushButton    *CloseButton,
                *ApplyButton,
                *DefaultButton2,
                *ApplyButton2,
+               *ApplyButton5,
                *saveColorSchemaButton,
                *loadColorSchemaButton;
 
@@ -123,7 +125,9 @@ QSpinBox       *spinbox2_1,
                *spinbox3_1,
                *spinbox4_1,
                *spinbox4_2,
-               *spinbox4_3;
+               *spinbox4_3,
+               *spinbox5_1,
+               *spinbox5_2;
 
 QDoubleSpinBox *dspinbox3_2,
                *dspinbox4_4;
@@ -160,12 +164,16 @@ QLineEdit      *lineEdit3_1,
 
 QGroupBox      *groupbox1;
 
+QTextEdit      *textEdit5_1,
+               *textEdit5_2;
+
 QTabWidget     *tabholder;
 
 QWidget        *tab1,
                *tab2,
                *tab3,
-               *tab4;
+               *tab4,
+               *tab5;
 
 void update_interface(void);
 
@@ -224,6 +232,9 @@ void loadColorSchema_Dark();
 void loadColorSchema_blue_gray();
 void dspinbox4_4ValueChanged(double);
 void lineedit4_1_changed(const QString);
+void spinBox5_1ValueChanged(int);
+void spinBox5_2ValueChanged(int);
+void ApplyButton5Clicked();
 };
 
 
