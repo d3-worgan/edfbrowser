@@ -583,10 +583,10 @@ void UI_Mainwindow::read_general_settings()
     return;
   }
 
-  pixelsizefactor = atof(result);
-  if(pixelsizefactor < 0.00001)
+  y_pixelsizefactor = atof(result);
+  if(y_pixelsizefactor < 0.00001)
   {
-    pixelsizefactor = 0.0294382;
+    y_pixelsizefactor = 0.0294382;
   }
 
   xml_go_up(xml_hdl);
@@ -2268,7 +2268,7 @@ void UI_Mainwindow::write_settings()
 #endif
 
     fprintf(cfgfile, "    <pixelsizefactor>%.10e</pixelsizefactor>\n    <auto_dpi>%i</auto_dpi>\n    <x_pixelsizefactor>%.10e</x_pixelsizefactor>\n",
-                     pixelsizefactor, auto_dpi, x_pixelsizefactor);
+                     y_pixelsizefactor, auto_dpi, x_pixelsizefactor);
 
     fprintf(cfgfile, "    <recent_dir>");
 

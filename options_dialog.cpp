@@ -381,13 +381,13 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   spinbox2_1->setSuffix(" mm");
   spinbox2_1->setMinimum(10);
   spinbox2_1->setMaximum(500);
-  spinbox2_1->setValue((int)(4450.0 / (1.0 / mainwindow->pixelsizefactor)));
+  spinbox2_1->setValue((int)(4450 * mainwindow->y_pixelsizefactor));
 
   spinbox2_2 = new QSpinBox;
   spinbox2_2->setSuffix(" mm");
   spinbox2_2->setMinimum(10);
   spinbox2_2->setMaximum(500);
-  spinbox2_2->setValue((int)(3550.0 / (1.0 / mainwindow->x_pixelsizefactor)));
+  spinbox2_2->setValue((int)(3550 * mainwindow->x_pixelsizefactor));
 
   ApplyButton = new QPushButton;
   ApplyButton->setText("Apply");
@@ -1015,8 +1015,8 @@ void UI_OptionsDialog::calibrate_checkbox_stateChanged(int state)
     spinbox2_2->setEnabled(false);
     ApplyButton->setEnabled(false);
     mainwindow->auto_dpi = 1;
-    mainwindow->pixelsizefactor = 1.0 / ((double)mainwindow->dpiy / 2.54);
-    mainwindow->x_pixelsizefactor = 1.0 / ((double)mainwindow->dpix / 2.54);
+    mainwindow->y_pixelsizefactor = 2.54 / mainwindow->dpiy;
+    mainwindow->x_pixelsizefactor = 2.54 / mainwindow->dpix;
 
     mainwindow->maincurve->drawCurve_stage_1();
   }
@@ -1027,10 +1027,8 @@ void UI_OptionsDialog::ApplyButtonClicked()
 {
   int i, j;
 
-
-  mainwindow->pixelsizefactor = 1.0 / (4450.0 / spinbox2_1->value());
-
-  mainwindow->x_pixelsizefactor = 1.0 / (3550.0 / spinbox2_2->value());
+  mainwindow->y_pixelsizefactor = spinbox2_1->value() / 4450.0;
+  mainwindow->x_pixelsizefactor = spinbox2_2->value() / 3550.0;
 
   for(i=0; i<mainwindow->signalcomps; i++)
   {
@@ -1039,7 +1037,7 @@ void UI_OptionsDialog::ApplyButtonClicked()
       mainwindow->signalcomp[i]->sensitivity[j] =
        mainwindow->signalcomp[i]->edfhdr->edfparam[mainwindow->signalcomp[i]->edfsignal[j]].bitvalue
        / ((double)mainwindow->signalcomp[i]->voltpercm
-       * mainwindow->pixelsizefactor);
+       * mainwindow->y_pixelsizefactor);
     }
   }
 

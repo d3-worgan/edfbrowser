@@ -761,7 +761,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
         }
       }
 
-      newsignalcomp->sensitivity[signals_read] = newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].bitvalue / (newsignalcomp->voltpercm * mainwindow->pixelsizefactor);
+      newsignalcomp->sensitivity[signals_read] = newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].bitvalue / (newsignalcomp->voltpercm * mainwindow->y_pixelsizefactor);
 
       if(!signals_read)
       {

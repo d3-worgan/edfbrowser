@@ -289,7 +289,7 @@ public:
        hypnogram_annot_name[6][32],
        ecg_qrs_rpeak_descr[32];
 
-  double pixelsizefactor,
+  double y_pixelsizefactor,
          x_pixelsizefactor,
          default_amplitude,
          cdsa_max_voltage;

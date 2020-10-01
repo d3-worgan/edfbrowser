@@ -414,7 +414,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
 
     remove_trailing_zeros(composition_txt);
 
-    snprintf(composition_txt + strlen(composition_txt), 2048 - strlen(composition_txt), "/cm  offset: %f", (double)screen_offset * mainwindow->pixelsizefactor * voltpercm);
+    snprintf(composition_txt + strlen(composition_txt), 2048 - strlen(composition_txt), "/cm  offset: %f", (double)screen_offset * mainwindow->y_pixelsizefactor * voltpercm);
 
     remove_trailing_zeros(composition_txt);
 

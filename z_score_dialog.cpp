@@ -308,7 +308,7 @@ void UI_ZScoreWindow::addTraceButtonClicked()
   {
     for(i=0; i<signalcomp->num_of_signals; i++)
     {
-      signalcomp->sensitivity[i] = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[i]].bitvalue / -1.0 / mainwindow->pixelsizefactor;
+      signalcomp->sensitivity[i] = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[i]].bitvalue / -1.0 / mainwindow->y_pixelsizefactor;
     }
 
     signalcomp->voltpercm = -1.0;
@@ -317,7 +317,7 @@ void UI_ZScoreWindow::addTraceButtonClicked()
   {
     for(i=0; i<signalcomp->num_of_signals; i++)
     {
-      signalcomp->sensitivity[i] = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[i]].bitvalue / 1.0 / mainwindow->pixelsizefactor;
+      signalcomp->sensitivity[i] = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[i]].bitvalue / 1.0 / mainwindow->y_pixelsizefactor;
     }
 
     signalcomp->voltpercm = 1.0;

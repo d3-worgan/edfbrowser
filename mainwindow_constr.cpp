@@ -69,7 +69,7 @@ UI_Mainwindow::UI_Mainwindow()
 
   uid_seq = 1LL;
 
-  pixelsizefactor = 0.0294382;
+  y_pixelsizefactor = 0.0294382;
 
   x_pixelsizefactor = 0.0294382;
 
@@ -345,9 +345,9 @@ UI_Mainwindow::UI_Mainwindow()
 
   if(auto_dpi)
   {
-    pixelsizefactor = 1.0 / ((double)dpiy / 2.54);
+    y_pixelsizefactor = 2.54 / dpiy;
 
-    x_pixelsizefactor = 1.0 / ((double)dpix / 2.54);
+    x_pixelsizefactor = 2.54 / dpix;
   }
 
   read_color_settings();

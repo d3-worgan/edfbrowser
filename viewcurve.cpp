@@ -479,7 +479,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 
   pressed_on_label = 0;
 
-  h_size = (int)(4.0 / mainwindow->pixelsizefactor);
+  h_size = (int)(4.0 / mainwindow->y_pixelsizefactor);
 
   setFocus(Qt::MouseFocusReason);
 
@@ -512,7 +512,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 
         return;
       }
-      else if((m_y>ruler_y_position)&&(m_y<(ruler_y_position + ((int)(4.0 / mainwindow->pixelsizefactor))))&&(m_x>ruler_x_position)&&(m_x<(ruler_x_position + 150 + (w / 5))))
+      else if((m_y>ruler_y_position)&&(m_y<(ruler_y_position + ((int)(4.0 / mainwindow->y_pixelsizefactor))))&&(m_x>ruler_x_position)&&(m_x<(ruler_x_position + 150 + (w / 5))))
       {
         ruler_moving = 1;
       }
@@ -988,7 +988,7 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
           {
             signalcomp[i]->sensitivity[j] = d_temp;
 
-            d_temp = signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].bitvalue / (signalcomp[i]->sensitivity[j] * mainwindow->pixelsizefactor);
+            d_temp = signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].bitvalue / (signalcomp[i]->sensitivity[j] * mainwindow->y_pixelsizefactor);
 
             signalcomp[i]->voltpercm = d_temp;
           }
@@ -1547,7 +1547,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   vertical_distance = 1;
 
-  painter_pixelsizefactor = 1.0 / mainwindow->pixelsizefactor;
+  painter_pixelsizefactor = 1.0 / mainwindow->y_pixelsizefactor;
 
   if(!w_width||!w_height)
   {
@@ -2472,7 +2472,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     if(signalcomp[i]->hasoffsettracking)
     {
       snprintf(string, 128, "offset: %f %s",
-        -signalcomp[i]->screen_offset * mainwindow->pixelsizefactor * signalcomp[i]->voltpercm,
+        -signalcomp[i]->screen_offset * mainwindow->y_pixelsizefactor * signalcomp[i]->voltpercm,
         signalcomp[i]->physdimension);
 //      painter->fillRect(92, baseline, 190, 12, backgroundcolor);
       painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
@@ -2599,7 +2599,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
   viewbuf = mainwindow->viewbuf;
   linear_interpol = mainwindow->linear_interpol;
 
-  painter_pixelsizefactor = 1.0 / mainwindow->pixelsizefactor;
+  painter_pixelsizefactor = 1.0 / mainwindow->y_pixelsizefactor;
 
   if(!w_width||!w_height)
   {
@@ -3677,7 +3677,7 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   ScaleBox2->setDecimals(8);
   ScaleBox2->setMaximum(1000000.0);
   ScaleBox2->setMinimum(-1000000.0);
-  ScaleBox2->setValue(-mainwindow->signalcomp[signal_nr]->screen_offset * mainwindow->pixelsizefactor * mainwindow->signalcomp[signal_nr]->voltpercm);
+  ScaleBox2->setValue(-mainwindow->signalcomp[signal_nr]->screen_offset * mainwindow->y_pixelsizefactor * mainwindow->signalcomp[signal_nr]->voltpercm);
   ScaleBox2->setSuffix(mainwindow->signalcomp[signal_nr]->physdimension);
   strlcpy(str, mainwindow->signalcomp[signal_nr]->physdimension, 32);
   trim_spaces(str);
@@ -3913,7 +3913,7 @@ void ViewCurve::ECGdetectButton()
   {
     for(i=0; i<newsignalcomp->num_of_signals; i++)
     {
-      newsignalcomp->sensitivity[i] = newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[i]].bitvalue / -5.0 / mainwindow->pixelsizefactor;
+      newsignalcomp->sensitivity[i] = newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[i]].bitvalue / -5.0 / mainwindow->y_pixelsizefactor;
     }
 
     newsignalcomp->voltpercm = -5.0;
@@ -3922,13 +3922,13 @@ void ViewCurve::ECGdetectButton()
   {
     for(i=0; i<newsignalcomp->num_of_signals; i++)
     {
-      newsignalcomp->sensitivity[i] = newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[i]].bitvalue / 5.0 / mainwindow->pixelsizefactor;
+      newsignalcomp->sensitivity[i] = newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[i]].bitvalue / 5.0 / mainwindow->y_pixelsizefactor;
     }
 
     newsignalcomp->voltpercm = 5.0;
   }
 
-  newsignalcomp->screen_offset = 55.0 / (mainwindow->pixelsizefactor * newsignalcomp->voltpercm);
+  newsignalcomp->screen_offset = 55.0 / (mainwindow->y_pixelsizefactor * newsignalcomp->voltpercm);
 
   mainwindow->setup_viewbuf();
 }
@@ -4206,7 +4206,7 @@ void ViewCurve::FittopaneButton()
 
     signalcomp[signal_nr]->voltpercm =
      signalcomp[signal_nr]->edfhdr->edfparam[signalcomp[signal_nr]->edfsignal[0]].bitvalue
-     / (signalcomp[signal_nr]->sensitivity[0] * mainwindow->pixelsizefactor);
+     / (signalcomp[signal_nr]->sensitivity[0] * mainwindow->y_pixelsizefactor);
 
     signalcomp[signal_nr]->screen_offset = ((signalcomp[signal_nr]->max_dig_value + signalcomp[signal_nr]->min_dig_value) / 2.0) * signalcomp[signal_nr]->sensitivity[0];
   }
@@ -4254,7 +4254,7 @@ void ViewCurve::ScaleBox2Changed(double value)
     return;
   }
 
-  mainwindow->signalcomp[signal_nr]->screen_offset = -(value / (mainwindow->pixelsizefactor * mainwindow->signalcomp[signal_nr]->voltpercm));
+  mainwindow->signalcomp[signal_nr]->screen_offset = -(value / (mainwindow->y_pixelsizefactor * mainwindow->signalcomp[signal_nr]->voltpercm));
 
   drawCurve_stage_1();
 }
@@ -4279,7 +4279,7 @@ void ViewCurve::ScaleBoxChanged(double value)
 
   for(i=0; i<mainwindow->signalcomp[signal_nr]->num_of_signals; i++)
   {
-    mainwindow->signalcomp[signal_nr]->sensitivity[i] = mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[i]].bitvalue / value / mainwindow->pixelsizefactor;
+    mainwindow->signalcomp[signal_nr]->sensitivity[i] = mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[i]].bitvalue / value / mainwindow->y_pixelsizefactor;
   }
 
   original_value = mainwindow->signalcomp[signal_nr]->voltpercm;

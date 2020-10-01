@@ -3192,7 +3192,7 @@ void UI_Mainwindow::fit_signals_to_pane()
 
     signalcomp[i]->voltpercm =
      signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue
-     / (signalcomp[i]->sensitivity[0] * pixelsizefactor);
+     / (signalcomp[i]->sensitivity[0] * y_pixelsizefactor);
 
     signalcomp[i]->screen_offset = ((signalcomp[i]->max_dig_value + signalcomp[i]->min_dig_value) / 2.0) * signalcomp[i]->sensitivity[0] * signalcomp[i]->polarity;
   }
@@ -3370,7 +3370,7 @@ void UI_Mainwindow::set_amplitude(QAction *action)
 
     for(j=0; j<signalcomp[i]->num_of_signals; j++)
     {
-      signalcomp[i]->sensitivity[j] = (signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].bitvalue / value2) / pixelsizefactor;
+      signalcomp[i]->sensitivity[j] = (signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].bitvalue / value2) / y_pixelsizefactor;
     }
 
     original_value = signalcomp[i]->voltpercm;
@@ -3423,7 +3423,7 @@ void UI_Mainwindow::set_amplitude_mult2()
 
     for(j=0; j<signalcomp[i]->num_of_signals; j++)
     {
-      signalcomp[i]->sensitivity[j] = (signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].bitvalue / signalcomp[i]->voltpercm) / pixelsizefactor;
+      signalcomp[i]->sensitivity[j] = (signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].bitvalue / signalcomp[i]->voltpercm) / y_pixelsizefactor;
     }
   }
 
@@ -3486,7 +3486,7 @@ void UI_Mainwindow::set_amplitude_div2()
 
     for(j=0; j<signalcomp[i]->num_of_signals; j++)
     {
-      signalcomp[i]->sensitivity[j] = (signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].bitvalue / signalcomp[i]->voltpercm) / pixelsizefactor;
+      signalcomp[i]->sensitivity[j] = (signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].bitvalue / signalcomp[i]->voltpercm) / y_pixelsizefactor;
     }
   }
 
