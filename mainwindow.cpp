@@ -614,7 +614,7 @@ void UI_Mainwindow::show_options_dialog()
 
 void UI_Mainwindow::nk2edf_converter()
 {
-  UI_NK2EDFwindow nk2edf(recent_opendir);
+  UI_NK2EDFwindow nk2edf(this, recent_opendir);
 }
 
 
@@ -632,13 +632,13 @@ void UI_Mainwindow::convert_binary_to_edf()
 
 void UI_Mainwindow::convert_fino_to_edf()
 {
-  UI_FINO2EDFwindow fino2edf(recent_opendir, recent_savedir);
+  UI_FINO2EDFwindow fino2edf(this, recent_opendir, recent_savedir);
 }
 
 
 void UI_Mainwindow::convert_wave_to_edf()
 {
-  UI_WAV2EDFwindow wav2edf(recent_opendir, recent_savedir);
+  UI_WAV2EDFwindow wav2edf(this, recent_opendir, recent_savedir);
 }
 
 
@@ -662,43 +662,43 @@ void UI_Mainwindow::convert_ishne_to_edf()
 
 void UI_Mainwindow::convert_nexfin_to_edf()
 {
-  UI_NEXFIN2EDFwindow nexfin2edf(recent_opendir, recent_savedir);
+  UI_NEXFIN2EDFwindow nexfin2edf(this, recent_opendir, recent_savedir);
 }
 
 
 void UI_Mainwindow::convert_emsa_to_edf()
 {
-  UI_EMSA2EDFwindow emsa2edf(recent_opendir, recent_savedir);
+  UI_EMSA2EDFwindow emsa2edf(this, recent_opendir, recent_savedir);
 }
 
 
 void UI_Mainwindow::convert_manscan_to_edf()
 {
-  UI_MANSCAN2EDFwindow manscan2edf(recent_opendir, recent_savedir);
+  UI_MANSCAN2EDFwindow manscan2edf(this, recent_opendir, recent_savedir);
 }
 
 
 void UI_Mainwindow::convert_mit_to_edf()
 {
-  UI_MIT2EDFwindow mit2edf(recent_opendir, recent_savedir);
+  UI_MIT2EDFwindow mit2edf(this, recent_opendir, recent_savedir);
 }
 
 
 void UI_Mainwindow::convert_biox_to_edf()
 {
-  UI_BIOX2EDFwindow biox2edf(recent_opendir, recent_savedir);
+  UI_BIOX2EDFwindow biox2edf(this, recent_opendir, recent_savedir);
 }
 
 
 void UI_Mainwindow::convert_scpecg_to_edf()
 {
-  UI_SCPECG2EDFwindow scpecg2edf(recent_opendir, recent_savedir);
+  UI_SCPECG2EDFwindow scpecg2edf(this, recent_opendir, recent_savedir);
 }
 
 
 void UI_Mainwindow::edfd_converter()
 {
-  UI_EDFDwindow edfplusd2edfplusc(recent_opendir, recent_savedir);
+  UI_EDFDwindow edfplusd2edfplusc(this, recent_opendir, recent_savedir);
 }
 
 
@@ -735,13 +735,13 @@ void UI_Mainwindow::edit_header()
 
 void UI_Mainwindow::unisens2edf_converter()
 {
-  UI_UNISENS2EDFwindow unisens2edfconv(recent_opendir, recent_savedir);
+  UI_UNISENS2EDFwindow unisens2edfconv(this, recent_opendir, recent_savedir);
 }
 
 
 void UI_Mainwindow::BI98002edf_converter()
 {
-  UI_BI98002EDFwindow BI98002edfconv(recent_opendir, recent_savedir);
+  UI_BI98002EDFwindow BI98002edfconv(this, recent_opendir, recent_savedir);
 }
 
 

@@ -137,7 +137,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   }
 
   ImportAnnotsDialog = new QDialog;
-  ImportAnnotsDialog->setMinimumSize(550, 375);
+  ImportAnnotsDialog->setMinimumSize(55.0 * mainwindow->font_size, 37.5 * mainwindow->font_size);
   ImportAnnotsDialog->setWindowTitle("Import annotations/events");
   ImportAnnotsDialog->setModal(true);
   ImportAnnotsDialog->setAttribute(Qt::WA_DeleteOnClose, true);

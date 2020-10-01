@@ -37,7 +37,7 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
   mainwindow = (UI_Mainwindow *)w_parent;
 
   EDFhdrDialog = new QDialog;
-  EDFhdrDialog->setMinimumSize(600, 680);
+  EDFhdrDialog->setMinimumSize(60.0 * mainwindow->font_size, 68.0 * mainwindow->font_size);
   EDFhdrDialog->setWindowTitle("EDF header info");
   EDFhdrDialog->setModal(true);
   EDFhdrDialog->setAttribute(Qt::WA_DeleteOnClose, true);

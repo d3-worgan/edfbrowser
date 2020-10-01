@@ -49,6 +49,10 @@
 #include <QStringList>
 #include <QFont>
 #include <QMessageBox>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
 
 #include <string.h>
 
@@ -82,8 +86,9 @@ public:
   SignalCurve(QWidget *parent=0);
   ~SignalCurve();
 
-  QSize sizeHint() const {return minimumSizeHint(); }
-  QSize minimumSizeHint() const {return QSize(30,10); }
+  QSize sizeHint() const;
+  QSize minimumSizeHint() const;
+  int heightForWidth(int) const;
 
   void setSignalColor(QColor);
   void setTraceWidth(int);
@@ -225,7 +230,9 @@ private:
       old_w,
       updates_enabled,
       fillsurface,
-      *ibuf;
+      *ibuf,
+      sz_hint_w,
+      sz_hint_h;
 
   char h_label[32],
        v_label[21],

@@ -30,14 +30,15 @@
 
 
 
-UI_EDFDwindow::UI_EDFDwindow(char *recent_ope_dir, char *recent_sav_dir)
+UI_EDFDwindow::UI_EDFDwindow(QWidget *w_parent, char *recent_ope_dir, char *recent_sav_dir)
 {
+  mainwindow = (UI_Mainwindow *)w_parent;
+
   recent_opendir = recent_ope_dir;
   recent_savedir = recent_sav_dir;
 
   myobjectDialog = new QDialog;
-
-  myobjectDialog->setMinimumSize(600, 480);
+  myobjectDialog->setMinimumSize(60.0 * mainwindow->font_size, 48.0 * mainwindow->font_size);
   myobjectDialog->setWindowTitle("EDF+D/BDF+D to EDF+C/BDF+C converter");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);

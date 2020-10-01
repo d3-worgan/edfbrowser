@@ -70,7 +70,7 @@ UI_ZScoreWindow::UI_ZScoreWindow(QWidget *w_parent, UI_ZScoreWindow **w_zscoredi
   zscore_dialog_is_destroyed = 0;
 
   zscore_dialog = new QDialog();
-  zscore_dialog->setMinimumSize(600, 550);
+  zscore_dialog->setMinimumSize(60.0 * mainwindow->font_size, 55.0 * mainwindow->font_size);
   zscore_dialog->setWindowTitle("Z-EEG");
   zscore_dialog->setModal(false);
   zscore_dialog->setAttribute(Qt::WA_DeleteOnClose, true);

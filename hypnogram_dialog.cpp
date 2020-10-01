@@ -42,7 +42,7 @@ UI_hypnogram_window::UI_hypnogram_window(QWidget *w_parent, struct edfhdrblock *
 
   myobjectDialog = new QDialog;
 
-  myobjectDialog->setMinimumSize(400, 400);
+  myobjectDialog->setMinimumSize(40.0 * mainwindow->font_size, 40.0 * mainwindow->font_size);
   myobjectDialog->setWindowTitle("Hypnogram");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);

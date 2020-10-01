@@ -39,15 +39,12 @@ UI_edit_predefined_mtg_window::UI_edit_predefined_mtg_window(QWidget *w_parent)
   mainwindow = (UI_Mainwindow *)w_parent;
 
   edit_predefined_mtg_Dialog = new QDialog;
-
-  edit_predefined_mtg_Dialog->setMinimumSize(800, 265);
-  edit_predefined_mtg_Dialog->setMaximumSize(800, 265);
+  edit_predefined_mtg_Dialog->setMinimumSize(80.0 * mainwindow->font_size, 26.5 * mainwindow->font_size);
   edit_predefined_mtg_Dialog->setWindowTitle("Edit key-bindings for montages");
   edit_predefined_mtg_Dialog->setModal(true);
   edit_predefined_mtg_Dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-  mtg_path_list = new QListWidget(edit_predefined_mtg_Dialog);
-  mtg_path_list->setGeometry(10, 10, 780, 210);
+  mtg_path_list = new QListWidget;
   mtg_path_list->setSelectionBehavior(QAbstractItemView::SelectRows);
   mtg_path_list->setSelectionMode(QAbstractItemView::SingleSelection);
   mtg_path_list->setSpacing(1);
@@ -63,9 +60,19 @@ UI_edit_predefined_mtg_window::UI_edit_predefined_mtg_window(QWidget *w_parent)
     new QListWidgetItem(str, mtg_path_list);
   }
 
-  CloseButton = new QPushButton(edit_predefined_mtg_Dialog);
-  CloseButton->setGeometry(690, 230, 100, 25);
+  CloseButton = new QPushButton;
   CloseButton->setText("Close");
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(CloseButton);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addWidget(mtg_path_list, 1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  edit_predefined_mtg_Dialog->setLayout(vlayout1);
 
   QObject::connect(CloseButton,   SIGNAL(clicked()),                      edit_predefined_mtg_Dialog,    SLOT(close()));
   QObject::connect(mtg_path_list, SIGNAL(itemClicked(QListWidgetItem *)), this,                          SLOT(rowClicked(QListWidgetItem *)));
@@ -81,8 +88,7 @@ void UI_edit_predefined_mtg_window::rowClicked(QListWidgetItem *item)
   listItem = item;
 
   dialog = new QDialog(edit_predefined_mtg_Dialog);
-  dialog->setMinimumSize(140, 135);
-  dialog->setMaximumSize(140, 135);
+  dialog->setMinimumSize(14.0 * mainwindow->font_size, 13.5 * mainwindow->font_size);
   dialog->setWindowTitle("Entry");
   dialog->setModal(true);
   dialog->setAttribute(Qt::WA_DeleteOnClose, true);

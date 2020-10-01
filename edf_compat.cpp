@@ -38,7 +38,7 @@ UI_EDFCompatwindow::UI_EDFCompatwindow(QWidget *w_parent)
 
   EDFCompatDialog = new QDialog;
 
-  EDFCompatDialog->setMinimumSize(600, 180);
+  EDFCompatDialog->setMinimumSize(60.0 * mainwindow->font_size, 18.0 * mainwindow->font_size);
   EDFCompatDialog->setWindowTitle("Check EDF(+) / BDF(+) compatibility");
   EDFCompatDialog->setModal(true);
   EDFCompatDialog->setAttribute(Qt::WA_DeleteOnClose, true);

@@ -40,13 +40,15 @@
 
 
 
-UI_NK2EDFwindow::UI_NK2EDFwindow(char *recent_dir)
+UI_NK2EDFwindow::UI_NK2EDFwindow(QWidget *w_parent, char *recent_dir)
 {
+  mainwindow = (UI_Mainwindow *)w_parent;
+
   recent_opendir = recent_dir;
 
   myobjectDialog = new QDialog;
 
-  myobjectDialog->setMinimumSize(600, 480);
+  myobjectDialog->setMinimumSize(60.0 * mainwindow->font_size, 48.0 * mainwindow->font_size);
   myobjectDialog->setWindowTitle("Nihon Kohden to EDF(+) converter");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);

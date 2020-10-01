@@ -50,8 +50,11 @@
 #include <string.h>
 
 #include "global.h"
+#include "mainwindow.h"
 #include "utils.h"
 
+
+class UI_Mainwindow;
 
 
 class UI_EMSA2EDFwindow : public QObject
@@ -59,7 +62,9 @@ class UI_EMSA2EDFwindow : public QObject
   Q_OBJECT
 
 public:
-  UI_EMSA2EDFwindow(char *recent_dir=NULL, char *save_dir=NULL);
+  UI_EMSA2EDFwindow(QWidget *parent, char *recent_dir=NULL, char *save_dir=NULL);
+
+  UI_Mainwindow *mainwindow;
 
 private:
 

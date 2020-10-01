@@ -39,7 +39,7 @@ UI_BDF2EDFwindow::UI_BDF2EDFwindow(QWidget *w_parent)
 
   myobjectDialog = new QDialog;
 
-  myobjectDialog->setMinimumSize(550, 450);
+  myobjectDialog->setMinimumSize(55.0 * mainwindow->font_size, 45.0 * mainwindow->font_size);
   myobjectDialog->setWindowTitle("BDF+ to EDF+ converter");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);

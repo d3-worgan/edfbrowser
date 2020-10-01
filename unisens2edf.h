@@ -53,10 +53,13 @@
 #include <math.h>
 
 #include "global.h"
+#include "mainwindow.h"
 #include "xml.h"
 #include "edflib.h"
 #include "utils.h"
 
+
+class UI_Mainwindow;
 
 
 class UI_UNISENS2EDFwindow : public QObject
@@ -65,7 +68,9 @@ class UI_UNISENS2EDFwindow : public QObject
 
 public:
 
-  UI_UNISENS2EDFwindow(char *recent_dir=NULL, char *save_dir=NULL);
+  UI_UNISENS2EDFwindow(QWidget *parent, char *recent_dir=NULL, char *save_dir=NULL);
+
+  UI_Mainwindow *mainwindow;
 
 private:
 

@@ -144,7 +144,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   SpectrumDialog = new QDialog();
   SpectrumDialog->setAttribute(Qt::WA_DeleteOnClose, true);
-  SpectrumDialog->setMinimumSize(600, 500);
+  SpectrumDialog->setMinimumSize(62.0 * mainwindow->font_size, 50.0 * mainwindow->font_size);
   SpectrumDialog->setSizeGripEnabled(true);
   SpectrumDialog->setModal(false);
   SpectrumDialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
@@ -378,7 +378,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   hlayout1 = new QHBoxLayout;
   hlayout1->setSpacing(20);
   hlayout1->addLayout(vlayout2);
-  hlayout1->addWidget(curve1, 100);
+  hlayout1->addWidget(curve1, 1000);
 
   hlayout2 = new QHBoxLayout;
   hlayout2->setSpacing(20);
@@ -423,8 +423,6 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   QObject::connect(overlap_box,     SIGNAL(currentIndexChanged(int)), this, SLOT(overlap_box_changed(int)));
 
   SpectrumDialog->show();
-
-  SpectrumDialog->resize(650, 565);
 }
 
 

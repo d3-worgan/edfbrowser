@@ -36,7 +36,7 @@ UI_ECGExport::UI_ECGExport(QWidget *w_parent)
 
   myobjectDialog = new QDialog(w_parent);
 
-  myobjectDialog->setMinimumSize(400, 445);
+  myobjectDialog->setMinimumSize(40.0 * mainwindow->font_size, 44.5 * mainwindow->font_size);
   myobjectDialog->setWindowTitle("Export RR-intervals");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);

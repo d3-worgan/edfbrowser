@@ -36,7 +36,7 @@ UI_Userdefined_timepage_Dialog::UI_Userdefined_timepage_Dialog(QWidget *w_parent
   mainwindow = (UI_Mainwindow *)w_parent;
 
   set_diplaytime_dialog = new QDialog(w_parent);
-  set_diplaytime_dialog->setMinimumSize(250, 150);
+  set_diplaytime_dialog->setMinimumSize(25.0 * mainwindow->font_size, 15.0 * mainwindow->font_size);
   set_diplaytime_dialog->setWindowTitle("Set timescale");
   set_diplaytime_dialog->setModal(true);
   set_diplaytime_dialog->setAttribute(Qt::WA_DeleteOnClose, true);

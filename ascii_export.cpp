@@ -38,7 +38,7 @@ UI_AsciiExportwindow::UI_AsciiExportwindow(QWidget *w_parent)
 
   AsciiExportDialog = new QDialog;
 
-  AsciiExportDialog->setMinimumSize(500, 180);
+  AsciiExportDialog->setMinimumSize(50.0 * mainwindow->font_size, 18.0 * mainwindow->font_size);
   AsciiExportDialog->setWindowTitle("Export to ASCII");
   AsciiExportDialog->setModal(true);
   AsciiExportDialog->setAttribute(Qt::WA_DeleteOnClose, true);

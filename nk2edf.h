@@ -51,8 +51,11 @@
 #include <string.h>
 
 #include "global.h"
+#include "mainwindow.h"
 #include "utils.h"
 
+
+class UI_Mainwindow;
 
 
 class UI_NK2EDFwindow : public QObject
@@ -60,7 +63,9 @@ class UI_NK2EDFwindow : public QObject
   Q_OBJECT
 
 public:
-  UI_NK2EDFwindow(char *recent_dir=NULL);
+  UI_NK2EDFwindow(QWidget *parent, char *recent_dir=NULL);
+
+  UI_Mainwindow *mainwindow;
 
 private:
 

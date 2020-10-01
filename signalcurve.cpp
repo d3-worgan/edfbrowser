@@ -49,6 +49,13 @@ SignalCurve::SignalCurve(QWidget *w_parent) : QWidget(w_parent)
   Marker2Pen.setStyle(Qt::DashLine);
   Marker2Pen.setColor(Qt::yellow);
 
+  int pntsz = this->font().pointSize();
+
+  sz_hint_w = 40.0 * pntsz;
+  sz_hint_h = 40.0 * pntsz;
+
+  setMinimumSize(sz_hint_w, sz_hint_h);
+
   bufsize = 0;
   dbuf = NULL;
   fbuf = NULL;
@@ -2558,6 +2565,24 @@ void SignalCurve::setUpsidedownEnabled(bool value)
 int SignalCurve::getCursorPosition(void)
 {
   return crosshair_1_value_2;
+}
+
+
+QSize SignalCurve::minimumSizeHint() const
+{
+  return QSize(sz_hint_w, sz_hint_h);
+}
+
+
+QSize SignalCurve::sizeHint() const
+{
+  return QSize(sz_hint_w, sz_hint_h);
+}
+
+
+int SignalCurve::heightForWidth(int w_) const
+{
+  return w_;
 }
 
 

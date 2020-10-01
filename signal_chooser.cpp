@@ -43,12 +43,12 @@ UI_SignalChooser::UI_SignalChooser(QWidget *w_parent, int job, int *sgnl_nr)
 
   if(task == 3)
   {
-    signalchooser_dialog->setMinimumSize(435, 420);
+    signalchooser_dialog->setMinimumSize(43.5 * mainwindow->font_size, 42.0 * mainwindow->font_size);
     signalchooser_dialog->setWindowTitle("Organize signals");
   }
   else
   {
-    signalchooser_dialog->setMinimumSize(200, 420);
+    signalchooser_dialog->setMinimumSize(20.0 * mainwindow->font_size, 42.0 * mainwindow->font_size);
     signalchooser_dialog->setWindowTitle("Signals");
   }
   signalchooser_dialog->setModal(true);

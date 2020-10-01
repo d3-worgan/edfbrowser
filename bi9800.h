@@ -52,9 +52,12 @@
 #include <ctype.h>
 
 #include "global.h"
+#include "mainwindow.h"
 #include "edflib.h"
 #include "utils.h"
 
+
+class UI_Mainwindow;
 
 
 class UI_BI98002EDFwindow : public QObject
@@ -63,7 +66,9 @@ class UI_BI98002EDFwindow : public QObject
 
 public:
 
-  UI_BI98002EDFwindow(char *recent_dir=NULL, char *save_dir=NULL);
+  UI_BI98002EDFwindow(QWidget *parent, char *recent_dir=NULL, char *save_dir=NULL);
+
+  UI_Mainwindow *mainwindow;
 
 private:
 

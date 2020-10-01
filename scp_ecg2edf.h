@@ -50,6 +50,7 @@
 #include <string.h>
 
 #include "global.h"
+#include "mainwindow.h"
 #include "utils.h"
 #include "edflib.h"
 #include "utc_date_time.h"
@@ -57,13 +58,16 @@
 #define SCP_ECG_MAX_CHNS 256
 
 
+class UI_Mainwindow;
 
 class UI_SCPECG2EDFwindow : public QObject
 {
   Q_OBJECT
 
 public:
-  UI_SCPECG2EDFwindow(char *recent_dir=NULL, char *save_dir=NULL);
+  UI_SCPECG2EDFwindow(QWidget *parent, char *recent_dir=NULL, char *save_dir=NULL);
+
+  UI_Mainwindow *mainwindow;
 
 private:
 

@@ -30,14 +30,16 @@
 
 
 
-UI_NEXFIN2EDFwindow::UI_NEXFIN2EDFwindow(char *recent_dir, char *save_dir)
+UI_NEXFIN2EDFwindow::UI_NEXFIN2EDFwindow(QWidget *w_parent, char *recent_dir, char *save_dir)
 {
+  mainwindow = (UI_Mainwindow *)w_parent;
+
   recent_opendir = recent_dir;
   recent_savedir = save_dir;
 
   myobjectDialog = new QDialog;
 
-  myobjectDialog->setMinimumSize(600, 280);
+  myobjectDialog->setMinimumSize(60.0 * mainwindow->font_size, 28.0 * mainwindow->font_size);
   myobjectDialog->setWindowTitle("Nexfin to EDF converter");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);

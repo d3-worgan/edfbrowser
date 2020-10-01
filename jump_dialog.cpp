@@ -39,7 +39,7 @@ UI_JumpMenuDialog::UI_JumpMenuDialog(QWidget *w_parent)
 
   jump_dialog = new QDialog(w_parent);
 
-  jump_dialog->setMinimumSize(435, 200);
+  jump_dialog->setMinimumSize(43.5 * mainwindow->font_size, 20.0 * mainwindow->font_size);
   jump_dialog->setWindowTitle("Jump to");
   jump_dialog->setModal(true);
   jump_dialog->setAttribute(Qt::WA_DeleteOnClose, true);

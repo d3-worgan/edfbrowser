@@ -44,7 +44,7 @@ UI_BIOSEMI2BDFPLUSwindow::UI_BIOSEMI2BDFPLUSwindow(QWidget *w_parent)
 
   myobjectDialog = new QDialog;
 
-  myobjectDialog->setMinimumSize(500, 530);
+  myobjectDialog->setMinimumSize(50.0 * mainwindow->font_size, 53.0 * mainwindow->font_size);
   myobjectDialog->setWindowTitle("Biosemi to BDF+ converter");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);

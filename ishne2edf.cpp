@@ -42,7 +42,7 @@ UI_IshneEDFwindow::UI_IshneEDFwindow(QWidget *w_parent, char *recent_dir, char *
 
   myobjectDialog = new QDialog;
 
-  myobjectDialog->setMinimumSize(600, 480);
+  myobjectDialog->setMinimumSize(60.0 * mainwindow->font_size, 48.0 * mainwindow->font_size);
   myobjectDialog->setWindowTitle("ISHNE ECG to EDF converter");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);

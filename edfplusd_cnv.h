@@ -49,12 +49,14 @@
 #include <string.h>
 
 #include "global.h"
+#include "mainwindow.h"
 #include "check_edf_file.h"
 #include "edf_annotations.h"
 #include "utils.h"
 #include "edf_annot_list.h"
 
 
+class UI_Mainwindow;
 
 
 class UI_EDFDwindow : public QObject
@@ -63,7 +65,9 @@ class UI_EDFDwindow : public QObject
 
 public:
 
-  UI_EDFDwindow(char *, char *);
+  UI_EDFDwindow(QWidget *parent, char *, char *);
+
+  UI_Mainwindow *mainwindow;
 
 private:
 
