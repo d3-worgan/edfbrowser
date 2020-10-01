@@ -232,7 +232,8 @@ private:
       fillsurface,
       *ibuf,
       sz_hint_w,
-      sz_hint_h;
+      sz_hint_h,
+      pntsz;
 
   char h_label[32],
        v_label[21],

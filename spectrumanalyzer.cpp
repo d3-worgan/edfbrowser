@@ -215,7 +215,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   amplitudeLabel->setText("Amplitude");
   amplitudeLabel->setAlignment(Qt::AlignHCenter);
 
-  sqrtCheckBox = new QCheckBox("Ampli-\ntude");
+  sqrtCheckBox = new QCheckBox("Amplitude");
   sqrtCheckBox->setTristate(false);
   if(mainwindow->spectrum_sqrt)
   {
