@@ -314,7 +314,7 @@ UI_Mainwindow::UI_Mainwindow()
   sys_font_size = myfont->pointSize();
 
   monofont_size = monofont->pointSize();
-  sys_monofont_size = myfont->pointSize();
+  sys_monofont_size = monofont->pointSize();
 
   read_general_settings();
 
