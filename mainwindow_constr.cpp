@@ -333,9 +333,13 @@ UI_Mainwindow::UI_Mainwindow()
 
   maincurve = new ViewCurve(this);
 
-  dpix = maincurve->logicalDpiX();
+//  dpix = maincurve->logicalDpiX();
+  dpix = maincurve->physicalDpiX();
 
-  dpiy = maincurve->logicalDpiY();
+//  dpiy = maincurve->logicalDpiY();
+  dpiy = maincurve->physicalDpiY();
+
+//  printf("dpix: %i    dpiy: %i\n", dpix, dpiy);
 
   maincurve->setAcceptDrops(true);
 
