@@ -323,7 +323,11 @@ UI_Mainwindow::UI_Mainwindow()
 
   QFontMetrics fm(*myfont);
 
-  font_pixel_height = fm.height();
+  font_pixel_height = fm.ascent();
+
+  font_pixel_width = (fm.width("ABCDEFGHIJKLMNOPQRSTUVWXYZ") / 26.0) + 0.5;
+
+//  printf("font_pixel_height: %i    font_pixel_width: %i\n", font_pixel_height, font_pixel_width);
 
   QApplication::setFont(*myfont);
 

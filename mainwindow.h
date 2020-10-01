@@ -267,6 +267,7 @@ public:
       sys_font_size,
       sys_monofont_size,
       font_pixel_height,
+      font_pixel_width,
       use_diverse_signal_colors;
 
   unsigned long long pagetime,
