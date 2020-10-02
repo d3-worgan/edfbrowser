@@ -104,7 +104,6 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
   curve1->setUpperLabel1(str);
 
   flywheel1 = new UI_Flywheel;
-  flywheel1->setMinimumSize(20, 85);
 
   amplitudeSlider = new QSlider;
   amplitudeSlider->setOrientation(Qt::Vertical);
@@ -112,15 +111,12 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
   amplitudeSlider->setMaximum(2000);
   amplitudeSlider->setValue(1100);
   amplitudeSlider->setInvertedAppearance(true);
-  amplitudeSlider->setMinimumSize(15, 280);
 
   amplitudeLabel = new QLabel;
   amplitudeLabel->setText("Amplitude");
-  amplitudeLabel->setMinimumSize(100, 15);
   amplitudeLabel->setAlignment(Qt::AlignHCenter);
 
   inversionCheckBox = new QCheckBox("Invert");
-  inversionCheckBox->setMinimumSize(70, 25);
   inversionCheckBox->setTristate(false);
   if(mainwindow->average_upsidedown == 1)
   {
@@ -132,7 +128,6 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
   }
 
   BWCheckBox = new QCheckBox("B/W");
-  BWCheckBox->setMinimumSize(70, 25);
   BWCheckBox->setTristate(false);
   if(mainwindow->average_bw == 1)
   {
@@ -167,11 +162,9 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
   spanSlider->setMinimum(10);
   spanSlider->setMaximum(1000);
   spanSlider->setValue(1000);
-  spanSlider->setMinimumSize(500, 15);
 
   spanLabel = new QLabel;
   spanLabel->setText("Span");
-  spanLabel->setMinimumSize(110, 15);
   spanLabel->setAlignment(Qt::AlignHCenter);
 
   centerSlider = new QSlider;
@@ -179,11 +172,9 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
   centerSlider->setMinimum(0);
   centerSlider->setMaximum(1000);
   centerSlider->setValue(250);
-  centerSlider->setMinimumSize(500, 15);
 
   centerLabel = new QLabel;
   centerLabel->setText("Center");
-  centerLabel->setMinimumSize(110, 15);
   centerLabel->setAlignment(Qt::AlignHCenter);
 
   hlayout1 = new QHBoxLayout;
