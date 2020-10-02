@@ -98,6 +98,9 @@ public:
 
   QToolBar *hypnogram_dock;
 
+  double w_scaling,
+         h_scaling;
+
 public slots:
   void update_curve(void);
 
@@ -133,6 +136,7 @@ public:
 
   void set_position(long long);
   void set_maximum(long long);
+  void set_scaling(double, double);
 
 public slots:
 
@@ -142,6 +146,9 @@ protected:
 private:
 
   long long pos, max;
+
+  double w_scaling,
+         h_scaling;
 
   void draw_small_arrow(QPainter *, int, int, int, QColor);
 };
@@ -158,6 +165,7 @@ public:
   QSize minimumSizeHint() const {return QSize(5, 5); }
 
   void set_params(struct hypnogram_dock_param_struct *);
+  void set_scaling(double, double);
 
 public slots:
 
@@ -166,6 +174,9 @@ protected:
   void contextmenu_requested(QPoint);
 
 private:
+
+  double w_scaling,
+         h_scaling;
 
   struct hypnogram_dock_param_struct param;
 };

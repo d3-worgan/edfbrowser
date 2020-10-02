@@ -39,6 +39,9 @@ UI_hypnogram_dock::UI_hypnogram_dock(QWidget *w_parent, struct hypnogram_dock_pa
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
+  w_scaling = mainwindow->w_scaling;
+  h_scaling = mainwindow->h_scaling;
+
   param = par;
 
   is_deleted = 0;
@@ -50,19 +53,21 @@ UI_hypnogram_dock::UI_hypnogram_dock(QWidget *w_parent, struct hypnogram_dock_pa
   frame->setContentsMargins(0, 0, 0, 0);
 
   hypnogram_curve = new hypnogram_curve_widget;
-  hypnogram_curve->setMinimumHeight(100);
-  hypnogram_curve->setMinimumWidth(100);
+  hypnogram_curve->setMinimumHeight(100 * h_scaling);
+  hypnogram_curve->setMinimumWidth(100 * w_scaling);
   hypnogram_curve->setContentsMargins(0, 0, 0, 0);
   hypnogram_curve->set_params(&param);
 
   trck_indic = new simple_tracking_indicator2;
+  trck_indic->set_scaling(w_scaling, h_scaling);
   trck_indic->set_maximum(param.edfhdr->recording_len_sec);
   trck_indic->setContentsMargins(0, 0, 0, 0);
 
   srl_indic = new simple_ruler_indicator2;
+  srl_indic->set_scaling(w_scaling, h_scaling);
   srl_indic->set_params(&param);
   srl_indic->setContentsMargins(0, 0, 0, 0);
-  srl_indic->setMinimumWidth(80);
+  srl_indic->setMinimumWidth(80 * w_scaling);
 
   ruler_label = new QLabel;
   ruler_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -143,6 +148,15 @@ simple_tracking_indicator2::simple_tracking_indicator2(QWidget *w_parent) : QWid
 }
 
 
+void simple_tracking_indicator2::set_scaling(double w, double h)
+{
+  w_scaling = w;
+  h_scaling = h;
+
+  setFixedHeight(16 * h_scaling);
+}
+
+
 void simple_tracking_indicator2::set_position(long long pos_)
 {
   pos = pos_;
@@ -215,8 +229,8 @@ void simple_tracking_indicator2::draw_small_arrow(QPainter *painter, int xpos, i
   if(rot == 0)
   {
     path.moveTo(xpos,      ypos);
-    path.lineTo(xpos - 8, ypos + 15);
-    path.lineTo(xpos + 8, ypos + 15);
+    path.lineTo(xpos - (8 * w_scaling), ypos + (15 * h_scaling));
+    path.lineTo(xpos + (8 * w_scaling), ypos + (15 * h_scaling));
     path.lineTo(xpos,      ypos);
 
     painter->fillPath(path, color);
@@ -229,6 +243,15 @@ simple_ruler_indicator2::simple_ruler_indicator2(QWidget *w_parent) : QWidget(w_
   setAttribute(Qt::WA_OpaquePaintEvent);
 
   setFixedWidth(60);
+}
+
+
+void simple_ruler_indicator2::set_scaling(double w, double h)
+{
+  w_scaling = w;
+  h_scaling = h;
+
+  setFixedWidth(60 * w_scaling);
 }
 
 
@@ -264,7 +287,7 @@ void simple_ruler_indicator2::paintEvent(QPaintEvent *)
   {
     painter.drawLine(w - 4, (int)((pixel_per_unit * i) + 0.5 + offset), w - 13, (int)((pixel_per_unit * i) + 0.5 + offset));
 
-    painter.drawText(QRectF(2, (int)((pixel_per_unit * i) + 0.5 + offset) - 9, 60, 25), Qt::AlignRight | Qt::AlignHCenter, param.stage_name[i]);
+    painter.drawText(QRectF(2, (int)((pixel_per_unit * i) + 0.5 + offset) - (9 * h_scaling), 60 * w_scaling, 25 * h_scaling), Qt::AlignRight | Qt::AlignHCenter, param.stage_name[i]);
   }
 }
 
