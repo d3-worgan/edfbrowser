@@ -43,6 +43,9 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
+  w_scaling = mainwindow->w_scaling;
+  h_scaling = mainwindow->h_scaling;
+
   param = par;
 
   is_deleted = 0;
@@ -60,15 +63,17 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
   cdsa_label = new QLabel;
   cdsa_label->setScaledContents(true);
   cdsa_label->setPixmap(*param.pxm);
-  cdsa_label->setMinimumHeight(100);
-  cdsa_label->setMinimumWidth(100);
+  cdsa_label->setMinimumHeight(100 * h_scaling);
+  cdsa_label->setMinimumWidth(100 * w_scaling);
   cdsa_label->setContentsMargins(0, 0, 0, 0);
 
   trck_indic = new simple_tracking_indicator;
+  trck_indic->set_scaling(w_scaling, h_scaling);
   trck_indic->set_maximum(param.segments_in_recording * param.segment_len);
   trck_indic->setContentsMargins(0, 0, 0, 0);
 
   srl_indic = new simple_ruler_indicator;
+  srl_indic->set_scaling(w_scaling, h_scaling);
   srl_indic->set_maximum(param.max_hz);
   srl_indic->set_minimum(param.min_hz);
   srl_indic->set_unit("Hz");
@@ -80,6 +85,8 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
   ruler_label->setContentsMargins(0, 0, 0, 0);
 
   color_indic = new simple_color_index;
+  color_indic->set_scaling(w_scaling, h_scaling);
+  color_indic->setMinimumWidth(40 * w_scaling);
   color_indic->set_max_volt(param.max_voltage);
   color_indic->set_max_pwr(param.max_pwr);
   color_indic->set_min_pwr(param.min_pwr);
@@ -268,8 +275,20 @@ simple_tracking_indicator::simple_tracking_indicator(QWidget *w_parent) : QWidge
 
   setFixedHeight(16);
 
+  w_scaling = 1;
+  h_scaling = 1;
+
   pos = 0;
   max = 100;
+}
+
+
+void simple_tracking_indicator::set_scaling(double w, double h)
+{
+  w_scaling = w;
+  h_scaling = h;
+
+  setFixedHeight(16 * h_scaling);
 }
 
 
@@ -345,8 +364,8 @@ void simple_tracking_indicator::draw_small_arrow(QPainter *painter, int xpos, in
   if(rot == 0)
   {
     path.moveTo(xpos,      ypos);
-    path.lineTo(xpos - 8, ypos + 15);
-    path.lineTo(xpos + 8, ypos + 15);
+    path.lineTo(xpos - (8 * w_scaling), ypos + (15 * h_scaling));
+    path.lineTo(xpos + (8 * w_scaling), ypos + (15 * h_scaling));
     path.lineTo(xpos,      ypos);
 
     painter->fillPath(path, color);
@@ -360,11 +379,23 @@ simple_color_index::simple_color_index(QWidget *w_parent) : QWidget(w_parent)
 
   setFixedWidth(60);
 
+  w_scaling = 1;
+  h_scaling = 1;
+
   max_volt = 100;
   min_pwr = 0;
   max_pwr = 100;
   log = 1;
   unit[0] = 0;
+}
+
+
+void simple_color_index::set_scaling(double w, double h)
+{
+  w_scaling = w;
+  h_scaling = h;
+
+  setFixedWidth(60 * h_scaling);
 }
 
 
@@ -408,7 +439,10 @@ void simple_color_index::paintEvent(QPaintEvent *)
 {
   int i, j, w, h,
       rgb_map[1786][3],
-      rgb_idx;
+      rgb_idx,
+      colorbar_width,
+      colorbar_height,
+      colorbar_h_pos;
 
   double color_idx_per_pixel;
 
@@ -472,28 +506,34 @@ void simple_color_index::paintEvent(QPaintEvent *)
 
   painter.setPen(Qt::black);
 
-  painter.drawRect(5, 8, 15, h - 16);
+  colorbar_width = 15 * w_scaling;
+
+  colorbar_h_pos = 8 * h_scaling;
+
+  colorbar_height = h - (16 * h_scaling);
+
+  painter.drawRect(5, colorbar_h_pos, colorbar_width, colorbar_height);
 
   if(log)
   {
     snprintf(str, 32, "%i", max_pwr);
 
-    painter.drawText(25, 15, str);
+    painter.drawText(10 + (15 * w_scaling), 15 * h_scaling, str);
 
     for(i=1; i<7; i++)
     {
       snprintf(str, 32, "%.1f", (((max_pwr - min_pwr) / 7.0) * i) + min_pwr);
 
-      painter.drawText(25, h - (4.0 + (i * ((h - 17.0) / 7.0))), str);
+      painter.drawText(10 + (15 * w_scaling), h - ((4.0 * h_scaling) + (i * ((h - (17.0 * h_scaling)) / 7.0))), str);
     }
 
     snprintf(str, 32, "%i", min_pwr);
 
-    painter.drawText(25, h - 5, str);
+    painter.drawText(10 + (15 * w_scaling), h - (5 * h_scaling), str);
   }
   else
   {
-    setFixedWidth(80);
+    setFixedWidth(80 * w_scaling);
 
     if(pwr)
     {
@@ -501,7 +541,7 @@ void simple_color_index::paintEvent(QPaintEvent *)
       {
         snprintf(str, 32, "%.1e", ((max_volt * max_volt) / 7.0) * i);
 
-        painter.drawText(25, h - (4.0 + (i * ((h - 17.0) / 7.0))), str);
+        painter.drawText(10 + (15 * w_scaling), h - ((4.0 * h_scaling) + (i * ((h - (17.0 * h_scaling)) / 7.0))), str);
       }
     }
     else
@@ -510,16 +550,16 @@ void simple_color_index::paintEvent(QPaintEvent *)
       {
         snprintf(str, 32, "%.1e", (max_volt / 7.0) * i);
 
-        painter.drawText(25, h - (4.0 + (i * ((h - 17.0) / 7.0))), str);
+        painter.drawText(10 + (15 * w_scaling), h - ((4.0 * h_scaling) + (i * ((h - (17.0 * h_scaling)) / 7.0))), str);
       }
     }
   }
 
-  color_idx_per_pixel = 1785.0 / (h - 11.0);
+  color_idx_per_pixel = 1785.0 / (colorbar_height - 1);
 
-  for(i=0; i<(h-17); i++)
+  for(i=0; i<(colorbar_height-1); i++)
   {
-    rgb_idx = ((h - 18) - i) * color_idx_per_pixel;
+    rgb_idx = ((colorbar_height - 1) - i) * color_idx_per_pixel;
 
     if(rgb_idx > 1785)  rgb_idx = 1785;
 
@@ -527,9 +567,9 @@ void simple_color_index::paintEvent(QPaintEvent *)
 
     painter.setPen(QColor(rgb_map[rgb_idx][0], rgb_map[rgb_idx][1], rgb_map[rgb_idx][2]));
 
-    for(j=0; j<14; j++)
+    for(j=0; j<(colorbar_width-1); j++)
     {
-      painter.drawPoint(6 + j, 9 + i);
+      painter.drawPoint(6 + j, colorbar_h_pos + 1 + i);
     }
   }
 }
@@ -541,8 +581,20 @@ simple_ruler_indicator::simple_ruler_indicator(QWidget *w_parent) : QWidget(w_pa
 
   setFixedWidth(60);
 
+  w_scaling = 1;
+  h_scaling = 1;
+
   min = 0;
   max = 100;
+}
+
+
+void simple_ruler_indicator::set_scaling(double w, double h)
+{
+  w_scaling = w;
+  h_scaling = h;
+
+  setFixedWidth(60 * h_scaling);
 }
 
 
@@ -638,7 +690,7 @@ void simple_ruler_indicator::paintEvent(QPaintEvent *)
 
       snprintf(str, 64, "%i", min + i);
 
-      painter.drawText(QRectF(2, h - (int)((pixel_per_unit * i) + 0.5) - 9, 40, 25), Qt::AlignRight | Qt::AlignHCenter, str);
+      painter.drawText(QRectF(2, h - (int)((pixel_per_unit * i) + 0.5) - (9 * h_scaling), 40 * w_scaling, 25 * h_scaling), Qt::AlignRight | Qt::AlignHCenter, str);
     }
   }
 }

@@ -115,6 +115,9 @@ public:
 
   QDockWidget *cdsa_dock;
 
+  double w_scaling,
+         h_scaling;
+
 private:
 
   struct cdsa_dock_param_struct param;
@@ -141,6 +144,9 @@ class simple_tracking_indicator: public QWidget
   Q_OBJECT
 
 public:
+  double w_scaling,
+         h_scaling;
+
   simple_tracking_indicator(QWidget *parent=0);
 
   QSize sizeHint() const {return minimumSizeHint(); }
@@ -148,6 +154,7 @@ public:
 
   void set_position(long long);
   void set_maximum(long long);
+  void set_scaling(double, double);
 
 public slots:
 
@@ -169,6 +176,9 @@ class simple_color_index: public QWidget
 public:
   simple_color_index(QWidget *parent=0);
 
+  double w_scaling,
+         h_scaling;
+
   QSize sizeHint() const {return minimumSizeHint(); }
   QSize minimumSizeHint() const {return QSize(5, 5); }
 
@@ -178,6 +188,7 @@ public:
   void set_log_enabled(int);
   void set_pwr_enabled(int);
   void set_unit(const char *);
+  void set_scaling(double, double);
 
 public slots:
 
@@ -204,12 +215,16 @@ class simple_ruler_indicator: public QWidget
 public:
   simple_ruler_indicator(QWidget *parent=0);
 
+  double w_scaling,
+         h_scaling;
+
   QSize sizeHint() const {return minimumSizeHint(); }
   QSize minimumSizeHint() const {return QSize(5, 5); }
 
   void set_minimum(int);
   void set_maximum(int);
   void set_unit(const char *);
+  void set_scaling(double, double);
 
 public slots:
 
