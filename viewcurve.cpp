@@ -37,6 +37,9 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
+  w_scaling = mainwindow->w_scaling;
+  h_scaling = mainwindow->h_scaling;
+
   special_pen = new QPen(Qt::SolidPattern, 0, Qt::DotLine, Qt::SquareCap, Qt::BevelJoin);
 
   annot_marker_pen = new QPen(Qt::SolidPattern, 0, Qt::DashLine, Qt::SquareCap, Qt::BevelJoin);
@@ -577,7 +580,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
         baseline = h / (signalcomps + 1);
         baseline *= (i + 1);
 
-        if((m_y<(baseline-5))&&(m_y>(baseline-24))&&(m_x>3)&&(m_x<110))
+        if((m_y<(baseline-5))&&(m_y>(baseline-(24 * h_scaling)))&&(m_x>3)&&(m_x<(110 * w_scaling)))
         {
           original_screen_offset = signalcomp[i]->screen_offset;
           signalcomp[i]->hasoffsettracking = 1;
