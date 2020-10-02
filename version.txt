@@ -2,6 +2,10 @@
  version 1.78      to be defined
  --------------
 
+ - Make it possible to change the fontsize.
+
+ - Adapt dialogs, widgets and geometries according to physical DPI of the screen in order to deal with HIDPI screens (4K etc.).
+
  - Signals dialog: make it possible to compose derivations with signal factors that are not an integer.
    E.g.: It's now possible to create a signalcomposition of (1 x F4) - (0.5 x A1) - (0.5 x A2).
 
