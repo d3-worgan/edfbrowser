@@ -97,6 +97,9 @@ public:
 
   QToolBar *hrv_dock;
 
+  double w_scaling,
+         h_scaling;
+
 public slots:
   void update_curve(void);
 
@@ -132,6 +135,7 @@ public:
 
   void set_position(long long);
   void set_maximum(long long);
+  void set_scaling(double, double);
 
 public slots:
 
@@ -141,6 +145,9 @@ protected:
 private:
 
   long long pos, max;
+
+  double w_scaling,
+         h_scaling;
 
   void draw_small_arrow(QPainter *, int, int, int, QColor);
 };
@@ -159,6 +166,7 @@ public:
   void set_params(struct hrv_dock_param_struct *);
 
   void set_range(int, int);
+  void set_scaling(double, double);
 
 public slots:
 
@@ -172,6 +180,9 @@ private:
 
   int max_val;
   int min_val;
+
+  double w_scaling,
+         h_scaling;
 };
 
 

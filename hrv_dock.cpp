@@ -39,6 +39,9 @@ UI_hrv_dock::UI_hrv_dock(QWidget *w_parent, struct hrv_dock_param_struct par)
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
+  w_scaling = mainwindow->w_scaling;
+  h_scaling = mainwindow->h_scaling;
+
   param = par;
 
   is_deleted = 0;
@@ -50,20 +53,22 @@ UI_hrv_dock::UI_hrv_dock(QWidget *w_parent, struct hrv_dock_param_struct par)
   frame->setContentsMargins(0, 0, 0, 0);
 
   hrv_curve = new hrv_curve_widget;
-  hrv_curve->setMinimumHeight(100);
-  hrv_curve->setMinimumWidth(100);
+  hrv_curve->setMinimumHeight(100 * h_scaling);
+  hrv_curve->setMinimumWidth(100 * w_scaling);
   hrv_curve->setContentsMargins(0, 0, 0, 0);
   hrv_curve->set_params(&param);
   hrv_curve->set_range(40, 180);
 
   trck_indic = new simple_tracking_indicator3;
+  trck_indic->set_scaling(w_scaling, h_scaling);
   trck_indic->set_maximum(param.edfhdr->recording_len_sec);
   trck_indic->setContentsMargins(0, 0, 0, 0);
 
   srl_indic = new simple_ruler_indicator3;
+  srl_indic->set_scaling(w_scaling, h_scaling);
   srl_indic->set_params(&param);
   srl_indic->setContentsMargins(0, 0, 0, 0);
-  srl_indic->setMinimumWidth(70);
+  srl_indic->setMinimumWidth(70 * w_scaling);
   srl_indic->set_range(40, 180);
 
   ruler_label = new QLabel;
@@ -138,10 +143,22 @@ simple_tracking_indicator3::simple_tracking_indicator3(QWidget *w_parent) : QWid
 {
   setAttribute(Qt::WA_OpaquePaintEvent);
 
+  w_scaling = 1;
+  h_scaling = 1;
+
   setFixedHeight(16);
 
   pos = 0;
   max = 100;
+}
+
+
+void simple_tracking_indicator3::set_scaling(double w, double h)
+{
+  w_scaling = w;
+  h_scaling = h;
+
+  setFixedHeight(16 * h_scaling);
 }
 
 
@@ -217,8 +234,8 @@ void simple_tracking_indicator3::draw_small_arrow(QPainter *painter, int xpos, i
   if(rot == 0)
   {
     path.moveTo(xpos,      ypos);
-    path.lineTo(xpos - 8, ypos + 15);
-    path.lineTo(xpos + 8, ypos + 15);
+    path.lineTo(xpos - (8 * w_scaling), ypos + (15 * h_scaling));
+    path.lineTo(xpos + (8 * w_scaling), ypos + (15 * h_scaling));
     path.lineTo(xpos,      ypos);
 
     painter->fillPath(path, color);
@@ -235,6 +252,18 @@ simple_ruler_indicator3::simple_ruler_indicator3(QWidget *w_parent) : QWidget(w_
   max_val = 180;
 
   min_val = 40;
+
+  w_scaling = 1;
+  h_scaling = 1;
+}
+
+
+void simple_ruler_indicator3::set_scaling(double w, double h)
+{
+  w_scaling = w;
+  h_scaling = h;
+
+  setFixedWidth(60 * w_scaling);
 }
 
 
@@ -274,7 +303,7 @@ void simple_ruler_indicator3::paintEvent(QPaintEvent *)
 
     snprintf(str, 32, "%i", (int)(min_val + ((5 - i) * ((max_val - min_val) / 5.0)) ));
 
-    painter.drawText(QRectF(2, (int)((pixel_per_unit * i) + 0.5 + offset) - 9, 40, 25), Qt::AlignRight | Qt::AlignHCenter, str);
+    painter.drawText(QRectF(2, (int)((pixel_per_unit * i) + 0.5 + offset - (9 * h_scaling)), 40 * w_scaling, 25 * h_scaling), Qt::AlignRight | Qt::AlignHCenter, str);
   }
 }
 
