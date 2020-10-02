@@ -56,7 +56,11 @@ int main(int argc, char *argv[])
   }
 #endif
 
+  qputenv("QT_SCALE_FACTOR", "1");
+  qputenv("QT_AUTO_SCREEN_SCALE_FACTOR", "0");
+
   QApplication app(argc, argv);
+  app.setAttribute(Qt::AA_DisableHighDpiScaling);
 
   QPixmap pixmap(":/images/splash.png");
 
