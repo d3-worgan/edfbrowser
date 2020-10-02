@@ -38,7 +38,7 @@ UI_BI98002EDFwindow::UI_BI98002EDFwindow(QWidget *w_parent, char *recent_dir, ch
   recent_savedir = save_dir;
 
   myobjectDialog = new QDialog;
-  myobjectDialog->setMinimumSize(30.0 * mainwindow->font_size, 7.5 * mainwindow->font_size);
+  myobjectDialog->setMinimumSize(300 * mainwindow->w_scaling, 75 * mainwindow->h_scaling);
   myobjectDialog->setWindowTitle("BI9800 to EDF+ converter");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);

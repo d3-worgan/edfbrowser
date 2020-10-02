@@ -37,7 +37,7 @@ UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
   recent_savedir = mainwindow->recent_savedir;
 
   myobjectDialog = new QDialog;
-  myobjectDialog->setMinimumSize(67.5 * mainwindow->font_size, 50.0 * mainwindow->font_size);
+  myobjectDialog->setMinimumSize(675 * mainwindow->w_scaling, 500 * mainwindow->h_scaling);
   myobjectDialog->setWindowTitle("Reduce signals and/or duration");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);

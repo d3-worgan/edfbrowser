@@ -48,7 +48,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   recent_savedir = save_dir;
 
   firfilterdialog = new QDialog;
-  firfilterdialog->setMinimumSize(40.0 * mainwindow->font_size, 40.0 * mainwindow->font_size);
+  firfilterdialog->setMinimumSize(400 * mainwindow->w_scaling, 400 * mainwindow->h_scaling);
   firfilterdialog->setWindowTitle("Add a Custom FIR filter");
   firfilterdialog->setModal(true);
   firfilterdialog->setAttribute(Qt::WA_DeleteOnClose, true);

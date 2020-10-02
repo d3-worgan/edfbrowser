@@ -39,7 +39,7 @@ UI_edit_predefined_mtg_window::UI_edit_predefined_mtg_window(QWidget *w_parent)
   mainwindow = (UI_Mainwindow *)w_parent;
 
   edit_predefined_mtg_Dialog = new QDialog;
-  edit_predefined_mtg_Dialog->setMinimumSize(80.0 * mainwindow->font_size, 26.5 * mainwindow->font_size);
+  edit_predefined_mtg_Dialog->setMinimumSize(800 * mainwindow->w_scaling, 265 * mainwindow->h_scaling);
   edit_predefined_mtg_Dialog->setWindowTitle("Edit key-bindings for montages");
   edit_predefined_mtg_Dialog->setModal(true);
   edit_predefined_mtg_Dialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -88,7 +88,7 @@ void UI_edit_predefined_mtg_window::rowClicked(QListWidgetItem *item)
   listItem = item;
 
   dialog = new QDialog(edit_predefined_mtg_Dialog);
-  dialog->setMinimumSize(14.0 * mainwindow->font_size, 13.5 * mainwindow->font_size);
+  dialog->setMinimumSize(140 * mainwindow->w_scaling, 135 * mainwindow->h_scaling);
   dialog->setWindowTitle("Entry");
   dialog->setModal(true);
   dialog->setAttribute(Qt::WA_DeleteOnClose, true);

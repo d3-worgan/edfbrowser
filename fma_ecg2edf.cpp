@@ -54,7 +54,7 @@ UI_FMaudio2EDFwindow::UI_FMaudio2EDFwindow(QWidget *w_parent, char *recent_dir, 
 
   myobjectDialog = new QDialog;
 
-  myobjectDialog->setMinimumSize(60.0 * mainwindow->font_size, 24.0 * mainwindow->font_size);
+  myobjectDialog->setMinimumSize(600 * mainwindow->w_scaling, 240 * mainwindow->h_scaling);
   myobjectDialog->setWindowTitle("FM Audio ECG to EDF converter");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);

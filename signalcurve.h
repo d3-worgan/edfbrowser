@@ -53,6 +53,7 @@
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QFormLayout>
+#include <QFontMetrics>
 
 #include <string.h>
 
@@ -199,7 +200,9 @@ private:
          line1_start_y,
          line1_end_y,
          marker_1_position,
-         marker_2_position;
+         marker_2_position,
+         w_scaling,
+         h_scaling;
 
   float *fbuf;
 
@@ -232,8 +235,7 @@ private:
       fillsurface,
       *ibuf,
       sz_hint_w,
-      sz_hint_h,
-      pntsz;
+      sz_hint_h;
 
   char h_label[32],
        v_label[21],

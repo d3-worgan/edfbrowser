@@ -49,10 +49,20 @@ SignalCurve::SignalCurve(QWidget *w_parent) : QWidget(w_parent)
   Marker2Pen.setStyle(Qt::DashLine);
   Marker2Pen.setColor(Qt::yellow);
 
-  pntsz = this->font().pointSize();
+  QFontMetrics fm(this->font());
 
-  sz_hint_w = 40 * pntsz;
-  sz_hint_h = 40 * pntsz;
+  h_scaling = fm.height() / 18.0;
+
+  w_scaling = fm.width("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") / 260.0;
+
+  if(w_scaling > 4.0)  w_scaling = 4.0;
+  if(w_scaling < 1.0)  w_scaling = 1.0;
+
+  if(h_scaling > 4.0)  h_scaling = 4.0;
+  if(h_scaling < 1.0)  h_scaling = 1.0;
+
+  sz_hint_w = 400 * w_scaling;
+  sz_hint_h = 400 * h_scaling;
 
   setMinimumSize(sz_hint_w, sz_hint_h);
 
@@ -60,7 +70,7 @@ SignalCurve::SignalCurve(QWidget *w_parent) : QWidget(w_parent)
   dbuf = NULL;
   fbuf = NULL;
   ibuf = NULL;
-  bordersize = 6 * pntsz;
+  bordersize = 60 * w_scaling;
   drawHruler = 1;
   drawVruler = 1;
   h_ruler_startvalue = 0.0;
@@ -160,7 +170,7 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
   {
     if(printEnabled == true)
     {
-      if((m_y<(2.1 * pntsz))&&(m_y>(0.3 * pntsz))&&(m_x>((w - (bordersize * 2)) - (4.3 * pntsz)))&&(m_x<((w - (bordersize * 2)) - (0.3 * pntsz))))
+      if((m_y<(21 * h_scaling))&&(m_y>(3 * h_scaling))&&(m_x>((w - (bordersize * 2)) - (43 * w_scaling)))&&(m_x<((w - (bordersize * 2)) - (3 * w_scaling))))
       {
         exec_sidemenu();
 
@@ -170,7 +180,7 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
 
     if(dashBoardEnabled == true)
     {
-      if((m_y<(6.1 * pntsz))&&(m_y>(4.3 * pntsz))&&(m_x>((w - (bordersize * 2)) - (4.3 * pntsz)))&&(m_x<((w - (bordersize * 2)) - (0.3 * pntsz))))
+      if((m_y<(61 * h_scaling))&&(m_y>(43 * h_scaling))&&(m_x>((w - (bordersize * 2)) - (43 * w_scaling)))&&(m_x<((w - (bordersize * 2)) - (3 * w_scaling))))
       {
         emit dashBoardClicked();
 
@@ -180,7 +190,7 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
 
     if(cursorEnabled == true)
     {
-      if((m_y<(4.1 * pntsz))&&(m_y>(2.3 * pntsz))&&(m_x>((w - (bordersize * 2)) - (4.3 * pntsz)))&&(m_x<((w - (bordersize * 2)) - (0.3 * pntsz))))
+      if((m_y<(41 * h_scaling))&&(m_y>(23 * h_scaling))&&(m_x>((w - (bordersize * 2)) - (43 * w_scaling)))&&(m_x<((w - (bordersize * 2)) - (3 * w_scaling))))
       {
         if(crosshair_1_active)
         {
@@ -210,7 +220,7 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
 
     if(crosshair_1_active)
     {
-      if((m_y<(crosshair_1_y_position + (1.5 * pntsz)))&&(m_y>(crosshair_1_y_position - (2.5 * pntsz)))&&(m_x>crosshair_1_x_position)&&(m_x<(crosshair_1_x_position + (6.5 * pntsz))))
+      if((m_y<(crosshair_1_y_position + (15 * h_scaling)))&&(m_y>(crosshair_1_y_position - (25 * h_scaling)))&&(m_x>crosshair_1_x_position)&&(m_x<(crosshair_1_x_position + (65 * w_scaling))))
       {
         crosshair_1_moving = 1;
         use_move_events = 1;
@@ -219,7 +229,7 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
         mouse_old_y = m_y;
       }
 
-      if(m_x>(crosshair_1_x_position - pntsz)&&(m_x<(crosshair_1_x_position + pntsz)))
+      if(m_x>(crosshair_1_x_position - (10 * w_scaling))&&(m_x<(crosshair_1_x_position + (10 * w_scaling))))
       {
         crosshair_1_moving = 1;
         use_move_events = 1;
@@ -233,7 +243,7 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
     {
       marker_1_x_position = (w - (bordersize * 2)) * marker_1_position;
 
-      if(m_x > (marker_1_x_position - (0.5 * pntsz)) && (m_x < (marker_1_x_position + (0.5 * pntsz))))
+      if(m_x > (marker_1_x_position - (5 * w_scaling)) && (m_x < (marker_1_x_position + (5 * w_scaling))))
       {
         marker_1_moving = 1;
         use_move_events = 1;
@@ -247,7 +257,7 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
     {
       marker_2_x_position = (w - (bordersize * 2)) * marker_2_position;
 
-      if(m_x > (marker_2_x_position - (0.5 * pntsz)) && (m_x < (marker_2_x_position + (0.5 * pntsz))))
+      if(m_x > (marker_2_x_position - (5 * w_scaling)) && (m_x < (marker_2_x_position + (5 * w_scaling))))
       {
         marker_2_moving = 1;
         use_move_events = 1;
@@ -478,11 +488,11 @@ void SignalCurve::exec_sidemenu()
 
   if(extra_button)
   {
-    sidemenu->setMinimumSize(12 * pntsz, 19 * pntsz);
+    sidemenu->setMinimumSize(120 * w_scaling, 190 * h_scaling);
   }
   else
   {
-    sidemenu->setMinimumSize(12 * pntsz, 16 * pntsz);
+    sidemenu->setMinimumSize(120 * w_scaling, 160 * h_scaling);
   }
   sidemenu->setWindowTitle("Print");
   sidemenu->setModal(true);
@@ -1463,11 +1473,11 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 //         p_divisor,
 //         p_pixels_per_unit);
 
-  if(drawHruler && (bordersize > (1.9 * pntsz)))
+  if(drawHruler && (bordersize > (19 * w_scaling)))
   {
     painter->setPen(RulerColor);
 
-    painter->drawLine(bordersize, curve_h - bordersize + (0.5 * pntsz), curve_w - bordersize, curve_h - bordersize + (0.5 * pntsz));
+    painter->drawLine(bordersize, curve_h - bordersize + (5 * w_scaling), curve_w - bordersize, curve_h - bordersize + (5 * w_scaling));
 
     for(lk = (p_ruler_startvalue / p_divisor) * p_divisor; lk <= p_ruler_endvalue; lk += p_divisor)
     {
@@ -1482,12 +1492,12 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
       p_tmp = (double)(lk - p_ruler_startvalue) * p_pixels_per_unit;
 
-      painter->drawText(bordersize + p_tmp - (3 * pntsz),  curve_h - bordersize + (1.8 * pntsz), 6 * pntsz, 1.6 * pntsz, Qt::AlignCenter | Qt::TextSingleLine, str);
+      painter->drawText(bordersize + p_tmp - (30 * w_scaling),  curve_h - bordersize + (18 * w_scaling), 60 * w_scaling, 16 * w_scaling, Qt::AlignCenter | Qt::TextSingleLine, str);
 
-      painter->drawLine(bordersize + p_tmp, curve_h - bordersize + (0.5 * pntsz), bordersize + p_tmp, curve_h - bordersize + (1.5 * pntsz));
+      painter->drawLine(bordersize + p_tmp, curve_h - bordersize + (5 * w_scaling), bordersize + p_tmp, curve_h - bordersize + (15 * w_scaling));
     }
 
-    painter->drawText(curve_w - bordersize + (2 * pntsz),  curve_h - bordersize + (1.8 * pntsz), 4 * pntsz, 1.6 * pntsz, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextSingleLine, h_label);
+    painter->drawText(curve_w - bordersize + (20 * w_scaling),  curve_h - bordersize + (18 * w_scaling), 40 * w_scaling, 16 * w_scaling, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextSingleLine, h_label);
   }
 
 /////////////////////////////////// draw the vertical ruler ///////////////////////////////////////////
@@ -1556,11 +1566,11 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 //         max_value,
 //         min_value);
 
-  if(drawVruler && (bordersize > (2.9 * pntsz)))
+  if(drawVruler && (bordersize > (29 * w_scaling)))
   {
     painter->setPen(RulerColor);
 
-    painter->drawLine(bordersize - (0.5 * pntsz), bordersize, bordersize - (0.5 * pntsz), curve_h - bordersize);
+    painter->drawLine(bordersize - (5 * w_scaling), bordersize, bordersize - (5 * w_scaling), curve_h - bordersize);
 
     precision = 0;
 
@@ -1604,15 +1614,15 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
       if(curveUpSideDown == false)
       {
-        painter->drawText((0.3 * pntsz), curve_h - bordersize - p2_tmp - (0.8 * pntsz), (4 * pntsz), (1.6 * pntsz), Qt::AlignRight | Qt::AlignVCenter | Qt::TextSingleLine, q_str);
+        painter->drawText((3 * w_scaling), curve_h - bordersize - p2_tmp - (8 * h_scaling), (40 * w_scaling), (16 * h_scaling), Qt::AlignRight | Qt::AlignVCenter | Qt::TextSingleLine, q_str);
 
-        painter->drawLine(bordersize - (0.5 * pntsz), curve_h - bordersize - p2_tmp, bordersize - (1.5 * pntsz), curve_h - bordersize - p2_tmp);
+        painter->drawLine(bordersize - (5 * w_scaling), curve_h - bordersize - p2_tmp, bordersize - (15 * w_scaling), curve_h - bordersize - p2_tmp);
       }
       else
       {
-        painter->drawText((0.3 * pntsz), bordersize + p2_tmp - (0.8 * pntsz), (4 * pntsz), (1.6 * pntsz), Qt::AlignRight | Qt::AlignVCenter | Qt::TextSingleLine, q_str);
+        painter->drawText((3 * w_scaling), bordersize + p2_tmp - (8 * h_scaling), (40 * w_scaling), (16 * h_scaling), Qt::AlignRight | Qt::AlignVCenter | Qt::TextSingleLine, q_str);
 
-        painter->drawLine(bordersize - (0.5 * pntsz), bordersize + p2_tmp, bordersize - (1.5 * pntsz), bordersize + p2_tmp);
+        painter->drawLine(bordersize - (5 * w_scaling), bordersize + p2_tmp, bordersize - (15 * w_scaling), bordersize + p2_tmp);
       }
     }
   }
@@ -1623,17 +1633,17 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
   if(v_label[0] != 0)
   {
-    painter->drawText(0.8 * pntsz, 3 * pntsz, 10 * pntsz, 1.6 * pntsz, Qt::AlignCenter | Qt::TextSingleLine, v_label);
+    painter->drawText(8 * w_scaling, 30 * h_scaling, 100 * w_scaling, 16 * h_scaling, Qt::AlignCenter | Qt::TextSingleLine, v_label);
   }
 
   if(upperlabel1[0] != 0)
   {
-    painter->drawText(curve_w / 2 - (22.5 * pntsz), pntsz, 40 * pntsz, 1.6 * pntsz, Qt::AlignCenter | Qt::TextSingleLine, upperlabel1);
+    painter->drawText(curve_w / 2 - (225 * w_scaling), 10 * h_scaling, 400 * w_scaling, 16 * h_scaling, Qt::AlignCenter | Qt::TextSingleLine, upperlabel1);
   }
 
   if(lowerlabel[0] != 0)
   {
-    painter->drawText(curve_w / 2 - (8 * pntsz), curve_h - (2 * pntsz), 16 * pntsz, 1.6 * pntsz, Qt::AlignCenter | Qt::TextSingleLine, lowerlabel);
+    painter->drawText(curve_w / 2 - (80 * w_scaling), curve_h - (20 * h_scaling), 160 * w_scaling, 16 * h_scaling, Qt::AlignCenter | Qt::TextSingleLine, lowerlabel);
   }
 
 /////////////////////////////////// translate coordinates, draw and fill a rectangle ///////////////////////////////////////////
@@ -2173,18 +2183,18 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
     QPainterPath path;
     path.moveTo(crosshair_1_x_position, crosshair_1_y_value);
-    path.lineTo(crosshair_1_x_position - (0.4 * pntsz), crosshair_1_y_value - pntsz);
-    path.lineTo(crosshair_1_x_position + (0.5 * pntsz), crosshair_1_y_value - pntsz);
+    path.lineTo(crosshair_1_x_position - (4 * w_scaling), crosshair_1_y_value - (10 * h_scaling));
+    path.lineTo(crosshair_1_x_position + (5 * w_scaling), crosshair_1_y_value - (10 * h_scaling));
     path.lineTo(crosshair_1_x_position, crosshair_1_y_value);
     painter->fillPath(path, QBrush(crosshair_1_color));
 
-    painter->fillRect(crosshair_1_x_position + (0.6 * pntsz), crosshair_1_y_position - (2.3 * pntsz), 6 * pntsz, 1.6 * pntsz, BackgroundColor);
+    painter->fillRect(crosshair_1_x_position + (6 * w_scaling), crosshair_1_y_position - (23 * h_scaling), 60 * w_scaling, 16 * h_scaling, BackgroundColor);
     snprintf(str, 128, "%f", crosshair_1_value);
-    painter->drawText(crosshair_1_x_position + (0.8 * pntsz), crosshair_1_y_position - pntsz, str);
-    painter->fillRect(crosshair_1_x_position + (0.6 * pntsz), crosshair_1_y_position - (0.3 * pntsz), 6 * pntsz, 1.6 * pntsz, BackgroundColor);
+    painter->drawText(crosshair_1_x_position + (8 * w_scaling), crosshair_1_y_position - (10 * h_scaling), str);
+    painter->fillRect(crosshair_1_x_position + (6 * w_scaling), crosshair_1_y_position - (3 * h_scaling), 60 * w_scaling, 16 * h_scaling, BackgroundColor);
     convert_to_metric_suffix(str, crosshair_1_value_2, 3, 128);
     strlcat(str, h_label, 128);
-    painter->drawText(crosshair_1_x_position + (0.8 * pntsz), crosshair_1_y_position + pntsz, str);
+    painter->drawText(crosshair_1_x_position + (8 * w_scaling), crosshair_1_y_position + (10 * h_scaling), str);
   }
 
 /////////////////////////////////// draw the buttons ///////////////////////////////////////////
@@ -2192,18 +2202,18 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
   painter->setPen(Qt::black);
   if(printEnabled == true)
   {
-    painter->fillRect(curve_w - (4.3 * pntsz), 0.3 * pntsz, 4 * pntsz, 1.8 * pntsz, Qt::gray);
-    painter->drawText(curve_w - (4 * pntsz), 1.6 * pntsz, "print");
+    painter->fillRect(curve_w - (43 * w_scaling), 3 * h_scaling, 40 * w_scaling, 18 * h_scaling, Qt::gray);
+    painter->drawText(curve_w - (40 * w_scaling), 16 * h_scaling, "print");
   }
   if(cursorEnabled == true)
   {
-    painter->fillRect(curve_w - (4.3 * pntsz), 2.3 * pntsz, 4 * pntsz, 1.8 * pntsz, Qt::gray);
-    painter->drawText(curve_w - (4 * pntsz), 3.6 * pntsz, "cursor");
+    painter->fillRect(curve_w - (43 * w_scaling), 23 * h_scaling, 40 * w_scaling, 18 * h_scaling, Qt::gray);
+    painter->drawText(curve_w - (40 * w_scaling), 36 * h_scaling, "cursor");
   }
   if(dashBoardEnabled == true)
   {
-    painter->fillRect(curve_w - (4.3 * pntsz), 4.3 * pntsz, 4 * pntsz, 1.8 * pntsz, Qt::gray);
-    painter->drawText(curve_w - (4 * pntsz), 5.6 * pntsz, "ctls");
+    painter->fillRect(curve_w - (43 * w_scaling), 43 * h_scaling, 40 * w_scaling, 18 * h_scaling, Qt::gray);
+    painter->drawText(curve_w - (40 * w_scaling), 56 * h_scaling, "ctls");
   }
 }
 

@@ -69,9 +69,11 @@ UI_Mainwindow::UI_Mainwindow()
 
   uid_seq = 1LL;
 
+  x_pixelsizefactor = 0.0294382;
   y_pixelsizefactor = 0.0294382;
 
-  x_pixelsizefactor = 0.0294382;
+  w_scaling = 1;
+  h_scaling = 1;
 
   viewtime_indicator_type = 1;
 
@@ -328,6 +330,18 @@ UI_Mainwindow::UI_Mainwindow()
   font_pixel_width = (fm.width("ABCDEFGHIJKLMNOPQRSTUVWXYZ") / 26.0) + 0.5;
 
 //  printf("font_pixel_height: %i    font_pixel_width: %i\n", font_pixel_height, font_pixel_width);
+
+  h_scaling = fm.height() / 18.0;
+
+  w_scaling = fm.width("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") / 260.0;
+
+  if(w_scaling > 4.0)  w_scaling = 4.0;
+  if(w_scaling < 1.0)  w_scaling = 1.0;
+
+  if(h_scaling > 4.0)  h_scaling = 4.0;
+  if(h_scaling < 1.0)  h_scaling = 1.0;
+
+//  printf("w_scaling: %f    h_scaling: %f\n", w_scaling, h_scaling);
 
   QApplication::setFont(*myfont);
 

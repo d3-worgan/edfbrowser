@@ -54,7 +54,7 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
   mainwindow = (UI_Mainwindow *)w_parent;
 
   ShowMontageDialog = new QDialog;
-  ShowMontageDialog->setMinimumSize(50.0 * mainwindow->font_size, 30.0 * mainwindow->font_size);
+  ShowMontageDialog->setMinimumSize(500 * mainwindow->w_scaling, 300 * mainwindow->h_scaling);
   ShowMontageDialog->setWindowTitle("Show montage");
   ShowMontageDialog->setModal(true);
   ShowMontageDialog->setAttribute(Qt::WA_DeleteOnClose, true);

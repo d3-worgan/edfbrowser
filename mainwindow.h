@@ -292,7 +292,9 @@ public:
   double y_pixelsizefactor,
          x_pixelsizefactor,
          default_amplitude,
-         cdsa_max_voltage;
+         cdsa_max_voltage,
+         w_scaling,
+         h_scaling;
 
   struct{
           double crossoverfreq;

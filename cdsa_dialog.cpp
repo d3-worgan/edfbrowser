@@ -52,7 +52,7 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
 
   myobjectDialog = new QDialog;
 
-  myobjectDialog->setMinimumSize(35.0 * mainwindow->font_size, 40.0 * mainwindow->font_size);
+  myobjectDialog->setMinimumSize(350 * mainwindow->w_scaling, 400 * mainwindow->h_scaling);
   myobjectDialog->setWindowTitle(str);
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);

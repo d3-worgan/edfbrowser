@@ -39,7 +39,7 @@ UI_FINO2EDFwindow::UI_FINO2EDFwindow(QWidget *w_parent, char *recent_dir, char *
 
   myobjectDialog = new QDialog;
 
-  myobjectDialog->setMinimumSize(60.0 * mainwindow->font_size, 24.0 * mainwindow->font_size);
+  myobjectDialog->setMinimumSize(600 * mainwindow->w_scaling, 240 * mainwindow->h_scaling);
   myobjectDialog->setWindowTitle("Finometer to EDF converter");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);

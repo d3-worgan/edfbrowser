@@ -42,7 +42,7 @@ UI_RAW2EDFapp::UI_RAW2EDFapp(QWidget *w_parent, struct raw2edf_var_struct *raw2e
   edf_format = 1;
 
   raw2edfDialog = new QDialog;
-  raw2edfDialog->setMinimumSize(52.5 * mainwindow->font_size, 37.5 * mainwindow->font_size);
+  raw2edfDialog->setMinimumSize(525 * mainwindow->w_scaling, 375 * mainwindow->h_scaling);
   raw2edfDialog->setWindowTitle("Binary/raw data to EDF converter");
   raw2edfDialog->setModal(true);
   raw2edfDialog->setAttribute(Qt::WA_DeleteOnClose, true);

@@ -43,7 +43,7 @@ UI_SaveMontagewindow::UI_SaveMontagewindow(QWidget *w_parent)
   }
 
   SaveMontageDialog = new QDialog;
-  SaveMontageDialog->setMinimumSize(60.0 * mainwindow->font_size, 18.0 * mainwindow->font_size);
+  SaveMontageDialog->setMinimumSize(600 * mainwindow->w_scaling, 180 * mainwindow->h_scaling);
   SaveMontageDialog->setWindowTitle("Save montage");
   SaveMontageDialog->setModal(true);
   SaveMontageDialog->setAttribute(Qt::WA_DeleteOnClose, true);

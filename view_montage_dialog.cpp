@@ -42,7 +42,7 @@ UI_ViewMontagewindow::UI_ViewMontagewindow(QWidget *w_parent)
   }
 
   ViewMontageDialog = new QDialog;
-  ViewMontageDialog->setMinimumSize(50.0 * mainwindow->font_size, 30.0 * mainwindow->font_size);
+  ViewMontageDialog->setMinimumSize(500 * mainwindow->w_scaling, 300 * mainwindow->h_scaling);
   ViewMontageDialog->setWindowTitle("View montage");
   ViewMontageDialog->setModal(true);
   ViewMontageDialog->setAttribute(Qt::WA_DeleteOnClose, true);

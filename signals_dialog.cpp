@@ -67,7 +67,7 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
 
   SignalsDialog = new QDialog;
 
-  SignalsDialog->setMinimumSize(85.0 * mainwindow->font_size, 50.0 * mainwindow->font_size);
+  SignalsDialog->setMinimumSize(850 * mainwindow->w_scaling, 500 * mainwindow->h_scaling);
   SignalsDialog->setWindowTitle("Add signals");
   SignalsDialog->setModal(true);
   SignalsDialog->setAttribute(Qt::WA_DeleteOnClose, true);

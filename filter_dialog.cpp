@@ -84,7 +84,7 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
   mainwindow = (UI_Mainwindow *)w_parent;
 
   filterdialog = new QDialog;
-  filterdialog->setMinimumSize(62.0 * mainwindow->font_size, 36.5 * mainwindow->font_size);
+  filterdialog->setMinimumSize(620 * mainwindow->w_scaling, 365 * mainwindow->h_scaling);
   filterdialog->setWindowTitle("Add a filter");
   filterdialog->setModal(true);
   filterdialog->setAttribute(Qt::WA_DeleteOnClose, true);

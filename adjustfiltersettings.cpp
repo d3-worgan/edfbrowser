@@ -64,7 +64,7 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
 
   filtersettings_dialog = new QDialog(w_parent);
 
-  filtersettings_dialog->setMinimumSize(35.0 * mainwindow->font_size, 25.0 * mainwindow->font_size);
+  filtersettings_dialog->setMinimumSize(350 * mainwindow->w_scaling, 250 * mainwindow->h_scaling);
   strlcpy(txtbuf, "Filter settings ", 2048);
   if(signalcomp->alias[0] != 0)
   {

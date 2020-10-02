@@ -44,7 +44,7 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
   mainwindow = (UI_Mainwindow *)w_parent;
 
   plifecgfilterdialog = new QDialog;
-  plifecgfilterdialog->setMinimumSize(40.0 * mainwindow->font_size, 25.0 * mainwindow->font_size);
+  plifecgfilterdialog->setMinimumSize(400 * mainwindow->w_scaling, 250 * mainwindow->h_scaling);
   plifecgfilterdialog->setWindowTitle("Add a powerline interference filter");
   plifecgfilterdialog->setModal(true);
   plifecgfilterdialog->setAttribute(Qt::WA_DeleteOnClose, true);

@@ -942,7 +942,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   mainLayout->addSpacing(20);
   mainLayout->addLayout(horLayout);
 
-  optionsdialog->setMinimumSize(90.0 * mainwindow->font_size, 57.5 * mainwindow->font_size);
+  optionsdialog->setMinimumSize(900 * mainwindow->w_scaling, 575 * mainwindow->h_scaling);
 
   optionsdialog->setLayout(mainLayout);
 

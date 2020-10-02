@@ -142,9 +142,9 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   strlcpy(physdimension, signalcomp->physdimension, 9);
 
-  SpectrumDialog = new QDialog();
+  SpectrumDialog = new QDialog;
   SpectrumDialog->setAttribute(Qt::WA_DeleteOnClose, true);
-  SpectrumDialog->setMinimumSize(62.0 * mainwindow->font_size, 50.0 * mainwindow->font_size);
+  SpectrumDialog->setMinimumSize(620 * mainwindow->w_scaling, 500 * mainwindow->h_scaling);
   SpectrumDialog->setSizeGripEnabled(true);
   SpectrumDialog->setModal(false);
   SpectrumDialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);

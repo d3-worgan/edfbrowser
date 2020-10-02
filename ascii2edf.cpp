@@ -42,7 +42,7 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(QWidget *w_parent, char *recent_dir, char *save
   edf_format = 1;
 
   ascii2edfDialog = new QDialog;
-  ascii2edfDialog->setMinimumSize(55.0 * mainwindow->font_size, 50.0 * mainwindow->font_size);
+  ascii2edfDialog->setMinimumSize(550 * mainwindow->w_scaling, 500 * mainwindow->h_scaling);
   ascii2edfDialog->setWindowTitle("ASCII to EDF/BDF converter");
   ascii2edfDialog->setModal(true);
   ascii2edfDialog->setAttribute(Qt::WA_DeleteOnClose, true);
