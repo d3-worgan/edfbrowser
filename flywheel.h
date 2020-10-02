@@ -53,7 +53,7 @@ public:
   ~UI_Flywheel();
 
   QSize sizeHint() const {return minimumSizeHint(); }
-  QSize minimumSizeHint() const {return QSize(10,30); }
+  QSize minimumSizeHint() const {return QSize(20,40); }
 
 private slots:
 
