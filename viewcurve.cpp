@@ -580,7 +580,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
         baseline = h / (signalcomps + 1);
         baseline *= (i + 1);
 
-        if((m_y<(baseline-5))&&(m_y>(baseline-(24 * h_scaling)))&&(m_x>3)&&(m_x<(110 * w_scaling)))
+        if((m_y<(baseline-5))&&(m_y>(baseline-(18*h_scaling)))&&(m_x>3)&&(m_x<(90*w_scaling)))
         {
           original_screen_offset = signalcomp[i]->screen_offset;
           signalcomp[i]->hasoffsettracking = 1;
@@ -825,7 +825,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
       baseline = h / (signalcomps + 1);
       baseline *= (i + 1);
 
-      if((m_y<(baseline-5))&&(m_y>(baseline-24))&&(m_x>3)&&(m_x<110))
+      if((m_y<(baseline-5))&&(m_y>(baseline-(18*h_scaling)))&&(m_x>3)&&(m_x<(90*w_scaling)))
       {
         if(pressed_on_label == (i + 1))
         {
@@ -4893,11 +4893,11 @@ inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, s
 
   painter->setPen((Qt::GlobalColor)floating_ruler_color);
 
-  painter->drawText(x_pos, y_pos - ((double)h / 80.0), "Hz");
+  painter->drawText(x_pos, y_pos - (h / 80.0), "Hz");
 
   for(i=0; i<7; i++)
   {
-    painter->drawText(x_pos - ((double)w / 30.0), y_pos + ((double)h / 204.8) + d_tmp2 + (d_tmp * i), str_hz[i]);
+    painter->drawText(x_pos - ((w / 60.0) * w_scaling), y_pos + (h / 204.8) + d_tmp2 + (d_tmp * i) + (h_scaling * 3.0 - 3.0), str_hz[i]);
   }
 
   for(i=1; i<7; i++)
@@ -4938,11 +4938,11 @@ inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, s
 
   d_tmp = h_size / 4.0;
 
-  painter->drawText(x_pos - ((double)w / 45.0), y_pos - ((double)h / 80.0), signalcomp->physdimension);
+  painter->drawText(x_pos, y_pos - ((double)h / 80.0), signalcomp->physdimension);
 
   for(i=0; i<5; i++)
   {
-    painter->drawText(x_pos - ((double)w / 45.0), y_pos + ((double)h / 204.8) + (d_tmp * i), str_uv[i]);
+    painter->drawText(x_pos - ((w / 80.0) * w_scaling), y_pos + ((double)h / 204.8) + (d_tmp * i) + (h_scaling * 3.0 - 3.0), str_uv[i]);
 
     painter->drawLine(x_pos + ((double)w / 160.0), y_pos + (d_tmp * i), x_pos + ((double)w / 45.7), y_pos + (d_tmp * i));
   }
@@ -4971,7 +4971,7 @@ inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, s
 
   for(i=0; i<4; i++)
   {
-    painter->drawText(x_pos - ((double)w / 25.0) + (d_tmp2 * i), y_pos + ((double)h / 204.8) + (d_tmp * i), str_s[i]);
+    painter->drawText(x_pos - ((w / 50.0) * w_scaling) + (d_tmp2 * i), y_pos + ((double)h / 204.8) + (d_tmp * i), str_s[i]);
   }
 
   painter->drawText(x_pos + ((double)w / 125.0) + w_size, y_pos + ((double)h / 204.8), "Sec");
