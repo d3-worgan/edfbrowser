@@ -56,6 +56,8 @@
 
 #endif
 
+#define QT_NO_DEPRECATED_WARNINGS
+
 #define PROGRAM_NAME                "EDFbrowser"
 #define PROGRAM_VERSION                   "1.77"
 #define PROGRAM_BETA_SUFFIX                   ""
