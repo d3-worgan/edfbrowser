@@ -1401,13 +1401,13 @@ int UI_SCPECG2EDFwindow::read_section_header(int n, FILE *inputfile, long long o
 
 unsigned short UI_SCPECG2EDFwindow::crc_ccitt(const unsigned char *message, int nbytes, unsigned short remainder)
 {
-  int byte;
+  int b;
 
   unsigned char data;
 
-  for(byte=0; byte<nbytes; byte++)  /* Divide the message by the polynomial, a byte at a time. */
+  for(b=0; b<nbytes; b++)  /* Divide the message by the polynomial, a byte at a time. */
   {
-    data = message[byte] ^ (remainder >> 8);
+    data = message[b] ^ (remainder >> 8);
 
     remainder = crc_ccitt_table[data] ^ (remainder << 8);
   }
@@ -1445,13 +1445,13 @@ void UI_SCPECG2EDFwindow::crc_ccitt_init(void)
 }
 
 
-inline unsigned char UI_SCPECG2EDFwindow::reverse_bitorder(unsigned char byte)
+inline unsigned char UI_SCPECG2EDFwindow::reverse_bitorder(unsigned char b)
 {
-  byte = (byte & 0xF0) >> 4 | (byte & 0x0F) << 4;
-  byte = (byte & 0xCC) >> 2 | (byte & 0x33) << 2;
-  byte = (byte & 0xAA) >> 1 | (byte & 0x55) << 1;
+  b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
+  b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
+  b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
 
-  return byte;
+  return b;
 }
 
 
