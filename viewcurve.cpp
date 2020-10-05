@@ -3641,8 +3641,7 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   signal_nr = signal_nr_intern;
 
   sidemenu = new QDialog(this);
-
-  sidemenu->setMinimumSize(190, 575);
+  sidemenu->setMinimumSize(250 * w_scaling, 2133 * h_scaling * 0.3);
   sidemenu->setWindowTitle("Signal properties");
   sidemenu->setModal(true);
   sidemenu->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -3763,6 +3762,7 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   QVBoxLayout *vlayout1 = new QVBoxLayout;
   vlayout1->addWidget(SidemenuLabel);
   vlayout1->addLayout(flayout);
+  vlayout1->addStretch(1000);
   vlayout1->addLayout(gr);
   sidemenu->setLayout(vlayout1);
 
