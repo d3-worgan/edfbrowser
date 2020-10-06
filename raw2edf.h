@@ -105,13 +105,13 @@ QLineEdit     *PatientnameLineEdit,
 QSpinBox      *SignalsSpinbox,
               *OffsetSpinbox,
               *SamplefreqSpinbox,
-              *SampleSizeSpinbox,
               *skipblocksizeSpinbox,
               *skipbytesSpinbox,
               *PhysicalMaximumSpinbox;
 
 QComboBox     *EncodingCombobox,
-              *EndiannessCombobox;
+              *EndiannessCombobox,
+              *SampleSizeCombobox;
 
 QDateTimeEdit *StartDatetimeedit;
 
@@ -126,8 +126,7 @@ char *recent_opendir,
 
 int edfsignals,
     offset,
-    samplefrequency,
-    edf_format;
+    samplefrequency;
 
 struct raw2edf_var_struct *raw2edf_var;
 

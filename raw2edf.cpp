@@ -39,8 +39,6 @@ UI_RAW2EDFapp::UI_RAW2EDFapp(QWidget *w_parent, struct raw2edf_var_struct *raw2e
 
   raw2edf_var = raw2edf_var_p;
 
-  edf_format = 1;
-
   raw2edfDialog = new QDialog;
   raw2edfDialog->setMinimumSize(525 * mainwindow->w_scaling, 375 * mainwindow->h_scaling);
   raw2edfDialog->setWindowTitle("Binary/raw data to EDF converter");
@@ -58,11 +56,11 @@ UI_RAW2EDFapp::UI_RAW2EDFapp(QWidget *w_parent, struct raw2edf_var_struct *raw2e
   SignalsSpinbox->setValue(raw2edf_var->chns);
   SignalsSpinbox->setToolTip("Number of channels");
 
-  SampleSizeSpinbox = new QSpinBox;
-  SampleSizeSpinbox->setRange(1,2);
-  SampleSizeSpinbox->setValue(raw2edf_var->samplesize);
-  SampleSizeSpinbox->setSuffix(" byte(s)");
-  SampleSizeSpinbox->setToolTip("Bytes per sample");
+  SampleSizeCombobox = new QComboBox;
+  SampleSizeCombobox->addItem("1 byte (8-bit)");
+  SampleSizeCombobox->addItem("1.5 byte (12-bit)");
+  SampleSizeCombobox->addItem("2 bytes (16-bit)");
+  SampleSizeCombobox->setToolTip("Bytes per sample");
 
   OffsetSpinbox = new QSpinBox;
   OffsetSpinbox->setRange(0,1000000);
@@ -143,7 +141,7 @@ UI_RAW2EDFapp::UI_RAW2EDFapp(QWidget *w_parent, struct raw2edf_var_struct *raw2e
   QFormLayout *flayout1 = new QFormLayout;
   flayout1->addRow("Samplefrequency", SamplefreqSpinbox);
   flayout1->addRow("Number of signals", SignalsSpinbox);
-  flayout1->addRow("Sample size", SampleSizeSpinbox);
+  flayout1->addRow("Sample size", SampleSizeCombobox);
   flayout1->addRow("Offset", OffsetSpinbox);
   flayout1->addRow("Encoding", EncodingCombobox);
   flayout1->addRow("Endianness", EndiannessCombobox);
@@ -195,7 +193,7 @@ UI_RAW2EDFapp::UI_RAW2EDFapp(QWidget *w_parent, struct raw2edf_var_struct *raw2e
   QObject::connect(SaveButton,                  SIGNAL(clicked()),                this,            SLOT(savebuttonpressed()));
   QObject::connect(LoadButton,                  SIGNAL(clicked()),                this,            SLOT(loadbuttonpressed()));
   QObject::connect(PhysicalDimensionLineEdit,   SIGNAL(textEdited(QString)),      this,            SLOT(PhysicalDimensionLineEdited(QString)));
-  QObject::connect(SampleSizeSpinbox,           SIGNAL(valueChanged(int)),        this,            SLOT(sampleTypeChanged(int)));
+  QObject::connect(SampleSizeCombobox,          SIGNAL(currentIndexChanged(int)), this,            SLOT(sampleTypeChanged(int)));
   QObject::connect(EncodingCombobox,            SIGNAL(currentIndexChanged(int)), this,            SLOT(sampleTypeChanged(int)));
   QObject::connect(helpButton,                  SIGNAL(clicked()),                this,            SLOT(helpbuttonpressed()));
 
@@ -220,7 +218,10 @@ void UI_RAW2EDFapp::gobuttonpressed()
       skipbytes,
       skipblockcntr,
       bytecntr,
-      big_endian;
+      big_endian,
+      odd_even=0,
+      tmp1,
+      tmp2;
 
   char str[1024],
        path[MAX_PATH_LENGTH];
@@ -247,7 +248,15 @@ void UI_RAW2EDFapp::gobuttonpressed()
   big_endian = EndiannessCombobox->currentIndex();
   raw2edf_var->endianness = big_endian;
 
-  samplesize = SampleSizeSpinbox->value();
+  samplesize = SampleSizeCombobox->currentIndex();
+  if(samplesize == 0)
+  {
+    samplesize = 1;
+  }
+  else if(samplesize == 1)
+    {
+      samplesize = 0;
+    }
   raw2edf_var->samplesize = samplesize;
 
   d_offset = OffsetSpinbox->value();
@@ -367,6 +376,31 @@ void UI_RAW2EDFapp::gobuttonpressed()
     }
   }
 
+  if(samplesize == 0)
+  {
+    for(i=0; i<chns; i++)
+    {
+      if(edf_set_digital_maximum(hdl, i, 4095))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "edf_set_digital_maximum()");
+        messagewindow.exec();
+        fclose(inputfile);
+        return;
+      }
+    }
+
+    for(i=0; i<chns; i++)
+    {
+      if(edf_set_digital_minimum(hdl, i, -4096))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "edf_set_digital_minimum()");
+        messagewindow.exec();
+        fclose(inputfile);
+        return;
+      }
+    }
+  }
+
   for(i=0; i<chns; i++)
   {
     if(edf_set_physical_maximum(hdl, i, phys_max))
@@ -464,33 +498,80 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
   bytecntr = 0;
 
-  while(1)
+  if(samplesize > 0)
   {
-    for(j=0; j<sf; j++)
+    while(1)
     {
-      for(k=0; k<chns; k++)
+      for(j=0; j<sf; j++)
       {
-
-//         tmp = fgetc(inputfile);
-//         if(tmp == EOF)
-//         {
-//           goto END_1;
-//         }
-//
-//         tmp += (fgetc(inputfile) * 256);
-//
-//         buf[j + (k * sf)] = tmp - 32768;
-
-        if(samplesize == 2)
+        for(k=0; k<chns; k++)
         {
+
+  //         tmp = fgetc(inputfile);
+  //         if(tmp == EOF)
+  //         {
+  //           goto END_1;
+  //         }
+  //
+  //         tmp += (fgetc(inputfile) * 256);
+  //
+  //         buf[j + (k * sf)] = tmp - 32768;
+
+          if(samplesize == 2)
+          {
+            tmp = fgetc(inputfile);
+            if(tmp == EOF)
+            {
+              goto END_1;
+            }
+            bytecntr++;
+
+  //           printf("1: skipblockcntr is %i    tmp is %02X   bytecntr is %i\n", skipblockcntr, tmp, bytecntr);
+
+            if(skipblocksize)
+            {
+              if(++skipblockcntr > skipblocksize)
+              {
+                for(r=0; r<skipbytes; r++)
+                {
+                  tmp = fgetc(inputfile);
+                  if(tmp == EOF)
+                  {
+                    goto END_1;
+                  }
+  //                bytecntr++;
+
+  //                printf("2: skipblockcntr is %i    tmp is %02X   bytecntr is %i\n", skipblockcntr, tmp, bytecntr);
+
+                }
+
+                skipblockcntr = 1;
+              }
+            }
+
+            if(big_endian)
+            {
+              var.four[1] = tmp;
+            }
+            else
+            {
+              var.four[0] = tmp;
+            }
+          }
+
+          if(samplesize == 1)
+          {
+            var.four[0] = 0;
+          }
+
           tmp = fgetc(inputfile);
           if(tmp == EOF)
           {
             goto END_1;
           }
-          bytecntr++;
+  //         bytecntr++;
 
-//           printf("1: skipblockcntr is %i    tmp is %02X   bytecntr is %i\n", skipblockcntr, tmp, bytecntr);
+  //         printf("3: skipblockcntr is %i    tmp is %02X   bytecntr is %i\n", skipblockcntr, tmp, bytecntr);
 
           if(skipblocksize)
           {
@@ -503,9 +584,9 @@ void UI_RAW2EDFapp::gobuttonpressed()
                 {
                   goto END_1;
                 }
-//                bytecntr++;
+                bytecntr++;
 
-//                printf("2: skipblockcntr is %i    tmp is %02X   bytecntr is %i\n", skipblockcntr, tmp, bytecntr);
+  //               printf("4: skipblockcntr is %i    tmp is %02X   bytecntr is %i\n", skipblockcntr, tmp, bytecntr);
 
               }
 
@@ -513,86 +594,165 @@ void UI_RAW2EDFapp::gobuttonpressed()
             }
           }
 
-          if(big_endian)
-          {
-            var.four[1] = tmp;
-          }
-          else
+          if(big_endian && (samplesize == 2))
           {
             var.four[0] = tmp;
           }
-        }
-
-        if(samplesize == 1)
-        {
-          var.four[0] = 0;
-        }
-
-        tmp = fgetc(inputfile);
-        if(tmp == EOF)
-        {
-          goto END_1;
-        }
-//         bytecntr++;
-
-//         printf("3: skipblockcntr is %i    tmp is %02X   bytecntr is %i\n", skipblockcntr, tmp, bytecntr);
-
-        if(skipblocksize)
-        {
-          if(++skipblockcntr > skipblocksize)
+          else
           {
-            for(r=0; r<skipbytes; r++)
+            var.four[1] = tmp;
+          }
+
+          if(straightbinary)
+          {
+            var.two[0] -= 32768;
+          }
+
+          if(samplesize == 1)
+          {
+            var.two[0] >>= 8;
+          }
+
+          buf[j + (k * sf)] = var.two[0];
+        }
+      }
+
+      if(edf_blockwrite_digital_samples(hdl, buf))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Write error during conversion.\nedf_blockwrite_digital_samples()");
+        messagewindow.exec();
+        edfclose_file(hdl);
+        fclose(inputfile);
+        free(buf);
+        return;
+      }
+
+      datarecords++;
+  //    if(datarecords == 1)  break;
+    }
+  }
+
+  if(samplesize == 0)
+  {
+    while(1)
+    {
+      for(j=0; j<sf; j++)
+      {
+        for(k=0; k<chns; k++)
+        {
+          var.one[0] = 0;
+
+          if(odd_even)
+          {
+            odd_even = 0;
+
+            tmp1 = fgetc(inputfile);
+            if(tmp1 == EOF)
             {
-              tmp = fgetc(inputfile);
-              if(tmp == EOF)
-              {
-                goto END_1;
-              }
-              bytecntr++;
-
-//               printf("4: skipblockcntr is %i    tmp is %02X   bytecntr is %i\n", skipblockcntr, tmp, bytecntr);
-
+              goto END_1;
             }
 
-            skipblockcntr = 1;
+            if(skipblocksize)
+            {
+              if(++skipblockcntr > skipblocksize)
+              {
+                for(r=0; r<skipbytes; r++)
+                {
+                  tmp = fgetc(inputfile);
+                  if(tmp == EOF)
+                  {
+                    goto END_1;
+                  }
+                }
+
+                skipblockcntr = 1;
+              }
+            }
+
+            var.one[0] = (tmp2 & 0xf0) << 4;
+            var.one[0] += tmp1;
+            if(var.one[0] & 0x800)
+            {
+              var.one[0] |= 0xfffff000;
+            }
           }
-        }
+          else
+          {
+            odd_even = 1;
 
-        if(big_endian && (samplesize == 2))
-        {
-          var.four[0] = tmp;
-        }
-        else
-        {
-          var.four[1] = tmp;
-        }
+            tmp1 = fgetc(inputfile);
+            if(tmp1 == EOF)
+            {
+              goto END_1;
+            }
 
-        if(straightbinary)
-        {
-          var.two[0] -= 32768;
-        }
+            if(skipblocksize)
+            {
+              if(++skipblockcntr > skipblocksize)
+              {
+                for(r=0; r<skipbytes; r++)
+                {
+                  tmp = fgetc(inputfile);
+                  if(tmp == EOF)
+                  {
+                    goto END_1;
+                  }
+                }
 
-        if(samplesize == 1)
-        {
-          var.two[0] >>= 8;
-        }
+                skipblockcntr = 1;
+              }
+            }
 
-        buf[j + (k * sf)] = var.two[0];
+            tmp2 = fgetc(inputfile);
+            if(tmp2 == EOF)
+            {
+              goto END_1;
+            }
+
+            if(skipblocksize)
+            {
+              if(++skipblockcntr > skipblocksize)
+              {
+                for(r=0; r<skipbytes; r++)
+                {
+                  tmp = fgetc(inputfile);
+                  if(tmp == EOF)
+                  {
+                    goto END_1;
+                  }
+                }
+
+                skipblockcntr = 1;
+              }
+            }
+
+            var.one[0] = (tmp2 & 0x0f) << 8;
+            var.one[0] += tmp1;
+            if(var.one[0] & 0x800)
+            {
+              var.one[0] |= 0xfffff000;
+            }
+          }
+
+
+
+
+          buf[j + (k * sf)] = var.two[0];
+        }
       }
-    }
 
-    if(edf_blockwrite_digital_samples(hdl, buf))
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Write error during conversion.\nedf_blockwrite_digital_samples()");
-      messagewindow.exec();
-      edfclose_file(hdl);
-      fclose(inputfile);
-      free(buf);
-      return;
-    }
+      if(edf_blockwrite_digital_samples(hdl, buf))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Write error during conversion.\nedf_blockwrite_digital_samples()");
+        messagewindow.exec();
+        edfclose_file(hdl);
+        fclose(inputfile);
+        free(buf);
+        return;
+      }
 
-    datarecords++;
-//    if(datarecords == 1)  break;
+      datarecords++;
+    }
   }
 
 END_1:
@@ -627,7 +787,15 @@ void UI_RAW2EDFapp::savebuttonpressed()
 
   raw2edf_var->endianness = EndiannessCombobox->currentIndex();
 
-  raw2edf_var->samplesize = SampleSizeSpinbox->value();
+  raw2edf_var->samplesize = SampleSizeCombobox->currentIndex();
+  if(raw2edf_var->samplesize == 0)
+  {
+    raw2edf_var->samplesize = 1;
+  }
+  else if(raw2edf_var->samplesize == 1)
+    {
+      raw2edf_var->samplesize = 0;
+    }
 
   raw2edf_var->offset = OffsetSpinbox->value();
 
@@ -889,7 +1057,18 @@ void UI_RAW2EDFapp::loadbuttonpressed()
 
   EndiannessCombobox->setCurrentIndex(raw2edf_var->endianness);
 
-  SampleSizeSpinbox->setValue(raw2edf_var->samplesize);
+  if(raw2edf_var->samplesize == 0)
+  {
+    SampleSizeCombobox->setCurrentIndex(1);
+  }
+  else if(raw2edf_var->samplesize == 1)
+    {
+      SampleSizeCombobox->setCurrentIndex(0);
+    }
+    else
+    {
+      SampleSizeCombobox->setCurrentIndex(raw2edf_var->samplesize);
+    }
 
   OffsetSpinbox->setValue(raw2edf_var->offset);
 
@@ -901,7 +1080,7 @@ void UI_RAW2EDFapp::loadbuttonpressed()
 
 void UI_RAW2EDFapp::sampleTypeChanged(int)
 {
-  if(SampleSizeSpinbox->value() == 1)
+  if(SampleSizeCombobox->currentIndex() == 0)
   {
     if(EncodingCombobox->currentIndex() == 0)
     {
@@ -914,19 +1093,32 @@ void UI_RAW2EDFapp::sampleTypeChanged(int)
 
     EndiannessCombobox->setEnabled(false);
   }
-  else
-  {
-    if(EncodingCombobox->currentIndex() == 0)
+  else if(SampleSizeCombobox->currentIndex() == 1)
     {
-      variableTypeLineEdit->setText("I16");
-    }
-    else
-    {
-      variableTypeLineEdit->setText("U16");
-    }
+      if(EncodingCombobox->currentIndex() == 0)
+      {
+        variableTypeLineEdit->setText("I12");
+      }
+      else
+      {
+        variableTypeLineEdit->setText("U12");
+      }
 
-    EndiannessCombobox->setEnabled(true);
-  }
+      EndiannessCombobox->setEnabled(false);
+    }
+    else if(SampleSizeCombobox->currentIndex() == 2)
+      {
+        if(EncodingCombobox->currentIndex() == 0)
+        {
+          variableTypeLineEdit->setText("I16");
+        }
+        else
+        {
+          variableTypeLineEdit->setText("U16");
+        }
+
+        EndiannessCombobox->setEnabled(true);
+      }
 }
 
 
