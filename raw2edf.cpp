@@ -523,7 +523,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
             if(skipblocksize)
             {
-              if(++skipblockcntr > skipblocksize)
+              if(++skipblockcntr >= skipblocksize)
               {
                 for(r=0; r<skipbytes; r++)
                 {
@@ -538,7 +538,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
                 }
 
-                skipblockcntr = 1;
+                skipblockcntr = 0;
               }
             }
 
@@ -568,7 +568,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
           if(skipblocksize)
           {
-            if(++skipblockcntr > skipblocksize)
+            if(++skipblockcntr >= skipblocksize)
             {
               for(r=0; r<skipbytes; r++)
               {
@@ -583,7 +583,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
               }
 
-              skipblockcntr = 1;
+              skipblockcntr = 0;
             }
           }
 
@@ -647,7 +647,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
             if(skipblocksize)
             {
-              if(++skipblockcntr > skipblocksize)
+              if(++skipblockcntr >= skipblocksize)
               {
                 for(r=0; r<skipbytes; r++)
                 {
@@ -658,7 +658,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
                   }
                 }
 
-                skipblockcntr = 1;
+                skipblockcntr = 0;
               }
             }
 
@@ -681,7 +681,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
             if(skipblocksize)
             {
-              if(++skipblockcntr > skipblocksize)
+              if(++skipblockcntr >= skipblocksize)
               {
                 for(r=0; r<skipbytes; r++)
                 {
@@ -692,7 +692,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
                   }
                 }
 
-                skipblockcntr = 1;
+                skipblockcntr = 0;
               }
             }
 
@@ -704,7 +704,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
             if(skipblocksize)
             {
-              if(++skipblockcntr > skipblocksize)
+              if(++skipblockcntr >= skipblocksize)
               {
                 for(r=0; r<skipbytes; r++)
                 {
@@ -715,7 +715,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
                   }
                 }
 
-                skipblockcntr = 1;
+                skipblockcntr = 0;
               }
             }
 
@@ -1060,11 +1060,11 @@ void UI_RAW2EDFapp::sampleTypeChanged(int)
   {
     if(EncodingCombobox->currentIndex() == 0)
     {
-      variableTypeLineEdit->setText("I8");
+      variableTypeLineEdit->setText("I12");
     }
     else
     {
-      variableTypeLineEdit->setText("U8");
+      variableTypeLineEdit->setText("U12");
     }
 
     EndiannessCombobox->setEnabled(false);
@@ -1073,11 +1073,11 @@ void UI_RAW2EDFapp::sampleTypeChanged(int)
     {
       if(EncodingCombobox->currentIndex() == 0)
       {
-        variableTypeLineEdit->setText("I12");
+        variableTypeLineEdit->setText("I8");
       }
       else
       {
-        variableTypeLineEdit->setText("U12");
+        variableTypeLineEdit->setText("U8");
       }
 
       EndiannessCombobox->setEnabled(false);
