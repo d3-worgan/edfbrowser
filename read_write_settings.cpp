@@ -1833,7 +1833,7 @@ void UI_Mainwindow::read_general_settings()
       }
 
       raw2edf_var.samplesize = atoi(result);
-      if(raw2edf_var.samplesize < 1)  raw2edf_var.samplesize = 1;
+      if(raw2edf_var.samplesize < 0)  raw2edf_var.samplesize = 0;
       if(raw2edf_var.samplesize > 2)  raw2edf_var.samplesize = 2;
 
       xml_go_up(xml_hdl);

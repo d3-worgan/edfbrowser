@@ -57,10 +57,11 @@ UI_RAW2EDFapp::UI_RAW2EDFapp(QWidget *w_parent, struct raw2edf_var_struct *raw2e
   SignalsSpinbox->setToolTip("Number of channels");
 
   SampleSizeCombobox = new QComboBox;
-  SampleSizeCombobox->addItem("1 byte (8-bit)");
-  SampleSizeCombobox->addItem("1.5 byte (12-bit)");
-  SampleSizeCombobox->addItem("2 bytes (16-bit)");
-  SampleSizeCombobox->setToolTip("Bytes per sample");
+  SampleSizeCombobox->addItem("12 bits (1.5 byte)");
+  SampleSizeCombobox->addItem("8 bits (1 byte)");
+  SampleSizeCombobox->addItem("16 bits (2 bytes)");
+  SampleSizeCombobox->setToolTip("Bits per sample");
+  SampleSizeCombobox->setCurrentIndex(raw2edf_var->samplesize);
 
   OffsetSpinbox = new QSpinBox;
   OffsetSpinbox->setRange(0,1000000);
@@ -249,14 +250,6 @@ void UI_RAW2EDFapp::gobuttonpressed()
   raw2edf_var->endianness = big_endian;
 
   samplesize = SampleSizeCombobox->currentIndex();
-  if(samplesize == 0)
-  {
-    samplesize = 1;
-  }
-  else if(samplesize == 1)
-    {
-      samplesize = 0;
-    }
   raw2edf_var->samplesize = samplesize;
 
   d_offset = OffsetSpinbox->value();
@@ -788,14 +781,6 @@ void UI_RAW2EDFapp::savebuttonpressed()
   raw2edf_var->endianness = EndiannessCombobox->currentIndex();
 
   raw2edf_var->samplesize = SampleSizeCombobox->currentIndex();
-  if(raw2edf_var->samplesize == 0)
-  {
-    raw2edf_var->samplesize = 1;
-  }
-  else if(raw2edf_var->samplesize == 1)
-    {
-      raw2edf_var->samplesize = 0;
-    }
 
   raw2edf_var->offset = OffsetSpinbox->value();
 
@@ -978,7 +963,7 @@ void UI_RAW2EDFapp::loadbuttonpressed()
     }
 
     raw2edf_var->samplesize = atoi(result);
-    if(raw2edf_var->samplesize < 1)  raw2edf_var->samplesize = 1;
+    if(raw2edf_var->samplesize < 0)  raw2edf_var->samplesize = 0;
     if(raw2edf_var->samplesize > 2)  raw2edf_var->samplesize = 2;
 
     xml_go_up(xml_hdl);
@@ -1057,18 +1042,7 @@ void UI_RAW2EDFapp::loadbuttonpressed()
 
   EndiannessCombobox->setCurrentIndex(raw2edf_var->endianness);
 
-  if(raw2edf_var->samplesize == 0)
-  {
-    SampleSizeCombobox->setCurrentIndex(1);
-  }
-  else if(raw2edf_var->samplesize == 1)
-    {
-      SampleSizeCombobox->setCurrentIndex(0);
-    }
-    else
-    {
-      SampleSizeCombobox->setCurrentIndex(raw2edf_var->samplesize);
-    }
+  SampleSizeCombobox->setCurrentIndex(raw2edf_var->samplesize);
 
   OffsetSpinbox->setValue(raw2edf_var->offset);
 
