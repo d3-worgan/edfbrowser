@@ -499,6 +499,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
       {
         for(k=0; k<chns; k++)
         {
+          var.one[0] = 0;
 
   //         tmp = fgetc(inputfile);
   //         if(tmp == EOF)
@@ -664,9 +665,23 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
             var.one[0] = (tmp2 & 0xf0) << 4;
             var.one[0] += tmp1;
-            if(var.one[0] & 0x800)
+            if(straightbinary)
             {
-              var.one[0] |= 0xfffff000;
+              if(var.one[0] & 0x800)
+              {
+                var.one[0] &= 0x7ff;
+              }
+              else
+              {
+                var.one[0] |= 0xfffff800;
+              }
+            }
+            else
+            {
+              if(var.one[0] & 0x800)
+              {
+                var.one[0] |= 0xfffff000;
+              }
             }
           }
           else
@@ -721,15 +736,24 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
             var.one[0] = (tmp2 & 0x0f) << 8;
             var.one[0] += tmp1;
-            if(var.one[0] & 0x800)
+            if(straightbinary)
             {
-              var.one[0] |= 0xfffff000;
+              if(var.one[0] & 0x800)
+              {
+                var.one[0] &= 0x7ff;
+              }
+              else
+              {
+                var.one[0] |= 0xfffff800;
+              }
             }
-          }
-
-          if(straightbinary)
-          {
-            var.two[0] -= 32768;
+            else
+            {
+              if(var.one[0] & 0x800)
+              {
+                var.one[0] |= 0xfffff000;
+              }
+            }
           }
 
           buf[j + (k * sf)] = var.two[0];
