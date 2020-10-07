@@ -727,8 +727,10 @@ void UI_RAW2EDFapp::gobuttonpressed()
             }
           }
 
-
-
+          if(straightbinary)
+          {
+            var.two[0] -= 32768;
+          }
 
           buf[j + (k * sf)] = var.two[0];
         }
