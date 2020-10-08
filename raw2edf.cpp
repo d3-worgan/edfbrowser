@@ -477,6 +477,10 @@ void UI_RAW2EDFapp::gobuttonpressed()
 //          skipblocksize,
 //          skipbytes);
 
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+  raw2edfDialog->setEnabled(false);
+
   fseeko(inputfile, d_offset, SEEK_SET);
 
   datarecords = 0;
@@ -495,6 +499,8 @@ void UI_RAW2EDFapp::gobuttonpressed()
   {
     while(1)
     {
+      qApp->processEvents();
+
       for(j=0; j<sf; j++)
       {
         for(k=0; k<chns; k++)
@@ -613,6 +619,8 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
       if(edf_blockwrite_digital_samples(hdl, buf))
       {
+        QApplication::restoreOverrideCursor();
+        raw2edfDialog->setEnabled(true);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Write error during conversion.\nedf_blockwrite_digital_samples()");
         messagewindow.exec();
         edfclose_file(hdl);
@@ -630,6 +638,8 @@ void UI_RAW2EDFapp::gobuttonpressed()
   {
     while(1)
     {
+      qApp->processEvents();
+
       for(j=0; j<sf; j++)
       {
         for(k=0; k<chns; k++)
@@ -762,6 +772,8 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
       if(edf_blockwrite_digital_samples(hdl, buf))
       {
+        QApplication::restoreOverrideCursor();
+        raw2edfDialog->setEnabled(true);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Write error during conversion.\nedf_blockwrite_digital_samples()");
         messagewindow.exec();
         edfclose_file(hdl);
@@ -779,6 +791,9 @@ END_1:
   edfclose_file(hdl);
   fclose(inputfile);
   free(buf);
+
+  QApplication::restoreOverrideCursor();
+  raw2edfDialog->setEnabled(true);
 
   snprintf(str, 1024, "A new EDF file has been created:\n\n%.980s", path);
   QMessageBox messagewindow(QMessageBox::Information, "Ready", str);
