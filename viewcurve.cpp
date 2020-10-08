@@ -259,7 +259,11 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
 
   if(QApplication::keyboardModifiers() == Qt::ControlModifier)
   {
+#if QT_VERSION >= 0x050C00
+    if(wheel_event->angleDelta().y() > 0)
+#else
     if(wheel_event->delta() > 0)
+#endif
     {
       if((mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
       {
@@ -414,7 +418,11 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
   {
     if((mainwindow->video_player->status == VIDEO_STATUS_PLAYING) || (mainwindow->video_player->status == VIDEO_STATUS_PAUSED))
     {
+#if QT_VERSION >= 0x050C00
+      if(wheel_event->angleDelta().y() > 0)
+#else
       if(wheel_event->delta() > 0)
+#endif
       {
         mainwindow->video_player_seek((int)((mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime - (mainwindow->pagetime / mainwindow->mousewheelsens)) / TIME_DIMENSION));
       }
@@ -430,7 +438,11 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
     {
       for(i=0; i<mainwindow->files_open; i++)
       {
+#if QT_VERSION >= 0x050C00
+        if(wheel_event->angleDelta().y() > 0)
+#else
         if(wheel_event->delta() > 0)
+#endif
         {
           mainwindow->edfheaderlist[i]->viewtime -= (mainwindow->pagetime / mainwindow->mousewheelsens);
         }
@@ -443,7 +455,11 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
 
     if(mainwindow->viewtime_sync==VIEWTIME_UNSYNCED)
     {
+#if QT_VERSION >= 0x050C00
+      if(wheel_event->angleDelta().y() > 0)
+#else
       if(wheel_event->delta() > 0)
+#endif
       {
         mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= (mainwindow->pagetime / mainwindow->mousewheelsens);
       }

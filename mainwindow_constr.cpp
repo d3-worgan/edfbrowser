@@ -1174,7 +1174,11 @@ UI_Mainwindow::UI_Mainwindow()
   {
     p.drawText(150, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_VERSION " " PROGRAM_BETA_SUFFIX "    " THIS_APP_BITS_W);
   }
+#if QT_VERSION >= 0x050E00
+  splash = new QSplashScreen(this->screen(), *splash_pixmap, Qt::WindowStaysOnTopHint);
+#else
   splash = new QSplashScreen(this, *splash_pixmap, Qt::WindowStaysOnTopHint);
+#endif
 
   if((QT_VERSION < MINIMUM_QT4_VERSION) || ((QT_VERSION >= 0x050000) && (QT_VERSION < MINIMUM_QT5_VERSION)))
   {
