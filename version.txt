@@ -1,5 +1,5 @@
 
- version 1.78      to be defined
+ version 1.78      October 10, 2020
  --------------
 
  - Make it possible to change the fontsize.
