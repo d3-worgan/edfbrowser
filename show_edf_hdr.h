@@ -50,6 +50,7 @@
 #include <QGridLayout>
 #include <QFormLayout>
 #include <QStackedLayout>
+#include <QStackedWidget>
 
 #include "global.h"
 #include "mainwindow.h"
