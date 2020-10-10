@@ -3,13 +3,13 @@ Requirements
 ============
 Qt  http://www.qt.io/
 
-Minimum version 4.7.1 or later, preferable 4.8.7
+Qt4 minimum version 4.7.1 or later, preferable 4.8.7
 
-If you want to use Qt5, it must be version >= 5.9.1.
-For info how to compile Qt5 from source, scroll down.
+or
+
+Qt5 minimum version 5.9.1 or later, preferable 5.12.9
 
 EDFbrowser is a GNU/Linux & GCC & GNU Make project. Other tools or compilers are not supported.
-Requests to support other tools or compilers will be ignored.
 
 
 Introduction
@@ -28,7 +28,7 @@ sudo apt-get install g++ make git qtbase5-dev-tools qtbase5-dev qt5-default
 git clone https://gitlab.com/Teuniz/EDFbrowser.git
 cd EDFbrowser
 qmake
-make -j4
+make -j24  (change option -j according to number of available cpu cores/threads e.g -j4 or -j8)
 sudo make install
 edfbrowser
 
@@ -79,11 +79,9 @@ cd qt-everywhere-src-5.12.9
 
 ./configure -v -prefix /usr/local/Qt-5.12.9-static -release -opensource -confirm-license -c++std c++11 -static -accessibility -fontconfig -skip qtdeclarative -skip qtconnectivity -skip qtmultimedia -qt-zlib -no-mtdev -no-journald -qt-libpng -qt-libjpeg -system-freetype -qt-harfbuzz -no-openssl -no-libproxy -no-glib -nomake examples -nomake tests -no-compile-examples -cups -no-evdev -no-dbus -no-eglfs -qreal double -no-opengl -skip qtlocation -skip qtsensors -skip qtwayland -skip qtgamepad -skip qtserialbus -skip qt3d -skip qtpurchasing -skip qtquickcontrols -skip qtquickcontrols2 -skip qtspeech -skip qtwebengine
 
-(takes about 2 minutes)
+make -j24  (change option -j according to number of available cpu cores e.g -j4 or -j8)
 
-make -j6  (change option -j according to number of available cpu cores e.g -j4 or -j8)
-
-(takes about 12 minutes)
+(takes about 2.5 minutes on an AMD Ryzen 9 3900X)
 
 sudo make install
 
@@ -91,7 +89,7 @@ Now go to the directory that contains the EDFbrowser sourcecode and enter the fo
 
 /usr/local/Qt-5.12.9-static/bin/qmake
 
-make -j6  (change option -j according to number of available cpu cores e.g -j4 or -j8)
+make -j24  (change option -j according to number of available cpu cores e.g -j4 or -j8)
 
 sudo make install
 
