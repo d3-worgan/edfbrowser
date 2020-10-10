@@ -10,6 +10,8 @@
     <file>images/media-playback-pause-symbolic.symbolic.png</file>
     <file>images/media-playback-start-symbolic.symbolic.png</file>
     <file>images/media-playback-stop-symbolic.symbolic.png</file>
+    <file>images/media-seek-forward-symbolic.symbolic.png</file>
+    <file>images/media-seek-backward-symbolic.symbolic.png</file>
     <file>images/go-first-symbolic.symbolic.png</file>
     <file>images/go-first-symbolic-rtl.symbolic.png</file>
     <file>images/zoom-in-symbolic.symbolic.png</file>
@@ -32,7 +34,5 @@
     <file>images/darkmagenta_icon_16x16.png</file>
     <file>images/green_icon_16x16.png</file>
     <file>images/white_icon_16x16.png</file>
-    <file>images/media-seek-forward.png</file>
-    <file>images/media-seek-backward.png</file>
 </qresource>
 </RCC>

@@ -921,63 +921,56 @@ UI_Mainwindow::UI_Mainwindow()
   navtoolbar->setIconSize(QSize(20 * h_scaling, 20 * h_scaling));
   addToolBar(Qt::BottomToolBarArea, navtoolbar);
 
-  former_page_Act = new QAction(QIcon(":/images/go-first-symbolic.symbolic.png"), "<<", this);
-  former_page_Act->setToolTip("Former Page");
+  former_page_Act = new QAction(QIcon(":/images/go-first-symbolic.symbolic.png"), "Former page", this);
   former_page_Act->setShortcut(QKeySequence::MoveToPreviousPage);
   connect(former_page_Act, SIGNAL(triggered()), this, SLOT(former_page()));
   navtoolbar->addAction(former_page_Act);
 
-  stop_playback_realtime_Act = new QAction(QIcon(":/images/media-playback-stop-symbolic.symbolic.png"), "[stop]", this);
+  stop_playback_realtime_Act = new QAction(QIcon(":/images/media-playback-stop-symbolic.symbolic.png"), "Stop", this);
   connect(stop_playback_realtime_Act, SIGNAL(triggered()), this, SLOT(stop_playback()));
   navtoolbar->addAction(stop_playback_realtime_Act);
 
-  playback_file_Act = new QAction(QIcon(":/images/media-playback-start-symbolic.symbolic.png"), "[play]", this);
+  playback_file_Act = new QAction(QIcon(":/images/media-playback-start-symbolic.symbolic.png"), "Playback", this);
   connect(playback_file_Act, SIGNAL(triggered()), this, SLOT(playback_file()));
   navtoolbar->addAction(playback_file_Act);
 
-  shift_page_up_Act = new QAction(QIcon(":/images/go-up-symbolic.symbolic.png"), "^", this);
-  shift_page_up_Act->setToolTip("Shift Up");
+  shift_page_up_Act = new QAction(QIcon(":/images/go-up-symbolic.symbolic.png"), "Shift up", this);
 //  shift_page_up_Act->setShortcut(QKeySequence::MoveToPreviousLine);
   connect(shift_page_up_Act, SIGNAL(triggered()), this, SLOT(shift_page_up()));
   navtoolbar->addAction(shift_page_up_Act);
 
-  shift_page_down_Act = new QAction(QIcon(":/images/go-down-symbolic.symbolic.png"), "v", this);
-  shift_page_down_Act->setToolTip("Shift Down");
+  shift_page_down_Act = new QAction(QIcon(":/images/go-down-symbolic.symbolic.png"), "Shift down", this);
 //  shift_page_down_Act->setShortcut(QKeySequence::MoveToNextLine);
   connect(shift_page_down_Act, SIGNAL(triggered()), this, SLOT(shift_page_down()));
   navtoolbar->addAction(shift_page_down_Act);
 
-  shift_page_left_Act = new QAction(QIcon(":/images/go-next-symbolic-rtl.symbolic.png"), "<", this);
-  shift_page_left_Act->setToolTip("Shift Left");
+  shift_page_left_Act = new QAction(QIcon(":/images/go-next-symbolic-rtl.symbolic.png"), "Shift left", this);
 //  shift_page_left_Act->setShortcut(QKeySequence::MoveToPreviousChar);
   connect(shift_page_left_Act, SIGNAL(triggered()), this, SLOT(shift_page_left()));
   navtoolbar->addAction(shift_page_left_Act);
 
-  shift_page_right_Act = new QAction(QIcon(":/images/go-next-symbolic.symbolic.png"), ">", this);
-  shift_page_right_Act->setToolTip("Shift Right");
+  shift_page_right_Act = new QAction(QIcon(":/images/go-next-symbolic.symbolic.png"), "Shift Right", this);
 //  shift_page_right_Act->setShortcut(QKeySequence::MoveToNextChar);
   connect(shift_page_right_Act, SIGNAL(triggered()), this, SLOT(shift_page_right()));
   navtoolbar->addAction(shift_page_right_Act);
 
-  next_page_Act = new QAction(QIcon(":/images/go-first-symbolic-rtl.symbolic.png"), ">>", this);
-  next_page_Act->setToolTip("Next Page");
+  next_page_Act = new QAction(QIcon(":/images/go-first-symbolic-rtl.symbolic.png"), "Next page", this);
   next_page_Act->setShortcut(QKeySequence::MoveToNextPage);
   connect(next_page_Act, SIGNAL(triggered()), this, SLOT(next_page()));
   navtoolbar->addAction(next_page_Act);
 
-  slower_Act = new QAction(QIcon(":/images/media-seek-backward.png"), "<<", this);
-  slower_Act->setToolTip("Slower");
+  slower_Act = new QAction(QIcon(":/images/media-seek-backward-symbolic.symbolic.png"), "Slower", this);
 //  slower_Act->setShortcut(QKeySequence::MoveToNextPage);
   connect(slower_Act, SIGNAL(triggered()), this, SLOT(video_player_slower()));
   navtoolbar->addAction(slower_Act);
   slower_Act->setVisible(false);
 
-  faster_Act = new QAction(QIcon(":/images/media-seek-forward.png"), ">>", this);
-  faster_Act->setToolTip("Faster");
+  faster_Act = new QAction(QIcon(":/images/media-seek-forward-symbolic.symbolic.png"), "Faster", this);
 //  faster_Act->setShortcut(QKeySequence::MoveToNextPage);
   connect(faster_Act, SIGNAL(triggered()), this, SLOT(video_player_faster()));
   navtoolbar->addAction(faster_Act);
   faster_Act->setVisible(false);
+//  faster_Act->setToolTip("Faster");
 
   zoomback_Act = new QAction(QIcon(":/images/zoom-out-symbolic.symbolic.png"), "Zoom Out", this);
   zoomback_Act->setShortcut(Qt::Key_Backspace);

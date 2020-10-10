@@ -85,6 +85,7 @@
 #include <QRect>
 #include <QFontMetrics>
 #include <QSize>
+#include <QToolTip>
 
 #if QT_VERSION >= 0x050200
 #include <QFontDatabase>
