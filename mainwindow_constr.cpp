@@ -918,6 +918,7 @@ UI_Mainwindow::UI_Mainwindow()
   navtoolbar = new QToolBar("Navigation Bar");
   navtoolbar->setFloatable(false);
   navtoolbar->setAllowedAreas(Qt::AllToolBarAreas);
+  navtoolbar->setIconSize(QSize(20 * h_scaling, 20 * h_scaling));
   addToolBar(Qt::BottomToolBarArea, navtoolbar);
 
   former_page_Act = new QAction(QIcon(":/images/go-first-symbolic.symbolic.png"), "<<", this);

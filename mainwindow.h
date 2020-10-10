@@ -84,6 +84,7 @@
 #include <QDir>
 #include <QRect>
 #include <QFontMetrics>
+#include <QSize>
 
 #if QT_VERSION >= 0x050200
 #include <QFontDatabase>
