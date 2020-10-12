@@ -656,10 +656,14 @@ void UI_EDFDwindow::write_values_to_hdr(FILE *outputfile, long long timestamp, i
   utc_to_date_time(edfhdr->utc_starttime + (timestamp / TIME_DIMENSION), &date_time);
 
   fseeko(outputfile, 98LL, SEEK_SET);
-  fprintf(outputfile, "%02i-%s-%04i",
-          date_time.day,
-          date_time.month_str,
-          date_time.year);
+  if(fgetc(outputfile) != 'X')
+  {
+    fseeko(outputfile, 98LL, SEEK_SET);
+    fprintf(outputfile, "%02i-%s-%04i",
+            date_time.day,
+            date_time.month_str,
+            date_time.year);
+  }
 
   fseeko(outputfile, 168LL, SEEK_SET);
   fprintf(outputfile, "%02i.%02i.%02i%02i.%02i.%02i",
