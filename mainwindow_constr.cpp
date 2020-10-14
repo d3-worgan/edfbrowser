@@ -327,13 +327,20 @@ UI_Mainwindow::UI_Mainwindow()
 
   font_pixel_height = fm.ascent();
 
+#if QT_VERSION >= 0x050B00
+  font_pixel_width = (fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZ") / 26.0) + 0.5;
+#else
   font_pixel_width = (fm.width("ABCDEFGHIJKLMNOPQRSTUVWXYZ") / 26.0) + 0.5;
-
+#endif
 //  printf("font_pixel_height: %i    font_pixel_width: %i\n", font_pixel_height, font_pixel_width);
 
   h_scaling = fm.height() / 18.0;
 
+#if QT_VERSION >= 0x050B00
+  w_scaling = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") / 260.0;
+#else
   w_scaling = fm.width("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") / 260.0;
+#endif
 
   if(w_scaling > 4.0)  w_scaling = 4.0;
   if(w_scaling < 1.0)  w_scaling = 1.0;
@@ -1169,8 +1176,8 @@ UI_Mainwindow::UI_Mainwindow()
     p.drawText(50, 240, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_VERSION "  " THIS_APP_BITS_W);
     p.drawText(50, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, PROGRAM_BETA_SUFFIX);
   }
-#if QT_VERSION >= 0x050E00
-  splash = new QSplashScreen(this->screen(), *splash_pixmap, Qt::WindowStaysOnTopHint);
+#if QT_VERSION >= 0x050F00
+  splash = new QSplashScreen(this->screen(), *splash_pixmap);
 #else
   splash = new QSplashScreen(this, *splash_pixmap, Qt::WindowStaysOnTopHint);
 #endif

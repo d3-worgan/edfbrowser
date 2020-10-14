@@ -2018,8 +2018,11 @@ void UI_Mainwindow::add_signals_dialog()
 
 void UI_Mainwindow::show_splashscreen()
 {
+#if QT_VERSION >= 0x050F00
+  splash = new QSplashScreen(this->screen(), *splash_pixmap);
+#else
   splash = new QSplashScreen(this, *splash_pixmap, Qt::WindowStaysOnTopHint);
-
+#endif
   splash->show();
 }
 

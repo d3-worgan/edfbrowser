@@ -121,7 +121,11 @@ void SpecialButton::setText(const char *str)
 
     QFontMetrics fm(font);
 
+#if QT_VERSION >= 0x050B00
+    sz_hint_w = fm.horizontalAdvance(buttonText) + 40;
+#else
     sz_hint_w = fm.width(buttonText) + 40;
+#endif
     sz_hint_h = fm.height() + 8;
 
     if(sz_hint_w < 50)  sz_hint_w = 50;

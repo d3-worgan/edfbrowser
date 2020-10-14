@@ -53,7 +53,11 @@ SignalCurve::SignalCurve(QWidget *w_parent) : QWidget(w_parent)
 
   h_scaling = fm.height() / 18.0;
 
+#if QT_VERSION >= 0x050B00
+  w_scaling = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") / 260.0;
+#else
   w_scaling = fm.width("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") / 260.0;
+#endif
 
   if(w_scaling > 4.0)  w_scaling = 4.0;
   if(w_scaling < 1.0)  w_scaling = 1.0;
