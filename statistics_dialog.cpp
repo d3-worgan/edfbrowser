@@ -107,7 +107,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
 
   if((job_src == STAT_JOB_SRC_ECG) || (job_src == STAT_JOB_SRC_ANNOT))
   {
-    StatDialog->setMinimumSize(600, 400);
+    StatDialog->setMinimumSize(600 * mainwindow->w_scaling, 450 * mainwindow->h_scaling);
     StatDialog->setSizeGripEnabled(true);
 
     startSlider = new QSlider;
@@ -154,15 +154,13 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
 
   if(job_src == STAT_JOB_SRC_SIGNAL)
   {
-    StatDialog->setMinimumSize(300, 440);
-    StatDialog->setMaximumSize(300, 440);
+    StatDialog->setMinimumSize(300 * mainwindow->w_scaling, 440 * mainwindow->h_scaling);
   }
 
   Label1 = new QLabel(StatDialog);
   Label1->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
   pushButton1 = new QPushButton(StatDialog);
-  pushButton1->setMinimumSize(100, 25);
   pushButton1->setText("&Close");
 
   hlayout1_1_1 = new QHBoxLayout;
