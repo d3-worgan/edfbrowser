@@ -73,6 +73,8 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
 
     if(total_samples % samples_per_datrec)  datarecord_cnt++;
 
+    if(total_samples < samples_per_datrec)  datarecord_cnt++;
+
     if((datarecord_cnt > hdr->datarecords) || (total_samples < 1))
     {
       datarecord_cnt = -1;
@@ -100,7 +102,7 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
   {
     free(processed_samples_buf);
   }
-  processed_samples_buf = (double *)malloc(total_samples * sizeof(double));
+  processed_samples_buf = (double *)malloc((long long)samples_per_datrec * (long long)datarecord_cnt * sizeof(double));
   if(processed_samples_buf == NULL)
   {
     datarecord_cnt = -1;
