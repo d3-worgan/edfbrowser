@@ -1,4 +1,17 @@
 
+ version 1.79      to be defined
+ --------------
+
+ - CDSA: fixed a bug that caused a crash when the datarecord duration of an EDF file is longer than
+   the segment length of the CDSA.
+
+ - EDF+D to EDF+C converter: bugfix: don't write EDF+ startdate in the output file if it wasn't
+   used in the input file.
+
+ - Add signals dialog: fixed a regression bug that caused the field "Recording duration" not to appear.
+
+
+
  version 1.78      October 10, 2020
  --------------
 
