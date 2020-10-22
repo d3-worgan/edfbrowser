@@ -73,8 +73,6 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
 
     if(total_samples % samples_per_datrec)  datarecord_cnt++;
 
-    if(total_samples < samples_per_datrec)  datarecord_cnt++;
-
     if((datarecord_cnt > hdr->datarecords) || (total_samples < 1))
     {
       datarecord_cnt = -1;
@@ -102,7 +100,7 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
   {
     free(processed_samples_buf);
   }
-  processed_samples_buf = (double *)malloc((long long)samples_per_datrec * (long long)datarecord_cnt * sizeof(double));
+  processed_samples_buf = (double *)malloc(total_samples * sizeof(double));
   if(processed_samples_buf == NULL)
   {
     datarecord_cnt = -1;
@@ -115,7 +113,7 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
   {
     free(readbuf);
   }
-  readbuf = (char *)malloc(hdr->recordsize  * datarecord_cnt);
+  readbuf = (char *)malloc(hdr->recordsize  * (datarecord_cnt + 1));
   if(readbuf == NULL)
   {
     datarecord_cnt = -1;
@@ -162,7 +160,7 @@ FilteredBlockReadClass::~FilteredBlockReadClass()
 
 int FilteredBlockReadClass::process_signalcomp(int datarecord_or_sample_start)
 {
-  int j, k, datarecord_start;
+  int j, k, datarecord_start, extra_datrec=0;
 
   long long s, s_end, sample_start, s_off=0;
 
@@ -200,6 +198,11 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_or_sample_start)
     datarecord_start = sample_start / (long long)samples_per_datrec;
 
     s_off = sample_start % (long long)samples_per_datrec;
+
+    if(((long long)samples_per_datrec - s_off) < total_samples)
+    {
+      extra_datrec = 1;
+    }
   }
   else
   {
@@ -223,7 +226,7 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_or_sample_start)
     return -4;
   }
 
-  if(fread(readbuf, hdr->recordsize * datarecord_cnt, 1, inputfile) != 1)
+  if(fread(readbuf, hdr->recordsize * (datarecord_cnt + extra_datrec), 1, inputfile) != 1)
   {
     return -5;
   }
@@ -328,7 +331,7 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_or_sample_start)
       dig_value *= signalcomp->polarity;
     }
 
-    processed_samples_buf[s] = (dig_value * bitvalue);
+    processed_samples_buf[s - s_off] = (dig_value * bitvalue);
   }
 
   return 0;
