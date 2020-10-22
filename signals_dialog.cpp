@@ -168,7 +168,9 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
 
   QHBoxLayout *hlayout3 = new QHBoxLayout;
   hlayout3->addWidget(label3);
-  hlayout3->addStretch(1000);
+  hlayout3->addStretch(100);
+  hlayout3->addWidget(label4);
+  hlayout3->addStretch(900);
 
   QHBoxLayout *hlayout5 = new QHBoxLayout;
   hlayout5->addWidget(SelectAllButton);
