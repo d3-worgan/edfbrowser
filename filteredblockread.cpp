@@ -28,6 +28,19 @@
 #include "filteredblockread.h"
 
 
+//#define FBR_DEBUG
+
+#ifdef FBR_DEBUG
+
+#include "edflib.h"
+
+int edf_hdl=-1, edf_chan=0, *edf_ibuf=NULL;
+
+struct edf_hdr_struct edfhdr;
+
+#endif
+
+
 double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signalcomp, int datarecord_or_smpls_cnt, int skip_f, int mode)
 {
   skip_filters = skip_f;
@@ -125,7 +138,31 @@ double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signa
   }
 
   bitvalue = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue;
+#ifdef FBR_DEBUG
+  edf_hdl = -1;
 
+  if(smpl_mode)
+  {
+    if(!edfopen_file_readonly(signalcomp->edfhdr->filename, &edfhdr, 0))
+    {
+      edf_hdl = edfhdr.handle;
+
+      printf("datarecord_duration: %lli    smp_in_datarecord: %i    sf: %f Hz   total samples in file: %lli\n",
+             edfhdr.datarecord_duration, edfhdr.signalparam[0].smp_in_datarecord,
+             (edfhdr.signalparam[0].smp_in_datarecord * EDFLIB_TIME_DIMENSION) / (double)edfhdr.datarecord_duration,
+              edfhdr.signalparam[0].smp_in_file);
+
+      edf_ibuf = (int *)malloc(total_samples * sizeof(int));
+      if(edf_ibuf == NULL)
+      {
+        edfclose_file(edf_hdl);
+        edf_hdl = -1;
+
+        printf("malloc error\n");
+      }
+    }
+  }
+#endif
   return processed_samples_buf;
 }
 
@@ -152,6 +189,14 @@ FilteredBlockReadClass::FilteredBlockReadClass()
 
 FilteredBlockReadClass::~FilteredBlockReadClass()
 {
+#ifdef FBR_DEBUG
+  if(edf_hdl >= 0)
+  {
+    edfclose_file(edf_hdl);
+  }
+
+  free(edf_ibuf);
+#endif
   free(processed_samples_buf);
 
   free(readbuf);
@@ -235,7 +280,23 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_or_sample_start)
   {
     return -6;
   }
+#ifdef FBR_DEBUG
+  if(smpl_mode)
+  {
+    if(edf_hdl >= 0)
+    {
+      if(edfseek(edf_hdl, 0, sample_start, EDFSEEK_SET) != sample_start)
+      {
+        printf("error: edfseek(%lli)\n", sample_start);
+      }
 
+      if(edfread_digital_samples(edf_hdl, 0, total_samples, edf_ibuf) != total_samples)
+      {
+        printf("error: edfread_digital_samples(%lli)\n", total_samples);
+      }
+    }
+  }
+#endif
   s_end = total_samples + s_off;
 
   for(s=s_off; s<s_end; s++)
@@ -285,7 +346,12 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_or_sample_start)
 
       dig_value += f_tmp;
     }
-
+#ifdef FBR_DEBUG
+    if(((dig_value - edf_ibuf[s - s_off]) > 1) || ((dig_value - edf_ibuf[s - s_off]) < -1 ))
+    {
+      printf("dig_value: %f   edf_ibuf[%lli]: %i\n", dig_value, s - s_off, edf_ibuf[s - s_off]);
+    }
+#endif
     if(!skip_filters)
     {
       if(signalcomp->spike_filter)
