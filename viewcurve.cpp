@@ -3778,8 +3778,8 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   QVBoxLayout *vlayout1 = new QVBoxLayout;
   vlayout1->addWidget(SidemenuLabel);
   vlayout1->addLayout(flayout);
-  vlayout1->addStretch(1000);
   vlayout1->addLayout(gr);
+  vlayout1->addStretch(1000);
   sidemenu->setLayout(vlayout1);
 
   QObject::connect(ScaleBox,          SIGNAL(valueChanged(double)),     this,     SLOT(ScaleBoxChanged(double)));
