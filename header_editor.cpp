@@ -59,8 +59,8 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
 
   startTimeDate = new QDateTimeEdit;
   startTimeDate->setDisplayFormat("dd.MM.yyyy hh:mm:ss");
-  startTimeDate->setMinimumDate(QDate(1970, 1, 1));
-  startTimeDate->setMaximumDate(QDate(2299, 12, 31));
+  startTimeDate->setMinimumDate(QDate(1985, 1, 1));
+  startTimeDate->setMaximumDate(QDate(2084, 12, 31));
   startTimeDate->setVisible(false);
 
   label1 = new QLabel;
@@ -460,19 +460,9 @@ void UI_headerEditorWindow::read_header()
 
   startTimeDate->setVisible(true);
   startTimeDateLabel->setVisible(true);
-
-  if(edfplus || bdfplus)
-  {
-    startTimeDate->setMinimumDate(QDate(1970, 1, 1));
-    startTimeDate->setMaximumDate(QDate(2299, 12, 31));
-    startTimeDate->setDate(QDate(1970, 1, 1));
-  }
-  else
-  {
-    startTimeDate->setMinimumDate(QDate(1985, 1, 1));
-    startTimeDate->setMaximumDate(QDate(2084, 12, 31));
-    startTimeDate->setDate(QDate(1985, 1, 1));
-  }
+  startTimeDate->setMinimumDate(QDate(1985, 1, 1));
+  startTimeDate->setMaximumDate(QDate(2084, 12, 31));
+  startTimeDate->setDate(QDate(1985, 1, 1));
   startTimeDate->setTime(QTime(0, 0, 0));
 
   memcpy(scratchpad, hdr + 168, 8);
@@ -680,8 +670,8 @@ void UI_headerEditorWindow::read_header()
       {
         startTimeDate->setDate(QDate(atoi(scratchpad + 17), r, atoi(scratchpad + 10)));
 
-        startTimeDate->setMinimumDate(QDate(1970, 1, 1));
-        startTimeDate->setMaximumDate(QDate(2299, 12, 31));
+        startTimeDate->setMinimumDate(QDate(1985, 1, 1));
+        startTimeDate->setMaximumDate(QDate(2084, 12, 31));
       }
     }
     else
