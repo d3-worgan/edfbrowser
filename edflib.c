@@ -2504,9 +2504,7 @@ static struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_erro
         return NULL;
       }
 
-      edfhdr->startdate_year = edflib_atof_nonlocalized(scratchpad2 + 7);
-
-      if(edfhdr->startdate_year<1970)
+      if(edfhdr->startdate_year != edflib_atof_nonlocalized(scratchpad2 + 7))
       {
         *edf_error = EDFLIB_FILE_CONTAINS_FORMAT_ERRORS;
         free(edf_hdr);
