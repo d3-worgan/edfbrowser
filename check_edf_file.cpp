@@ -1506,9 +1506,9 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
 
       date_time.year = atoi(scratchpad2 + 7);
 
-      if(date_time.year<1970)
+      if(date_time.year<1985)
       {
-        snprintf(txt_string, txt_len, "Error, recording startdate is older than 1970.");
+        snprintf(txt_string, txt_len, "Error, recording startdate is before 1985.");
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);

@@ -2504,9 +2504,7 @@ static struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_erro
         return NULL;
       }
 
-      edfhdr->startdate_year = edflib_atof_nonlocalized(scratchpad2 + 7);
-
-      if(edfhdr->startdate_year<1970)
+      if(edfhdr->startdate_year != edflib_atof_nonlocalized(scratchpad2 + 7))
       {
         *edf_error = EDFLIB_FILE_CONTAINS_FORMAT_ERRORS;
         free(edf_hdr);
@@ -6432,7 +6430,7 @@ int edf_set_startdatetime(int handle, int startdate_year, int startdate_month, i
     return -1;
   }
 
-  if((startdate_year<1970) || (startdate_year>3000) ||
+  if((startdate_year<1985) || (startdate_year>2084) ||
      (startdate_month<1)   || (startdate_month>12)  ||
      (startdate_day<1)     || (startdate_day>31)    ||
      (starttime_hour<0)    || (starttime_hour>23)   ||
