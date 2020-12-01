@@ -3662,10 +3662,11 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   sidemenu->setModal(true);
   sidemenu->setAttribute(Qt::WA_DeleteOnClose, true);
 
+  QFormLayout *flayout = new QFormLayout;
+
   QLabel *SidemenuLabel = new QLabel(sidemenu);
   SidemenuLabel->setText(mainwindow->signalcomp[signal_nr]->signallabel);
-
-  QFormLayout *flayout = new QFormLayout;
+  flayout->addRow("Label", SidemenuLabel);
 
   AliasLineEdit = new QLineEdit(sidemenu);
   AliasLineEdit->setText(mainwindow->signalcomp[signal_nr]->alias);
@@ -3776,7 +3777,6 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   gr->setColumnStretch(2, 1000);
 
   QVBoxLayout *vlayout1 = new QVBoxLayout;
-  vlayout1->addWidget(SidemenuLabel);
   vlayout1->addLayout(flayout);
   vlayout1->addLayout(gr);
   vlayout1->addStretch(1000);
