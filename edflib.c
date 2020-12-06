@@ -6734,7 +6734,7 @@ static int edflib_fprint_int_number_nonlocalized(FILE *file, int q, int minimum,
 
     j++;
 
-    q = -q;
+    base = -base;
   }
   else
   {
@@ -6806,7 +6806,7 @@ static int edflib_fprint_ll_number_nonlocalized(FILE *file, long long q, int min
 
     j++;
 
-    q = -q;
+    base = -base;
   }
   else
   {
@@ -6946,7 +6946,7 @@ static int edflib_snprint_ll_number_nonlocalized(char *dest, long long q, int mi
   {
     dest[j++] = '-';
 
-    q = -q;
+    base = -base;
   }
   else
   {
@@ -7027,7 +7027,7 @@ static int edflib_snprint_number_nonlocalized(char *dest, double val, int sz)
 
     if(q < 0)
     {
-      q = -q;
+      base = -base;
     }
   }
 
@@ -7081,7 +7081,7 @@ static int edflib_snprint_number_nonlocalized(char *dest, double val, int sz)
 
   if(q < 0)
   {
-    q = -q;
+    base = -base;
   }
 
   if(!q)

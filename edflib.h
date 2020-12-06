@@ -429,7 +429,7 @@ int edf_set_startdatetime(int handle, int startdate_year, int startdate_month, i
                                       int starttime_hour, int starttime_minute, int starttime_second);
 
 /* Sets the startdate and starttime. */
-/* year: 1970 - 3000, month: 1 - 12, day: 1 - 31 */
+/* year: 1985 - 2084, month: 1 - 12, day: 1 - 31 */
 /* hour: 0 - 23, minute: 0 - 59, second: 0 - 59 */
 /* If not called, the library will use the system date and time at runtime */
 /* Returns 0 on success, otherwise -1 */
