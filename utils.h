@@ -68,7 +68,7 @@ void utf8_to_latin1(char *);
 int antoi(const char *, int);
 int atoi_nonlocalized(const char *);
 double atof_nonlocalized(const char *);
-int sprint_number_nonlocalized(char *, double);
+//int sprint_number_nonlocalized(char *, double);
 long long atoll_x(const char *, int);
 void strntolower(char *, int);
 
@@ -79,7 +79,7 @@ char * strtok_r_e(char *, const char *, char **);
 /* if 4th argument is zero, only negative numbers will have the sign '-' character */
 /* if 4th argument is one, the sign '+' or '-' character will always be printed */
 /* returns the amount of characters printed */
-int sprint_int_number_nonlocalized(char *, int, int, int);
+//int sprint_int_number_nonlocalized(char *, int, int, int);
 int sprint_ll_number_nonlocalized(char *, long long, int, int);
 int fprint_int_number_nonlocalized(FILE *, int, int, int);
 int fprint_ll_number_nonlocalized(FILE *, long long, int, int);
