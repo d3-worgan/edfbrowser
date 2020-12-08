@@ -7296,10 +7296,10 @@ static int edflib_atoi_nonlocalized(const char *str)
 
     value *= 10;
 
-    value += (str[i] - '0');
+    value += ((str[i] - '0') * sign);
   }
 
-  return value * sign;
+  return value;
 }
 
 
