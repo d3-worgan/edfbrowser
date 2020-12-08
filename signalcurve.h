@@ -42,6 +42,9 @@
 #include <QtPrintSupport>
 #endif
 #include <QPrintDialog>
+#if QT_VERSION >= 0x050D00
+#include <QPageSize>
+#endif
 #include <QFileDialog>
 #include <QPixmap>
 #include <QPen>

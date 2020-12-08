@@ -734,18 +734,25 @@ void SignalCurve::print_to_pdf()
 
   curve_printer.setOutputFormat(QPrinter::PdfFormat);
   curve_printer.setOutputFileName(path);
+#if QT_VERSION >= 0x050D00
+  curve_printer.setPageSize(QPageSize(QPageSize::A4));
+  curve_printer.setPageOrientation(QPageLayout::Landscape);
+#else
   curve_printer.setPageSize(QPrinter::A4);
   curve_printer.setOrientation(QPrinter::Landscape);
-
+#endif
   backup_colors_for_printing();
 
   QPainter paint(&curve_printer);
 #if QT_VERSION >= 0x050000
   paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
 #endif
-
+#if QT_VERSION >= 0x050D00
+  drawWidget_to_printer(&paint, curve_printer.pageLayout().paintRectPixels(curve_printer.resolution()).width(),
+                        curve_printer.pageLayout().paintRectPixels(curve_printer.resolution()).height());
+#else
   drawWidget_to_printer(&paint, curve_printer.pageRect().width(), curve_printer.pageRect().height());
-
+#endif
   restore_colors_after_printing();
 
   sidemenu->close();
@@ -795,9 +802,13 @@ void SignalCurve::print_to_printer()
   QPrinter curve_printer(QPrinter::HighResolution);
 
   curve_printer.setOutputFormat(QPrinter::NativeFormat);
+#if QT_VERSION >= 0x050D00
+  curve_printer.setPageSize(QPageSize(QPageSize::A4));
+  curve_printer.setPageOrientation(QPageLayout::Landscape);
+#else
   curve_printer.setPageSize(QPrinter::A4);
   curve_printer.setOrientation(QPrinter::Landscape);
-
+#endif
   QPrintDialog printerdialog(&curve_printer, this);
   printerdialog.setWindowTitle("Print");
 
@@ -814,9 +825,12 @@ void SignalCurve::print_to_printer()
 #if QT_VERSION >= 0x050000
   paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
 #endif
-
+#if QT_VERSION >= 0x050D00
+  drawWidget_to_printer(&paint, curve_printer.pageLayout().paintRectPixels(curve_printer.resolution()).width(),
+                        curve_printer.pageLayout().paintRectPixels(curve_printer.resolution()).height());
+#else
   drawWidget_to_printer(&paint, curve_printer.pageRect().width(), curve_printer.pageRect().height());
-
+#endif
   restore_colors_after_printing();
 
   sidemenu->close();

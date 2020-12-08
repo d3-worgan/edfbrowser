@@ -45,6 +45,9 @@
 #else
 #include <QtPrintSupport>
 #endif
+#if QT_VERSION >= 0x050D00
+#include <QPageSize>
+#endif
 #include <QPixmap>
 #include <QPrintDialog>
 #include <QColor>

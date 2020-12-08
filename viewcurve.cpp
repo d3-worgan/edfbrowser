@@ -1084,8 +1084,13 @@ void ViewCurve::print_to_printer()
   QPrinter print(QPrinter::HighResolution);
 
   print.setOutputFormat(QPrinter::NativeFormat);
+#if QT_VERSION >= 0x050D00
+  print.setPageSize(QPageSize(QPageSize::A4));
+  print.setPageOrientation(QPageLayout::Landscape);
+#else
   print.setPageSize(QPrinter::A4);
   print.setOrientation(QPrinter::Landscape);
+#endif
   print.setCreator(PROGRAM_NAME);
 
   QPrintDialog printerdialog(&print, this);
@@ -1097,18 +1102,22 @@ void ViewCurve::print_to_printer()
     {
       backup_colors_for_printing();
     }
-
+#if QT_VERSION >= 0x050D00
+    height_factor = ((double)print.pageLayout().paintRectPixels(print.resolution()).height()) / 9000.0;
+#else
     height_factor = ((double)print.pageRect().height()) / 9000.0;
-
+#endif
     QPainter paint(&print);
 #if QT_VERSION >= 0x050000
     paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
 #endif
-
     paint.translate(0, (int)(260.0 * height_factor));
-
+#if QT_VERSION >= 0x050D00
+    drawCurve_stage_1(&paint, print.pageLayout().paintRectPixels(print.resolution()).width() - 30,
+                      (int)((double)print.pageLayout().paintRectPixels(print.resolution()).height() - (260.0 * height_factor) - 30), 2);
+#else
     drawCurve_stage_1(&paint, print.pageRect().width() - 30, (int)((double)print.pageRect().height() - (260.0 * height_factor) - 30), 2);
-
+#endif
     paint.translate(0, -(int)(260.0 * height_factor));
 
     len = strlen(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename);
@@ -1152,8 +1161,11 @@ void ViewCurve::print_to_printer()
         path[j] = ' ';
       }
     }
-
+#if QT_VERSION >= 0x050D00
+    printfont->setPixelSize((int)((double)print.pageLayout().paintRectPixels(print.resolution()).width() / 104.0));
+#else
     printfont->setPixelSize((int)((double)print.pageRect().width() / 104.0));
+#endif
     paint.setPen(text_color);
     paint.setFont(*printfont);
 
@@ -1329,26 +1341,35 @@ void ViewCurve::print_to_pdf()
 
   print.setOutputFormat(QPrinter::PdfFormat);
   print.setOutputFileName(QString::fromLocal8Bit(path));
+#if QT_VERSION >= 0x050D00
+  print.setPageSize(QPageSize(QPageSize::A4));
+  print.setPageOrientation(QPageLayout::Landscape);
+#else
   print.setPageSize(QPrinter::A4);
   print.setOrientation(QPrinter::Landscape);
+#endif
   print.setCreator(PROGRAM_NAME);
 
   if(blackwhite_printing)
   {
     backup_colors_for_printing();
   }
-
+#if QT_VERSION >= 0x050D00
+  height_factor = ((double)print.pageLayout().paintRectPixels(print.resolution()).height()) / 9000.0;
+#else
   height_factor = ((double)print.pageRect().height()) / 9000.0;
-
+#endif
   QPainter paint(&print);
 #if QT_VERSION >= 0x050000
   paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
 #endif
-
   paint.translate(0, (int)(260.0 * height_factor));
-
+#if QT_VERSION >= 0x050D00
+  drawCurve_stage_1(&paint, print.pageLayout().paintRectPixels(print.resolution()).width() - 30,
+                    (int)((double)print.pageLayout().paintRectPixels(print.resolution()).height() - (260.0 * height_factor) - 30), 2);
+#else
   drawCurve_stage_1(&paint, print.pageRect().width() - 30, (int)((double)print.pageRect().height() - (260.0 * height_factor) - 30), 2);
-
+#endif
   paint.translate(0, -(int)(260.0 * height_factor));
 
   len = strlen(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename);
@@ -1396,8 +1417,11 @@ void ViewCurve::print_to_pdf()
       path[j] = ' ';
     }
   }
-
+#if QT_VERSION >= 0x050D00
+  printfont->setPixelSize((int)((double)print.pageLayout().paintRectPixels(print.resolution()).width() / 104.0));
+#else
   printfont->setPixelSize((int)((double)print.pageRect().width() / 104.0));
+#endif
   paint.setPen(text_color);
   paint.setFont(*printfont);
 
