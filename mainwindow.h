@@ -177,6 +177,8 @@
 
 #include "third_party/fidlib/fidlib.h"
 
+#include "uilogger.h"
+
 
 
 
@@ -200,6 +202,8 @@ class UI_Mainwindow : public QMainWindow
 public:
   UI_Mainwindow();
   ~UI_Mainwindow();
+
+  friend class UiLogger;
 
   QString log_location;
 
