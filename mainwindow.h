@@ -98,6 +98,7 @@
 #include <locale.h>
 #include <time.h>
 #include <limits.h>
+#include <iostream>
 
 #include "global.h"
 #include "viewcurve.h"
