@@ -76,61 +76,33 @@ UI_Mainwindow::UI_Mainwindow()
     h_scaling = 1;
 
     viewtime_indicator_type = 1;
-
     mainwindow_title_type = 1;
-
     check_for_updates = 1;
-
     use_threads = 1;
-
     auto_dpi = 1;
-
     show_annot_markers = 1;
-
     show_baselines = 1;
-
     clip_to_pane = 0;
-
     annotations_onset_relative = 1;
-
     annotations_show_duration = 1;
-
     annotations_duration_background_type = 0;
-
     auto_reload_mtg = 1;
-
     read_biosemi_status_signal = 1;
-
     read_nk_trigger_signal = 1;
-
     maxfilesize_to_readin_annotations = 10485760000LL;
-
     exit_in_progress = 0;
-
     live_stream_active = 0;
-
     playback_realtime_active = 0;
-
     signal_averaging_active = 0;
-
     live_stream_update_interval = 500;
-
     powerlinefreq = 50;
-
     mousewheelsens = 10;
-
     amplitude_doubler = 10;
-
     timescale_doubler = 10;
-
     default_amplitude = 100;
-
     linear_interpol = 0;
-
     auto_update_annot_onset = 0;
-
     use_diverse_signal_colors = 0;
-
     drop_path[0] = 0;
 
     toolbar_stats.sz = 0;
@@ -1174,6 +1146,7 @@ UI_Mainwindow::UI_Mainwindow()
             QString log_path = QCoreApplication::arguments().at(2).toLocal8Bit().data();
             std::cerr << "Log path: " << log_path.toStdString() << '\n';
             log_location = log_path;
+            ui_logger = new UiLogger(this, log_location);
         }
 
         if (QCoreApplication::arguments().size() > 3) {
@@ -1191,6 +1164,8 @@ UI_Mainwindow::UI_Mainwindow()
     else {
         std::cerr << "No args were passed\n";
     }
+
+
 
 //    if (QCoreApplication::arguments().size() > 1) {
 

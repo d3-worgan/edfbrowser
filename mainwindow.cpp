@@ -514,6 +514,7 @@ void UI_Mainwindow::slider_moved(int value)
     }
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -1016,6 +1017,7 @@ void UI_Mainwindow::zoomback()
     }
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::ZOOM_CHANGED);
 }
 
 
@@ -1053,6 +1055,7 @@ void UI_Mainwindow::forward()
     }
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::ZOOM_CHANGED);
 }
 
 
@@ -1088,6 +1091,7 @@ void UI_Mainwindow::former_page()
     }
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -1123,6 +1127,7 @@ void UI_Mainwindow::shift_page_left()
     }
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -1158,6 +1163,7 @@ void UI_Mainwindow::shift_page_right()
     }
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -1176,6 +1182,7 @@ void UI_Mainwindow::stop_playback()
             start_stop_video();
         }
     }
+    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -1275,6 +1282,7 @@ void UI_Mainwindow::next_page()
     }
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -1291,6 +1299,7 @@ void UI_Mainwindow::shift_page_up()
     }
 
     maincurve->drawCurve_stage_1();
+    ui_logger->write(UiLogger::LogEvents::VERTICAL_CHANGED);
 }
 
 
@@ -1307,6 +1316,7 @@ void UI_Mainwindow::shift_page_down()
     }
 
     maincurve->drawCurve_stage_1();
+    ui_logger->write(UiLogger::LogEvents::VERTICAL_CHANGED);
 }
 
 
@@ -1863,6 +1873,8 @@ void UI_Mainwindow::open_new_file()
     cmdlineargument = 0;
 
     close_filemenu->addAction(QString::fromLocal8Bit(path));
+
+    ui_logger->write(UiLogger::LogEvents::FILE_OPENED);
 }
 
 
@@ -2838,6 +2850,7 @@ void UI_Mainwindow::set_page_div2()
     }
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
@@ -2924,6 +2937,7 @@ void UI_Mainwindow::set_page_mult2()
     }
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
@@ -3057,12 +3071,14 @@ void UI_Mainwindow::set_display_time(QAction *action)
     if(action==page_3600)  pagetime = TIME_DIMENSION * 3600;
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
 void UI_Mainwindow::set_user_defined_display_time()
 {
     UI_Userdefined_timepage_Dialog set_displaytime_dialog(this);
+    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
@@ -3137,6 +3153,7 @@ void UI_Mainwindow::set_display_time_whole_rec()
     }
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
@@ -3171,6 +3188,7 @@ void UI_Mainwindow::fit_signals_to_pane()
     }
 
     maincurve->drawCurve_stage_1();
+    ui_logger->write(UiLogger::LogEvents::AMPLITUDE_CHANGED);
 }
 
 
@@ -3186,6 +3204,7 @@ void UI_Mainwindow::fit_signals_dc_offset()
     }
 
     maincurve->drawCurve_stage_1();
+    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
@@ -3354,6 +3373,7 @@ void UI_Mainwindow::set_amplitude(QAction *action)
     }
 
     maincurve->drawCurve_stage_1();
+    ui_logger->write(UiLogger::LogEvents::AMPLITUDE_CHANGED);
 }
 
 
@@ -3417,6 +3437,7 @@ void UI_Mainwindow::set_amplitude_mult2()
     }
 
     maincurve->drawCurve_stage_1();
+    ui_logger->write(UiLogger::LogEvents::AMPLITUDE_CHANGED);
 }
 
 
@@ -3480,6 +3501,7 @@ void UI_Mainwindow::set_amplitude_div2()
     }
 
     maincurve->drawCurve_stage_1();
+    ui_logger->write(UiLogger::LogEvents::AMPLITUDE_CHANGED);
 }
 
 
@@ -3506,6 +3528,7 @@ void UI_Mainwindow::load_predefined_mtg(QAction *action)
             }
         }
     }
+    ui_logger->write(UiLogger::LogEvents::MONTAGE_CHANGED);
 }
 
 

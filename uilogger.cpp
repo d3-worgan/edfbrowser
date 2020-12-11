@@ -3,6 +3,7 @@
 #include <QDateTime>
 #include "mainwindow.h"
 #include <QString>
+#include <iostream>
 
 
 UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path, QPlainTextEdit *editor) : QObject(parent) {
@@ -24,6 +25,8 @@ UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path, QPlainTextEd
         montage_dir.mkpath(montage_dir_path);
     }
 
+    std::cerr << "Constructed logger\n";
+
 }
 
 /**
@@ -40,34 +43,37 @@ void UiLogger::write(LogEvents log_event) {
     }
     else if (log_event == LogEvents::MONTAGE_CHANGED) {
         this->save_montage();
-        text += QString("MONTAGE_CHANGED: {montage_file: %1.mtg}").arg(this->log_id);
+        text += QString("MONTAGE_CHANGED, data: {montage_file: %1.mtg}").arg(this->log_id);
     }
     else if (log_event == LogEvents::CHANNELS_CHANGED) {
         this->save_montage();
-        text += QString("CHANNELS_CHANGED: {montage_file: %1}").arg(this->log_id);
+        text += QString("CHANNELS_CHANGED, data: {montage_file: %1}").arg(this->log_id);
     }
     else if (log_event == LogEvents::FILTER_CHANGED) {
         this->save_montage();
-        text += QString("FILTER_CHANGED: {montage_file: %1}").arg(this->log_id);
+        text += QString("FILTER_CHANGED, data: {montage_file: %1}").arg(this->log_id);
     }
     else if (log_event == LogEvents::AMPLITUDE_CHANGED) {
         this->save_montage();
-        text += QString("AMPLITUDE_CHANGED: {montage_file: %1}").arg(this->log_id);
+        text += QString("AMPLITUDE_CHANGED, data: {montage_file: %1}").arg(this->log_id);
     }
     else if (log_event == LogEvents::TIMESCALE_CHANGED) {
-        text += QString("TIMESCALE_CHANGED: {time_scale: %1}").arg(main_window->pagetime_string);
+        text += QString("TIMESCALE_CHANGED, data: {time_scale: %1}").arg(main_window->pagetime_string);
     }
     else if (log_event == LogEvents::TIME_POSITION_CHANGED) {
-        text += QString("TIME_POSITION_CHANGED: {time: %1}").arg(main_window->viewtime_string);
+        text += QString("TIME_POSITION_CHANGED, data: {time: %1}").arg(main_window->viewtime_string);
+    }
+    else if (log_event == LogEvents::VERTICAL_CHANGED) {
+        text += QString("VERTICAL_CHANGED, data: {}");
     }
     else if (log_event == LogEvents::ZOOM_CHANGED) {
         text += QString("ZOOM_CHANGED, NOT IMPLEMENTED");
     }
     else if (log_event == LogEvents::WINDOW_MOVED) {
-        text += QString("WINDOW_MOVED: {graph_box: %1}").arg(change_window());
+        text += QString("WINDOW_MOVED, data: {graph_box: %1}").arg(change_window());
     }
     else if (log_event == LogEvents::WINDOW_RESIZED) {
-        text += QString("WINDOW_RESIZED: {graph_box: %1}").arg(change_window());
+        text += QString("WINDOW_RESIZED, data: {graph_box: %1}").arg(change_window());
     }
     text = text + " }\n";
 
@@ -276,6 +282,22 @@ int UiLogger::save_montage() {
 
 }
 
+
+void UiLogger::set_destination_path(QString destination) {
+    this->destination_path = destination;
+    this->filename = "ui_log.txt";
+    this->full_path = this->destination_path + this->filename;
+
+    if (!destination_path.isEmpty()) {
+        this->log_file = new QFile(this->full_path);
+        this->log_file->open(QIODevice::WriteOnly | QIODevice::Text);
+    }
+
+    this->montage_dir_path = this->destination_path + "montages\\";
+    if (!this->montage_dir.exists(montage_dir_path)) {
+        montage_dir.mkpath(montage_dir_path);
+    }
+}
 
 
 UiLogger::~UiLogger() {

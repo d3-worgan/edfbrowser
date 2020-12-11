@@ -42,23 +42,23 @@
 #include <QLabel>
 
 #ifdef Q_OS_WIN32
-  #include <windows.h>
-  #include <io.h>
-  #ifndef CSIDL_COMMON_APPDATA
-    #define CSIDL_COMMON_APPDATA 0x0023 // All Users\Application Data
-  #endif
-  #ifndef CSIDL_APPDATA
-    #define CSIDL_APPDATA 0x001a // <username>\Application Data
-  #endif
-  #ifndef CSIDL_PROGRAM_FILES
-    #define CSIDL_PROGRAM_FILES 0x0026 // C:\Program Files
-  #endif
-  #if QT_VERSION >= 0x050000
-    #define QT_WA(unicode, ansi) unicode
-  #endif
+#include <windows.h>
+#include <io.h>
+#ifndef CSIDL_COMMON_APPDATA
+#define CSIDL_COMMON_APPDATA 0x0023 // All Users\Application Data
+#endif
+#ifndef CSIDL_APPDATA
+#define CSIDL_APPDATA 0x001a // <username>\Application Data
+#endif
+#ifndef CSIDL_PROGRAM_FILES
+#define CSIDL_PROGRAM_FILES 0x0026 // C:\Program Files
+#endif
+#if QT_VERSION >= 0x050000
+#define QT_WA(unicode, ansi) unicode
+#endif
 #else
-  #include <sys/types.h>
-  #include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #endif
 
 #include <QFileDialog>
@@ -193,490 +193,493 @@ class UI_ZScoreWindow;
 class UI_cdsa_dock;
 class UI_hypnogram_dock;
 class UI_hrv_dock;
+class UiLogger;
 
 
 class UI_Mainwindow : public QMainWindow
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  UI_Mainwindow();
-  ~UI_Mainwindow();
+    UI_Mainwindow();
+    ~UI_Mainwindow();
 
-  friend class UiLogger;
+    //friend class UiLogger;
 
-  QString log_location;
+    QString log_location;
 
-  int files_open,
-      signalcomps,
-      totalviewbufsize,
-      sel_viewtime,
-      viewtime_sync,
-      print_to_edf_active,
-      annot_editor_active,
-      show_annot_markers,
-      show_baselines,
-      annotations_edited,
-      annotations_onset_relative,
-      annotations_show_duration,
-      annotations_duration_background_type,
-      exit_in_progress,
-      maxdftblocksize,
-      dpix,
-      dpiy,
-      auto_dpi,
-      clip_to_pane,
-      auto_reload_mtg,
-      read_biosemi_status_signal,
-      read_nk_trigger_signal,
-      live_stream_active,
-      playback_realtime_active,
-      live_stream_update_interval,
-      signal_averaging_active,
-      powerlinefreq,
-      mousewheelsens,
-      average_ratio,
-      average_upsidedown,
-      average_bw,
-      spectrum_bw,
-      spectrum_sqrt,
-      spectrum_vlog,
-      spectrum_window,
-      spectrum_blocksize_predefined,
-      spectrum_blocksize_userdefined,
-      spectrum_overlap,
-      spectrumdock_bw,
-      spectrumdock_sqrt,
-      spectrumdock_vlog,
-      spectrumdock_window,
-      spectrumdock_blocksize_predefined,
-      spectrumdock_blocksize_userdefined,
-      spectrumdock_overlap,
-      spectrumdock_colorbars,
-      cdsa_segmentlen,
-      cdsa_blocklen,
-      cdsa_overlap,
-      cdsa_window_func,
-      cdsa_min_hz,
-      cdsa_max_hz,
-      cdsa_log,
-      cdsa_pwr_voltage,
-      cdsa_max_pwr,
-      cdsa_min_pwr,
-      use_threads,
-      check_for_updates,
-      amplitude_doubler,
-      timescale_doubler,
-      viewtime_indicator_type,
-      mainwindow_title_type,
-      linear_interpol,
-      auto_update_annot_onset,
-      average_period,
-      font_size,
-      monofont_size,
-      sys_font_size,
-      sys_monofont_size,
-      font_pixel_height,
-      font_pixel_width,
-      use_diverse_signal_colors;
 
-  unsigned long long pagetime,
-                     maxfilesize_to_readin_annotations,
-                     uid_seq;
+    int files_open,
+    signalcomps,
+    totalviewbufsize,
+    sel_viewtime,
+    viewtime_sync,
+    print_to_edf_active,
+    annot_editor_active,
+    show_annot_markers,
+    show_baselines,
+    annotations_edited,
+    annotations_onset_relative,
+    annotations_show_duration,
+    annotations_duration_background_type,
+    exit_in_progress,
+    maxdftblocksize,
+    dpix,
+    dpiy,
+    auto_dpi,
+    clip_to_pane,
+    auto_reload_mtg,
+    read_biosemi_status_signal,
+    read_nk_trigger_signal,
+    live_stream_active,
+    playback_realtime_active,
+    live_stream_update_interval,
+    signal_averaging_active,
+    powerlinefreq,
+    mousewheelsens,
+    average_ratio,
+    average_upsidedown,
+    average_bw,
+    spectrum_bw,
+    spectrum_sqrt,
+    spectrum_vlog,
+    spectrum_window,
+    spectrum_blocksize_predefined,
+    spectrum_blocksize_userdefined,
+    spectrum_overlap,
+    spectrumdock_bw,
+    spectrumdock_sqrt,
+    spectrumdock_vlog,
+    spectrumdock_window,
+    spectrumdock_blocksize_predefined,
+    spectrumdock_blocksize_userdefined,
+    spectrumdock_overlap,
+    spectrumdock_colorbars,
+    cdsa_segmentlen,
+    cdsa_blocklen,
+    cdsa_overlap,
+    cdsa_window_func,
+    cdsa_min_hz,
+    cdsa_max_hz,
+    cdsa_log,
+    cdsa_pwr_voltage,
+    cdsa_max_pwr,
+    cdsa_min_pwr,
+    use_threads,
+    check_for_updates,
+    amplitude_doubler,
+    timescale_doubler,
+    viewtime_indicator_type,
+    mainwindow_title_type,
+    linear_interpol,
+    auto_update_annot_onset,
+    average_period,
+    font_size,
+    monofont_size,
+    sys_font_size,
+    sys_monofont_size,
+    font_pixel_height,
+    font_pixel_width,
+    use_diverse_signal_colors;
 
-  char *viewbuf,
-       viewtime_string[128],
-       pagetime_string[64],
-       recent_montagedir[MAX_PATH_LENGTH],
-       recent_savedir[MAX_PATH_LENGTH],
-       recent_opendir[MAX_PATH_LENGTH],
-       predefined_mtg_path[MAXPREDEFINEDMONTAGES][MAX_PATH_LENGTH],
-       recent_file_mtg_path[MAX_RECENTFILES][MAX_PATH_LENGTH],
-       recent_colordir[MAX_PATH_LENGTH],
-       cfg_app_version[17],
-       drop_path[MAX_PATH_LENGTH],
-       hypnogram_stage_name[6][32],
-       hypnogram_annot_name[6][32],
-       ecg_qrs_rpeak_descr[32];
+    unsigned long long pagetime,
+    maxfilesize_to_readin_annotations,
+    uid_seq;
 
-  double y_pixelsizefactor,
-         x_pixelsizefactor,
-         default_amplitude,
-         cdsa_max_voltage,
-         w_scaling,
-         h_scaling;
+    char *viewbuf,
+    viewtime_string[128],
+    pagetime_string[64],
+    recent_montagedir[MAX_PATH_LENGTH],
+    recent_savedir[MAX_PATH_LENGTH],
+    recent_opendir[MAX_PATH_LENGTH],
+    predefined_mtg_path[MAXPREDEFINEDMONTAGES][MAX_PATH_LENGTH],
+    recent_file_mtg_path[MAX_RECENTFILES][MAX_PATH_LENGTH],
+    recent_colordir[MAX_PATH_LENGTH],
+    cfg_app_version[17],
+    drop_path[MAX_PATH_LENGTH],
+    hypnogram_stage_name[6][32],
+    hypnogram_annot_name[6][32],
+    ecg_qrs_rpeak_descr[32];
 
-  struct{
-          double crossoverfreq;
-          double z_threshold;
-          double z_hysteresis;
-          int zscore_page_len;
-          int zscore_error_detection;
-        } z_score_var;
+    double y_pixelsizefactor,
+    x_pixelsizefactor,
+    default_amplitude,
+    cdsa_max_voltage,
+    w_scaling,
+    h_scaling;
 
-  struct{
-          int sz;
-          int active;
-          double *ival;
-          char annot_label[MAX_ANNOTATION_LEN + 1];
-          struct annotation_list *annot_list;
-        } toolbar_stats;
+    struct{
+        double crossoverfreq;
+        double z_threshold;
+        double z_hysteresis;
+        int zscore_page_len;
+        int zscore_error_detection;
+    } z_score_var;
 
-  struct raw2edf_var_struct raw2edf_var;
+    struct{
+        int sz;
+        int active;
+        double *ival;
+        char annot_label[MAX_ANNOTATION_LEN + 1];
+        struct annotation_list *annot_list;
+    } toolbar_stats;
 
-  struct edfhdrblock *edfheaderlist[MAXFILES];
+    struct raw2edf_var_struct raw2edf_var;
 
-  struct signalcompblock *signalcomp[MAXSIGNALS];
+    struct edfhdrblock *edfheaderlist[MAXFILES];
 
-  struct zoomhistoryblock *zoomhistory;
+    struct signalcompblock *signalcomp[MAXSIGNALS];
 
-  struct annotation_list *annotationlist_backup;
+    struct zoomhistoryblock *zoomhistory;
 
-  struct spectrum_markersblock *spectrum_colorbar;
+    struct annotation_list *annotationlist_backup;
 
-  struct import_annotations_var_block *import_annotations_var;
+    struct spectrum_markersblock *spectrum_colorbar;
 
-  struct export_annotations_var_block *export_annotations_var;
+    struct import_annotations_var_block *import_annotations_var;
 
-  struct video_player_struct *video_player;
+    struct export_annotations_var_block *export_annotations_var;
 
-  struct annot_filter_struct *annot_filter;
+    struct video_player_struct *video_player;
 
-  UI_Annotationswindow *annotations_dock[MAXFILES];
+    struct annot_filter_struct *annot_filter;
 
-  UI_AnnotationEditwindow *annotationEditDock;
+    UI_Annotationswindow *annotations_dock[MAXFILES];
 
-  UI_FreqSpectrumWindow *spectrumdialog[MAXSPECTRUMDIALOGS];
+    UI_AnnotationEditwindow *annotationEditDock;
 
-  UI_cdsa_dock *cdsa_dock[MAXCDSADOCKS];
+    UI_FreqSpectrumWindow *spectrumdialog[MAXSPECTRUMDIALOGS];
 
-  UI_hypnogram_dock *hypnogram_dock[MAXHYPNOGRAMDOCKS];
+    UI_cdsa_dock *cdsa_dock[MAXCDSADOCKS];
 
-  UI_hrv_dock *hrv_dock[MAXHRVDOCKS];
+    UI_hypnogram_dock *hypnogram_dock[MAXHYPNOGRAMDOCKS];
 
-  UI_SpectrumDockWindow *spectrumdock[MAXSPECTRUMDOCKS];
+    UI_hrv_dock *hrv_dock[MAXHRVDOCKS];
 
-  UI_AverageCurveWindow *averagecurvedialog[MAXAVERAGECURVEDIALOGS];
+    UI_SpectrumDockWindow *spectrumdock[MAXSPECTRUMDOCKS];
 
-  UI_ZScoreWindow *zscoredialog[MAXZSCOREDIALOGS];
+    UI_AverageCurveWindow *averagecurvedialog[MAXAVERAGECURVEDIALOGS];
 
-  void setup_viewbuf();
+    UI_ZScoreWindow *zscoredialog[MAXZSCOREDIALOGS];
 
-  void setMainwindowTitle(struct edfhdrblock *);
+    void setup_viewbuf();
 
-  int file_is_opened(const char *);
+    void setMainwindowTitle(struct edfhdrblock *);
 
-  void remove_recent_file_mtg_path(const char *);
+    int file_is_opened(const char *);
 
-  void get_rgbcolor_settings(struct xml_handle *, const char *, int, QColor *);
+    void remove_recent_file_mtg_path(const char *);
 
-  void annot_dock_updated(void);
+    void get_rgbcolor_settings(struct xml_handle *, const char *, int, QColor *);
 
-  int get_filenum(struct edfhdrblock *);
+    void annot_dock_updated(void);
 
-  void get_unique_annotations(struct edfhdrblock *);
+    int get_filenum(struct edfhdrblock *);
 
-  struct signalcompblock * create_signalcomp_copy(struct signalcompblock *);
+    void get_unique_annotations(struct edfhdrblock *);
 
-  void enable_hrv_stats_toolbar(const char *, struct annotation_list *);
+    struct signalcompblock * create_signalcomp_copy(struct signalcompblock *);
+
+    void enable_hrv_stats_toolbar(const char *, struct annotation_list *);
 
 #ifdef Q_OS_WIN32
-  QString specialFolder(int);
+    QString specialFolder(int);
 #endif
 
-  ViewCurve    *maincurve;
+    UiLogger     *ui_logger;
+    ViewCurve    *maincurve;
 
-  QFont        *myfont,
-               *monofont;
+    QFont        *myfont,
+    *monofont;
 
-  QAction      *save_act,
-               *load_predefined_mtg_act[MAXPREDEFINEDMONTAGES],
-               *Escape_act,
-               *video_act;
+    QAction      *save_act,
+    *load_predefined_mtg_act[MAXPREDEFINEDMONTAGES],
+    *Escape_act,
+    *video_act;
 
-  QActionGroup *timelock_act_group,
-               *sel_viewtime_act_group;
+    QActionGroup *timelock_act_group,
+    *sel_viewtime_act_group;
 
-  QLabel       *nav_toolbar_label;
+    QLabel       *nav_toolbar_label;
 
 signals:
-     void file_position_changed(long long);
-     void annot_docklist_changed(void);
+    void file_position_changed(long long);
+    void annot_docklist_changed(void);
 
 private:
 
-  QMenuBar     *menubar;
+    QMenuBar     *menubar;
 
-  QMenu        *filemenu,
-               *signalmenu,
-               *displaymenu,
-               *amplitudemenu,
-               *toolsmenu,
-               *settingsmenu,
-               *helpmenu,
-               *printmenu,
-               *filtermenu,
-//               *math_func_menu,
-               *timemenu,
-               *windowmenu,
-               *recent_filesmenu,
-               *close_filemenu,
-               *montagemenu,
-               *patternmenu,
-               *print_img_menu;
+    QMenu        *filemenu,
+    *signalmenu,
+    *displaymenu,
+    *amplitudemenu,
+    *toolsmenu,
+    *settingsmenu,
+    *helpmenu,
+    *printmenu,
+    *filtermenu,
+    //               *math_func_menu,
+    *timemenu,
+    *windowmenu,
+    *recent_filesmenu,
+    *close_filemenu,
+    *montagemenu,
+    *patternmenu,
+    *print_img_menu;
 
-  char path[MAX_PATH_LENGTH],
-       videopath[MAX_PATH_LENGTH],
-       montagepath[MAX_PATH_LENGTH],
-       recent_file_path[MAX_RECENTFILES][MAX_PATH_LENGTH],
-       option_str[MAX_PATH_LENGTH];
+    char path[MAX_PATH_LENGTH],
+    videopath[MAX_PATH_LENGTH],
+    montagepath[MAX_PATH_LENGTH],
+    recent_file_path[MAX_RECENTFILES][MAX_PATH_LENGTH],
+    option_str[MAX_PATH_LENGTH];
 
-  QAction  *former_page_Act,
-           *shift_page_left_Act,
-           *shift_page_right_Act,
-           *playback_file_Act,
-           *stop_playback_realtime_Act,
-           *next_page_Act,
-           *shift_page_up_Act,
-           *shift_page_down_Act,
-           *page_div2,
-           *page_mult2,
-           *page_10u,
-           *page_20u,
-           *page_50u,
-           *page_100u,
-           *page_200u,
-           *page_500u,
-           *page_1m,
-           *page_2m,
-           *page_5m,
-           *page_10m,
-           *page_20m,
-           *page_50m,
-           *page_100m,
-           *page_200m,
-           *page_500m,
-           *page_1,
-           *page_2,
-           *page_5,
-           *page_10,
-           *page_15,
-           *page_20,
-           *page_30,
-           *page_60,
-           *page_300,
-           *page_1200,
-           *page_3600,
-           *page_user_defined,
-           *page_whole_rec,
-           *fit_to_pane,
-           *fit_to_dc,
-           *amp_00001,
-           *amp_00002,
-           *amp_00005,
-           *amp_0001,
-           *amp_0002,
-           *amp_0005,
-           *amp_001,
-           *amp_002,
-           *amp_005,
-           *amp_01,
-           *amp_02,
-           *amp_05,
-           *amp_1,
-           *amp_2,
-           *amp_5,
-           *amp_10,
-           *amp_20,
-           *amp_50,
-           *amp_100,
-           *amp_200,
-           *amp_500,
-           *amp_1000,
-           *amp_2000,
-           *amp_5000,
-           *amp_10000,
-           *amp_20000,
-           *amp_50000,
-           *amp_plus,
-           *amp_minus,
-           *zoomback_Act,
-           *zoomforward_Act,
-           *slower_Act,
-           *faster_Act,
-           *recent_file[MAX_RECENTFILES],
-           *offset_timesync_act,
-           *absolut_timesync_act,
-           *no_timesync_act,
-           *user_def_sync_act,
-           *sel_viewtime_act[MAXFILES],
-           *next_crosshair;
+    QAction  *former_page_Act,
+    *shift_page_left_Act,
+    *shift_page_right_Act,
+    *playback_file_Act,
+    *stop_playback_realtime_Act,
+    *next_page_Act,
+    *shift_page_up_Act,
+    *shift_page_down_Act,
+    *page_div2,
+    *page_mult2,
+    *page_10u,
+    *page_20u,
+    *page_50u,
+    *page_100u,
+    *page_200u,
+    *page_500u,
+    *page_1m,
+    *page_2m,
+    *page_5m,
+    *page_10m,
+    *page_20m,
+    *page_50m,
+    *page_100m,
+    *page_200m,
+    *page_500m,
+    *page_1,
+    *page_2,
+    *page_5,
+    *page_10,
+    *page_15,
+    *page_20,
+    *page_30,
+    *page_60,
+    *page_300,
+    *page_1200,
+    *page_3600,
+    *page_user_defined,
+    *page_whole_rec,
+    *fit_to_pane,
+    *fit_to_dc,
+    *amp_00001,
+    *amp_00002,
+    *amp_00005,
+    *amp_0001,
+    *amp_0002,
+    *amp_0005,
+    *amp_001,
+    *amp_002,
+    *amp_005,
+    *amp_01,
+    *amp_02,
+    *amp_05,
+    *amp_1,
+    *amp_2,
+    *amp_5,
+    *amp_10,
+    *amp_20,
+    *amp_50,
+    *amp_100,
+    *amp_200,
+    *amp_500,
+    *amp_1000,
+    *amp_2000,
+    *amp_5000,
+    *amp_10000,
+    *amp_20000,
+    *amp_50000,
+    *amp_plus,
+    *amp_minus,
+    *zoomback_Act,
+    *zoomforward_Act,
+    *slower_Act,
+    *faster_Act,
+    *recent_file[MAX_RECENTFILES],
+    *offset_timesync_act,
+    *absolut_timesync_act,
+    *no_timesync_act,
+    *user_def_sync_act,
+    *sel_viewtime_act[MAXFILES],
+    *next_crosshair;
 
-  QActionGroup *AmplitudeGroup,
-               *DisplayGroup,
-               *load_predefined_mtg_group;
+    QActionGroup *AmplitudeGroup,
+    *DisplayGroup,
+    *load_predefined_mtg_group;
 
-  QTimer   *live_stream_timer,
-           *video_poll_timer,
-           *playback_realtime_timer,
-           *startup_timer;
+    QTimer   *live_stream_timer,
+    *video_poll_timer,
+    *playback_realtime_timer,
+    *startup_timer;
 
-  QElapsedTimer *playback_realtime_time;
+    QElapsedTimer *playback_realtime_time;
 
-  QSplashScreen *splash;
+    QSplashScreen *splash;
 
-  QPixmap  *splash_pixmap;
+    QPixmap  *splash_pixmap;
 
-  QToolBar *slidertoolbar,
-           *navtoolbar;
+    QToolBar *slidertoolbar,
+    *navtoolbar;
 
-  QSlider  *positionslider;
+    QSlider  *positionslider;
 
-  QProcess *video_process;
+    QProcess *video_process;
 
-  QTcpSocket *vlc_sock;
+    QTcpSocket *vlc_sock;
 
-  int cmdlineargument,
-      cmdlineoption,
-      oldwindowheight;
+    int cmdlineargument,
+    cmdlineoption,
+    oldwindowheight;
 
-  Check_for_updates *update_checker;
+    Check_for_updates *update_checker;
 
-  void read_color_settings();
-  void read_recent_file_settings();
-  void read_general_settings();
-  void write_settings();
-  long long check_edf_file_datarecords(struct edfhdrblock *);
-  void mpr_write(const char *);
-  int mpr_read(char *, int);
+    void read_color_settings();
+    void read_recent_file_settings();
+    void read_general_settings();
+    void write_settings();
+    long long check_edf_file_datarecords(struct edfhdrblock *);
+    void mpr_write(const char *);
+    int mpr_read(char *, int);
 
 public slots:
-  void remove_all_signals();
-  void edfplus_remove_duplicate_annotations();
-  void video_player_seek(int);
-  void video_player_toggle_pause();
-  void shift_page_left();
-  void shift_page_right();
-  void shift_page_up();
-  void shift_page_down();
+    void remove_all_signals();
+    void edfplus_remove_duplicate_annotations();
+    void video_player_seek(int);
+    void video_player_toggle_pause();
+    void shift_page_left();
+    void shift_page_right();
+    void shift_page_up();
+    void shift_page_down();
 
 private slots:
-  void open_new_file();
-  void show_file_info();
-  void close_file_action_func(QAction *);
-  void close_all_files();
-  void exit_program();
-  void signalproperties_dialog();
-  void filterproperties_dialog();
-  void add_signals_dialog();
-  void show_about_dialog();
-  void set_display_time(QAction *);
-  void set_page_div2();
-  void set_page_mult2();
-  void set_display_time_whole_rec();
-  void set_amplitude(QAction *);
-  void set_amplitude_div2();
-  void set_amplitude_mult2();
-  void fit_signals_to_pane();
-  void fit_signals_dc_offset();
-  void former_page();
-  void playback_file();
-  void stop_playback();
-  void next_page();
-  void zoomback();
-  void forward();
-  void show_splashscreen();
-  void export_to_ascii();
-  void check_edf_compatibility();
-  void add_new_filter();
-  void add_plif_ecg_filter();
-  void add_fir_filter();
-  void add_spike_filter();
-  void remove_all_filters();
-  void remove_all_plif_ecg_filters();
-  void remove_all_fir_filters();
-  void remove_all_spike_filters();
-//  void add_new_math_func();
-//  void remove_all_math_funcs();
-  void jump_to_dialog();
-  void jump_to_start();
-  void jump_to_end();
-  void jump_to_time_millisec(long long);
-  void show_annotations();
-  void show_options_dialog();
-  long long get_long_time(char *);
-  void nk2edf_converter();
-  void set_timesync(QAction *);
-  void set_timesync_reference(QAction *);
-  void recent_file_action_func(QAction *);
-  void sync_by_crosshairs();
-  void save_montage();
-  void load_montage();
-  void view_montage();
-  void show_this_montage();
-  void show_help();
-  void show_kb_shortcuts();
-  void print_to_edf();
-  void set_user_defined_display_time();
-  void print_to_bdf();
-  void print_to_img_640x480();
-  void print_to_img_800x600();
-  void print_to_img_1024x768();
-  void print_to_img_1280x1024();
-  void print_to_img_1600x1200();
-  void convert_ascii_to_edf();
-  void convert_fino_to_edf();
-  void convert_wave_to_edf();
-  void convert_fm_audio_to_edf();
-  void convert_mortara_to_edf();
-  void convert_ishne_to_edf();
-  void convert_nexfin_to_edf();
-  void edfd_converter();
-  void slider_moved(int);
-  void convert_emsa_to_edf();
-  void bdf2edf_converter();
-  void set_dc_offset_to_zero();
-  void annotation_editor();
-  void save_file();
-  void unisens2edf_converter();
-  void BI98002edf_converter();
-  void export_annotations();
-  void load_predefined_mtg(QAction *);
-  void edit_predefined_montages();
-  void show_spectrum_dock();
-  void show_cdsa_dock();
-  void show_hypnogram();
-  void page_3cmsec();
-  void page_25mmsec();
-  void page_50mmsec();
-  void reduce_signals();
-  void edit_header();
-  void biosemi2bdfplus_converter();
-  void import_annotations();
-  void open_stream();
-  void start_stop_video();
-  void stop_video_generic(int);
-  void live_stream_timer_func();
-  void video_poll_timer_func();
-  void playback_realtime_timer_func();
-  void organize_signals();
-  void Escape_fun();
-  void export_ecg_rr_interval_to_ascii();
-  void qrs_detector();
-  void convert_binary_to_edf();
-  void convert_manscan_to_edf();
-  void convert_scpecg_to_edf();
-  void convert_mit_to_edf();
-  void convert_biox_to_edf();
-  void video_process_error(QProcess::ProcessError);
-  void vlc_sock_error(QAbstractSocket::SocketError);
-  void export_filtered_signals();
-  void video_player_faster();
-  void video_player_slower();
-//  void search_pattern();
+    void open_new_file();
+    void show_file_info();
+    void close_file_action_func(QAction *);
+    void close_all_files();
+    void exit_program();
+    void signalproperties_dialog();
+    void filterproperties_dialog();
+    void add_signals_dialog();
+    void show_about_dialog();
+    void set_display_time(QAction *);
+    void set_page_div2();
+    void set_page_mult2();
+    void set_display_time_whole_rec();
+    void set_amplitude(QAction *);
+    void set_amplitude_div2();
+    void set_amplitude_mult2();
+    void fit_signals_to_pane();
+    void fit_signals_dc_offset();
+    void former_page();
+    void playback_file();
+    void stop_playback();
+    void next_page();
+    void zoomback();
+    void forward();
+    void show_splashscreen();
+    void export_to_ascii();
+    void check_edf_compatibility();
+    void add_new_filter();
+    void add_plif_ecg_filter();
+    void add_fir_filter();
+    void add_spike_filter();
+    void remove_all_filters();
+    void remove_all_plif_ecg_filters();
+    void remove_all_fir_filters();
+    void remove_all_spike_filters();
+    //  void add_new_math_func();
+    //  void remove_all_math_funcs();
+    void jump_to_dialog();
+    void jump_to_start();
+    void jump_to_end();
+    void jump_to_time_millisec(long long);
+    void show_annotations();
+    void show_options_dialog();
+    long long get_long_time(char *);
+    void nk2edf_converter();
+    void set_timesync(QAction *);
+    void set_timesync_reference(QAction *);
+    void recent_file_action_func(QAction *);
+    void sync_by_crosshairs();
+    void save_montage();
+    void load_montage();
+    void view_montage();
+    void show_this_montage();
+    void show_help();
+    void show_kb_shortcuts();
+    void print_to_edf();
+    void set_user_defined_display_time();
+    void print_to_bdf();
+    void print_to_img_640x480();
+    void print_to_img_800x600();
+    void print_to_img_1024x768();
+    void print_to_img_1280x1024();
+    void print_to_img_1600x1200();
+    void convert_ascii_to_edf();
+    void convert_fino_to_edf();
+    void convert_wave_to_edf();
+    void convert_fm_audio_to_edf();
+    void convert_mortara_to_edf();
+    void convert_ishne_to_edf();
+    void convert_nexfin_to_edf();
+    void edfd_converter();
+    void slider_moved(int);
+    void convert_emsa_to_edf();
+    void bdf2edf_converter();
+    void set_dc_offset_to_zero();
+    void annotation_editor();
+    void save_file();
+    void unisens2edf_converter();
+    void BI98002edf_converter();
+    void export_annotations();
+    void load_predefined_mtg(QAction *);
+    void edit_predefined_montages();
+    void show_spectrum_dock();
+    void show_cdsa_dock();
+    void show_hypnogram();
+    void page_3cmsec();
+    void page_25mmsec();
+    void page_50mmsec();
+    void reduce_signals();
+    void edit_header();
+    void biosemi2bdfplus_converter();
+    void import_annotations();
+    void open_stream();
+    void start_stop_video();
+    void stop_video_generic(int);
+    void live_stream_timer_func();
+    void video_poll_timer_func();
+    void playback_realtime_timer_func();
+    void organize_signals();
+    void Escape_fun();
+    void export_ecg_rr_interval_to_ascii();
+    void qrs_detector();
+    void convert_binary_to_edf();
+    void convert_manscan_to_edf();
+    void convert_scpecg_to_edf();
+    void convert_mit_to_edf();
+    void convert_biox_to_edf();
+    void video_process_error(QProcess::ProcessError);
+    void vlc_sock_error(QAbstractSocket::SocketError);
+    void export_filtered_signals();
+    void video_player_faster();
+    void video_player_slower();
+    //  void search_pattern();
 
 protected:
-  void closeEvent(QCloseEvent *);
+    void closeEvent(QCloseEvent *);
 
 };
 
