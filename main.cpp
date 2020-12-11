@@ -94,10 +94,9 @@ int main(int argc, char *argv[])
 //        evlp.exec();
 //    }
 
+    // Run app
     qApp->setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 5; }");
-
     class UI_Mainwindow MainWindow;
-
     return app.exec();
 }
 
