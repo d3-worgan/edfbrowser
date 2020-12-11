@@ -1170,25 +1170,25 @@ UI_Mainwindow::UI_Mainwindow()
     cmdlineargument = 0;
     cmdlineoption = 0;
 
-    if (QCoreApplication::arguments().size() == 4) {
+    if (QCoreApplication::arguments().size() == 3) {
 
-        std::cerr << "There were 3 arguments like I wanted\n";
+        std::cerr << "There were 2 arguments like I wanted\n";
         QString edf_path = QCoreApplication::arguments().at(1).toLocal8Bit().data();
         QString log_path = QCoreApplication::arguments().at(2).toLocal8Bit().data();
-        QString montage_path = QCoreApplication::arguments().at(3).toLocal8Bit().data();
+        //QString montage_path = QCoreApplication::arguments().at(3).toLocal8Bit().data();
 
         std::cerr << "EDF path: " << edf_path.toStdString() << '\n';
         std::cerr << "Log path: " << log_path.toStdString() << '\n';
-        std::cerr << "Montage path: " << montage_path.toStdString() << '\n';
+        //std::cerr << "Montage path: " << montage_path.toStdString() << '\n';
 
 
-//        strlcpy(path, edf_path.toStdString().c_str(), MAX_PATH_LENGTH);
-//        strlcpy(montagepath, montage_path.toStdString().c_str(), MAX_PATH_LENGTH);
-        //log_location = log_path;
+        strlcpy(path, edf_path.toStdString().c_str(), MAX_PATH_LENGTH);
+        //strlcpy(montagepath, montage_path.toStdString().c_str(), MAX_PATH_LENGTH);
+        log_location = log_path;
 
     }
     else {
-        std::cerr << "We didnt get 3 args\n";
+        std::cerr << "We didnt get 2 args\n";
     }
 
 //    if (QCoreApplication::arguments().size() > 1) {

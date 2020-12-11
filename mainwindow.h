@@ -201,6 +201,8 @@ public:
   UI_Mainwindow();
   ~UI_Mainwindow();
 
+  QString log_location;
+
   int files_open,
       signalcomps,
       totalviewbufsize,
