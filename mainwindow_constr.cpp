@@ -1049,35 +1049,28 @@ UI_Mainwindow::UI_Mainwindow()
     montagepath[0] = 0;
     option_str[0] = 0;
 
-    for(i=0; i<MAX_RECENTFILES; i++)
-    {
+    for (i = 0; i < MAX_RECENTFILES; i++) {
         recent_file_path[i][0] = 0;
         recent_file_mtg_path[i][0] = 0;
     }
 
-    for(i=0; i<MAXPREDEFINEDMONTAGES; i++)
-    {
+    for (i = 0; i < MAXPREDEFINEDMONTAGES; i++) {
         predefined_mtg_path[i][0] = 0;
     }
 
     read_recent_file_settings();
 
-    for(i=0; i<MAXPREDEFINEDMONTAGES; i++)
-    {
-        if(predefined_mtg_path[i][0] != 0)
-        {
+    for (i = 0; i < MAXPREDEFINEDMONTAGES; i++) {
+        if (predefined_mtg_path[i][0] != 0) {
             load_predefined_mtg_act[i]->setText(predefined_mtg_path[i]);
         }
     }
 
     annotationEditDock = NULL;
 
-    for(i=0; i<MAXSPECTRUMDOCKS; i++)
-    {
+    for (i = 0; i < MAXSPECTRUMDOCKS; i++) {
         spectrumdock[i] = new UI_SpectrumDockWindow(this);
-
         addDockWidget(Qt::TopDockWidgetArea, spectrumdock[i]->dock, Qt::Horizontal);
-
         spectrumdock[i]->dock->hide();
     }
 
@@ -1170,25 +1163,33 @@ UI_Mainwindow::UI_Mainwindow()
     cmdlineargument = 0;
     cmdlineoption = 0;
 
-    if (QCoreApplication::arguments().size() == 3) {
+    if (QCoreApplication::arguments().size() > 1) {
 
-        std::cerr << "There were 2 arguments like I wanted\n";
         QString edf_path = QCoreApplication::arguments().at(1).toLocal8Bit().data();
-        QString log_path = QCoreApplication::arguments().at(2).toLocal8Bit().data();
-        //QString montage_path = QCoreApplication::arguments().at(3).toLocal8Bit().data();
-
         std::cerr << "EDF path: " << edf_path.toStdString() << '\n';
-        std::cerr << "Log path: " << log_path.toStdString() << '\n';
-        //std::cerr << "Montage path: " << montage_path.toStdString() << '\n';
-
-
         strlcpy(path, edf_path.toStdString().c_str(), MAX_PATH_LENGTH);
-        //strlcpy(montagepath, montage_path.toStdString().c_str(), MAX_PATH_LENGTH);
-        log_location = log_path;
+        cmdlineargument++;
+
+        if (QCoreApplication::arguments().size() > 2) {
+            QString log_path = QCoreApplication::arguments().at(2).toLocal8Bit().data();
+            std::cerr << "Log path: " << log_path.toStdString() << '\n';
+            log_location = log_path;
+        }
+
+        if (QCoreApplication::arguments().size() > 3) {
+            QString montage_path = QCoreApplication::arguments().at(3).toLocal8Bit().data();
+            std::cerr << "Montage path: " << montage_path.toStdString() << '\n';
+            strlcpy(montagepath, montage_path.toStdString().c_str(), MAX_PATH_LENGTH);
+        }
+
+        startup_timer = new QTimer;
+        startup_timer->setSingleShot(true);
+        QObject::connect(startup_timer, SIGNAL(timeout()), this, SLOT(open_new_file()));
+        startup_timer->start(50);
 
     }
     else {
-        std::cerr << "We didnt get 2 args\n";
+        std::cerr << "No args were passed\n";
     }
 
 //    if (QCoreApplication::arguments().size() > 1) {
