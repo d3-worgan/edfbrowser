@@ -677,8 +677,13 @@ private slots:
     void video_player_faster();
     void video_player_slower();
     //  void search_pattern();
+    //void run_tests();
+
 
 protected:
+    void keyPressEvent(QKeyEvent *event);
+    void moveEvent(QMoveEvent *event);
+    void resizeEvent(QResizeEvent *event);
     void closeEvent(QCloseEvent *);
 
 };

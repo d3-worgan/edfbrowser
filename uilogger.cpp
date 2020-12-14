@@ -39,35 +39,37 @@ void UiLogger::write(LogEvents log_event) {
     text += QString(" id %1: { Event: ").arg(this->log_id);
 
     if (log_event == LogEvents::FILE_OPENED) {
-        text += QString("FILE_OPENED");
+        this->save_montage();
+        text += QString("FILE_OPENED, data: {montage_file: \"%1.mtg\"}").arg(this->log_id);
     }
     else if (log_event == LogEvents::MONTAGE_CHANGED) {
         this->save_montage();
-        text += QString("MONTAGE_CHANGED, data: {montage_file: %1.mtg}").arg(this->log_id);
+        text += QString("MONTAGE_CHANGED, data: {montage_file: \"%1.mtg\"}").arg(this->log_id);
     }
     else if (log_event == LogEvents::CHANNELS_CHANGED) {
         this->save_montage();
-        text += QString("CHANNELS_CHANGED, data: {montage_file: %1}").arg(this->log_id);
+        text += QString("CHANNELS_CHANGED, data: {montage_file: \"%1.mtg\"}").arg(this->log_id);
     }
     else if (log_event == LogEvents::FILTER_CHANGED) {
         this->save_montage();
-        text += QString("FILTER_CHANGED, data: {montage_file: %1}").arg(this->log_id);
+        text += QString("FILTER_CHANGED, data: {montage_file: \"%1.mtg\"}").arg(this->log_id);
     }
     else if (log_event == LogEvents::AMPLITUDE_CHANGED) {
         this->save_montage();
-        text += QString("AMPLITUDE_CHANGED, data: {montage_file: %1}").arg(this->log_id);
+        text += QString("AMPLITUDE_CHANGED, data: {montage_file: \"%1.mtg\"}").arg(this->log_id);
     }
     else if (log_event == LogEvents::TIMESCALE_CHANGED) {
-        text += QString("TIMESCALE_CHANGED, data: {time_scale: %1}").arg(main_window->pagetime_string);
+        text += QString("TIMESCALE_CHANGED, data: {time_scale: \"%1\"}").arg(main_window->pagetime_string);
     }
     else if (log_event == LogEvents::TIME_POSITION_CHANGED) {
-        text += QString("TIME_POSITION_CHANGED, data: {time: %1}").arg(main_window->viewtime_string);
+        text += QString("TIME_POSITION_CHANGED, data: {time: \"%1\"}").arg(main_window->viewtime_string);
     }
     else if (log_event == LogEvents::VERTICAL_CHANGED) {
         text += QString("VERTICAL_CHANGED, data: {}");
     }
     else if (log_event == LogEvents::ZOOM_CHANGED) {
-        text += QString("ZOOM_CHANGED, NOT IMPLEMENTED");
+        this->save_montage();
+        text += QString("ZOOM_CHANGED, data: {time: \"%1\", time_scale: \"%2\", montage_file: \"%3.mtg\"}").arg(QString(main_window->viewtime_string), QString(main_window->pagetime_string), QString::number(this->log_id));
     }
     else if (log_event == LogEvents::WINDOW_MOVED) {
         text += QString("WINDOW_MOVED, data: {graph_box: %1}").arg(change_window());

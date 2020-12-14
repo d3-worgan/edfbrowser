@@ -929,6 +929,7 @@ void UI_Mainwindow::add_new_filter()
     if(!files_open)  return;
 
     UI_FilterDialog filterdialog(this);
+    ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
 
 
@@ -937,6 +938,7 @@ void UI_Mainwindow::add_plif_ecg_filter()
     if(!files_open)  return;
 
     UI_PLIF_ECG_filter_dialog plifecgfilterdialog(this);
+    ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
 
 
@@ -945,6 +947,7 @@ void UI_Mainwindow::add_fir_filter()
     if(!files_open)  return;
 
     UI_FIRFilterDialog firfilterdialog(recent_opendir, recent_savedir, this);
+    ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
 
 
@@ -953,6 +956,7 @@ void UI_Mainwindow::add_spike_filter()
     if(!files_open)  return;
 
     UI_SpikeFilterDialog spikefilterdialog(this);
+    ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
 
 
@@ -1037,19 +1041,23 @@ void UI_Mainwindow::forward()
     zoomhistory->pntr++;
     zoomhistory->pntr %= MAXZOOMHISTORY;
 
-    for(i=0; i<files_open; i++)
-    {
+    for (i = 0; i < files_open; i++) {
+        std::cerr << "view times " << edfheaderlist[i]->viewtime << " " << zoomhistory->viewtime[zoomhistory->pntr][i] << "\n";
         edfheaderlist[i]->viewtime = zoomhistory->viewtime[zoomhistory->pntr][i];
+
     }
+    std::cerr << "pagetimes " << pagetime << " " << zoomhistory->pagetime[zoomhistory->pntr] << "\n";
     pagetime = zoomhistory->pagetime[zoomhistory->pntr];
 
-    for(i=0; i<signalcomps; i++)
-    {
+    for (i = 0; i < signalcomps; i++) {
+        std::cerr << "voltspercm " << signalcomp[i]->voltpercm << " " << zoomhistory->voltpercm[zoomhistory->pntr][i] << "\n";
         signalcomp[i]->voltpercm = zoomhistory->voltpercm[zoomhistory->pntr][i];
+
+        std::cerr << "screen_offset " << signalcomp[i]->screen_offset << " " << zoomhistory->screen_offset[zoomhistory->pntr][i] << "\n";
         signalcomp[i]->screen_offset = zoomhistory->screen_offset[zoomhistory->pntr][i];
 
-        for(j=0; j<signalcomp[i]->num_of_signals; j++)
-        {
+        for (j = 0; j < signalcomp[i]->num_of_signals; j++) {
+            std::cerr << "sensitivity " << signalcomp[i]->sensitivity[j] << " " << zoomhistory->sensitivity[zoomhistory->pntr][i][j] << "\n";
             signalcomp[i]->sensitivity[j] = zoomhistory->sensitivity[zoomhistory->pntr][i][j];
         }
     }
@@ -4260,9 +4268,69 @@ void UI_Mainwindow::get_unique_annotations(struct edfhdrblock *hdr)
     }
 }
 
+void UI_Mainwindow::keyPressEvent(QKeyEvent *event) {
+    if ((event->key() == Qt::Key_Left) || (event->key() == Qt::Key_Right)) {
+        if (ui_logger != 0)
+            ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
+    }
+}
+
+void UI_Mainwindow::moveEvent(QMoveEvent *event) {
+    if (ui_logger != 0)
+        ui_logger->write(UiLogger::LogEvents::WINDOW_MOVED);
+}
+
+void UI_Mainwindow::resizeEvent(QResizeEvent *event){
+    if (ui_logger != 0)
+        ui_logger->write(UiLogger::LogEvents::WINDOW_RESIZED);
+}
+
+//void UI_Mainwindow::run_tests() {
+//    shift_page_right_Act->trigger();
+//    std::cerr << "Shift right button clicked x 1\n";
+//    shift_page_left_Act->trigger();
+//    std::cerr << "Shift left button clicked x 1\n";
+
+//    for (int i = 0; i < 10; i++) {
+//        shift_page_right_Act->trigger();
+//    }
+//    std::cerr << "Shift right button clicked x 10\n";
+
+//    for (int i = 0; i < 10; i++) {
+//        shift_page_left_Act->trigger();
+//    }
+//    std::cerr << "Shift left button clicked x 10\n";
+//    next_page_Act->trigger();
+//    former_page_Act->trigger();
+
+//    for (int i = 0; i < 10; i++) {
+//        next_page_Act->trigger();
+//    }
+//    std::cerr << "Next page button clicked x 10\n";
+
+//    for (int i = 0; i < 10; i++) {
+//        former_page_Act->trigger();
+//    }
+//    std::cerr << "Previous page button clicked x 10\n";
+
+//    // Test the arrow scrolls
+//    //QTest::keyClick(this, Qt::Key_Right);
+//    std::cerr << "Pressed the right arrow key\n";
+//    // Click the timeline right
+//    // Click the timeline left
+
+//    // Go to start of file
+//    // Go to end of file
+
+//    // Test pageview (timescale actions)
 
 
 
+
+
+
+//    tests_run = true;
+//}
 
 
 
