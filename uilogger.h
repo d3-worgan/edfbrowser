@@ -19,6 +19,7 @@ public:
 
     enum class LogEvents {
         FILE_OPENED,
+        FILE_CLOSED,
         MONTAGE_CHANGED,
         CHANNELS_CHANGED,
         FILTER_CHANGED,
@@ -45,8 +46,10 @@ private:
 
 public slots:
     void write(LogEvents log_event);
-    QString change_window();
+    QString get_graph_coords();
+    QString get_graph_dimensions();
     int save_montage();
+    QString calculate_baselines();
 
 };
 

@@ -35,47 +35,52 @@ UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path, QPlainTextEd
  */
 void UiLogger::write(LogEvents log_event) {
 
-    QString text = QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss:zzz");
-    text += QString(" id %1: { Event: ").arg(this->log_id);
+    QString text = QDateTime::currentDateTime().toString("\"dd.MM.yyyy hh:mm:ss:zzz ");
+    text += QString("id %1\": { Event: ").arg(this->log_id);
 
     if (log_event == LogEvents::FILE_OPENED) {
         this->save_montage();
-        text += QString("FILE_OPENED, data: {montage_file: \"%1.mtg\"}").arg(this->log_id);
+        text += QString("\"FILE_OPENED\", \"data\": {\"graph_dimensions\": %1, \"graph_bbox\": %2, \"montage_file\": \"%3.mtg\"}").arg(get_graph_dimensions(), get_graph_coords(), QString::number(this->log_id));
+    }
+    else if (log_event == LogEvents::FILE_CLOSED) {
+        this->save_montage();
+        text += QString("\"FILE_CLOSED\", \"data\": {\"montage_file\": \"%1.mtg\"}").arg(this->log_id);
     }
     else if (log_event == LogEvents::MONTAGE_CHANGED) {
         this->save_montage();
-        text += QString("MONTAGE_CHANGED, data: {montage_file: \"%1.mtg\"}").arg(this->log_id);
+        text += QString("\"MONTAGE_CHANGED\", \"data\": {\"montage_file\": \"%1.mtg\"}").arg(this->log_id);
     }
     else if (log_event == LogEvents::CHANNELS_CHANGED) {
         this->save_montage();
-        text += QString("CHANNELS_CHANGED, data: {montage_file: \"%1.mtg\"}").arg(this->log_id);
+        text += QString("\"CHANNELS_CHANGED\", \"data\": {\"montage_file\": \"%1.mtg\"}").arg(this->log_id);
     }
     else if (log_event == LogEvents::FILTER_CHANGED) {
         this->save_montage();
-        text += QString("FILTER_CHANGED, data: {montage_file: \"%1.mtg\"}").arg(this->log_id);
+        text += QString("\"FILTER_CHANGED\", \"data\": {\"montage_file\": \"%1.mtg\"}").arg(this->log_id);
     }
     else if (log_event == LogEvents::AMPLITUDE_CHANGED) {
         this->save_montage();
-        text += QString("AMPLITUDE_CHANGED, data: {montage_file: \"%1.mtg\"}").arg(this->log_id);
+        text += QString("\"AMPLITUDE_CHANGED\", \"data\": {\"montage_file\": \"%1.mtg\"}").arg(this->log_id);
     }
     else if (log_event == LogEvents::TIMESCALE_CHANGED) {
-        text += QString("TIMESCALE_CHANGED, data: {time_scale: \"%1\"}").arg(main_window->pagetime_string);
+        text += QString("\"TIMESCALE_CHANGED\", \"data\": {\"time_scale\": \"%1\"}").arg(main_window->pagetime_string);
     }
     else if (log_event == LogEvents::TIME_POSITION_CHANGED) {
-        text += QString("TIME_POSITION_CHANGED, data: {time: \"%1\"}").arg(main_window->viewtime_string);
+        text += QString("\"TIME_POSITION_CHANGED\", \"data\": {\"time\": \"%1\"}").arg(main_window->viewtime_string);
     }
     else if (log_event == LogEvents::VERTICAL_CHANGED) {
-        text += QString("VERTICAL_CHANGED, data: {}");
+        this->save_montage();
+        text += QString("\"VERTICAL_CHANGED\", \"data\": {\"montage_file\": \"%1\"}").arg(this->log_id);
     }
     else if (log_event == LogEvents::ZOOM_CHANGED) {
         this->save_montage();
-        text += QString("ZOOM_CHANGED, data: {time: \"%1\", time_scale: \"%2\", montage_file: \"%3.mtg\"}").arg(QString(main_window->viewtime_string), QString(main_window->pagetime_string), QString::number(this->log_id));
+        text += QString("\"ZOOM_CHANGED\", \"data\": {\"time\": \"%1\", \"time_scale\": \"%2\", \"montage_file\": \"%3.mtg\"}").arg(QString(main_window->viewtime_string), QString(main_window->pagetime_string), QString::number(this->log_id));
     }
     else if (log_event == LogEvents::WINDOW_MOVED) {
-        text += QString("WINDOW_MOVED, data: {graph_box: %1}").arg(change_window());
+        text += QString("\"WINDOW_MOVED\", \"data\": {\"graph_box\": %1}").arg(get_graph_coords());
     }
     else if (log_event == LogEvents::WINDOW_RESIZED) {
-        text += QString("WINDOW_RESIZED, data: {graph_box: %1}").arg(change_window());
+        text += QString("\"WINDOW_RESIZED\", \"data\": {\"graph_dimensions\": %1, \"graph_bbox\": %2}").arg(get_graph_dimensions(), get_graph_coords());
     }
     text = text + " }\n";
 
@@ -90,7 +95,7 @@ void UiLogger::write(LogEvents log_event) {
 }
 
 
-QString UiLogger::change_window() {
+QString UiLogger::get_graph_coords() {
 
     ViewCurve *maincurve = main_window->maincurve;
 
@@ -109,10 +114,38 @@ QString UiLogger::change_window() {
     QString bottom_right_x = QString::number(maincurve->mapToGlobal(QPoint(main_curve_width, main_curve_height)).x());
     QString bottom_right_y = QString::number(maincurve->mapToGlobal(QPoint(main_curve_width, main_curve_height)).y());
 
-    QString graph_box = QString("{top_left: (%1,%2), top_right: (%3,%4), bottom_left: (%5,%6), bottom_right: (%7,%8)}").arg(top_left_x, top_left_y, top_right_x, top_right_y, bottom_left_x, bottom_left_y, bottom_right_x, bottom_right_y);
+    QString graph_box = QString("{\"top_left\": [%1,%2], \"top_right\": [%3,%4], \"bottom_left\": [%5,%6], \"bottom_right\": [%7,%8]}").arg(top_left_x, top_left_y, top_right_x, top_right_y, bottom_left_x, bottom_left_y, bottom_right_x, bottom_right_y);
 
     return graph_box;
 
+}
+
+QString UiLogger::get_graph_dimensions() {
+
+    if (main_window->maincurve != 0) {
+        ViewCurve *maincurve = main_window->maincurve;
+
+        int main_curve_width = maincurve->width();
+        int main_curve_height = maincurve->height();
+
+        return QString("[%1 , %2]").arg(QString::number(main_curve_width), QString::number(main_curve_height)).simplified();
+    }
+    else return QString("[]");
+
+
+}
+
+QString UiLogger::calculate_baselines() {
+    QString channel_y_positions = "[";
+    int baseline;
+    for (int i = 0; i < main_window->signalcomps; i++) {
+      baseline = main_window->maincurve->height() / (main_window->signalcomps + 1);
+      baseline *= (i + 1);
+      channel_y_positions.append(main_window->maincurve->mapToGlobal(QPoint(0, baseline)).y());
+      channel_y_positions.append(", ");
+    }
+    channel_y_positions.append("]");
+    return channel_y_positions;
 }
 
 int UiLogger::save_montage() {
@@ -284,7 +317,11 @@ int UiLogger::save_montage() {
 
 }
 
-
+/**
+ * @brief UiLogger::set_destination_path
+ * @param destination: Path where to create the the log file
+ * @details initialise a destination directory and log file
+ */
 void UiLogger::set_destination_path(QString destination) {
     this->destination_path = destination;
     this->filename = "ui_log.txt";

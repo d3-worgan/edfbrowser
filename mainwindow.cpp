@@ -37,8 +37,7 @@ UI_Mainwindow::~UI_Mainwindow()
     delete monofont;
     delete maincurve;
     delete annotationEditDock;
-    for(int i=0; i<MAXSPECTRUMDOCKS; i++)
-    {
+    for (int i = 0; i < MAXSPECTRUMDOCKS; i++) {
         delete spectrumdock[i];
     }
     delete live_stream_timer;
@@ -50,20 +49,17 @@ UI_Mainwindow::~UI_Mainwindow()
 }
 
 
-void UI_Mainwindow::exit_program()
-{
+void UI_Mainwindow::exit_program() {
     close();
 }
 
 
-void UI_Mainwindow::closeEvent(QCloseEvent *cl_event)
-{
-    int i,
-            button_nr=0;
+void UI_Mainwindow::closeEvent(QCloseEvent *cl_event) {
 
+    ui_logger->write(UiLogger::LogEvents::FILE_CLOSED);
+    int i, button_nr=0;
 
-    if(annotations_edited)
-    {
+    if (annotations_edited) {
         QMessageBox messagewindow;
         messagewindow.setText("There are unsaved annotations,\n are you sure you want to quit?");
         messagewindow.setIcon(QMessageBox::Question);
@@ -818,6 +814,7 @@ void UI_Mainwindow::jump_to_start()
     }
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -867,6 +864,7 @@ void UI_Mainwindow::jump_to_time_millisec(long long milliseconds)
     }
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -921,6 +919,7 @@ void UI_Mainwindow::jump_to_end()
     }
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -1980,6 +1979,7 @@ void UI_Mainwindow::signalproperties_dialog()
     }
 
     UI_SignalChooser signalchooserdialog(this, 0);
+    ui_logger->write(UiLogger::LogEvents::CHANNELS_CHANGED);
 }
 
 
@@ -1995,14 +1995,16 @@ void UI_Mainwindow::filterproperties_dialog()
     }
 
     UI_SignalChooser signalchooserdialog(this, 2);
+    ui_logger->write(UiLogger::LogEvents::CHANNELS_CHANGED);
 }
 
 
 void UI_Mainwindow::add_signals_dialog()
 {
-    if(!files_open)  return;
+    if (!files_open)  return;
 
     UI_Signalswindow signalwindow(this);
+    ui_logger->write(UiLogger::LogEvents::CHANNELS_CHANGED);
 }
 
 
@@ -2098,6 +2100,7 @@ void UI_Mainwindow::remove_all_filters()
     {
         setup_viewbuf();
     }
+    ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
 
 
@@ -2133,6 +2136,7 @@ void UI_Mainwindow::remove_all_plif_ecg_filters()
     {
         setup_viewbuf();
     }
+    ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
 
 
@@ -2159,6 +2163,7 @@ void UI_Mainwindow::remove_all_fir_filters()
     {
         setup_viewbuf();
     }
+    ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
 
 
@@ -2185,6 +2190,7 @@ void UI_Mainwindow::remove_all_spike_filters()
     {
         setup_viewbuf();
     }
+    ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
 
 
@@ -2272,6 +2278,7 @@ void UI_Mainwindow::remove_all_signals()
     positionslider->blockSignals(true);
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::CHANNELS_CHANGED);
 }
 
 
@@ -2734,6 +2741,7 @@ void UI_Mainwindow::page_3cmsec()
     }
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
@@ -2753,6 +2761,7 @@ void UI_Mainwindow::page_25mmsec()
     }
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
@@ -2772,6 +2781,7 @@ void UI_Mainwindow::page_50mmsec()
     }
 
     setup_viewbuf();
+    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
@@ -3936,6 +3946,7 @@ int UI_Mainwindow::file_is_opened(const char *o_path)
 void UI_Mainwindow::organize_signals()
 {
     UI_SignalChooser signalchooser(this, 3);
+    ui_logger->write(UiLogger::LogEvents::CHANNELS_CHANGED);
 }
 
 

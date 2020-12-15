@@ -1572,15 +1572,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             l_tmp2=0;
 
     struct signalcompblock **signalcomp;
-
     struct annotation_list *annot_list;
-
     struct annotationblock *annot;
-
     struct date_time_struct date_time_str;
 
-    if(mainwindow->exit_in_progress)
-    {
+    if (mainwindow->exit_in_progress) {
         return;
     }
 
@@ -1592,75 +1588,52 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     font_pixel_width = mainwindow->font_pixel_width;
 
     vertical_distance = 1;
-
     painter_pixelsizefactor = 1.0 / mainwindow->y_pixelsizefactor;
 
-    if(!w_width||!w_height)
-    {
+    if (!w_width || !w_height) {
         w = width();
         h = height();
-
         painter->setFont(*mainwindow->myfont);
-
         printing = 0;
-    }
-    else
-    {
+    } else {
         w = w_width;
         h = w_height;
-
         printfont->setPixelSize((int)((double)w / 104.0));
-
         painter->setFont(*printfont);
-
         printsize_x_factor = ((double)w_width) / ((double)width());
         printsize_y_factor = ((double)w_height) / ((double)height());
-
         painter_pixelsizefactor *= printsize_y_factor;
-
         printing = 1;
     }
 
-    for(i=0; i<signalcomps; i++)
-    {
+    for (i = 0; i < signalcomps; i++) {
         signalcomp[i]->sample_pixel_ratio = (double)signalcomp[i]->samples_on_screen / (double)w;
     }
 
     painter->fillRect(0, 0, w, h, backgroundcolor);
 
-    if(mainwindow->show_annot_markers)
-    {
-        for(i=0; i<mainwindow->files_open; i++)
-        {
+    if (mainwindow->show_annot_markers) {
+        for (i = 0; i < mainwindow->files_open; i++) {
             annot_list = &mainwindow->edfheaderlist[i]->annot_list;
-
             annot_list_sz = edfplus_annotation_size(annot_list);
 
-            for(j=0; j<annot_list_sz; j++)
-            {
+            for (j = 0; j < annot_list_sz; j++) {
                 annot = edfplus_annotation_get_item(annot_list, j);
 
-                if(annot->long_duration)
-                {
+                if (annot->long_duration) {
                     l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
 
-                    if(((l_tmp + annot->long_duration) > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) && (!annot->hided))
-                    {
-                        if(l_tmp > (long long)(mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
-                        {
+                    if (((l_tmp + annot->long_duration) > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) && (!annot->hided)) {
+                        if (l_tmp > (long long)(mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime)) {
                             break;
                         }
 
                         l_tmp -= mainwindow->edfheaderlist[i]->viewtime;
-
                         marker_x = (int)((((double)w) / mainwindow->pagetime) * l_tmp);
-
                         marker_x2 = (int)((((double)w) / mainwindow->pagetime) * annot->long_duration);
 
-                        if(marker_x < 0)
-                        {
+                        if (marker_x < 0) {
                             marker_x2 += marker_x;
-
                             marker_x = 0;
                         }
 
@@ -1947,28 +1920,22 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
     }
 
-    if((m_pagetime>=173000)&&(m_pagetime<3000000))
-    {
+    if ((m_pagetime>=173000) && (m_pagetime<3000000)) {
+
         ruler_pen->setColor(small_ruler_color);
         painter->setPen(*ruler_pen);
 
-        for(x_pix=0; x_pix<w; x_pix++)
-        {
-            if((ll_elapsed_time / (TIME_DIMENSION * 3600))!=((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 3600)))
-            {
-                if(printing)
-                {
+        for (x_pix = 0; x_pix < w; x_pix++) {
+            if ((ll_elapsed_time / (TIME_DIMENSION * 3600)) != ((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 3600))) {
+                if (printing) {
                     painter->drawLine(x_pix, 0, x_pix, 4 * printsize_y_factor);
-                }
-                else
-                {
+                } else {
                     painter->drawLine(x_pix, 0, x_pix, 4);
                 }
             }
 
-            if(((ll_elapsed_time / (TIME_DIMENSION * 86400))!=((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 86400))) ||
-                    ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
-            {
+            if (((ll_elapsed_time / (TIME_DIMENSION * 86400))!=((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 86400))) ||
+                    ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel))) {
                 if(x_pix)
                 {
                     ruler_pen->setColor(big_ruler_color);
@@ -1991,70 +1958,55 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
     }
 
-    if(mainwindow->show_baselines)
-    {
-        vertical_distance = h / (signalcomps + 1);
+    if (mainwindow->show_baselines) {
 
+        vertical_distance = h / (signalcomps + 1);
         painter->setPen(baseline_color);
 
-        for(i=0; i<signalcomps; i++)
-        {
-            baseline = vertical_distance * (i + 1);
+        for (i = 0; i < signalcomps; i++) {
 
+            baseline = vertical_distance * (i + 1);
             painter->drawLine(0, baseline, w, baseline);
 
-            if(signalcomp[i]->voltpercm < 0.1)
-            {
+            if (signalcomp[i]->voltpercm < 0.1) {
                 strlcpy(str2, "%+.3f ", 32);
             }
-            else if(signalcomp[i]->voltpercm < 1.0)
-            {
+            else if (signalcomp[i]->voltpercm < 1.0) {
                 strlcpy(str2, "%+.2f ", 32);
             }
-            else if(signalcomp[i]->voltpercm < 10.0)
-            {
+            else if (signalcomp[i]->voltpercm < 10.0) {
                 strlcpy(str2, "%+.1f ", 32);
             }
-            else
-            {
+            else {
                 strlcpy(str2, "%+.0f ", 32);
             }
 
             strlcat(str2, signalcomp[i]->physdimension, 32);
 
-            for(j=1; j<18; j++)
-            {
+            for (j = 1; j < 18; j++) {
+
                 vert_ruler_offset = j * painter_pixelsizefactor;
 
-                if(signalcomps!=1)
-                {
-                    if(vert_ruler_offset>((vertical_distance / 2)) - 8)
-                    {
+                if (signalcomps!=1) {
+                    if (vert_ruler_offset > ((vertical_distance / 2)) - 8) {
                         break;
                     }
                 }
 
-                if(printing)
-                {
-                    if((baseline + vert_ruler_offset)>(h - (15 * printsize_y_factor)))
-                    {
+                if (printing) {
+                    if ((baseline + vert_ruler_offset) > (h - (15 * printsize_y_factor))) {
                         break;
                     }
 
-                    if((baseline - vert_ruler_offset)<(15 * printsize_y_factor))
-                    {
+                    if ((baseline - vert_ruler_offset) < (15 * printsize_y_factor)) {
                         break;
                     }
-                }
-                else
-                {
-                    if((baseline + vert_ruler_offset)>(h - 15))
-                    {
+                } else {
+                    if ((baseline + vert_ruler_offset) > (h - 15)) {
                         break;
                     }
 
-                    if((baseline - vert_ruler_offset)<15)
-                    {
+                    if ((baseline - vert_ruler_offset) < 15) {
                         break;
                     }
                 }
@@ -2063,28 +2015,21 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
 
-                if(printing)
-                {
+                if (printing) {
                     snprintf(string, 128, str2,
                              ((signalcomp[i]->voltpercm * j) + ((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor))) * (double)signalcomp[i]->polarity);
-                }
-                else
-                {
+                } else {
                     snprintf(string, 128, str2,
                              ((signalcomp[i]->voltpercm * j) + ((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / painter_pixelsizefactor)) * (double)signalcomp[i]->polarity);
                 }
 
                 painter->drawText(5 * printsize_x_factor, baseline - vert_ruler_offset - (4 * printsize_y_factor), string);
-
                 painter->drawLine(0, baseline + vert_ruler_offset, w, baseline + vert_ruler_offset);
 
-                if(printing)
-                {
+                if (printing) {
                     snprintf(string, 128, str2,
                              (((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor)) - (signalcomp[i]->voltpercm * j)) * (double)signalcomp[i]->polarity);
-                }
-                else
-                {
+                } else {
                     snprintf(string, 128, str2,
                              (((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / painter_pixelsizefactor) - (signalcomp[i]->voltpercm * j)) * (double)signalcomp[i]->polarity);
                 }
@@ -2096,27 +2041,20 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
     }
 
-    if(mainwindow->show_annot_markers || mainwindow->toolbar_stats.active)
-    {
+    if (mainwindow->show_annot_markers || mainwindow->toolbar_stats.active) {
         annot_marker_pen->setColor(annot_marker_color);
-
         annot_marker_pen->setWidth(print_linewidth);
-
         painter->setPen(*annot_marker_pen);
 
-        if(!annot_marker_moving)
-        {
+        if (!annot_marker_moving) {
             active_markers->count = 0;
         }
 
-        for(i=0; i<mainwindow->files_open; i++)
-        {
+        for (i = 0; i < mainwindow->files_open; i++) {
             annot_list = &mainwindow->edfheaderlist[i]->annot_list;
-
             annot_list_sz = edfplus_annotation_size(annot_list);
 
-            if((mainwindow->toolbar_stats.active) && (mainwindow->toolbar_stats.annot_list == annot_list))
-            {
+            if ((mainwindow->toolbar_stats.active) && (mainwindow->toolbar_stats.annot_list == annot_list)) {
                 mainwindow->toolbar_stats.sz = 0;
             }
 
