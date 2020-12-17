@@ -8,21 +8,44 @@
 
 UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path, QPlainTextEdit *editor) : QObject(parent) {
 
+    this->writing_log = false;
+
     this->main_window = parent;
     this->m_editor = editor;
-    this->destination_path = destination_path;
+    this->destination_directory = destination_path;
     this->log_id = 0;
-    this->filename = "ui_log.txt";
-    this->full_path = this->destination_path + this->filename;
+    this->log_file_name = "ui_log.txt";
+    this->log_full_path = this->destination_directory + this->log_file_name;
 
     if (!destination_path.isEmpty()) {
-        this->log_file = new QFile(this->full_path);
+        this->log_file = new QFile(this->log_full_path);
         this->log_file->open(QIODevice::WriteOnly | QIODevice::Text);
     }
 
-    this->montage_dir_path = this->destination_path + "montages\\";
-    if (!this->montage_dir.exists(montage_dir_path)) {
+    this->montage_dir_path = this->destination_directory + "montages\\";
+    this->montage_dir.setPath(montage_dir_path);
+    if (!this->montage_dir.exists()) {
         montage_dir.mkpath(montage_dir_path);
+    }
+    else {
+        montage_dir.removeRecursively();
+        if (!this->montage_dir.exists()) {
+            montage_dir.mkpath(montage_dir_path);
+        }
+    }
+
+    save_screenshots = true;
+    screenshot_directory_location = this->destination_directory + "screenshots\\";
+    this->screenshot_directory.setPath(screenshot_directory_location);
+    if (!this->screenshot_directory.exists()) {
+        screenshot_directory.mkdir(screenshot_directory_location);
+    }
+    else {
+        screenshot_directory.removeRecursively();
+        QThread::msleep(2000);
+        if (!this->screenshot_directory.exists()) {
+            screenshot_directory.mkdir(screenshot_directory_location);
+        }
     }
 
     std::cerr << "Constructed logger\n";
@@ -35,12 +58,15 @@ UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path, QPlainTextEd
  */
 void UiLogger::write(LogEvents log_event) {
 
-    QString text = QDateTime::currentDateTime().toString("\"dd.MM.yyyy hh:mm:ss:zzz ");
-    text += QString("id %1\": { Event: ").arg(this->log_id);
+    this->writing_log = true;
+
+    QString text = QString("{\"id\": \"%1\", ").arg(this->log_id);
+    text += QString("\"timestamp\": \"%1\", ").arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss:zzz"));
+    text += QString("\"event\": ");
 
     if (log_event == LogEvents::FILE_OPENED) {
         this->save_montage();
-        text += QString("\"FILE_OPENED\", \"data\": {\"graph_dimensions\": %1, \"graph_bbox\": %2, \"montage_file\": \"%3.mtg\"}").arg(get_graph_dimensions(), get_graph_coords(), QString::number(this->log_id));
+        text += QString("\"FILE_OPENED\", \"data\": {\"time\": \"%1\", \"time_scale\": \"%2\", \"graph_dimensions\": %3, \"graph_box\": %4, \"montage_file\": \"%5.mtg\"}").arg(main_window->viewtime_string, main_window->pagetime_string, get_graph_dimensions(), get_graph_coords(), QString::number(this->log_id));
     }
     else if (log_event == LogEvents::FILE_CLOSED) {
         this->save_montage();
@@ -80,7 +106,7 @@ void UiLogger::write(LogEvents log_event) {
         text += QString("\"WINDOW_MOVED\", \"data\": {\"graph_box\": %1}").arg(get_graph_coords());
     }
     else if (log_event == LogEvents::WINDOW_RESIZED) {
-        text += QString("\"WINDOW_RESIZED\", \"data\": {\"graph_dimensions\": %1, \"graph_bbox\": %2}").arg(get_graph_dimensions(), get_graph_coords());
+        text += QString("\"WINDOW_RESIZED\", \"data\": {\"graph_dimensions\": %1, \"graph_box\": %2}").arg(get_graph_dimensions(), get_graph_coords());
     }
     text = text + " }\n";
 
@@ -91,9 +117,20 @@ void UiLogger::write(LogEvents log_event) {
         out << text;
     }
 
+    if (this->save_screenshots) {
+        this->save_screenshot();
+    }
+
     this->log_id++;
+
 }
 
+void UiLogger::save_screenshot() {
+    QPixmap desk = qApp->screens().at(0)->grabWindow(QDesktopWidget().winId());
+    //unsigned int shot_log = this->log_id;
+    QString screenshot_path = QString("%1%2.png").arg(this->screenshot_directory_location, QString::number(this->log_id));
+    desk.save(screenshot_path);
+}
 
 QString UiLogger::get_graph_coords() {
 
@@ -323,16 +360,16 @@ int UiLogger::save_montage() {
  * @details initialise a destination directory and log file
  */
 void UiLogger::set_destination_path(QString destination) {
-    this->destination_path = destination;
-    this->filename = "ui_log.txt";
-    this->full_path = this->destination_path + this->filename;
+    this->destination_directory = destination;
+    this->log_file_name = "ui_log.txt";
+    this->log_full_path = this->destination_directory + this->log_file_name;
 
-    if (!destination_path.isEmpty()) {
-        this->log_file = new QFile(this->full_path);
+    if (!destination_directory.isEmpty()) {
+        this->log_file = new QFile(this->log_full_path);
         this->log_file->open(QIODevice::WriteOnly | QIODevice::Text);
     }
 
-    this->montage_dir_path = this->destination_path + "montages\\";
+    this->montage_dir_path = this->destination_directory + "montages\\";
     if (!this->montage_dir.exists(montage_dir_path)) {
         montage_dir.mkpath(montage_dir_path);
     }

@@ -953,6 +953,8 @@ void UI_Mainwindow::setup_viewbuf()
     //            signalcomp[n]->viewbufoffset,
     //            signalcomp[n]->edfhdr->edfparam[signalcomp[n]->edfsignal[0]].buf_offset);
     //   }
+
+
 }
 
 

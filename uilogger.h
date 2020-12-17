@@ -11,11 +11,14 @@
 class UiLogger: public QObject {
     Q_OBJECT
 public:
-    explicit UiLogger(UI_Mainwindow *main_window, QString destination_path, QPlainTextEdit *editor = 0);
-    UiLogger(QString destination_path);
+    explicit UiLogger(UI_Mainwindow *main_window, QString destination_directory, QPlainTextEdit *editor = 0);
+    UiLogger(QString destination_directory);
     ~UiLogger();
 
     void set_destination_path(QString destination);
+
+    bool writing_log;
+    bool save_screenshots;
 
     enum class LogEvents {
         FILE_OPENED,
@@ -35,20 +38,27 @@ public:
 private:
     UI_Mainwindow *main_window;
     int log_id;
-    QString destination_path;
-    QString filename;
-    QString full_path;
+    QString destination_directory;
+    QString log_file_name;
+    QString log_full_path;
     QFile *log_file;
     QPlainTextEdit *m_editor;
     QDir montage_dir;
     QString montage_dir_name;
     QString montage_dir_path;
 
+
+    QDir screenshot_directory;
+    QString screenshot_directory_location;
+
+
+
 public slots:
     void write(LogEvents log_event);
     QString get_graph_coords();
     QString get_graph_dimensions();
     int save_montage();
+    void save_screenshot();
     QString calculate_baselines();
 
 };

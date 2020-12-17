@@ -47,7 +47,8 @@ OBJECTS_DIR = ./objects
 MOC_DIR = ./moc
 
 HEADERS += global.h \
-    uilogger.h
+    uilogger.h \
+    windowmovedfilter.h
 HEADERS += mainwindow.h
 HEADERS += viewcurve.h
 HEADERS += check_edf_file.h
@@ -150,7 +151,8 @@ HEADERS += third_party/kiss_fft/_kiss_fft_guts.h
 HEADERS += third_party/kiss_fft/kiss_fftr.h
 
 SOURCES += main.cpp \
-    uilogger.cpp
+    uilogger.cpp \
+    windowmovedfilter.cpp
 SOURCES += mainwindow_constr.cpp
 SOURCES += mainwindow.cpp
 SOURCES += viewbuf.cpp

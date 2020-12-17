@@ -1170,6 +1170,7 @@ void UI_Mainwindow::shift_page_right()
     }
 
     setup_viewbuf();
+    //QThread::msleep(1000);
     ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
@@ -4296,6 +4297,39 @@ void UI_Mainwindow::resizeEvent(QResizeEvent *event){
         ui_logger->write(UiLogger::LogEvents::WINDOW_RESIZED);
 }
 
+bool UI_Mainwindow::eventFilter(QObject *watched, QEvent *event) {
+
+    std::cerr << "In the event filter\n";
+    QEvent::Type event_type = event->type();
+    std::cerr << "The event was type " << event_type << "\n";
+
+//    if (event_type == QEvent::Resize) {
+//        if (ui_logger != 0)
+//            ui_logger->write(UiLogger::LogEvents::WINDOW_RESIZED);
+//    }
+    if (event_type == QEvent::NonClientAreaMouseButtonPress) {
+        std::cerr << "User clicked the title bar maybe\n";
+        user_moved_window = false;
+    }
+    else if (event_type == QEvent::Move && isVisible()) {
+        std::cerr << "The window is moving\n";
+        user_moved_window = true;
+    }
+    else if (event_type == QEvent::NonClientAreaMouseButtonRelease) {
+        std::cerr << "The title bar was released maybe\n";
+        if (user_moved_window) {
+            std::cerr << "Going to log the event\n";
+            if (ui_logger != 0) {
+                ui_logger->write(UiLogger::LogEvents::WINDOW_MOVED);
+            }
+            user_moved_window = false;
+        }
+    }
+
+    return true;
+
+}
+
 //void UI_Mainwindow::run_tests() {
 //    shift_page_right_Act->trigger();
 //    std::cerr << "Shift right button clicked x 1\n";
@@ -4342,23 +4376,3 @@ void UI_Mainwindow::resizeEvent(QResizeEvent *event){
 
 //    tests_run = true;
 //}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

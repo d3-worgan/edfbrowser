@@ -1066,6 +1066,7 @@ void ViewCurve::paintEvent(QPaintEvent *)
 #endif
 
     drawCurve_stage_2(&paint);
+
 }
 
 
@@ -2529,6 +2530,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         //    painter->fillRect(w - 63, h - (4 + font_pixel_height), 60, (4 + font_pixel_height), backgroundcolor);
         painter->drawText(w - strlen(mainwindow->pagetime_string) * font_pixel_width, h - 4, mainwindow->pagetime_string);
     }
+
 }
 
 
@@ -3114,6 +3116,10 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
     {
         update();
     }
+//      if (mainwindow->ui_logger->writing_log && mainwindow->ui_logger->save_screenshots) {
+//          mainwindow->ui_logger->save_screenshot();
+//          mainwindow->ui_logger->writing_log = false;
+//      }
 }
 
 
@@ -3612,6 +3618,7 @@ void drawCurve_stage_1_thread::run()
             }
         }
     }
+
 }
 
 

@@ -32,6 +32,8 @@
 
 UI_Mainwindow::UI_Mainwindow()
 {
+    user_moved_window = false;
+    //this->installEventFilter(this);
     int i, j, k;
 
     myfont = new QFont;

@@ -207,6 +207,7 @@ public:
     //friend class UiLogger;
 
     QString log_location;
+    bool user_moved_window;
 
 
     int files_open,
@@ -562,6 +563,8 @@ public slots:
     void shift_page_right();
     void shift_page_up();
     void shift_page_down();
+    //bool eventFilter(QObject *watched, QEvent *event);
+
 
 private slots:
     void open_new_file();
@@ -680,11 +683,13 @@ private slots:
     //void run_tests();
 
 
+
 protected:
     void keyPressEvent(QKeyEvent *event);
     void moveEvent(QMoveEvent *event);
     void resizeEvent(QResizeEvent *event);
     void closeEvent(QCloseEvent *);
+    bool eventFilter(QObject *watched, QEvent *event);
 
 };
 
