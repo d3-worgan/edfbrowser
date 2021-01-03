@@ -12,17 +12,35 @@ UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path, QPlainTextEd
 
     this->main_window = parent;
     this->m_editor = editor;
-    this->destination_directory = destination_path;
-    this->log_id = 0;
-    this->log_file_name = "ui_log.txt";
-    this->log_full_path = this->destination_directory + this->log_file_name;
-
-    if (!destination_path.isEmpty()) {
-        this->log_file = new QFile(this->log_full_path);
-        this->log_file->open(QIODevice::WriteOnly | QIODevice::Text);
+    this->destination_directory_path = QString("%1\\uilog_1").arg(destination_path);
+    //this->destination_directory_path = destination_path;
+    this->desination_directory.setPath(this->destination_directory_path);
+    if (!this->desination_directory.exists()) {
+        this->desination_directory.mkdir(this->destination_directory_path);
+    }
+    else {
+        int pos = this->destination_directory_path.length()-1;
+        QChar *data = this->destination_directory_path.data();
+        int idx = data[pos].digitValue();
+        idx++;
+        this->destination_directory_path.replace(pos, QString::number(idx));
+        this->desination_directory.mkdir(this->destination_directory_path);
     }
 
-    this->montage_dir_path = this->destination_directory + "montages\\";
+    this->log_id = 0;
+    this->log_file_name = "ui_log.txt";
+    this->log_full_path = QString("%1\\ui_log.txt").arg(this->destination_directory_path);
+    QMessageBox msgBox;
+    if (!destination_path.isEmpty()) {
+        this->log_file = new QFile(this->log_full_path);
+        if (!this->log_file->open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QMessageBox msgBox;
+            msgBox.setText(QString("There was a problem creating the UI log file at %1").arg(this->log_full_path));
+            msgBox.exec();
+        }
+    }
+
+    this->montage_dir_path = this->destination_directory_path + "\\montages\\";
     this->montage_dir.setPath(montage_dir_path);
     if (!this->montage_dir.exists()) {
         montage_dir.mkpath(montage_dir_path);
@@ -35,7 +53,7 @@ UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path, QPlainTextEd
     }
 
     save_screenshots = true;
-    screenshot_directory_location = this->destination_directory + "screenshots\\";
+    screenshot_directory_location = this->destination_directory_path + "\\screenshots\\";
     this->screenshot_directory.setPath(screenshot_directory_location);
     if (!this->screenshot_directory.exists()) {
         screenshot_directory.mkdir(screenshot_directory_location);
@@ -59,6 +77,8 @@ UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path, QPlainTextEd
 void UiLogger::write(LogEvents log_event) {
 
     this->writing_log = true;
+    this->current_edf_path = QCoreApplication::arguments().at(1);
+
 
     QString text = QString("{\"id\": \"%1\", ").arg(this->log_id);
     text += QString("\"timestamp\": \"%1\", ").arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss:zzz"));
@@ -66,7 +86,7 @@ void UiLogger::write(LogEvents log_event) {
 
     if (log_event == LogEvents::FILE_OPENED) {
         this->save_montage();
-        text += QString("\"FILE_OPENED\", \"data\": {\"time\": \"%1\", \"time_scale\": \"%2\", \"graph_dimensions\": %3, \"graph_box\": %4, \"montage_file\": \"%5.mtg\"}").arg(main_window->viewtime_string, main_window->pagetime_string, get_graph_dimensions(), get_graph_coords(), QString::number(this->log_id));
+        text += QString("\"FILE_OPENED\", \"data\": {\"time\": \"%1\", \"time_scale\": \"%2\", \"graph_dimensions\": %3, \"graph_box\": %4, \"montage_file\": \"%5.mtg\", \"edf_path\": \"%6\"}").arg(main_window->viewtime_string, main_window->pagetime_string, get_graph_dimensions(), get_graph_coords(), QString::number(this->log_id), this->current_edf_path);
     }
     else if (log_event == LogEvents::FILE_CLOSED) {
         this->save_montage();
@@ -168,7 +188,6 @@ QString UiLogger::get_graph_dimensions() {
         return QString("[%1 , %2]").arg(QString::number(main_curve_width), QString::number(main_curve_height)).simplified();
     }
     else return QString("[]");
-
 
 }
 
@@ -360,16 +379,16 @@ int UiLogger::save_montage() {
  * @details initialise a destination directory and log file
  */
 void UiLogger::set_destination_path(QString destination) {
-    this->destination_directory = destination;
+    this->destination_directory_path = destination;
     this->log_file_name = "ui_log.txt";
-    this->log_full_path = this->destination_directory + this->log_file_name;
+    this->log_full_path = this->destination_directory_path + this->log_file_name;
 
-    if (!destination_directory.isEmpty()) {
+    if (!destination_directory_path.isEmpty()) {
         this->log_file = new QFile(this->log_full_path);
         this->log_file->open(QIODevice::WriteOnly | QIODevice::Text);
     }
 
-    this->montage_dir_path = this->destination_directory + "montages\\";
+    this->montage_dir_path = this->destination_directory_path + "montages\\";
     if (!this->montage_dir.exists(montage_dir_path)) {
         montage_dir.mkpath(montage_dir_path);
     }

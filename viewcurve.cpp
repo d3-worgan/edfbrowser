@@ -827,7 +827,8 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
                 mainwindow->setup_viewbuf();
                 if (mainwindow->ui_logger != 0)
-                    mainwindow->ui_logger->write(UiLogger::LogEvents::ZOOM_CHANGED);
+                    if (mainwindow->log_ui)
+                        mainwindow->ui_logger->write(UiLogger::LogEvents::ZOOM_CHANGED);
 
             } else {
                 update();

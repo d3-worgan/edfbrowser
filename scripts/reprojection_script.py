@@ -1,3 +1,5 @@
+import sys
+
 import numpy
 import os
 import json
@@ -5,7 +7,9 @@ import argparse
 import re
 import cv2
 import time
+import datetime
 import lxml.etree
+from PyQt5.QtWidgets import QApplication
 from lxml import etree
 
 from filter_class import FidFilter
@@ -76,9 +80,14 @@ class UITracker:
         self.time_scale = None
         self.num_channels = None
         self.channels = []
+        self.opened = False
 
         self.line_color = (0, 255, 0)
         self.line_width = 3
+        self.font_color = (0, 0, 255)
+        self.font_scale = 2
+        self.font_thick = 2
+        self.font_type = cv2.FONT_HERSHEY_PLAIN
 
     def simulate_reprojections(self):
         """
@@ -88,9 +97,8 @@ class UITracker:
         log = open(self.log_file_path)
         while True:
 
-            # Each line of the log file
             line = log.readline()
-            if not line :
+            if not line:
                 break
             line.strip()
 
@@ -124,6 +132,9 @@ class UITracker:
                                        f"to the edf file. ")
                     assert os.path.exists(user_input), f"The path {user_input} does not lead to a valid edf file."
                     self.edf = EDFreader(self.edf_file_path)
+                assert self.edf is not None
+                self.update_channel_data()
+                self.opened = True
             elif event == 'FILE_CLOSED':
                 break
             elif event == 'MONTAGE_CHANGED':
@@ -182,9 +193,14 @@ class UITracker:
             assert os.path.exists(self.screenshot_file_path), f"{self.screenshot_file_path} doesnt exist"
             self.screenshot = cv2.imread(self.screenshot_file_path)
             self.screenshot = self.draw_graph_bbox(self.screenshot)
-            self.screenshot = self.draw_log_info(self.screenshot)
             if self.montage_file_name is not None:
+                #if self.edf is not None:
+                    #self.update_channel_data()
+                # if self.opened:
+                #     self.update_channel_data()
                 self.screenshot = self.draw_channel_baselines(self.screenshot)
+                #self.draw_channel_signals(self.screenshot)
+            self.screenshot = self.draw_log_info(self.screenshot)
             self.reprojection_file_path = os.path.join(self.output_directory, self.screenshot_file_name)
             cv2.imwrite(self.reprojection_file_path, self.screenshot)
 
@@ -230,26 +246,34 @@ class UITracker:
                         model = f.xpath('model')
                         self.channels[i].fid_filters.append(FidFilter(ftype[0].text, freq_1[0].text, freq_2[0].text, ripple[0].text, order[0].text, model[0].text))
 
-                # Channel data
-                # start = self.edf.getSampleFrequency(i) * self.time_position
-                # num_samples_to_read = self.edf.getSampleFrequency(i) * self.time_scale
-                # assert start == self.edf.fseek(i, start, 'EDFSEEK_SET')
-                # self.channels[i].data = numpy.empty(num_samples_to_read, dtype=numpy.int32)
-                # assert num_samples_to_read == self.edf.readSamples(idx, self.channels[i].data, num_samples_to_read)
-
-                # TODO: Apply filters to data
-                # TODO: Apply amplitude to data
-
                 # Update the channel baseline
                 self.channels[i].update_baseline(self.graph_height, len(self.channels), self.graph_top_left[1])
 
     def update_channel_data(self):
+        total_seconds = self.time_position_to_seconds()
+        y = int(self.time_scale.split(' ')[0])
         for i, channel in enumerate(self.channels):
-            start = self.edf.getSampleFrequency(i) * self.time_position
-            num_samples_to_read = self.edf.getSampleFrequency(i) * self.time_scale
-            assert start == self.edf.fseek(i, start, 'EDFSEEK_SET')
-            self.channels[i].data = numpy.empty(num_samples_to_read, dtype=numpy.float_)
-            assert num_samples_to_read == self.edf.readSamples(i, self.channels[i].data, num_samples_to_read)
+            start = self.edf.getSampleFrequency(i) * total_seconds
+            # print(f"start {start}")
+            num_samples_to_read = int(self.edf.getSampleFrequency(i) * y)
+            self.edf.rewind(0)
+            start = self.edf.fseek(i, start, 'EDFSEEK_SET')
+            channel.data = numpy.empty(num_samples_to_read, dtype=numpy.float_)
+            assert num_samples_to_read == self.edf.readSamples(i, channel.data, num_samples_to_read)
+        # TODO: Apply filters to data
+        # TODO: Apply amplitude to data
+
+    def time_position_to_seconds(self):
+        x = self.time_position.split('(')[1].strip(')')
+        x = time.strptime(x, '%H:%M:%S')
+        return x.tm_sec + x.tm_min * 60 + x.tm_hour * 3600
+
+    def time_position_to_samples(self, channel):
+        x = self.time_position.split('(')[1].strip(')')
+        x = time.strptime(x, '%H:%M:%S')
+        total_seconds = x.tm_sec + x.tm_min * 60 + x.tm_hour * 3600
+        return self.edf.getSampleFrequency(channel) * total_seconds
+
 
     def draw_graph_bbox(self, image):
         image = cv2.line(image, self.graph_top_left, self.graph_top_right, self.line_color, self.line_width)
@@ -259,13 +283,27 @@ class UITracker:
         return image
 
     def draw_log_info(self, image):
-        image = cv2.putText(image, f"id: {self.log_id}", (20, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, self.line_color, 2, cv2.LINE_AA)
-        image = cv2.putText(image, f"time: {self.time_position}", (20,130), cv2.FONT_HERSHEY_SIMPLEX, 1, self.line_color, 2, cv2.LINE_AA)
-        image = cv2.putText(image, f"timescale: {self.time_scale}", (20,160), cv2.FONT_HERSHEY_SIMPLEX, 1, self.line_color, 2, cv2.LINE_AA)
-        image = cv2.putText(image, f"montage: {self.montage_file_name}", (20, 190), cv2.FONT_HERSHEY_SIMPLEX, 1, self.line_color, 2, cv2.LINE_AA)
-        image = cv2.putText(image, f"width: {self.graph_width}", (20,220), cv2.FONT_HERSHEY_SIMPLEX, 1, self.line_color, 2, cv2.LINE_AA)
-        image = cv2.putText(image, f"height: {self.graph_height}", (20,250), cv2.FONT_HERSHEY_SIMPLEX, 1, self.line_color, 2, cv2.LINE_AA)
-        image = cv2.putText(image, f"last event: {self.last_event}", (20,280), cv2.FONT_HERSHEY_SIMPLEX, 1, self.line_color, 2, cv2.LINE_AA)
+        pos = 100
+        step = 25
+        image = cv2.putText(image, f"id: {self.log_id}", (20, pos), self.font_type, self.font_scale, self.font_color, self.font_thick, cv2.LINE_AA)
+        pos += step
+        image = cv2.putText(image, f"time: {self.time_position}", (20, pos), self.font_type, self.font_scale, self.font_color, self.font_thick, cv2.LINE_AA)
+        pos += step
+        image = cv2.putText(image, f"timescale: {self.time_scale}", (20, pos), self.font_type, self.font_scale, self.font_color, self.font_thick, cv2.LINE_AA)
+        pos += step
+        image = cv2.putText(image, f"width: {self.graph_width}", (20, pos), self.font_type, self.font_scale, self.font_color, self.font_thick, cv2.LINE_AA)
+        pos += step
+        image = cv2.putText(image, f"height: {self.graph_height}", (20, pos), self.font_type, self.font_scale, self.font_color, self.font_thick, cv2.LINE_AA)
+        pos += step
+        image = cv2.putText(image, f"num channels: {len(self.channels)}", (20, pos), self.font_type, self.font_scale, self.font_color, self.font_thick, cv2.LINE_AA)
+        pos += step
+        image = cv2.putText(image, f"last event: {self.last_event}", (20, pos), self.font_type, self.font_scale, self.font_color, self.font_thick, cv2.LINE_AA)
+        pos += step
+        image = cv2.putText(image, f"montage: {self.montage_file_name}", (20, pos), self.font_type, self.font_scale, self.font_color, self.font_thick, cv2.LINE_AA)
+
+        for channel in self.channels:
+            image = cv2.putText(image, f"{channel.label}", (self.graph_top_right[0], channel.baseline), self.font_type, self.font_scale/2, self.font_color, self.font_thick, cv2.LINE_AA)
+
         return image
     
     def draw_channel_baselines(self, image):
@@ -275,18 +313,27 @@ class UITracker:
         for i, channel in enumerate(self.channels):
             channel.update_baseline(self.graph_height, len(self.channels), graph_top)
             image = cv2.line(image, (graph_left, channel.baseline), (graph_right, channel.baseline), self.line_color, self.line_width)
-
-        # print(f"Num channels {len(self.channels)}")
-        # vertical_distance = (self.graph_height - 7) / (self.num_channels + 1)
-        # for i, channel in enumerate(self.channels):
-        #     baseline = vertical_distance * (i + 1)
-        #     baseline += self.graph_top_left[1]
-        #     channel.baseline = baseline
-        #     image = cv2.line(image, (graph_left, int(baseline)), (graph_right, int(baseline)), self.line_color, self.line_width)
-
         return image
 
-    
+    def draw_channel_signals(self, image):
+        app = QApplication(sys.argv)
+        screen = app.screens()[0]
+        dpi = screen.physicalDotsPerInch()
+        print(f"dpi {dpi}")
+        app.quit()
+        ppc = dpi * 2.54
+        graph_left = self.graph_top_left[0]
+        for channel in range(len(self.channels)):
+            channel = self.channels[channel]
+            if isinstance(channel.data, numpy.ndarray):
+                num_samples = channel.data.size
+                spacing = self.graph_width / num_samples
+                for point in range(channel.data.size-1):
+                    x_1 = int(int(point * spacing) + graph_left)
+                    y_1 = int(((float(channel.voltspercm)/dpi) * channel.data[point]) + channel.baseline)
+                    x_2 = int(int((point+1) * spacing) + graph_left)
+                    y_2 = int(((float(channel.voltspercm)/dpi) * channel.data[point+1]) + channel.baseline)
+                    image = cv2.line(image, (x_1, y_1), (x_2, y_2), (255, 0, 0), 1)
 
 def parse_arguments():
     parser = argparse.ArgumentParser()

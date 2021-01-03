@@ -208,6 +208,7 @@ public:
 
     QString log_location;
     bool user_moved_window;
+    bool log_ui;
 
 
     int files_open,

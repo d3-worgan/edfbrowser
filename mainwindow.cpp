@@ -56,7 +56,8 @@ void UI_Mainwindow::exit_program() {
 
 void UI_Mainwindow::closeEvent(QCloseEvent *cl_event) {
 
-    ui_logger->write(UiLogger::LogEvents::FILE_CLOSED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::FILE_CLOSED);
     int i, button_nr=0;
 
     if (annotations_edited) {
@@ -510,7 +511,8 @@ void UI_Mainwindow::slider_moved(int value)
     }
 
     setup_viewbuf();
-    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -814,7 +816,8 @@ void UI_Mainwindow::jump_to_start()
     }
 
     setup_viewbuf();
-    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -864,7 +867,8 @@ void UI_Mainwindow::jump_to_time_millisec(long long milliseconds)
     }
 
     setup_viewbuf();
-    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -919,7 +923,8 @@ void UI_Mainwindow::jump_to_end()
     }
 
     setup_viewbuf();
-    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -928,7 +933,8 @@ void UI_Mainwindow::add_new_filter()
     if(!files_open)  return;
 
     UI_FilterDialog filterdialog(this);
-    ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
 
 
@@ -937,7 +943,8 @@ void UI_Mainwindow::add_plif_ecg_filter()
     if(!files_open)  return;
 
     UI_PLIF_ECG_filter_dialog plifecgfilterdialog(this);
-    ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
 
 
@@ -946,7 +953,8 @@ void UI_Mainwindow::add_fir_filter()
     if(!files_open)  return;
 
     UI_FIRFilterDialog firfilterdialog(recent_opendir, recent_savedir, this);
-    ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
 
 
@@ -955,7 +963,8 @@ void UI_Mainwindow::add_spike_filter()
     if(!files_open)  return;
 
     UI_SpikeFilterDialog spikefilterdialog(this);
-    ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
 
 
@@ -1020,7 +1029,8 @@ void UI_Mainwindow::zoomback()
     }
 
     setup_viewbuf();
-    ui_logger->write(UiLogger::LogEvents::ZOOM_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::ZOOM_CHANGED);
 }
 
 
@@ -1062,7 +1072,8 @@ void UI_Mainwindow::forward()
     }
 
     setup_viewbuf();
-    ui_logger->write(UiLogger::LogEvents::ZOOM_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::ZOOM_CHANGED);
 }
 
 
@@ -1098,7 +1109,8 @@ void UI_Mainwindow::former_page()
     }
 
     setup_viewbuf();
-    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -1134,7 +1146,8 @@ void UI_Mainwindow::shift_page_left()
     }
 
     setup_viewbuf();
-    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -1171,7 +1184,8 @@ void UI_Mainwindow::shift_page_right()
 
     setup_viewbuf();
     //QThread::msleep(1000);
-    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -1190,7 +1204,8 @@ void UI_Mainwindow::stop_playback()
             start_stop_video();
         }
     }
-    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -1290,7 +1305,8 @@ void UI_Mainwindow::next_page()
     }
 
     setup_viewbuf();
-    ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
 }
 
 
@@ -1307,7 +1323,8 @@ void UI_Mainwindow::shift_page_up()
     }
 
     maincurve->drawCurve_stage_1();
-    ui_logger->write(UiLogger::LogEvents::VERTICAL_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::VERTICAL_CHANGED);
 }
 
 
@@ -1324,7 +1341,8 @@ void UI_Mainwindow::shift_page_down()
     }
 
     maincurve->drawCurve_stage_1();
-    ui_logger->write(UiLogger::LogEvents::VERTICAL_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::VERTICAL_CHANGED);
 }
 
 
@@ -1558,6 +1576,9 @@ void UI_Mainwindow::open_new_file()
     struct edfhdrblock *edfhdr=NULL;
 
     if (edflib_version() != 118)  return;
+
+    if (files_open > 0)
+        return;
 
     if (annot_editor_active && files_open) {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "You can not open multiple files when editing annotations.\n"
@@ -1839,50 +1860,43 @@ void UI_Mainwindow::open_new_file()
         files_open++;
     }
 
-    if((montagepath[0]!=0)&&(cmdlineargument==2))
-    {
+    if ((montagepath[0] != 0) && (cmdlineargument == 2)) {
         UI_LoadMontagewindow load_mtg(this, montagepath);
         strlcpy(&recent_file_mtg_path[0][0], montagepath, MAX_PATH_LENGTH);
     }
-    else
-    {
-        if((recent_file_mtg_path[0][0] != 0) && (files_open == 1) && auto_reload_mtg)
-        {
-            QMessageBox messagewindow;
-            messagewindow.setText("Load last used montage?");
-            messagewindow.setInformativeText(QString::fromLocal8Bit(&recent_file_mtg_path[0][0]));
-            messagewindow.setIcon(QMessageBox::Question);
-            messagewindow.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            messagewindow.setDefaultButton(QMessageBox::Yes);
-            button_nr = messagewindow.exec();
+    else {
+//        if ((recent_file_mtg_path[0][0] != 0) && (files_open == 1) && auto_reload_mtg) {
+//            QMessageBox messagewindow;
+//            messagewindow.setText("Load last used montage?");
+//            messagewindow.setInformativeText(QString::fromLocal8Bit(&recent_file_mtg_path[0][0]));
+//            messagewindow.setIcon(QMessageBox::Question);
+//            messagewindow.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+//            messagewindow.setDefaultButton(QMessageBox::Yes);
+//            button_nr = messagewindow.exec();
 
-            if(button_nr == QMessageBox::No)
-            {
-                recent_file_mtg_path[0][0] = 0;
+//            if (button_nr == QMessageBox::No) {
+//                recent_file_mtg_path[0][0] = 0;
+//                UI_Signalswindow signalwindow(this);
+//            }
+//            else {
+//                UI_LoadMontagewindow load_mtg(this, &recent_file_mtg_path[0][0]);
 
-                UI_Signalswindow signalwindow(this);
-            }
-            else
-            {
-                UI_LoadMontagewindow load_mtg(this, &recent_file_mtg_path[0][0]);
-
-                if(recent_file_mtg_path[0][0] == 0)
-                {
-                    UI_Signalswindow signalwindow(this);
-                }
-            }
-        }
-        else
-        {
-            UI_Signalswindow signalwindow(this);
-        }
+//                if (recent_file_mtg_path[0][0] == 0) {
+//                    UI_Signalswindow signalwindow(this);
+//                }
+//            }
+//        }
+//        else {
+//            UI_Signalswindow signalwindow(this);
+//        }
+        UI_Signalswindow signalwindow(this);
     }
 
     cmdlineargument = 0;
 
     close_filemenu->addAction(QString::fromLocal8Bit(path));
-
-    ui_logger->write(UiLogger::LogEvents::FILE_OPENED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::FILE_OPENED);
 }
 
 
@@ -1980,7 +1994,8 @@ void UI_Mainwindow::signalproperties_dialog()
     }
 
     UI_SignalChooser signalchooserdialog(this, 0);
-    ui_logger->write(UiLogger::LogEvents::CHANNELS_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::CHANNELS_CHANGED);
 }
 
 
@@ -1996,7 +2011,8 @@ void UI_Mainwindow::filterproperties_dialog()
     }
 
     UI_SignalChooser signalchooserdialog(this, 2);
-    ui_logger->write(UiLogger::LogEvents::CHANNELS_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::CHANNELS_CHANGED);
 }
 
 
@@ -2005,7 +2021,8 @@ void UI_Mainwindow::add_signals_dialog()
     if (!files_open)  return;
 
     UI_Signalswindow signalwindow(this);
-    ui_logger->write(UiLogger::LogEvents::CHANNELS_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::CHANNELS_CHANGED);
 }
 
 
@@ -2101,7 +2118,8 @@ void UI_Mainwindow::remove_all_filters()
     {
         setup_viewbuf();
     }
-    ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
 
 
@@ -2137,7 +2155,8 @@ void UI_Mainwindow::remove_all_plif_ecg_filters()
     {
         setup_viewbuf();
     }
-    ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
 
 
@@ -2164,7 +2183,8 @@ void UI_Mainwindow::remove_all_fir_filters()
     {
         setup_viewbuf();
     }
-    ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
 
 
@@ -2191,7 +2211,8 @@ void UI_Mainwindow::remove_all_spike_filters()
     {
         setup_viewbuf();
     }
-    ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
 
 
@@ -2279,7 +2300,8 @@ void UI_Mainwindow::remove_all_signals()
     positionslider->blockSignals(true);
 
     setup_viewbuf();
-    ui_logger->write(UiLogger::LogEvents::CHANNELS_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::CHANNELS_CHANGED);
 }
 
 
@@ -2742,7 +2764,8 @@ void UI_Mainwindow::page_3cmsec()
     }
 
     setup_viewbuf();
-    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
@@ -2762,7 +2785,8 @@ void UI_Mainwindow::page_25mmsec()
     }
 
     setup_viewbuf();
-    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
@@ -2782,7 +2806,8 @@ void UI_Mainwindow::page_50mmsec()
     }
 
     setup_viewbuf();
-    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
@@ -2869,7 +2894,8 @@ void UI_Mainwindow::set_page_div2()
     }
 
     setup_viewbuf();
-    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
@@ -2956,7 +2982,8 @@ void UI_Mainwindow::set_page_mult2()
     }
 
     setup_viewbuf();
-    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
@@ -3090,14 +3117,16 @@ void UI_Mainwindow::set_display_time(QAction *action)
     if(action==page_3600)  pagetime = TIME_DIMENSION * 3600;
 
     setup_viewbuf();
-    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
 void UI_Mainwindow::set_user_defined_display_time()
 {
     UI_Userdefined_timepage_Dialog set_displaytime_dialog(this);
-    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
@@ -3172,7 +3201,8 @@ void UI_Mainwindow::set_display_time_whole_rec()
     }
 
     setup_viewbuf();
-    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
@@ -3207,7 +3237,8 @@ void UI_Mainwindow::fit_signals_to_pane()
     }
 
     maincurve->drawCurve_stage_1();
-    ui_logger->write(UiLogger::LogEvents::AMPLITUDE_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::AMPLITUDE_CHANGED);
 }
 
 
@@ -3223,7 +3254,8 @@ void UI_Mainwindow::fit_signals_dc_offset()
     }
 
     maincurve->drawCurve_stage_1();
-    ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::TIMESCALE_CHANGED);
 }
 
 
@@ -3392,7 +3424,8 @@ void UI_Mainwindow::set_amplitude(QAction *action)
     }
 
     maincurve->drawCurve_stage_1();
-    ui_logger->write(UiLogger::LogEvents::AMPLITUDE_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::AMPLITUDE_CHANGED);
 }
 
 
@@ -3456,7 +3489,8 @@ void UI_Mainwindow::set_amplitude_mult2()
     }
 
     maincurve->drawCurve_stage_1();
-    ui_logger->write(UiLogger::LogEvents::AMPLITUDE_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::AMPLITUDE_CHANGED);
 }
 
 
@@ -3520,7 +3554,8 @@ void UI_Mainwindow::set_amplitude_div2()
     }
 
     maincurve->drawCurve_stage_1();
-    ui_logger->write(UiLogger::LogEvents::AMPLITUDE_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::AMPLITUDE_CHANGED);
 }
 
 
@@ -3547,7 +3582,8 @@ void UI_Mainwindow::load_predefined_mtg(QAction *action)
             }
         }
     }
-    ui_logger->write(UiLogger::LogEvents::MONTAGE_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::MONTAGE_CHANGED);
 }
 
 
@@ -3947,7 +3983,8 @@ int UI_Mainwindow::file_is_opened(const char *o_path)
 void UI_Mainwindow::organize_signals()
 {
     UI_SignalChooser signalchooser(this, 3);
-    ui_logger->write(UiLogger::LogEvents::CHANNELS_CHANGED);
+    if (log_ui)
+        ui_logger->write(UiLogger::LogEvents::CHANNELS_CHANGED);
 }
 
 
@@ -4283,18 +4320,21 @@ void UI_Mainwindow::get_unique_annotations(struct edfhdrblock *hdr)
 void UI_Mainwindow::keyPressEvent(QKeyEvent *event) {
     if ((event->key() == Qt::Key_Left) || (event->key() == Qt::Key_Right)) {
         if (ui_logger != 0)
-            ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
+            if (log_ui)
+                ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
     }
 }
 
 void UI_Mainwindow::moveEvent(QMoveEvent *event) {
     if (ui_logger != 0)
-        ui_logger->write(UiLogger::LogEvents::WINDOW_MOVED);
+        if (log_ui)
+            ui_logger->write(UiLogger::LogEvents::WINDOW_MOVED);
 }
 
 void UI_Mainwindow::resizeEvent(QResizeEvent *event){
     if (ui_logger != 0)
-        ui_logger->write(UiLogger::LogEvents::WINDOW_RESIZED);
+        if (log_ui)
+            ui_logger->write(UiLogger::LogEvents::WINDOW_RESIZED);
 }
 
 bool UI_Mainwindow::eventFilter(QObject *watched, QEvent *event) {
@@ -4320,7 +4360,8 @@ bool UI_Mainwindow::eventFilter(QObject *watched, QEvent *event) {
         if (user_moved_window) {
             std::cerr << "Going to log the event\n";
             if (ui_logger != 0) {
-                ui_logger->write(UiLogger::LogEvents::WINDOW_MOVED);
+                if (log_ui)
+                    ui_logger->write(UiLogger::LogEvents::WINDOW_MOVED);
             }
             user_moved_window = false;
         }

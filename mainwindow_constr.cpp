@@ -88,7 +88,7 @@ UI_Mainwindow::UI_Mainwindow()
     annotations_onset_relative = 1;
     annotations_show_duration = 1;
     annotations_duration_background_type = 0;
-    auto_reload_mtg = 1;
+    auto_reload_mtg = 0;
     read_biosemi_status_signal = 1;
     read_nk_trigger_signal = 1;
     maxfilesize_to_readin_annotations = 10485760000LL;
@@ -889,11 +889,11 @@ UI_Mainwindow::UI_Mainwindow()
 
     stop_playback_realtime_Act = new QAction(QIcon(":/images/media-playback-stop-symbolic.symbolic.png"), "Stop", this);
     connect(stop_playback_realtime_Act, SIGNAL(triggered()), this, SLOT(stop_playback()));
-    navtoolbar->addAction(stop_playback_realtime_Act);
+    //navtoolbar->addAction(stop_playback_realtime_Act);
 
     playback_file_Act = new QAction(QIcon(":/images/media-playback-start-symbolic.symbolic.png"), "Playback", this);
     connect(playback_file_Act, SIGNAL(triggered()), this, SLOT(playback_file()));
-    navtoolbar->addAction(playback_file_Act);
+    //navtoolbar->addAction(playback_file_Act);
 
     shift_page_up_Act = new QAction(QIcon(":/images/go-up-symbolic.symbolic.png"), "Shift up", this);
     //  shift_page_up_Act->setShortcut(QKeySequence::MoveToPreviousLine);
@@ -1137,20 +1137,23 @@ UI_Mainwindow::UI_Mainwindow()
     cmdlineargument = 0;
     cmdlineoption = 0;
 
+    // First argument should be the EDF Path
     if (QCoreApplication::arguments().size() > 1) {
-
         QString edf_path = QCoreApplication::arguments().at(1).toLocal8Bit().data();
         std::cerr << "EDF path: " << edf_path.toStdString() << '\n';
         strlcpy(path, edf_path.toStdString().c_str(), MAX_PATH_LENGTH);
         cmdlineargument++;
 
+        // Second argument should be the log path
         if (QCoreApplication::arguments().size() > 2) {
             QString log_path = QCoreApplication::arguments().at(2).toLocal8Bit().data();
             std::cerr << "Log path: " << log_path.toStdString() << '\n';
             log_location = log_path;
             ui_logger = new UiLogger(this, log_location);
+            log_ui = true;
         }
 
+        // Third argument should be the montage path
         if (QCoreApplication::arguments().size() > 3) {
             QString montage_path = QCoreApplication::arguments().at(3).toLocal8Bit().data();
             std::cerr << "Montage path: " << montage_path.toStdString() << '\n';
