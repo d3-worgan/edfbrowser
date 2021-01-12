@@ -33,7 +33,12 @@ public:
         VERTICAL_CHANGED,
         ZOOM_CHANGED,
         WINDOW_MOVED,
-        WINDOW_RESIZED
+        WINDOW_RESIZED,
+        MODAL_OPENED,
+        MODAL_CLOSED,
+        WINDOW_MINMISED,
+        WINDOW_MAXIMISED,
+        WINDOW_FULL_SCREEN
     };
 
 private:

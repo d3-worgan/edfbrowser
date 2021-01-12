@@ -4326,6 +4326,7 @@ void UI_Mainwindow::keyPressEvent(QKeyEvent *event) {
 }
 
 void UI_Mainwindow::moveEvent(QMoveEvent *event) {
+    std::cerr << "Move event!\n";
     if (ui_logger != 0)
         if (log_ui)
             ui_logger->write(UiLogger::LogEvents::WINDOW_MOVED);
@@ -4337,83 +4338,53 @@ void UI_Mainwindow::resizeEvent(QResizeEvent *event){
             ui_logger->write(UiLogger::LogEvents::WINDOW_RESIZED);
 }
 
+
 bool UI_Mainwindow::eventFilter(QObject *watched, QEvent *event) {
 
-    std::cerr << "In the event filter\n";
+    //std::cerr << "In the event filter\n";
     QEvent::Type event_type = event->type();
-    std::cerr << "The event was type " << event_type << "\n";
+    //std::cerr << "The event was type " << event_type << "\n";
 
-//    if (event_type == QEvent::Resize) {
-//        if (ui_logger != 0)
-//            ui_logger->write(UiLogger::LogEvents::WINDOW_RESIZED);
-//    }
-    if (event_type == QEvent::NonClientAreaMouseButtonPress) {
-        std::cerr << "User clicked the title bar maybe\n";
-        user_moved_window = false;
+    if (event_type == QEvent::WindowDeactivate) {
+        std::cerr << "The window was deactivated.\n";
+        return true;
     }
-    else if (event_type == QEvent::Move && isVisible()) {
-        std::cerr << "The window is moving\n";
-        user_moved_window = true;
-    }
-    else if (event_type == QEvent::NonClientAreaMouseButtonRelease) {
-        std::cerr << "The title bar was released maybe\n";
-        if (user_moved_window) {
-            std::cerr << "Going to log the event\n";
-            if (ui_logger != 0) {
-                if (log_ui)
-                    ui_logger->write(UiLogger::LogEvents::WINDOW_MOVED);
-            }
-            user_moved_window = false;
+    else if (event_type == QEvent::WindowBlocked) {
+        std::cerr << "A modal was opened\n";
+        if (ui_logger != 0) {
+            if (log_ui)
+                ui_logger->write(UiLogger::LogEvents::MODAL_OPENED);
         }
+        return true;
+    }
+    else if (event_type == QEvent::WindowUnblocked) {
+        std::cerr << "The modal was closed.\n";
+        if (ui_logger != 0) {
+            if (log_ui)
+                ui_logger->write(UiLogger::LogEvents::MODAL_CLOSED);
+        }
+        return true;
+    }
+    else if (event_type == QEvent::WindowStateChange) {
+        std::cerr << "The window is now " << this->windowState() << "\n";
+        if (ui_logger != 0) {
+            if (log_ui) {
+                if (this->windowState() == Qt::WindowMinimized) {
+                    ui_logger->write(UiLogger::LogEvents::WINDOW_MINMISED);
+                }
+                else if (this->windowState() == Qt::WindowMaximized) {
+                    ui_logger->write(UiLogger::LogEvents::WINDOW_MAXIMISED);
+                }
+                else if (this->windowState() == Qt::WindowFullScreen) {
+                    ui_logger->write(UiLogger::LogEvents::WINDOW_FULL_SCREEN);
+                }
+            }
+        }
+        return true;
+    }
+    else {
+        return false;
     }
 
-    return true;
 
 }
-
-//void UI_Mainwindow::run_tests() {
-//    shift_page_right_Act->trigger();
-//    std::cerr << "Shift right button clicked x 1\n";
-//    shift_page_left_Act->trigger();
-//    std::cerr << "Shift left button clicked x 1\n";
-
-//    for (int i = 0; i < 10; i++) {
-//        shift_page_right_Act->trigger();
-//    }
-//    std::cerr << "Shift right button clicked x 10\n";
-
-//    for (int i = 0; i < 10; i++) {
-//        shift_page_left_Act->trigger();
-//    }
-//    std::cerr << "Shift left button clicked x 10\n";
-//    next_page_Act->trigger();
-//    former_page_Act->trigger();
-
-//    for (int i = 0; i < 10; i++) {
-//        next_page_Act->trigger();
-//    }
-//    std::cerr << "Next page button clicked x 10\n";
-
-//    for (int i = 0; i < 10; i++) {
-//        former_page_Act->trigger();
-//    }
-//    std::cerr << "Previous page button clicked x 10\n";
-
-//    // Test the arrow scrolls
-//    //QTest::keyClick(this, Qt::Key_Right);
-//    std::cerr << "Pressed the right arrow key\n";
-//    // Click the timeline right
-//    // Click the timeline left
-
-//    // Go to start of file
-//    // Go to end of file
-
-//    // Test pageview (timescale actions)
-
-
-
-
-
-
-//    tests_run = true;
-//}

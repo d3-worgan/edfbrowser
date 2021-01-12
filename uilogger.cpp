@@ -12,7 +12,7 @@ UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path, QPlainTextEd
 
     this->main_window = parent;
     this->m_editor = editor;
-    this->destination_directory_path = QString("%1\\uilog_1").arg(destination_path);
+    this->destination_directory_path = QString("%1\\uilog").arg(destination_path);
     //this->destination_directory_path = destination_path;
     this->desination_directory.setPath(this->destination_directory_path);
     if (!this->desination_directory.exists()) {
@@ -127,6 +127,21 @@ void UiLogger::write(LogEvents log_event) {
     }
     else if (log_event == LogEvents::WINDOW_RESIZED) {
         text += QString("\"WINDOW_RESIZED\", \"data\": {\"graph_dimensions\": %1, \"graph_box\": %2}").arg(get_graph_dimensions(), get_graph_coords());
+    }
+    else if (log_event == LogEvents::WINDOW_MINMISED) {
+        text += QString("\"WINDOW_MINIMISED\"");
+    }
+    else if (log_event == LogEvents::WINDOW_MAXIMISED) {
+        text += QString("\"WINDOW_MAXIMISED\"");
+    }
+    else if (log_event == LogEvents::WINDOW_FULL_SCREEN) {
+        text += QString("\"WINDOW_FULL_SCREEN\"");
+    }
+    else if (log_event == LogEvents::MODAL_OPENED) {
+        text += QString("\"MODAL_OPENED\"");
+    }
+    else if (log_event == LogEvents::MODAL_CLOSED) {
+        text += QString("\"MODAL_CLOSED\"");
     }
     text = text + " }\n";
 

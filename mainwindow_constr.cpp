@@ -33,9 +33,9 @@
 UI_Mainwindow::UI_Mainwindow()
 {
     user_moved_window = false;
-    //this->installEventFilter(this);
+    this->installEventFilter(this);
     int i, j, k;
-
+    this->setWindowFlags(Qt::WindowStaysOnTopHint);
     myfont = new QFont;
     monofont = new QFont;
 #if QT_VERSION >= 0x050200
@@ -1127,10 +1127,10 @@ UI_Mainwindow::UI_Mainwindow()
     }
 
     // Update qt or edflib??
-    update_checker = NULL;
-    if (check_for_updates) {
-        update_checker = new Check_for_updates;
-    }
+//    update_checker = NULL;
+//    if (check_for_updates) {
+//        update_checker = new Check_for_updates;
+//    }
 
     // Parse the command line arguments
     char tmp_str[MAX_PATH_LENGTH]={""};
@@ -1169,59 +1169,6 @@ UI_Mainwindow::UI_Mainwindow()
     else {
         std::cerr << "No args were passed\n";
     }
-
-
-
-//    if (QCoreApplication::arguments().size() > 1) {
-
-//        strlcpy(tmp_str, QCoreApplication::arguments().at(1).toLocal8Bit().data(), MAX_PATH_LENGTH);
-
-//        // Is the first argument a path or a --option
-//        if ((strlen(tmp_str) > 2) && (!strncmp(tmp_str, "--", 2))) {
-//            strlcpy(option_str, tmp_str, MAX_PATH_LENGTH);
-//            cmdlineoption++;
-//        }
-//        else {
-//            strlcpy(path, tmp_str, MAX_PATH_LENGTH);
-//            cmdlineargument++;
-//        }
-
-//        if (QCoreApplication::arguments().size() > 2) {
-
-//            strlcpy(tmp_str, QCoreApplication::arguments().at(2).toLocal8Bit().data(), MAX_PATH_LENGTH);
-
-//            if (!cmdlineargument) {
-//                strlcpy(path, tmp_str, MAX_PATH_LENGTH);
-//            } else {
-//                strlcpy(montagepath, tmp_str, MAX_PATH_LENGTH);
-//            }
-
-//            cmdlineargument++;
-
-//            if (cmdlineargument == 1) {
-//                if (QCoreApplication::arguments().size()>3) {
-//                    strlcpy(montagepath, QCoreApplication::arguments().at(3).toLocal8Bit().data(), MAX_PATH_LENGTH);
-//                    cmdlineargument++;
-//                }
-//            }
-//        }
-//    }
-
-    // Open a stream or file depending on the arguments given
-//    if (cmdlineargument) {
-//        startup_timer = new QTimer;
-//        startup_timer->setSingleShot(true);
-
-//        if (cmdlineoption) {
-//            if (!strcmp(option_str, "--stream")) {
-//                QObject::connect(startup_timer, SIGNAL(timeout()), this, SLOT(open_stream()));
-//                startup_timer->start(50);
-//            }
-//        } else {
-//            QObject::connect(startup_timer, SIGNAL(timeout()), this, SLOT(open_new_file()));
-//            startup_timer->start(50);
-//        }
-//    }
 
     QObject::connect(maincurve, SIGNAL(file_dropped()), this, SLOT(open_new_file()));
 }
