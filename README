@@ -1,4 +1,4 @@
-This is a fork of https://gitlab.com/Teuniz/EDFbrowser for the TEETACSI project. EDFBrowser has been modified 
+This is a fork of https://gitlab.com/Teuniz/EDFbrowser for the OpenSCORE/TEETACSI project. EDFBrowser has been modified 
 to record the state of the UI to file. It also writes screenshots to file for later validation using a python
 script.
 
