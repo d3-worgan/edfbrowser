@@ -43,7 +43,7 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
-  plifecgfilterdialog = new QDialog;
+  plifecgfilterdialog = new QDialog(w_parent);
   plifecgfilterdialog->setMinimumSize(400 * mainwindow->w_scaling, 250 * mainwindow->h_scaling);
   plifecgfilterdialog->setWindowTitle("Add a powerline interference filter");
   plifecgfilterdialog->setModal(true);
@@ -223,6 +223,7 @@ void UI_PLIF_ECG_filter_dialog::ApplyButtonClicked()
       err = 1;
       snprintf(str, 256, "Samplefrequency (%iHz) is not an integer multiple of the powerline frequency (%iHz)", sf, plf);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+      messagewindow.setWindowFlags(Qt::WindowStaysOnTopHint);
       messagewindow.exec();
       break;
     }

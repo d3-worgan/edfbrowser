@@ -1982,14 +1982,12 @@ void UI_Mainwindow::setMainwindowTitle(struct edfhdrblock *edfhdr)
 }
 
 
-void UI_Mainwindow::signalproperties_dialog()
-{
-    if((!files_open) || (!signalcomps))  return;
+void UI_Mainwindow::signalproperties_dialog() {
 
-    if(signalcomps == 1)
-    {
+    if ((!files_open) || (!signalcomps))  return;
+
+    if (signalcomps == 1) {
         maincurve->exec_sidemenu(0);
-
         return;
     }
 
@@ -4385,6 +4383,23 @@ bool UI_Mainwindow::eventFilter(QObject *watched, QEvent *event) {
     else {
         return false;
     }
+}
 
 
+void UI_Mainwindow::menu_opened() {
+    std::cerr << "Menu opened\n";
+    if (ui_logger != 0) {
+        if (log_ui) {
+            ui_logger->write(UiLogger::LogEvents::MENU_OPENED);
+        }
+    }
+}
+
+void UI_Mainwindow::menu_closed() {
+    std::cerr << "Menu closed\n";
+    if (ui_logger != 0) {
+        if (log_ui) {
+            ui_logger->write(UiLogger::LogEvents::MENU_CLOSED);
+        }
+    }
 }

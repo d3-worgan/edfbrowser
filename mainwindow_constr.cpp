@@ -392,7 +392,7 @@ UI_Mainwindow::UI_Mainwindow()
 
     filemenu = new QMenu(this);
     filemenu->setTitle("&File");
-    filemenu->addAction("Open",         this, SLOT(open_new_file()), QKeySequence::Open);
+    //filemenu->addAction("Open",         this, SLOT(open_new_file()), QKeySequence::Open);
     filemenu->addSeparator();
     filemenu->addAction("Open stream",  this, SLOT(open_stream()), QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_O));
     filemenu->addSeparator();
@@ -407,7 +407,11 @@ UI_Mainwindow::UI_Mainwindow()
     filemenu->addMenu(close_filemenu);
     filemenu->addAction("Close all",    this, SLOT(close_all_files()), QKeySequence::Close);
     filemenu->addAction("Exit",         this, SLOT(exit_program()), QKeySequence::Quit);
-    menubar->addMenu(filemenu);
+    //menubar->addMenu(filemenu);
+    std::cerr << "Connecting triggered\n";
+    //QObject::connect(filemenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
+    //QObject::connect(filemenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
+
 
     signalmenu = new QMenu(this);
     signalmenu->setTitle("&Signals");
@@ -416,6 +420,9 @@ UI_Mainwindow::UI_Mainwindow()
     signalmenu->addAction("Organize",   this, SLOT(organize_signals()));
     signalmenu->addAction("Remove all", this, SLOT(remove_all_signals()));
     menubar->addMenu(signalmenu);
+    QObject::connect(signalmenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
+    QObject::connect(signalmenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
+
 
     displaymenu = new QMenu(this);
     displaymenu->setTitle("&Timescale");
@@ -530,6 +537,9 @@ UI_Mainwindow::UI_Mainwindow()
     displaymenu->addAction(page_whole_rec);
 
     menubar->addMenu(displaymenu);
+    QObject::connect(displaymenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
+    QObject::connect(displaymenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
+
 
     DisplayGroup = new QActionGroup(this);
     DisplayGroup->addAction(page_10u);
@@ -669,6 +679,9 @@ UI_Mainwindow::UI_Mainwindow()
     amplitudemenu->addAction(amp_minus);
 
     menubar->addMenu(amplitudemenu);
+    QObject::connect(amplitudemenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
+    QObject::connect(amplitudemenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
+
 
     AmplitudeGroup = new QActionGroup(this);
     AmplitudeGroup->addAction(amp_00001);
@@ -715,6 +728,9 @@ UI_Mainwindow::UI_Mainwindow()
     filtermenu->addAction("Spike", this, SLOT(add_spike_filter()));
     filtermenu->addAction("Remove all spike filters", this, SLOT(remove_all_spike_filters()));
     menubar->addMenu(filtermenu);
+    QObject::connect(filtermenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
+    QObject::connect(filtermenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
+
 
     //   math_func_menu = new QMenu(this);
     //   math_func_menu->setTitle("&Math");
@@ -767,54 +783,60 @@ UI_Mainwindow::UI_Mainwindow()
         montagemenu->addAction(load_predefined_mtg_act[i]);
     }
     menubar->addMenu(montagemenu);
+    QObject::connect(montagemenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
+    QObject::connect(montagemenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
+
 
     //   patternmenu = new QMenu(this);
     //   patternmenu->setTitle("&Pattern");
     //   patternmenu->addAction("Search", this, SLOT(search_pattern()));
     //   menubar->addMenu(patternmenu);
 
-    toolsmenu = new QMenu(this);
-    toolsmenu->setTitle("T&ools");
-    toolsmenu->addAction("Check EDF/BDF compatibility", this, SLOT(check_edf_compatibility()));
-    toolsmenu->addSeparator();
-    toolsmenu->addAction("Header editor", this, SLOT(edit_header()));
-    toolsmenu->addAction("Reduce signals, duration or samplerate", this, SLOT(reduce_signals()));
-    toolsmenu->addAction("Remove duplicates in annotations", this, SLOT(edfplus_remove_duplicate_annotations()));
-    toolsmenu->addSeparator();
-    toolsmenu->addAction("Import annotations/events", this, SLOT(import_annotations()));
-    toolsmenu->addAction("Export annotations/events", this, SLOT(export_annotations()));
-    toolsmenu->addAction("Export EDF/BDF to ASCII (CSV)", this, SLOT(export_to_ascii()));
-    toolsmenu->addAction("Export/Import ECG RR-interval", this, SLOT(export_ecg_rr_interval_to_ascii()));
-    toolsmenu->addAction("QRS detector", this, SLOT(qrs_detector()));
-    toolsmenu->addAction("Export Filtered Signals", this, SLOT(export_filtered_signals()));
-    toolsmenu->addSeparator();
-    toolsmenu->addAction("Convert Nihon Kohden to EDF+", this, SLOT(nk2edf_converter()));
-    toolsmenu->addAction("Convert ASCII (CSV) to EDF/BDF", this, SLOT(convert_ascii_to_edf()));
-    toolsmenu->addAction("Convert Manscan to EDF+", this, SLOT(convert_manscan_to_edf()));
-    toolsmenu->addAction("Convert SCP ECG to EDF+", this, SLOT(convert_scpecg_to_edf()));
-    toolsmenu->addAction("Convert MIT (PhysioBank) to EDF+", this, SLOT(convert_mit_to_edf()));
-    toolsmenu->addAction("Convert Finometer to EDF", this, SLOT(convert_fino_to_edf()));
-    toolsmenu->addAction("Convert Nexfin to EDF", this, SLOT(convert_nexfin_to_edf()));
-    toolsmenu->addAction("Convert Emsa to EDF+", this, SLOT(convert_emsa_to_edf()));
-    toolsmenu->addAction("Convert EDF+D to EDF+C", this, SLOT(edfd_converter()));
-    toolsmenu->addAction("Convert Biosemi to BDF+", this, SLOT(biosemi2bdfplus_converter()));
-    toolsmenu->addAction("Convert BDF to EDF", this, SLOT(bdf2edf_converter()));
-    toolsmenu->addAction("Convert Unisens to EDF+", this, SLOT(unisens2edf_converter()));
-    toolsmenu->addAction("Convert BI9800TL+3 to EDF", this, SLOT(BI98002edf_converter()));
-    toolsmenu->addAction("Convert Wave to EDF", this, SLOT(convert_wave_to_edf()));
-    toolsmenu->addAction("Convert Biox CB-1305-C to EDF", this, SLOT(convert_biox_to_edf()));
-    toolsmenu->addAction("Convert FM Audio ECG to EDF", this, SLOT(convert_fm_audio_to_edf()));
-    toolsmenu->addAction("Convert Mortara ECG XML to EDF", this, SLOT(convert_mortara_to_edf()));
-    toolsmenu->addAction("Convert ISHNE ECG to EDF", this, SLOT(convert_ishne_to_edf()));
-    toolsmenu->addAction("Convert Binary/raw data to EDF", this, SLOT(convert_binary_to_edf()));
-    toolsmenu->addSeparator();
-    toolsmenu->addAction("Options", this, SLOT(show_options_dialog()));
-    menubar->addMenu(toolsmenu);
+//    toolsmenu = new QMenu(this);
+//    toolsmenu->setTitle("T&ools");
+//    toolsmenu->addAction("Check EDF/BDF compatibility", this, SLOT(check_edf_compatibility()));
+//    toolsmenu->addSeparator();
+//    toolsmenu->addAction("Header editor", this, SLOT(edit_header()));
+//    toolsmenu->addAction("Reduce signals, duration or samplerate", this, SLOT(reduce_signals()));
+//    toolsmenu->addAction("Remove duplicates in annotations", this, SLOT(edfplus_remove_duplicate_annotations()));
+//    toolsmenu->addSeparator();
+//    toolsmenu->addAction("Import annotations/events", this, SLOT(import_annotations()));
+//    toolsmenu->addAction("Export annotations/events", this, SLOT(export_annotations()));
+//    toolsmenu->addAction("Export EDF/BDF to ASCII (CSV)", this, SLOT(export_to_ascii()));
+//    toolsmenu->addAction("Export/Import ECG RR-interval", this, SLOT(export_ecg_rr_interval_to_ascii()));
+//    toolsmenu->addAction("QRS detector", this, SLOT(qrs_detector()));
+//    toolsmenu->addAction("Export Filtered Signals", this, SLOT(export_filtered_signals()));
+//    toolsmenu->addSeparator();
+//    toolsmenu->addAction("Convert Nihon Kohden to EDF+", this, SLOT(nk2edf_converter()));
+//    toolsmenu->addAction("Convert ASCII (CSV) to EDF/BDF", this, SLOT(convert_ascii_to_edf()));
+//    toolsmenu->addAction("Convert Manscan to EDF+", this, SLOT(convert_manscan_to_edf()));
+//    toolsmenu->addAction("Convert SCP ECG to EDF+", this, SLOT(convert_scpecg_to_edf()));
+//    toolsmenu->addAction("Convert MIT (PhysioBank) to EDF+", this, SLOT(convert_mit_to_edf()));
+//    toolsmenu->addAction("Convert Finometer to EDF", this, SLOT(convert_fino_to_edf()));
+//    toolsmenu->addAction("Convert Nexfin to EDF", this, SLOT(convert_nexfin_to_edf()));
+//    toolsmenu->addAction("Convert Emsa to EDF+", this, SLOT(convert_emsa_to_edf()));
+//    toolsmenu->addAction("Convert EDF+D to EDF+C", this, SLOT(edfd_converter()));
+//    toolsmenu->addAction("Convert Biosemi to BDF+", this, SLOT(biosemi2bdfplus_converter()));
+//    toolsmenu->addAction("Convert BDF to EDF", this, SLOT(bdf2edf_converter()));
+//    toolsmenu->addAction("Convert Unisens to EDF+", this, SLOT(unisens2edf_converter()));
+//    toolsmenu->addAction("Convert BI9800TL+3 to EDF", this, SLOT(BI98002edf_converter()));
+//    toolsmenu->addAction("Convert Wave to EDF", this, SLOT(convert_wave_to_edf()));
+//    toolsmenu->addAction("Convert Biox CB-1305-C to EDF", this, SLOT(convert_biox_to_edf()));
+//    toolsmenu->addAction("Convert FM Audio ECG to EDF", this, SLOT(convert_fm_audio_to_edf()));
+//    toolsmenu->addAction("Convert Mortara ECG XML to EDF", this, SLOT(convert_mortara_to_edf()));
+//    toolsmenu->addAction("Convert ISHNE ECG to EDF", this, SLOT(convert_ishne_to_edf()));
+//    toolsmenu->addAction("Convert Binary/raw data to EDF", this, SLOT(convert_binary_to_edf()));
+//    toolsmenu->addSeparator();
+//    toolsmenu->addAction("Options", this, SLOT(show_options_dialog()));
+//    menubar->addMenu(toolsmenu);
 
     settingsmenu = new QMenu(this);
     settingsmenu->setTitle("S&ettings");
     settingsmenu->addAction("Options", this, SLOT(show_options_dialog()));
     menubar->addMenu(settingsmenu);
+    QObject::connect(settingsmenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
+    QObject::connect(settingsmenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
+
 
     no_timesync_act = new QAction("no timelock", this);
     no_timesync_act->setCheckable(true);
@@ -852,7 +874,10 @@ UI_Mainwindow::UI_Mainwindow()
     timemenu->addSeparator();
     timemenu->addAction("synchronize by crosshairs", this, SLOT(sync_by_crosshairs()));
     timemenu->addSeparator()->setText("Time reference");
-    menubar->addMenu(timemenu);
+    //menubar->addMenu(timemenu);
+    //QObject::connect(timemenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
+    //QObject::connect(timemenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
+
 
     windowmenu = new QMenu(this);
     windowmenu->setTitle("&Window");
@@ -862,6 +887,8 @@ UI_Mainwindow::UI_Mainwindow()
     windowmenu->addAction("Color Density Spectral Array", this, SLOT(show_cdsa_dock()));
     windowmenu->addAction("Hypnogram", this, SLOT(show_hypnogram()));
     menubar->addMenu(windowmenu);
+    QObject::connect(windowmenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
+    QObject::connect(windowmenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
 
     helpmenu = new QMenu(this);
     helpmenu->setTitle("&Help");
@@ -875,6 +902,9 @@ UI_Mainwindow::UI_Mainwindow()
     helpmenu->addAction("About EDFbrowser", this, SLOT(show_about_dialog()));
     helpmenu->addAction("Show splashscreen", this, SLOT(show_splashscreen()));
     menubar->addMenu(helpmenu);
+    QObject::connect(helpmenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
+    QObject::connect(helpmenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
+
 
     navtoolbar = new QToolBar("Navigation Bar");
     navtoolbar->setFloatable(false);

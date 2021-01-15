@@ -384,6 +384,9 @@ public:
 
     void enable_hrv_stats_toolbar(const char *, struct annotation_list *);
 
+    void menu_opened();
+    void menu_closed();
+
 #ifdef Q_OS_WIN32
     QString specialFolder(int);
 #endif

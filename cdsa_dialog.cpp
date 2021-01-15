@@ -50,7 +50,7 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
 
   snprintf(str, 1024, "Color Density Spectral Array   %s", signalcomp->signallabel);
 
-  myobjectDialog = new QDialog;
+  myobjectDialog = new QDialog(w_parent);
 
   myobjectDialog->setMinimumSize(350 * mainwindow->w_scaling, 400 * mainwindow->h_scaling);
   myobjectDialog->setWindowTitle(str);

@@ -38,7 +38,9 @@ public:
         MODAL_CLOSED,
         WINDOW_MINMISED,
         WINDOW_MAXIMISED,
-        WINDOW_FULL_SCREEN
+        WINDOW_FULL_SCREEN,
+        MENU_OPENED,
+        MENU_CLOSED
     };
 
 private:

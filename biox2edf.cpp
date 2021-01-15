@@ -53,7 +53,7 @@ UI_BIOX2EDFwindow::UI_BIOX2EDFwindow(QWidget *w_parent, char *recent_dir, char *
   recent_opendir = recent_dir;
   recent_savedir = save_dir;
 
-  myobjectDialog = new QDialog;
+  myobjectDialog = new QDialog(w_parent);
 
   myobjectDialog->setMinimumSize(600 * mainwindow->w_scaling, 480 * mainwindow->h_scaling);
   myobjectDialog->setWindowTitle("Biox CB-1305-C to EDF converter");

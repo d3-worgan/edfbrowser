@@ -143,6 +143,12 @@ void UiLogger::write(LogEvents log_event) {
     else if (log_event == LogEvents::MODAL_CLOSED) {
         text += QString("\"MODAL_CLOSED\"");
     }
+    else if (log_event == LogEvents::MENU_OPENED) {
+        text += QString("\"MENU_OPENED\"");
+    }
+    else if (log_event == LogEvents::MENU_CLOSED) {
+        text += QString("\"MENU_CLOSED\"");
+    }
     text = text + " }\n";
 
     QTextStream out(this->log_file);

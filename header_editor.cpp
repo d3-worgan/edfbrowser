@@ -34,7 +34,7 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
 {
   mainwindow = (UI_Mainwindow *)w_parent;
 
-  myobjectDialog = new QDialog;
+  myobjectDialog = new QDialog(w_parent);
   myobjectDialog->setMinimumSize(600 * mainwindow->w_scaling, 500 * mainwindow->h_scaling);
   myobjectDialog->setWindowTitle("EDF header editor");
   myobjectDialog->setSizeGripEnabled(true);

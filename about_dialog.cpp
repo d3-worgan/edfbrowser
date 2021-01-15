@@ -48,7 +48,7 @@ UI_Aboutwindow::UI_Aboutwindow(UI_Mainwindow *mainwindow)
     strlcat(str, "\n Multi-Threading is disabled.", 1024);
   }
 
-  AboutDialog = new QDialog;
+  AboutDialog = new QDialog(mainwindow);
 
   AboutDialog->setMinimumSize(640, 480);
   AboutDialog->setGeometry(300, 250, 640, 480);

@@ -36,7 +36,7 @@ UI_ExportFilteredSignalsWindow::UI_ExportFilteredSignalsWindow(QWidget *w_parent
 
   recent_savedir = mainwindow->recent_savedir;
 
-  myobjectDialog = new QDialog;
+  myobjectDialog = new QDialog(w_parent);
 
   myobjectDialog->setMinimumSize(600 * mainwindow->w_scaling, 500 * mainwindow->h_scaling);
   myobjectDialog->setWindowTitle("Export Filtered Signals");

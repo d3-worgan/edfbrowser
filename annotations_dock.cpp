@@ -64,7 +64,7 @@ UI_Annotationswindow::UI_Annotationswindow(struct edfhdrblock *e_hdr, QWidget *w
 
   hide_bs_triggers = 0;
 
-  dialog1 = new QDialog;
+  dialog1 = new QDialog(w_parent);
 
   checkbox1 = new QCheckBox("Relative ");
   checkbox1->setTristate(false);
@@ -164,6 +164,7 @@ UI_Annotationswindow::UI_Annotationswindow(struct edfhdrblock *e_hdr, QWidget *w
 void UI_Annotationswindow::more_button_clicked(bool)
 {
   QMessageBox messagewindow(QMessageBox::Information, "Info", "Right-click on an annotation for more options.");
+  messagewindow.setParent(mainwindow);
   messagewindow.exec();
   return;
 }

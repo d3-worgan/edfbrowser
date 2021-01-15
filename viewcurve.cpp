@@ -3625,6 +3625,7 @@ void drawCurve_stage_1_thread::run()
 
 void ViewCurve::exec_sidemenu(int signal_nr_intern)
 {
+    std::cerr << "Creating the side menu\n";
     char str[32]={""};
 
     signal_nr = signal_nr_intern;
@@ -3683,8 +3684,8 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
     sidemenuButton2 = new QPushButton(sidemenu);
     sidemenuButton2->setText("Crosshair");
 
-    sidemenuButton3 = new QPushButton(sidemenu);
-    sidemenuButton3->setText("Fit to pane");
+//    sidemenuButton3 = new QPushButton(sidemenu);
+//    sidemenuButton3->setText("Fit to pane");
 
     sidemenuButton4 = new QPushButton(sidemenu);
     sidemenuButton4->setText("Color");
@@ -3704,21 +3705,21 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
     sidemenuButton9 = new QPushButton(sidemenu);
     sidemenuButton9->setText("Remove signal");
 
-    sidemenuButton10 = new QPushButton(sidemenu);
-    sidemenuButton10->setText("Adjust filter");
+//    sidemenuButton10 = new QPushButton(sidemenu);
+//    sidemenuButton10->setText("Adjust filter");
 
     sidemenuButton11 = new QPushButton(sidemenu);
     sidemenuButton11->setText("Statistics");
 
-    sidemenuButton12 = new QPushButton(sidemenu);
-    sidemenuButton12->setText("QRS detector");
-    if(mainwindow->live_stream_active)
-    {
-        sidemenuButton12->setEnabled(false);
-    }
+//    sidemenuButton12 = new QPushButton(sidemenu);
+//    sidemenuButton12->setText("QRS detector");
+//    if(mainwindow->live_stream_active)
+//    {
+//        sidemenuButton12->setEnabled(false);
+//    }
 
-    sidemenuButton13 = new QPushButton(sidemenu);
-    sidemenuButton13->setText("Heart Rate");
+//    sidemenuButton13 = new QPushButton(sidemenu);
+//    sidemenuButton13->setText("Heart Rate");
 
     sidemenuButton14 = new QPushButton(sidemenu);
     sidemenuButton14->setText("CDSA");
@@ -3730,20 +3731,21 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
     sidemenuButton15 = new QPushButton(sidemenu);
     sidemenuButton15->setText("Close");
 
+    std::cerr << "Created the buttons, adding to grid...\n";
     QGridLayout *gr = new QGridLayout;
     gr->addWidget(sidemenuButton1, 0, 1);
     gr->addWidget(sidemenuButton2, 1, 1);
-    gr->addWidget(sidemenuButton3, 2, 1);
+    //gr->addWidget(sidemenuButton3, 2, 1);
     gr->addWidget(sidemenuButton4, 3, 1);
     gr->addWidget(sidemenuButton5, 4, 1);
     gr->addWidget(sidemenuButton6, 5, 1);
     gr->addWidget(sidemenuButton7, 6, 1);
     gr->addWidget(sidemenuButton8, 7, 1);
     gr->addWidget(sidemenuButton9, 8, 1);
-    gr->addWidget(sidemenuButton10, 9, 1);
+    //gr->addWidget(sidemenuButton10, 9, 1);
     gr->addWidget(sidemenuButton11, 10, 1);
-    gr->addWidget(sidemenuButton12, 11, 1);
-    gr->addWidget(sidemenuButton13, 12, 1);
+    //gr->addWidget(sidemenuButton12, 11, 1);
+    //gr->addWidget(sidemenuButton13, 12, 1);
     gr->addWidget(sidemenuButton14, 13, 1);
     gr->addWidget(sidemenuButton15, 14, 1);
     gr->setColumnStretch(0, 1000);
@@ -3759,21 +3761,21 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
     QObject::connect(ScaleBox2,         SIGNAL(valueChanged(double)),     this,     SLOT(ScaleBox2Changed(double)));
     QObject::connect(sidemenuButton1,   SIGNAL(clicked()),                this,     SLOT(RulerButton()));
     QObject::connect(sidemenuButton2,   SIGNAL(clicked()),                this,     SLOT(CrosshairButton()));
-    QObject::connect(sidemenuButton3,   SIGNAL(clicked()),                this,     SLOT(FittopaneButton()));
+    //QObject::connect(sidemenuButton3,   SIGNAL(clicked()),                this,     SLOT(FittopaneButton()));
     QObject::connect(sidemenuButton4,   SIGNAL(clicked()),                this,     SLOT(ColorButton()));
     QObject::connect(sidemenuButton5,   SIGNAL(clicked()),                this,     SLOT(signalInvert()));
     QObject::connect(sidemenuButton6,   SIGNAL(clicked()),                this,     SLOT(FreqSpecButton()));
     QObject::connect(sidemenuButton7,   SIGNAL(clicked()),                this,     SLOT(Z_scoringButton()));
     QObject::connect(sidemenuButton8,   SIGNAL(clicked()),                this,     SLOT(RemovefilterButton()));
     QObject::connect(sidemenuButton9,   SIGNAL(clicked()),                this,     SLOT(RemovesignalButton()));
-    QObject::connect(sidemenuButton10,  SIGNAL(clicked()),                this,     SLOT(AdjustFilterButton()));
+    //QObject::connect(sidemenuButton10,  SIGNAL(clicked()),                this,     SLOT(AdjustFilterButton()));
     QObject::connect(sidemenuButton11,  SIGNAL(clicked()),                this,     SLOT(StatisticsButton()));
-    QObject::connect(sidemenuButton12,  SIGNAL(clicked()),                this,     SLOT(QRSdetectButton()));
-    QObject::connect(sidemenuButton13,  SIGNAL(clicked()),                this,     SLOT(ECGdetectButton()));
+    //QObject::connect(sidemenuButton12,  SIGNAL(clicked()),                this,     SLOT(QRSdetectButton()));
+    //QObject::connect(sidemenuButton13,  SIGNAL(clicked()),                this,     SLOT(ECGdetectButton()));
     QObject::connect(sidemenuButton14,  SIGNAL(clicked()),                this,     SLOT(cdsa_button()));
     QObject::connect(sidemenuButton15,  SIGNAL(clicked()),                this,     SLOT(sidemenu_close()));
     QObject::connect(AliasLineEdit,     SIGNAL(returnPressed()),          this,     SLOT(sidemenu_close()));
-
+    std::cerr << "Opening the side menu\n";
     sidemenu->exec();
 }
 

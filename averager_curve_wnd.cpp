@@ -75,7 +75,7 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
 
   flywheel_value = 1000;
 
-  averager_curve_dialog = new QDialog;
+  averager_curve_dialog = new QDialog(w_parent);
   averager_curve_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
   averager_curve_dialog->setMinimumSize(650 * mainwindow->w_scaling, 480 * mainwindow->h_scaling);
   averager_curve_dialog->setSizeGripEnabled(true);

@@ -37,7 +37,7 @@ UI_BDF2EDFwindow::UI_BDF2EDFwindow(QWidget *w_parent)
   recent_opendir = mainwindow->recent_opendir;
   recent_savedir = mainwindow->recent_savedir;
 
-  myobjectDialog = new QDialog;
+  myobjectDialog = new QDialog(w_parent);
 
   myobjectDialog->setMinimumSize(550 * mainwindow->w_scaling, 450 * mainwindow->h_scaling);
   myobjectDialog->setWindowTitle("BDF+ to EDF+ converter");

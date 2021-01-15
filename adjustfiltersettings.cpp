@@ -62,7 +62,7 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
 
   mainwindow = maincurve->mainwindow;
 
-  filtersettings_dialog = new QDialog(w_parent);
+  filtersettings_dialog = new QDialog(mainwindow);
 
   filtersettings_dialog->setMinimumSize(350 * mainwindow->w_scaling, 250 * mainwindow->h_scaling);
   strlcpy(txtbuf, "Filter settings ", 2048);
@@ -77,6 +77,7 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
   filtersettings_dialog->setWindowTitle(txtbuf);
   filtersettings_dialog->setModal(true);
   filtersettings_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+
 
   filterbox = new QComboBox;
 
@@ -149,6 +150,7 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
   QObject::connect(RemoveButton, SIGNAL(clicked()),                                 this, SLOT(removeButtonClicked()));
   QObject::connect(CloseButton,  SIGNAL(clicked()),                filtersettings_dialog, SLOT(close()));
 
+  //filtersettings_dialog->setWindowFlags(Qt::WindowStaysOnTopHint);
   filtersettings_dialog->exec();
 }
 
@@ -574,6 +576,7 @@ void AdjustFilterSettings::update_filter()
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error",
                                   "The frequency must be less than: samplerate / 2");
+        messagewindow.setParent(mainwindow);
         messagewindow.exec();
         return;
       }
@@ -584,6 +587,7 @@ void AdjustFilterSettings::update_filter()
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error",
                                   "The frequency must be less than: samplerate / 2");
+        messagewindow.setParent(mainwindow);
         messagewindow.exec();
         return;
       }
@@ -682,6 +686,7 @@ void AdjustFilterSettings::update_filter()
     if(err != NULL)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", err);
+      messagewindow.setParent(mainwindow);
       messagewindow.exec();
       free(err);
       return;
@@ -710,6 +715,7 @@ void AdjustFilterSettings::update_filter()
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error",
                                 "An internal error occurred while creating a moving average filter.");
+      messagewindow.setParent(mainwindow);
       messagewindow.exec();
       return;
     }

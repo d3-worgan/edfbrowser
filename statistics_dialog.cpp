@@ -74,7 +74,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp,
 
   struct annotationblock *tmp_annot=NULL;
 
-  StatDialog = new QDialog;
+  StatDialog = new QDialog(w_parent);
   StatDialog->setWindowTitle("Statistics");
   StatDialog->setModal(true);
   StatDialog->setAttribute(Qt::WA_DeleteOnClose, true);

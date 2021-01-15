@@ -65,13 +65,13 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
     }
   }
 
-  SignalsDialog = new QDialog;
+  SignalsDialog = new QDialog(w_parent);
 
   SignalsDialog->setMinimumSize(850 * mainwindow->w_scaling, 500 * mainwindow->h_scaling);
   SignalsDialog->setWindowTitle("Add signals");
   SignalsDialog->setModal(true);
   SignalsDialog->setAttribute(Qt::WA_DeleteOnClose, true);
-  SignalsDialog->setWindowFlags(Qt::WindowStaysOnTopHint);
+  //SignalsDialog->setWindowFlags(Qt::WindowStaysOnTopHint);
   filelist = new QListWidget;
   filelist->setMaximumHeight(75);
   for(i=0; i<mainwindow->files_open; i++)

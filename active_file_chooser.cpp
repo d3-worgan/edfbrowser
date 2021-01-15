@@ -41,7 +41,7 @@ UI_activeFileChooserWindow::UI_activeFileChooserWindow(int *file_nr, QWidget *ma
 
   *file_num = -1;
 
-  chooserDialog = new QDialog;
+  chooserDialog = new QDialog(mainwndw);
 
   chooserDialog->setMinimumSize(600, 150);
   chooserDialog->setWindowTitle("Choose file");

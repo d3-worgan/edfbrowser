@@ -47,11 +47,12 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   recent_opendir = recent_dir;
   recent_savedir = save_dir;
 
-  firfilterdialog = new QDialog;
+  firfilterdialog = new QDialog();
   firfilterdialog->setMinimumSize(400 * mainwindow->w_scaling, 400 * mainwindow->h_scaling);
   firfilterdialog->setWindowTitle("Add a Custom FIR filter");
   firfilterdialog->setModal(true);
   firfilterdialog->setAttribute(Qt::WA_DeleteOnClose, true);
+  firfilterdialog->setWindowFlags(Qt::WindowStaysOnTopHint);
 
   varsLabel = new QLabel;
   varsLabel->setText("Filter taps: 0");

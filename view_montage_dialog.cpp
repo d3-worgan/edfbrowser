@@ -41,7 +41,7 @@ UI_ViewMontagewindow::UI_ViewMontagewindow(QWidget *w_parent)
     strlcpy(mtg_dir, mainwindow->recent_montagedir, MAX_PATH_LENGTH);
   }
 
-  ViewMontageDialog = new QDialog;
+  ViewMontageDialog = new QDialog(w_parent);
   ViewMontageDialog->setMinimumSize(500 * mainwindow->w_scaling, 300 * mainwindow->h_scaling);
   ViewMontageDialog->setWindowTitle("View montage");
   ViewMontageDialog->setModal(true);

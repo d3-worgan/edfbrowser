@@ -68,7 +68,6 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
 
   QListWidgetItem *item;
 
-
   arraysize = 400;
 
   last_order = 1;
@@ -83,11 +82,12 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
-  filterdialog = new QDialog;
+  filterdialog = new QDialog();
   filterdialog->setMinimumSize(620 * mainwindow->w_scaling, 365 * mainwindow->h_scaling);
   filterdialog->setWindowTitle("Add a filter");
   filterdialog->setModal(true);
   filterdialog->setAttribute(Qt::WA_DeleteOnClose, true);
+  filterdialog->setWindowFlags(Qt::WindowStaysOnTopHint);
 
   typeboxlabel = new QLabel;
   typeboxlabel->setText("Type");

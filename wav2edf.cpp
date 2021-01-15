@@ -37,7 +37,7 @@ UI_WAV2EDFwindow::UI_WAV2EDFwindow(QWidget *w_parent, char *recent_dir, char *sa
   recent_opendir = recent_dir;
   recent_savedir = save_dir;
 
-  myobjectDialog = new QDialog;
+  myobjectDialog = new QDialog(w_parent);
 
   myobjectDialog->setMinimumSize(600 * mainwindow->w_scaling, 300 * mainwindow->h_scaling);
   myobjectDialog->setWindowTitle("Wave to EDF converter");

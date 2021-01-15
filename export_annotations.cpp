@@ -35,7 +35,7 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent)
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
-  ExportAnnotsDialog = new QDialog;
+  ExportAnnotsDialog = new QDialog(w_parent);
 
   ExportAnnotsDialog->setMinimumSize(600 * mainwindow->w_scaling, 550 * mainwindow->h_scaling);
   ExportAnnotsDialog->setWindowTitle("Export annotations");

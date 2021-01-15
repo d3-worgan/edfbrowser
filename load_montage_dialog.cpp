@@ -49,7 +49,7 @@ UI_LoadMontagewindow::UI_LoadMontagewindow(QWidget *w_parent, char *path)
     return;
   }
 
-  LoadMontageDialog = new QDialog;
+  LoadMontageDialog = new QDialog(w_parent);
 
   LoadMontageDialog->setMinimumSize(600 * mainwindow->w_scaling, 180 * mainwindow->h_scaling);
   LoadMontageDialog->setWindowTitle("Load montage");

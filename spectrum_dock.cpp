@@ -64,7 +64,7 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 
   spectrum_color = mainwindow->spectrum_colorbar;
 
-  SpectrumDialog = new QDialog;
+  SpectrumDialog = new QDialog(w_parent);
 
   flywheel_value = 1050;
 

@@ -40,7 +40,7 @@ UI_hypnogram_window::UI_hypnogram_window(QWidget *w_parent, struct edfhdrblock *
 
   edfhdr = e_hdr;
 
-  myobjectDialog = new QDialog;
+  myobjectDialog = new QDialog(w_parent);
 
   myobjectDialog->setMinimumSize(400 * mainwindow->w_scaling, 400 * mainwindow->h_scaling);
   myobjectDialog->setWindowTitle("Hypnogram");

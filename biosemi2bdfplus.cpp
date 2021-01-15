@@ -42,7 +42,7 @@ UI_BIOSEMI2BDFPLUSwindow::UI_BIOSEMI2BDFPLUSwindow(QWidget *w_parent)
   recent_opendir = mainwindow->recent_opendir;
   recent_savedir = mainwindow->recent_savedir;
 
-  myobjectDialog = new QDialog;
+  myobjectDialog = new QDialog(w_parent);
 
   myobjectDialog->setMinimumSize(500 * mainwindow->w_scaling, 530 * mainwindow->h_scaling);
   myobjectDialog->setWindowTitle("Biosemi to BDF+ converter");

@@ -178,7 +178,7 @@ void UI_cdsa_dock::contextmenu_requested(QPoint)
 
   strlcat(str, param.signalcomp->signallabel, 4096);
 
-  QDialog *myobjectDialog = new QDialog;
+  QDialog *myobjectDialog = new QDialog(this->mainwindow);
   myobjectDialog->setMinimumSize(300, 215);
   myobjectDialog->setWindowTitle(str);
   myobjectDialog->setModal(true);

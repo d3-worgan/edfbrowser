@@ -127,7 +127,7 @@ UI_MIT2EDFwindow::UI_MIT2EDFwindow(QWidget *w_parent, char *recent_dir, char *sa
   recent_opendir = recent_dir;
   recent_savedir = save_dir;
 
-  myobjectDialog = new QDialog;
+  myobjectDialog = new QDialog(w_parent);
 
   myobjectDialog->setMinimumSize(600 * mainwindow->w_scaling, 480 * mainwindow->h_scaling);
   myobjectDialog->setWindowTitle("MIT to EDF+ converter");
