@@ -41,7 +41,7 @@ UI_ColorMenuDialog::UI_ColorMenuDialog(int *newColor, QWidget *w_parent, int sho
   colormenu_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   // Set to always on top to avoid problems with main window on top for TEETACSI
-  colormenu_dialog->setWindowFlags(Qt::WindowStaysOnTopHint);
+//  colormenu_dialog->setWindowFlags(Qt::WindowStaysOnTopHint);
 
   color = newColor;
 

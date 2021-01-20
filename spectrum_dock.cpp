@@ -47,54 +47,35 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   buf5 = NULL;
 
   buf1_sz = 0;
-
   busy = 0;
-
   dashboard = 0;
-
   signalcomp = NULL;
-
   signal_nr = -1;
-
   set_settings = 0;
-
   physdimension[0] = 0;
-
   mainwindow = (UI_Mainwindow *)w_parent;
-
   spectrum_color = mainwindow->spectrum_colorbar;
-
   SpectrumDialog = new QDialog(w_parent);
-
   flywheel_value = 1050;
-
   init_maxvalue = 1;
-
   dftblocksize = mainwindow->maxdftblocksize;
-
-  if(dftblocksize > 1000)
-  {
+  if (dftblocksize > 1000) {
     dftblocksize = 1000;
   }
-
   window_type = 0;
-
   overlap = 1;
-
-  if(mainwindow->spectrumdock_sqrt)
-  {
+  if (mainwindow->spectrumdock_sqrt) {
     dock = new QDockWidget("Amplitude Spectrum", w_parent);
   }
-  else
-  {
+  else {
     dock = new QDockWidget("Power Spectrum", w_parent);
   }
 
-  dock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+  dock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
   dock->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
   dock->setMinimumHeight(300);
-  if(dashboard)
-  {
+
+  if (dashboard) {
     dock->setWidget(SpectrumDialog);
   }
 
@@ -105,22 +86,18 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   curve1->setTraceWidth(0);
   curve1->setH_label("Hz");
   curve1->setLowerLabel("Frequency");
-  if(mainwindow->spectrumdock_sqrt)
-  {
-    if(mainwindow->spectrumdock_vlog)
-    {
+
+  if (mainwindow->spectrumdock_sqrt) {
+    if (mainwindow->spectrumdock_vlog) {
       snprintf(str, 512, "log10(%s)", physdimension);
       curve1->setV_label(str);
     }
-    else
-    {
+    else {
       curve1->setV_label(physdimension);
     }
   }
-  else
-  {
-    if(mainwindow->spectrumdock_vlog)
-    {
+  else {
+    if (mainwindow->spectrumdock_vlog) {
       snprintf(str, 512, "log((%s)^2/Hz)", physdimension);
     }
     else

@@ -710,10 +710,11 @@ UI_Mainwindow::UI_Mainwindow()
     load_predefined_mtg_act[11] = new QAction("Empty", this);
     load_predefined_mtg_act[11]->setShortcut(Qt::Key_F12);
     load_predefined_mtg_group = new QActionGroup(this);
-    for(i=0; i < MAXPREDEFINEDMONTAGES; i++)
-    {
+
+    for (i = 0; i < MAXPREDEFINEDMONTAGES; i++) {
         load_predefined_mtg_group->addAction(load_predefined_mtg_act[i]);
     }
+
     connect(load_predefined_mtg_group, SIGNAL(triggered(QAction *)), this, SLOT(load_predefined_mtg(QAction *)));
 
     montagemenu = new QMenu(this);
@@ -725,8 +726,8 @@ UI_Mainwindow::UI_Mainwindow()
     montagemenu->addSeparator();
     montagemenu->addAction("Edit key-bindings for montages", this, SLOT(edit_predefined_montages()));
     montagemenu->addSeparator();
-    for(i=0; i < MAXPREDEFINEDMONTAGES; i++)
-    {
+
+    for (i = 0; i < MAXPREDEFINEDMONTAGES; i++) {
         montagemenu->addAction(load_predefined_mtg_act[i]);
     }
     menubar->addMenu(montagemenu);
@@ -735,7 +736,6 @@ UI_Mainwindow::UI_Mainwindow()
     QObject::connect(montagemenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
     QObject::connect(montagemenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
     QObject::connect(montagemenu, &QMenu::hovered, this, &UI_Mainwindow::search_menu);
-
 
     //   patternmenu = new QMenu(this);
     //   patternmenu->setTitle("&Pattern");

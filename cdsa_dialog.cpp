@@ -51,7 +51,7 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   // Need to avoid main window always on top for TEETACSI
-  myobjectDialog->setWindowFlags(Qt::WindowStaysOnTopHint);
+  //myobjectDialog->setWindowFlags(Qt::WindowStaysOnTopHint);
 
   segmentlen_spinbox = new QSpinBox;
   segmentlen_spinbox->setSuffix(" sec");

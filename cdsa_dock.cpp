@@ -108,14 +108,13 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
   grid_layout->addWidget(color_indic_label, 1, 2);
 
   cdsa_dock = new QDockWidget(str, mainwindow);
-  cdsa_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+  cdsa_dock->setFeatures(QDockWidget::DockWidgetClosable);
   cdsa_dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
   cdsa_dock->setAttribute(Qt::WA_DeleteOnClose);
   cdsa_dock->setContextMenuPolicy(Qt::CustomContextMenu);
   cdsa_dock->setWidget(frame);
 
   mainwindow->addDockWidget(Qt::BottomDockWidgetArea, cdsa_dock, Qt::Horizontal);
-
   QObject::connect(cdsa_dock,  SIGNAL(destroyed(QObject *)),               this, SLOT(cdsa_dock_destroyed(QObject *)));
   QObject::connect(cdsa_dock,  SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextmenu_requested(QPoint)));
   QObject::connect(mainwindow, SIGNAL(file_position_changed(long long)),   this, SLOT(file_pos_changed(long long)));

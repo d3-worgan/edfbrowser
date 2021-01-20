@@ -3729,6 +3729,13 @@ void UI_Mainwindow::load_montage()
 {
     if(!files_open)  return;
     UI_LoadMontagewindow load_mtg(this);
+    std::cerr << "New hover\n";
+    if (ui_logger != 0) {
+        if (log_ui) {
+            ui_logger->write(UiLogger::LogEvents::MONTAGE_CHANGED);
+        }
+    }
+
 }
 
 
@@ -4245,9 +4252,9 @@ void UI_Mainwindow::moveEvent(QMoveEvent *event) {
 
 // Track the window being resized
 void UI_Mainwindow::resizeEvent(QResizeEvent *event){
-    if (ui_logger != 0)
-        if (log_ui)
-            ui_logger->write(UiLogger::LogEvents::WINDOW_RESIZED);
+//    if (ui_logger != 0)
+//        if (log_ui)
+//            ui_logger->write(UiLogger::LogEvents::WINDOW_RESIZED);
 }
 
 
