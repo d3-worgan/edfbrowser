@@ -386,6 +386,7 @@ public:
 
     void menu_opened();
     void menu_closed();
+    void search_menu();
 
 #ifdef Q_OS_WIN32
     QString specialFolder(int);

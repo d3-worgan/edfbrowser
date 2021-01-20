@@ -87,6 +87,8 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
   filterdialog->setWindowTitle("Add a filter");
   filterdialog->setModal(true);
   filterdialog->setAttribute(Qt::WA_DeleteOnClose, true);
+
+  // Needs to stay on top to avoid main window on top for TEETACSI
   filterdialog->setWindowFlags(Qt::WindowStaysOnTopHint);
 
   typeboxlabel = new QLabel;

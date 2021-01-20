@@ -41,21 +41,14 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
     h_scaling = mainwindow->h_scaling;
 
     special_pen = new QPen(Qt::SolidPattern, 0, Qt::DotLine, Qt::SquareCap, Qt::BevelJoin);
-
     annot_marker_pen = new QPen(Qt::SolidPattern, 0, Qt::DashLine, Qt::SquareCap, Qt::BevelJoin);
-
     signal_pen = new QPen(Qt::SolidPattern, 2, Qt::SolidLine, Qt::SquareCap, Qt::BevelJoin);
-
     ruler_pen = new QPen(Qt::SolidPattern, 0, Qt::SolidLine, Qt::SquareCap, Qt::BevelJoin);
-
     active_markers = (struct active_markersblock *)calloc(1, sizeof(struct active_markersblock));
-
     annot_marker_moving = 0;
-
     use_move_events = 0;
     panning_moving = 0;
-    for(i=0; i<MAXFILES; i++)
-    {
+    for (i = 0; i < MAXFILES; i++) {
         pan_mov_start_viewtime[i] = 0LL;
     }
     sidemenu_active = 0;
@@ -4073,6 +4066,8 @@ void ViewCurve::cdsa_button()
     if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].sf_int < 30)
     {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Samplefrequency must be at least 30Hz and must be an integer value.");
+        // Needs to stay on top to avoid main window on top for TEETACSI
+        messagewindow.setWindowFlags(Qt::WindowStaysOnTopHint);
         messagewindow.exec();
         return;
     }
@@ -4080,6 +4075,8 @@ void ViewCurve::cdsa_button()
     if(mainwindow->signalcomp[signal_nr]->edfhdr->recording_len_sec < 30)
     {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Recording length must be at least 30 seconds.");
+        // Needs to stay on top to avoid main window on top for TEETACSI
+        messagewindow.setWindowFlags(Qt::WindowStaysOnTopHint);
         messagewindow.exec();
         return;
     }
@@ -4100,22 +4097,24 @@ void ViewCurve::Z_scoringButton()
 {
     int i, j;
 
-    if(signal_nr >= mainwindow->signalcomps)
-    {
+    if (signal_nr >= mainwindow->signalcomps) {
         return;
     }
 
-    if(mainwindow->signalcomp[signal_nr]->ecg_filter != NULL)
-    {
+    if (mainwindow->signalcomp[signal_nr]->ecg_filter != NULL) {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Heartrate detection is active for this signal!");
-        messagewindow.exec();
 
+        // Needs to stay on top to avoid main window on top for TEETACSI
+        messagewindow.setWindowFlags(Qt::WindowStaysOnTopHint);
+        messagewindow.exec();
         return;
     }
 
     if(mainwindow->signalcomp[signal_nr]->zratio_filter != NULL)
     {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Z-ratio is already active for this signal!");
+        // Needs to stay on top to avoid main window on top for TEETACSI
+        messagewindow.setWindowFlags(Qt::WindowStaysOnTopHint);
         messagewindow.exec();
 
         return;
@@ -4124,17 +4123,16 @@ void ViewCurve::Z_scoringButton()
     if(mainwindow->annot_editor_active)
     {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Close the annotation editor and try again.");
+        // Needs to stay on top to avoid main window on top for TEETACSI
+        messagewindow.setWindowFlags(Qt::WindowStaysOnTopHint);
         messagewindow.exec();
 
         return;
     }
 
-    for(i=0; i<MAXZSCOREDIALOGS; i++)
-    {
-        if(mainwindow->zscoredialog[i] == NULL)
-        {
+    for (i = 0; i < MAXZSCOREDIALOGS; i++) {
+        if(mainwindow->zscoredialog[i] == NULL) {
             mainwindow->zscoredialog[i] = new UI_ZScoreWindow(mainwindow, mainwindow->zscoredialog, i, signal_nr);
-
             break;
         }
     }
@@ -4758,8 +4756,10 @@ void ViewCurve::next_crosshair_triggered()
 void ViewCurve::resizeEvent(QResizeEvent *rs_event)
 {
     drawCurve_stage_1();
-
     QWidget::resizeEvent(rs_event);
+    if (mainwindow->ui_logger != 0)
+        if (mainwindow->log_ui)
+            mainwindow->ui_logger->write(UiLogger::LogEvents::GRAPH_RESIZED);
 }
 
 

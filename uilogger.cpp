@@ -4,21 +4,22 @@
 #include "mainwindow.h"
 #include <QString>
 #include <iostream>
+#include <QTimer>
 
 
-UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path, QPlainTextEdit *editor) : QObject(parent) {
-
-    this->writing_log = false;
+UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path) : QObject(parent) {
 
     this->main_window = parent;
-    this->m_editor = editor;
+
+    // Set the output path for the recorded UI tracking data.
     this->destination_directory_path = QString("%1\\uilog").arg(destination_path);
-    //this->destination_directory_path = destination_path;
     this->desination_directory.setPath(this->destination_directory_path);
     if (!this->desination_directory.exists()) {
         this->desination_directory.mkdir(this->destination_directory_path);
     }
     else {
+        // Idea is to create a different directory each time rather than overwriting the existing data.
+        // But this is handled in OpenSCORE now where we create a timestamped folder each time EDFBrowser is opened
         int pos = this->destination_directory_path.length()-1;
         QChar *data = this->destination_directory_path.data();
         int idx = data[pos].digitValue();
@@ -27,10 +28,10 @@ UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path, QPlainTextEd
         this->desination_directory.mkdir(this->destination_directory_path);
     }
 
+    // Setup the output text file to write the log information to
     this->log_id = 0;
     this->log_file_name = "ui_log.txt";
     this->log_full_path = QString("%1\\ui_log.txt").arg(this->destination_directory_path);
-    QMessageBox msgBox;
     if (!destination_path.isEmpty()) {
         this->log_file = new QFile(this->log_full_path);
         if (!this->log_file->open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -40,6 +41,7 @@ UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path, QPlainTextEd
         }
     }
 
+    // Setup a directory for the logged montage files. Overwrite if one already exists.
     this->montage_dir_path = this->destination_directory_path + "\\montages\\";
     this->montage_dir.setPath(montage_dir_path);
     if (!this->montage_dir.exists()) {
@@ -52,6 +54,7 @@ UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path, QPlainTextEd
         }
     }
 
+    // Setup a directory to save the screenshots to. Overwrite if one exists already
     save_screenshots = true;
     screenshot_directory_location = this->destination_directory_path + "\\screenshots\\";
     this->screenshot_directory.setPath(screenshot_directory_location);
@@ -66,6 +69,23 @@ UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path, QPlainTextEd
         }
     }
 
+    this->current_edf_path = QCoreApplication::arguments().at(1);
+
+    // Need to add double backslash so we can decode into json strings in reconstruction scripts
+    int l = this->current_edf_path.length();
+    for (int i = 0; i < l; i++) {
+        std::cerr << i << "\n";
+        if (this->current_edf_path.at(i) == "\\") {
+            std::cerr << this->current_edf_path.toStdString() << "\n";
+            this->current_edf_path.insert(i, "\\");
+            i++;
+        }
+    }
+
+    std::cerr << this->current_edf_path.toStdString() << "\n";
+
+    timer = new QTimer(this);
+
     std::cerr << "Constructed logger\n";
 
 }
@@ -73,19 +93,25 @@ UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path, QPlainTextEd
 /**
  * @brief UiLogger::write
  * @param log_event
+ * @details Log entries are added at points throughout the main code by calling this 'write' function.
+ *              Call with a "LogEvent" enum to write a specific log event. Each log is recorded in
+ *              JSON format for easier manipulation
  */
 void UiLogger::write(LogEvents log_event) {
 
     this->writing_log = true;
-    this->current_edf_path = QCoreApplication::arguments().at(1);
 
-
+    // All log entries start with a log id, timestamp and an event type.
     QString text = QString("{\"id\": \"%1\", ").arg(this->log_id);
     text += QString("\"timestamp\": \"%1\", ").arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss:zzz"));
     text += QString("\"event\": ");
 
+    // Each log entry then adds data if required e.g. the corresponding montage file, coordinates etc.
     if (log_event == LogEvents::FILE_OPENED) {
         this->save_montage();
+
+        // Give up here, we want to put a double backslash but it wont have it >:@
+        std::cerr << "File opened " << this->current_edf_path.toStdString() << "\n";
         text += QString("\"FILE_OPENED\", \"data\": {\"time\": \"%1\", \"time_scale\": \"%2\", \"graph_dimensions\": %3, \"graph_box\": %4, \"montage_file\": \"%5.mtg\", \"edf_path\": \"%6\"}").arg(main_window->viewtime_string, main_window->pagetime_string, get_graph_dimensions(), get_graph_coords(), QString::number(this->log_id), this->current_edf_path);
     }
     else if (log_event == LogEvents::FILE_CLOSED) {
@@ -128,8 +154,14 @@ void UiLogger::write(LogEvents log_event) {
     else if (log_event == LogEvents::WINDOW_RESIZED) {
         text += QString("\"WINDOW_RESIZED\", \"data\": {\"graph_dimensions\": %1, \"graph_box\": %2}").arg(get_graph_dimensions(), get_graph_coords());
     }
+    else if (log_event == LogEvents::GRAPH_RESIZED) {
+        text += QString("\"GRAPH_RESIZED\", \"data\": {\"graph_dimensions\": %1, \"graph_box\": %2}").arg(get_graph_dimensions(), get_graph_coords());
+    }
     else if (log_event == LogEvents::WINDOW_MINMISED) {
         text += QString("\"WINDOW_MINIMISED\"");
+    }
+    else if (log_event == LogEvents::WINDOW_OPENED) {
+        text += QString("\"WINDOW_OPENED\"");
     }
     else if (log_event == LogEvents::WINDOW_MAXIMISED) {
         text += QString("\"WINDOW_MAXIMISED\"");
@@ -149,16 +181,26 @@ void UiLogger::write(LogEvents log_event) {
     else if (log_event == LogEvents::MENU_CLOSED) {
         text += QString("\"MENU_CLOSED\"");
     }
+    else if (log_event == LogEvents::MENU_SEARCH) {
+        text += QString("\"MENU_SEARCH\"");
+    }
     text = text + " }\n";
 
     QTextStream out(this->log_file);
     out.setCodec("UTF-8");
 
     if (this->log_file != 0) {
+        std::cerr << "Writing to file\n";
         out << text;
     }
+    else {
+        std::cerr << "Not writing to file \n";
+    }
 
+    // Save a screenshot with each log to visualise and validate results later.
+    // Need to delay the screenshot as we need to wait for the UI to update first
     if (this->save_screenshots) {
+        //timer->singleShot(1, this, &UiLogger::save_screenshot);
         this->save_screenshot();
     }
 
@@ -167,13 +209,15 @@ void UiLogger::write(LogEvents log_event) {
 }
 
 void UiLogger::save_screenshot() {
+    // Screenshots are saved such that they can be later identified by the corresponding log id
     QPixmap desk = qApp->screens().at(0)->grabWindow(QDesktopWidget().winId());
-    //unsigned int shot_log = this->log_id;
     QString screenshot_path = QString("%1%2.png").arg(this->screenshot_directory_location, QString::number(this->log_id));
     desk.save(screenshot_path);
 }
 
 QString UiLogger::get_graph_coords() {
+
+    // Get the bounding box screen coordinates of the current position of the graph
 
     ViewCurve *maincurve = main_window->maincurve;
 
@@ -200,6 +244,8 @@ QString UiLogger::get_graph_coords() {
 
 QString UiLogger::get_graph_dimensions() {
 
+    // Gets the width and height of the graph
+
     if (main_window->maincurve != 0) {
         ViewCurve *maincurve = main_window->maincurve;
 
@@ -213,6 +259,8 @@ QString UiLogger::get_graph_dimensions() {
 }
 
 QString UiLogger::calculate_baselines() {
+    // Dont really need this as can do this in the reprojection scripts and use the information
+    // in the montage files to reproduce the channel baselines
     QString channel_y_positions = "[";
     int baseline;
     for (int i = 0; i < main_window->signalcomps; i++) {
@@ -227,8 +275,10 @@ QString UiLogger::calculate_baselines() {
 
 int UiLogger::save_montage() {
 
+    // Copied from the main source code to write the current state to a montage file
     int i, j, k, n;
 
+    // Setup a new montage file which corresponds to the log entry
     QString montage_number = QString::number(this->log_id);
     QString montage_filename = montage_number + ".mtg";
     QString montage_file_path = this->montage_dir_path + montage_filename;
@@ -383,9 +433,11 @@ int UiLogger::save_montage() {
 
     text += QString("</" PROGRAM_NAME "_montage>\n");
 
+    // Write to the montage file
     out << text;
     montage_file->close();
 
+    // tidy up
     if (main_window->files_open == 1) {
         strlcpy(&main_window->recent_file_mtg_path[0][0], montage_file_path.toStdString().c_str(), MAX_PATH_LENGTH);
     }

@@ -47,6 +47,7 @@ UI_hypnogram_window::UI_hypnogram_window(QWidget *w_parent, struct edfhdrblock *
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
+
   stage_label = new QLabel;
   stage_label->setText("Stage");
   stage_label->setToolTip("The labels as how they will be displayed in the hypnogram");

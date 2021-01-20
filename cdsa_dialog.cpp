@@ -35,37 +35,32 @@
 UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, struct signalcompblock *signal_comp, int numb)
 {
   char str[1024]={""};
-
   mainwindow = (UI_Mainwindow *)w_parent;
-
   signalcomp = signal_comp;
-
   cdsa_instance_nr = numb;
-
   sf = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_int;
-  if(!sf)
-  {
+  if (!sf) {
     sf = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f + 0.5;
   }
 
   snprintf(str, 1024, "Color Density Spectral Array   %s", signalcomp->signallabel);
-
   myobjectDialog = new QDialog(w_parent);
-
   myobjectDialog->setMinimumSize(350 * mainwindow->w_scaling, 400 * mainwindow->h_scaling);
   myobjectDialog->setWindowTitle(str);
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
+  // Need to avoid main window always on top for TEETACSI
+  myobjectDialog->setWindowFlags(Qt::WindowStaysOnTopHint);
+
   segmentlen_spinbox = new QSpinBox;
   segmentlen_spinbox->setSuffix(" sec");
   segmentlen_spinbox->setMinimum(5);
-  if(signalcomp->edfhdr->recording_len_sec < 300)
-  {
+
+  if (signalcomp->edfhdr->recording_len_sec < 300) {
     segmentlen_spinbox->setMaximum(signalcomp->edfhdr->recording_len_sec);
   }
-  else
-  {
+  else {
     segmentlen_spinbox->setMaximum(300);
   }
   segmentlen_spinbox->setValue(mainwindow->cdsa_segmentlen);

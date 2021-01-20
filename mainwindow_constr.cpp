@@ -33,9 +33,14 @@
 UI_Mainwindow::UI_Mainwindow()
 {
     user_moved_window = false;
+
+    // We want to listen for some events which we need to log for TEETACSI
     this->installEventFilter(this);
-    int i, j, k;
+
+    // To avoid issues with knowing if EDFBrowser is obscured we want it to always be on top.
     this->setWindowFlags(Qt::WindowStaysOnTopHint);
+
+    int i, j, k;
     myfont = new QFont;
     monofont = new QFont;
 #if QT_VERSION >= 0x050200
@@ -58,9 +63,7 @@ UI_Mainwindow::UI_Mainwindow()
 #endif
 
     splash_pixmap = NULL;
-
     splash = NULL;
-
     startup_timer = NULL;
 
     setMinimumSize(640, 480);
@@ -68,7 +71,6 @@ UI_Mainwindow::UI_Mainwindow()
     setWindowIcon(QIcon(":/images/edf.png"));
 
     setlocale(LC_NUMERIC, "C");
-
     uid_seq = 1LL;
 
     x_pixelsizefactor = 0.0294382;
@@ -119,39 +121,32 @@ UI_Mainwindow::UI_Mainwindow()
     recent_colordir[0] = 0;
     cfg_app_version[0] = 0;
 
-    for(i=0; i<MAXSPECTRUMDIALOGS; i++)
-    {
+    for (i = 0; i < MAXSPECTRUMDIALOGS; i++) {
         spectrumdialog[i] = NULL;
     }
 
-    for(i=0; i<MAXCDSADOCKS; i++)
-    {
+    for (i = 0; i < MAXCDSADOCKS; i++) {
         cdsa_dock[i] = NULL;
     }
 
-    for(i=0; i<MAXHYPNOGRAMDOCKS; i++)
-    {
+    for (i = 0; i < MAXHYPNOGRAMDOCKS; i++) {
         hypnogram_dock[i] = NULL;
     }
 
-    for(i=0; i<MAXHRVDOCKS; i++)
-    {
+    for (i = 0; i < MAXHRVDOCKS; i++) {
         hrv_dock[i] = NULL;
     }
 
-    for(i=0; i<MAXAVERAGECURVEDIALOGS; i++)
-    {
+    for (i = 0; i < MAXAVERAGECURVEDIALOGS; i++) {
         averagecurvedialog[i] = NULL;
     }
 
-    for(i=0; i<MAXZSCOREDIALOGS; i++)
-    {
+    for (i = 0; i < MAXZSCOREDIALOGS; i++) {
         zscoredialog[i] = NULL;
     }
 
     spectrum_colorbar = (struct spectrum_markersblock *)calloc(1, sizeof(struct spectrum_markersblock));
-    for(i=0; i < MAXSPECTRUMMARKERS; i++)
-    {
+    for (i = 0; i < MAXSPECTRUMMARKERS; i++) {
         spectrum_colorbar->freq[i] = 1.0;
         spectrum_colorbar->color[i] = Qt::white;
     }
@@ -318,10 +313,8 @@ UI_Mainwindow::UI_Mainwindow()
 
     maincurve->setAcceptDrops(true);
 
-    if(auto_dpi)
-    {
+    if (auto_dpi) {
         y_pixelsizefactor = 2.54 / dpiy;
-
         x_pixelsizefactor = 2.54 / dpix;
     }
 
@@ -390,27 +383,28 @@ UI_Mainwindow::UI_Mainwindow()
     connect(video_act, SIGNAL(triggered()), this, SLOT(start_stop_video()));
     video_act->setShortcut(QKeySequence("Ctrl+Shift+V"));
 
+    // Disable unessescary features for TEETACSI
     filemenu = new QMenu(this);
     filemenu->setTitle("&File");
     //filemenu->addAction("Open",         this, SLOT(open_new_file()), QKeySequence::Open);
     filemenu->addSeparator();
-    filemenu->addAction("Open stream",  this, SLOT(open_stream()), QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_O));
-    filemenu->addSeparator();
-    filemenu->addAction(video_act);
-    filemenu->addSeparator();
-    filemenu->addAction("Playback file", this, SLOT(playback_file()), QKeySequence("Ctrl+Space"));
-    filemenu->addSeparator();
-    filemenu->addAction(save_act);
+    //filemenu->addAction("Open stream",  this, SLOT(open_stream()), QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_O));
+    //filemenu->addSeparator();
+   // filemenu->addAction(video_act);
+    //filemenu->addSeparator();
+    //filemenu->addAction("Playback file", this, SLOT(playback_file()), QKeySequence("Ctrl+Space"));
+    //filemenu->addSeparator();
+    //filemenu->addAction(save_act);
     filemenu->addMenu(recent_filesmenu);
-    filemenu->addMenu(printmenu);
-    filemenu->addAction("Info",         this, SLOT(show_file_info()));
+    //filemenu->addMenu(printmenu);
+    //filemenu->addAction("Info",         this, SLOT(show_file_info()));
     filemenu->addMenu(close_filemenu);
     filemenu->addAction("Close all",    this, SLOT(close_all_files()), QKeySequence::Close);
     filemenu->addAction("Exit",         this, SLOT(exit_program()), QKeySequence::Quit);
-    //menubar->addMenu(filemenu);
-    std::cerr << "Connecting triggered\n";
-    //QObject::connect(filemenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
-    //QObject::connect(filemenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
+    menubar->addMenu(filemenu);
+    QObject::connect(filemenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
+    QObject::connect(filemenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
+    QObject::connect(filemenu, &QMenu::hovered, this, &UI_Mainwindow::search_menu);
 
 
     signalmenu = new QMenu(this);
@@ -420,95 +414,69 @@ UI_Mainwindow::UI_Mainwindow()
     signalmenu->addAction("Organize",   this, SLOT(organize_signals()));
     signalmenu->addAction("Remove all", this, SLOT(remove_all_signals()));
     menubar->addMenu(signalmenu);
+
+    // Listen for menu interaction so we can track the state of the UI
     QObject::connect(signalmenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
     QObject::connect(signalmenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
-
+    QObject::connect(signalmenu, &QMenu::hovered, this, &UI_Mainwindow::search_menu);
 
     displaymenu = new QMenu(this);
     displaymenu->setTitle("&Timescale");
-
     displaymenu->addAction("3 cm/sec",  this, SLOT(page_3cmsec()));
     displaymenu->addAction("25 mm/sec", this, SLOT(page_25mmsec()));
     displaymenu->addAction("50 mm/sec", this, SLOT(page_50mmsec()));
-
     displaymenu->addSeparator();
-
     page_10u = new QAction("10 uSec/page", this);
     displaymenu->addAction(page_10u);
-
     page_20u = new QAction("20 uSec/page", this);
     displaymenu->addAction(page_20u);
-
     page_50u = new QAction("50 uSec/page", this);
     displaymenu->addAction(page_50u);
-
     page_100u = new QAction("100 uSec/page", this);
     displaymenu->addAction(page_100u);
-
     page_200u = new QAction("200 uSec/page", this);
     displaymenu->addAction(page_200u);
-
     page_500u = new QAction("500 uSec/page", this);
     displaymenu->addAction(page_500u);
-
     page_1m = new QAction("1 mSec/page", this);
     displaymenu->addAction(page_1m);
-
     page_2m = new QAction("2 mSec/page", this);
     displaymenu->addAction(page_2m);
-
     page_5m = new QAction("5 mSec/page", this);
     displaymenu->addAction(page_5m);
-
     page_10m = new QAction("10 mSec/page", this);
     displaymenu->addAction(page_10m);
-
     page_20m = new QAction("20 mSec/page", this);
     displaymenu->addAction(page_20m);
-
     page_50m = new QAction("50 mSec/page", this);
     displaymenu->addAction(page_50m);
-
     page_100m = new QAction("100 mSec/page", this);
     displaymenu->addAction(page_100m);
-
     page_200m = new QAction("200 mSec/page", this);
     displaymenu->addAction(page_200m);
-
     page_500m = new QAction("500 mSec/page", this);
     displaymenu->addAction(page_500m);
-
     page_1 = new QAction("1 Sec/page", this);
     displaymenu->addAction(page_1);
-
     page_2 = new QAction("2 Sec/page", this);
     displaymenu->addAction(page_2);
-
     page_5 = new QAction("5 Sec/page", this);
     displaymenu->addAction(page_5);
-
     page_10 = new QAction("10 Sec/page", this);
     displaymenu->addAction(page_10);
-
     page_15 = new QAction("15 Sec/page", this);
     displaymenu->addAction(page_15);
-
     page_20 = new QAction("20 Sec/page", this);
     displaymenu->addAction(page_20);
-
     page_30 = new QAction("30 Sec/page", this);
     page_30->setChecked(true);
     displaymenu->addAction(page_30);
-
     page_60 = new QAction("60 Sec/page", this);
     displaymenu->addAction(page_60);
-
     page_300 = new QAction("5 min/page", this);
     displaymenu->addAction(page_300);
-
     page_1200 = new QAction("20 min/page", this);
     displaymenu->addAction(page_1200);
-
     page_3600 = new QAction("1 hour/page", this);
     displaymenu->addAction(page_3600);
 
@@ -537,9 +505,11 @@ UI_Mainwindow::UI_Mainwindow()
     displaymenu->addAction(page_whole_rec);
 
     menubar->addMenu(displaymenu);
+
+    // Listen for menun interaction so we can record UI changes
     QObject::connect(displaymenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
     QObject::connect(displaymenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
-
+    QObject::connect(displaymenu, &QMenu::hovered, this, &UI_Mainwindow::search_menu);
 
     DisplayGroup = new QActionGroup(this);
     DisplayGroup->addAction(page_10u);
@@ -587,85 +557,58 @@ UI_Mainwindow::UI_Mainwindow()
 
     amp_50000 = new QAction("50000", this);
     amplitudemenu->addAction(amp_50000);
-
     amp_20000 = new QAction("20000", this);
     amplitudemenu->addAction(amp_20000);
-
     amp_10000 = new QAction("10000", this);
     amplitudemenu->addAction(amp_10000);
-
     amp_5000 = new QAction("5000", this);
     amplitudemenu->addAction(amp_5000);
-
     amp_2000 = new QAction("2000", this);
     amplitudemenu->addAction(amp_2000);
-
     amp_1000 = new QAction("1000", this);
     amplitudemenu->addAction(amp_1000);
-
     amp_500 = new QAction("500", this);
     amplitudemenu->addAction(amp_500);
-
     amp_200 = new QAction("200", this);
     amplitudemenu->addAction(amp_200);
-
     amp_100 = new QAction("100", this);
     amplitudemenu->addAction(amp_100);
-
     amp_50 = new QAction("50", this);
     amplitudemenu->addAction(amp_50);
-
     amp_20 = new QAction("20", this);
     amplitudemenu->addAction(amp_20);
-
     amp_10 = new QAction("10", this);
     amplitudemenu->addAction(amp_10);
-
     amp_5 = new QAction("5", this);
     amplitudemenu->addAction(amp_5);
-
     amp_2 = new QAction("2", this);
     amplitudemenu->addAction(amp_2);
-
     amp_1 = new QAction("1", this);
     amplitudemenu->addAction(amp_1);
-
     amp_05 = new QAction("0.5", this);
     amplitudemenu->addAction(amp_05);
-
     amp_02 = new QAction("0.2", this);
     amplitudemenu->addAction(amp_02);
-
     amp_01 = new QAction("0.1", this);
     amplitudemenu->addAction(amp_01);
-
     amp_005 = new QAction("0.05", this);
     amplitudemenu->addAction(amp_005);
-
     amp_002 = new QAction("0.02", this);
     amplitudemenu->addAction(amp_002);
-
     amp_001 = new QAction("0.01", this);
     amplitudemenu->addAction(amp_001);
-
     amp_0005 = new QAction("0.005", this);
     amplitudemenu->addAction(amp_0005);
-
     amp_0002 = new QAction("0.002", this);
     amplitudemenu->addAction(amp_0002);
-
     amp_0001 = new QAction("0.001", this);
     amplitudemenu->addAction(amp_0001);
-
     amp_00005 = new QAction("0.0005", this);
     amplitudemenu->addAction(amp_00005);
-
     amp_00002 = new QAction("0.0002", this);
     amplitudemenu->addAction(amp_00002);
-
     amp_00001 = new QAction("0.0001", this);
     amplitudemenu->addAction(amp_00001);
-
     amplitudemenu->addSeparator();
 
     amp_plus = new QAction("Amplitude x 2", this);
@@ -679,9 +622,11 @@ UI_Mainwindow::UI_Mainwindow()
     amplitudemenu->addAction(amp_minus);
 
     menubar->addMenu(amplitudemenu);
+
+    // Listen to menu interaction so we can track UI changes
     QObject::connect(amplitudemenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
     QObject::connect(amplitudemenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
-
+    QObject::connect(amplitudemenu, &QMenu::hovered, this, &UI_Mainwindow::search_menu);
 
     AmplitudeGroup = new QActionGroup(this);
     AmplitudeGroup->addAction(amp_00001);
@@ -728,9 +673,11 @@ UI_Mainwindow::UI_Mainwindow()
     filtermenu->addAction("Spike", this, SLOT(add_spike_filter()));
     filtermenu->addAction("Remove all spike filters", this, SLOT(remove_all_spike_filters()));
     menubar->addMenu(filtermenu);
+
+    // Listen to menu interaction so we can track UI changes
     QObject::connect(filtermenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
     QObject::connect(filtermenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
-
+    QObject::connect(filtermenu, &QMenu::hovered, this, &UI_Mainwindow::search_menu);
 
     //   math_func_menu = new QMenu(this);
     //   math_func_menu->setTitle("&Math");
@@ -783,14 +730,19 @@ UI_Mainwindow::UI_Mainwindow()
         montagemenu->addAction(load_predefined_mtg_act[i]);
     }
     menubar->addMenu(montagemenu);
+
+    // Listen for menu interaction so we can track UI changes
     QObject::connect(montagemenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
     QObject::connect(montagemenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
+    QObject::connect(montagemenu, &QMenu::hovered, this, &UI_Mainwindow::search_menu);
 
 
     //   patternmenu = new QMenu(this);
     //   patternmenu->setTitle("&Pattern");
     //   patternmenu->addAction("Search", this, SLOT(search_pattern()));
     //   menubar->addMenu(patternmenu);
+
+    // Disabled the tools menu as not needed for TEETACSI
 
 //    toolsmenu = new QMenu(this);
 //    toolsmenu->setTitle("T&ools");
@@ -834,9 +786,11 @@ UI_Mainwindow::UI_Mainwindow()
     settingsmenu->setTitle("S&ettings");
     settingsmenu->addAction("Options", this, SLOT(show_options_dialog()));
     menubar->addMenu(settingsmenu);
+
+    // Listen for menu interaction to track UI changes
+    QObject::connect(settingsmenu, &QMenu::hovered, this, &UI_Mainwindow::search_menu);
     QObject::connect(settingsmenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
     QObject::connect(settingsmenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
-
 
     no_timesync_act = new QAction("no timelock", this);
     no_timesync_act->setCheckable(true);
@@ -861,6 +815,7 @@ UI_Mainwindow::UI_Mainwindow()
     sel_viewtime_act_group = new QActionGroup(this);
     connect(sel_viewtime_act_group, SIGNAL(triggered(QAction *)), this, SLOT(set_timesync_reference(QAction *)));
 
+    // Disabled this menu as it is not required for TEETACSI
     timemenu = new QMenu(this);
     timemenu->setTitle("T&imesync");
     timemenu->addAction("Go to start of file", this, SLOT(jump_to_start()), QKeySequence::MoveToStartOfDocument);
@@ -887,9 +842,13 @@ UI_Mainwindow::UI_Mainwindow()
     windowmenu->addAction("Color Density Spectral Array", this, SLOT(show_cdsa_dock()));
     windowmenu->addAction("Hypnogram", this, SLOT(show_hypnogram()));
     menubar->addMenu(windowmenu);
+
+    // Listen for menu interaction to track UI changes
     QObject::connect(windowmenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
     QObject::connect(windowmenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
+    QObject::connect(windowmenu, &QMenu::hovered, this, &UI_Mainwindow::search_menu);
 
+    // Disabled the help menu to avoid unnessecary potential bugs in tracking
     helpmenu = new QMenu(this);
     helpmenu->setTitle("&Help");
 #ifdef Q_OS_LINUX
@@ -901,10 +860,10 @@ UI_Mainwindow::UI_Mainwindow()
     helpmenu->addAction("Keyboard shortcuts", this, SLOT(show_kb_shortcuts()));
     helpmenu->addAction("About EDFbrowser", this, SLOT(show_about_dialog()));
     helpmenu->addAction("Show splashscreen", this, SLOT(show_splashscreen()));
-    menubar->addMenu(helpmenu);
-    QObject::connect(helpmenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
-    QObject::connect(helpmenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
-
+    //menubar->addMenu(helpmenu);
+//    QObject::connect(helpmenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
+//    QObject::connect(helpmenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
+    //QObject::connect(helpmenu, &QMenu::hovered, this, &UI_Mainwindow::search_menu);
 
     navtoolbar = new QToolBar("Navigation Bar");
     navtoolbar->setFloatable(false);
@@ -917,10 +876,12 @@ UI_Mainwindow::UI_Mainwindow()
     connect(former_page_Act, SIGNAL(triggered()), this, SLOT(former_page()));
     navtoolbar->addAction(former_page_Act);
 
+    // Disbaled the playback feature to avoid unnessecary problems with UI tracking
     stop_playback_realtime_Act = new QAction(QIcon(":/images/media-playback-stop-symbolic.symbolic.png"), "Stop", this);
     connect(stop_playback_realtime_Act, SIGNAL(triggered()), this, SLOT(stop_playback()));
     //navtoolbar->addAction(stop_playback_realtime_Act);
 
+    // Disbaled the playback feature to avoid unnessecary problems with UI tracking
     playback_file_Act = new QAction(QIcon(":/images/media-playback-start-symbolic.symbolic.png"), "Playback", this);
     connect(playback_file_Act, SIGNAL(triggered()), this, SLOT(playback_file()));
     //navtoolbar->addAction(playback_file_Act);
@@ -1016,31 +977,24 @@ UI_Mainwindow::UI_Mainwindow()
 
     viewbuf = NULL;
 
-    for(i=0; i<MAXFILES; i++)
-    {
+    for (i = 0; i < MAXFILES; i++) {
         annotations_dock[i] = NULL;
     }
-
     annotationlist_backup = NULL;
 
     zoomhistory = (struct zoomhistoryblock *)calloc(1, sizeof(struct zoomhistoryblock));
-
     zoomhistory->history_size_tail = 0;
     zoomhistory->history_size_front = 0;
-    for(i=0; i<MAXZOOMHISTORY; i++)
-    {
+    for (i = 0; i < MAXZOOMHISTORY; i++) {
         zoomhistory->pntr = 0;
         zoomhistory->pagetime[i] = 10 * TIME_DIMENSION;
-        for(j=0; j<MAXFILES; j++)
-        {
+        for (j = 0; j < MAXFILES; j++) {
             zoomhistory->viewtime[i][j] = 0;
         }
-        for(j=0; j<MAXSIGNALS; j++)
-        {
+        for (j = 0; j < MAXSIGNALS; j++) {
             zoomhistory->voltpercm[i][j] = 70.0;
             zoomhistory->screen_offset[i][j] = 0.0;
-            for(k=0; k<MAXSIGNALS; k++)
-            {
+            for (k = 0; k < MAXSIGNALS; k++) {
                 zoomhistory->sensitivity[i][j][k] = 0.0475;
             }
         }
@@ -1089,7 +1043,7 @@ UI_Mainwindow::UI_Mainwindow()
 
     oldwindowheight = height();
 
-    // Designing a splash screen
+    // Designing a splash screen - The splash screen has been disabled for TEETACSI
     splash_pixmap = new QPixmap(":/images/splash.png");
     QPainter p(splash_pixmap);
     QFont sansFont("Noto Sans", 10);
@@ -1106,8 +1060,6 @@ UI_Mainwindow::UI_Mainwindow()
 #else
     splash = new QSplashScreen(this, *splash_pixmap, Qt::WindowStaysOnTopHint);
 #endif
-
-    // But the splash is never shown?
 
     // Warn user about bad Qt versions
     if ((QT_VERSION < MINIMUM_QT4_VERSION) || ((QT_VERSION >= 0x050000) && (QT_VERSION < MINIMUM_QT5_VERSION))) {
@@ -1142,20 +1094,17 @@ UI_Mainwindow::UI_Mainwindow()
     }
 
     // Warn user about bad edflib versions
-    if (edflib_version() != 118)
-    {
+    if (edflib_version() != 118) {
         cmdlineargument = 0;
-
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "There's a version problem with EDFlib.\n"
                                                                   "Can not continue.");
         messagewindow.exec();
-
         menubar->setEnabled(false);
         navtoolbar->setEnabled(false);
-
         return;
     }
 
+    // Disabled the update checker as we do not want it to disrupt TEETACSI
     // Update qt or edflib??
 //    update_checker = NULL;
 //    if (check_for_updates) {
@@ -1174,7 +1123,7 @@ UI_Mainwindow::UI_Mainwindow()
         strlcpy(path, edf_path.toStdString().c_str(), MAX_PATH_LENGTH);
         cmdlineargument++;
 
-        // Second argument should be the log path
+        // Second argument should be the log output path
         if (QCoreApplication::arguments().size() > 2) {
             QString log_path = QCoreApplication::arguments().at(2).toLocal8Bit().data();
             std::cerr << "Log path: " << log_path.toStdString() << '\n';

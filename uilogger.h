@@ -7,11 +7,16 @@
 #include <QObject>
 #include "mainwindow.h"
 
-
+/**
+ * @brief The UiLogger class
+ *
+ * A class appended to the EDBrowser application for tracking the state of the UI for eye tracking experiements.
+ * Need to save enough information to know what signals the user is looking at and what times.
+ */
 class UiLogger: public QObject {
     Q_OBJECT
 public:
-    explicit UiLogger(UI_Mainwindow *main_window, QString destination_directory_path, QPlainTextEdit *editor = 0);
+    explicit UiLogger(UI_Mainwindow *main_window, QString destination_directory_path);
     UiLogger(QString destination_directory_path);
     ~UiLogger();
 
@@ -34,18 +39,22 @@ public:
         ZOOM_CHANGED,
         WINDOW_MOVED,
         WINDOW_RESIZED,
+        GRAPH_RESIZED,
         MODAL_OPENED,
         MODAL_CLOSED,
         WINDOW_MINMISED,
+        WINDOW_OPENED,
         WINDOW_MAXIMISED,
         WINDOW_FULL_SCREEN,
         MENU_OPENED,
-        MENU_CLOSED
+        MENU_CLOSED,
+        MENU_SEARCH
     };
 
 private:
     UI_Mainwindow *main_window;
     int log_id;
+    QTimer *timer;
 
     QDir desination_directory;
     QString destination_directory_path;
@@ -54,11 +63,9 @@ private:
     QFile *log_file;
     QPlainTextEdit *m_editor;
 
-
     QDir montage_dir;
     QString montage_dir_name;
     QString montage_dir_path;
-
 
     QDir screenshot_directory;
     QString screenshot_directory_location;

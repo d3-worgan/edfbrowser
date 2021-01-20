@@ -58,6 +58,8 @@ void UI_Mainwindow::closeEvent(QCloseEvent *cl_event) {
 
     if (log_ui)
         ui_logger->write(UiLogger::LogEvents::FILE_CLOSED);
+
+
     int i, button_nr=0;
 
     if (annotations_edited) {
@@ -69,30 +71,21 @@ void UI_Mainwindow::closeEvent(QCloseEvent *cl_event) {
         button_nr = messagewindow.exec();
     }
 
-    if(button_nr == QMessageBox::Cancel)
-    {
+    if (button_nr == QMessageBox::Cancel) {
         cl_event->ignore();
     }
-    else
-    {
+    else {
         exit_in_progress = 1;
-
-        for(i=0; i<MAXSPECTRUMDIALOGS; i++)
-        {
-            if(spectrumdialog[i] != NULL)
-            {
+        for (i = 0; i < MAXSPECTRUMDIALOGS; i++) {
+            if (spectrumdialog[i] != NULL) {
                 delete spectrumdialog[i];
-
                 spectrumdialog[i] = NULL;
             }
         }
 
-        for(i=0; i<MAXCDSADOCKS; i++)
-        {
-            if(cdsa_dock[i] != NULL)
-            {
+        for (i = 0; i < MAXCDSADOCKS; i++) {
+            if (cdsa_dock[i] != NULL) {
                 delete cdsa_dock[i];
-
                 cdsa_dock[i] = NULL;
             }
         }
@@ -118,33 +111,17 @@ void UI_Mainwindow::closeEvent(QCloseEvent *cl_event) {
         }
 
         annotations_edited = 0;
-
         close_all_files();
-
         write_settings();
-
         free(spectrum_colorbar);
         free(zoomhistory);
         free(import_annotations_var);
         free(export_annotations_var);
         free(video_player);
         free(annot_filter);
-
         cl_event->accept();
     }
 }
-
-
-// void UI_Mainwindow::search_pattern()
-// {
-//   if(!signalcomps)
-//   {
-//     return;
-//   }
-//
-//
-//
-// }
 
 
 void UI_Mainwindow::Escape_fun()
@@ -175,6 +152,7 @@ void UI_Mainwindow::Escape_fun()
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::open_stream()
 {
     if(files_open)
@@ -214,6 +192,7 @@ void UI_Mainwindow::open_stream()
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::live_stream_timer_func()
 {
     long long datarecords_old,
@@ -283,6 +262,7 @@ long long UI_Mainwindow::check_edf_file_datarecords(struct edfhdrblock *hdr)
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::save_file()
 {
     int len;
@@ -374,21 +354,18 @@ void UI_Mainwindow::save_file()
 }
 
 
+
 void UI_Mainwindow::slider_moved(int value)
 {
     int i;
+    long long new_viewtime, tmp;
 
-    long long new_viewtime,
-            tmp;
-
-    if(!signalcomps)  return;
+    if (!signalcomps)  return;
 
     new_viewtime = edfheaderlist[sel_viewtime]->long_data_record_duration * edfheaderlist[sel_viewtime]->datarecords;
-
     new_viewtime -= pagetime;
 
-    if(new_viewtime<0)
-    {
+    if (new_viewtime < 0) {
         new_viewtime = 0;
     }
     else
@@ -516,6 +493,7 @@ void UI_Mainwindow::slider_moved(int value)
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::set_timesync_reference(QAction *action)
 {
     int i;
@@ -536,6 +514,7 @@ void UI_Mainwindow::set_timesync_reference(QAction *action)
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::set_timesync(QAction *)
 {
     int i;
@@ -578,6 +557,7 @@ void UI_Mainwindow::set_timesync(QAction *)
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::sync_by_crosshairs()
 {
     if(files_open<2)  return;
@@ -611,102 +591,119 @@ void UI_Mainwindow::show_options_dialog()
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::nk2edf_converter()
 {
     UI_NK2EDFwindow nk2edf(this, recent_opendir);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::convert_ascii_to_edf()
 {
     UI_ASCII2EDFapp ascii2edf(this, recent_opendir, recent_savedir);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::convert_binary_to_edf()
 {
     UI_RAW2EDFapp bin2edf(this, &raw2edf_var, recent_opendir, recent_savedir);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::convert_fino_to_edf()
 {
     UI_FINO2EDFwindow fino2edf(this, recent_opendir, recent_savedir);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::convert_wave_to_edf()
 {
     UI_WAV2EDFwindow wav2edf(this, recent_opendir, recent_savedir);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::convert_fm_audio_to_edf()
 {
     UI_FMaudio2EDFwindow fma2edf(this, recent_opendir, recent_savedir);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::convert_mortara_to_edf()
 {
     UI_MortaraEDFwindow mortara2edf(this, recent_opendir, recent_savedir);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::convert_ishne_to_edf()
 {
     UI_IshneEDFwindow ishne2edf(this, recent_opendir, recent_savedir);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::convert_nexfin_to_edf()
 {
     UI_NEXFIN2EDFwindow nexfin2edf(this, recent_opendir, recent_savedir);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::convert_emsa_to_edf()
 {
     UI_EMSA2EDFwindow emsa2edf(this, recent_opendir, recent_savedir);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::convert_manscan_to_edf()
 {
     UI_MANSCAN2EDFwindow manscan2edf(this, recent_opendir, recent_savedir);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::convert_mit_to_edf()
 {
     UI_MIT2EDFwindow mit2edf(this, recent_opendir, recent_savedir);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::convert_biox_to_edf()
 {
     UI_BIOX2EDFwindow biox2edf(this, recent_opendir, recent_savedir);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::convert_scpecg_to_edf()
 {
     UI_SCPECG2EDFwindow scpecg2edf(this, recent_opendir, recent_savedir);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::edfd_converter()
 {
     UI_EDFDwindow edfplusd2edfplusc(this, recent_opendir, recent_savedir);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::bdf2edf_converter()
 {
     UI_BDF2EDFwindow bdf2edfconv(this);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::biosemi2bdfplus_converter()
 {
     UI_BIOSEMI2BDFPLUSwindow biosemi2bdfplusconv(this);
@@ -726,22 +723,26 @@ void UI_Mainwindow::reduce_signals()
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::edit_header()
 {
     UI_headerEditorWindow header_edit(this);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::unisens2edf_converter()
 {
     UI_UNISENS2EDFwindow unisens2edfconv(this, recent_opendir, recent_savedir);
 }
 
 
+// Not needed for TEETACSI?
 void UI_Mainwindow::BI98002edf_converter()
 {
     UI_BI98002EDFwindow BI98002edfconv(this, recent_opendir, recent_savedir);
 }
+
 
 
 void UI_Mainwindow::edit_predefined_montages()
@@ -933,6 +934,8 @@ void UI_Mainwindow::add_new_filter()
     if(!files_open)  return;
 
     UI_FilterDialog filterdialog(this);
+
+    // Log the filter changed when dialog is closed
     if (log_ui)
         ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
@@ -943,6 +946,8 @@ void UI_Mainwindow::add_plif_ecg_filter()
     if(!files_open)  return;
 
     UI_PLIF_ECG_filter_dialog plifecgfilterdialog(this);
+
+    // Log the filter changed when dialog is closed
     if (log_ui)
         ui_logger->write(UiLogger::LogEvents::FILTER_CHANGED);
 }
@@ -982,27 +987,22 @@ void UI_Mainwindow::zoomback()
 {
     int i, j;
 
-    if(!files_open)  return;
+    if (!files_open)  return;
 
-    if(!zoomhistory->history_size_tail)
-    {
+    if (!zoomhistory->history_size_tail) {
         return;
     }
     zoomhistory->history_size_front++;
     zoomhistory->history_size_tail--;
 
-    for(i=0; i<files_open; i++)
-    {
+    for (i = 0; i < files_open; i++) {
         zoomhistory->viewtime[zoomhistory->pntr][i] = edfheaderlist[i]->viewtime;
     }
     zoomhistory->pagetime[zoomhistory->pntr] = pagetime;
-    for(i=0; i<signalcomps; i++)
-    {
+    for (i = 0; i < signalcomps; i++) {
         zoomhistory->voltpercm[zoomhistory->pntr][i] = signalcomp[i]->voltpercm;
         zoomhistory->screen_offset[zoomhistory->pntr][i] = signalcomp[i]->screen_offset;
-
-        for(j=0; j<signalcomp[i]->num_of_signals; j++)
-        {
+        for (j = 0; j < signalcomp[i]->num_of_signals; j++) {
             zoomhistory->sensitivity[zoomhistory->pntr][i][j] = signalcomp[i]->sensitivity[j];
         }
     }
@@ -1011,19 +1011,15 @@ void UI_Mainwindow::zoomback()
     zoomhistory->pntr += MAXZOOMHISTORY;
     zoomhistory->pntr %= MAXZOOMHISTORY;
 
-    for(i=0; i<files_open; i++)
-    {
+    for (i = 0; i < files_open; i++) {
         edfheaderlist[i]->viewtime = zoomhistory->viewtime[zoomhistory->pntr][i];
     }
     pagetime = zoomhistory->pagetime[zoomhistory->pntr];
 
-    for(i=0; i<signalcomps; i++)
-    {
+    for (i = 0; i < signalcomps; i++) {
         signalcomp[i]->voltpercm = zoomhistory->voltpercm[zoomhistory->pntr][i];
         signalcomp[i]->screen_offset = zoomhistory->screen_offset[zoomhistory->pntr][i];
-
-        for(j=0; j<signalcomp[i]->num_of_signals; j++)
-        {
+        for (j = 0; j < signalcomp[i]->num_of_signals; j++) {
             signalcomp[i]->sensitivity[j] = zoomhistory->sensitivity[zoomhistory->pntr][i][j];
         }
     }
@@ -1038,35 +1034,27 @@ void UI_Mainwindow::forward()
 {
     int i, j;
 
-    if(!files_open)  return;
+    if (!files_open)  return;
 
-    if(!zoomhistory->history_size_front)
-    {
+    if (!zoomhistory->history_size_front) {
         return;
     }
+
     zoomhistory->history_size_front--;
     zoomhistory->history_size_tail++;
-
     zoomhistory->pntr++;
     zoomhistory->pntr %= MAXZOOMHISTORY;
 
     for (i = 0; i < files_open; i++) {
-        std::cerr << "view times " << edfheaderlist[i]->viewtime << " " << zoomhistory->viewtime[zoomhistory->pntr][i] << "\n";
         edfheaderlist[i]->viewtime = zoomhistory->viewtime[zoomhistory->pntr][i];
-
     }
-    std::cerr << "pagetimes " << pagetime << " " << zoomhistory->pagetime[zoomhistory->pntr] << "\n";
+
     pagetime = zoomhistory->pagetime[zoomhistory->pntr];
 
     for (i = 0; i < signalcomps; i++) {
-        std::cerr << "voltspercm " << signalcomp[i]->voltpercm << " " << zoomhistory->voltpercm[zoomhistory->pntr][i] << "\n";
         signalcomp[i]->voltpercm = zoomhistory->voltpercm[zoomhistory->pntr][i];
-
-        std::cerr << "screen_offset " << signalcomp[i]->screen_offset << " " << zoomhistory->screen_offset[zoomhistory->pntr][i] << "\n";
         signalcomp[i]->screen_offset = zoomhistory->screen_offset[zoomhistory->pntr][i];
-
         for (j = 0; j < signalcomp[i]->num_of_signals; j++) {
-            std::cerr << "sensitivity " << signalcomp[i]->sensitivity[j] << " " << zoomhistory->sensitivity[zoomhistory->pntr][i][j] << "\n";
             signalcomp[i]->sensitivity[j] = zoomhistory->sensitivity[zoomhistory->pntr][i][j];
         }
     }
@@ -1123,7 +1111,6 @@ void UI_Mainwindow::shift_page_left()
     if(video_player->status == VIDEO_STATUS_PLAYING)
     {
         video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 2LL) - (pagetime / 10)) / TIME_DIMENSION));
-
         return;
     }
 
@@ -1160,7 +1147,6 @@ void UI_Mainwindow::shift_page_right()
     if(video_player->status == VIDEO_STATUS_PLAYING)
     {
         video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 2LL) + (pagetime / 10)) / TIME_DIMENSION));
-
         return;
     }
 
@@ -1189,6 +1175,7 @@ void UI_Mainwindow::shift_page_right()
 }
 
 
+// Not needed for TEETACSI
 void UI_Mainwindow::stop_playback()
 {
     if(playback_realtime_active)
@@ -1209,6 +1196,7 @@ void UI_Mainwindow::stop_playback()
 }
 
 
+// Not needed for TEETACSI
 void UI_Mainwindow::playback_file()
 {
     if(!signalcomps)
@@ -1245,6 +1233,7 @@ void UI_Mainwindow::playback_file()
 }
 
 
+// Not needed for TEETACSI
 void UI_Mainwindow::playback_realtime_timer_func()
 {
     int i;
@@ -1277,12 +1266,10 @@ void UI_Mainwindow::next_page()
 {
     int i;
 
-    if(!files_open)  return;
+    if (!files_open)  return;
 
-    if(video_player->status == VIDEO_STATUS_PLAYING)
-    {
+    if(video_player->status == VIDEO_STATUS_PLAYING) {
         video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + pagetime + (pagetime / 2LL)) / TIME_DIMENSION));
-
         return;
     }
 
@@ -1349,41 +1336,29 @@ void UI_Mainwindow::shift_page_down()
 void UI_Mainwindow::show_annotations()
 {
     int i;
-
     EDF_annotations annotations;
+    if (!files_open)  return;
 
-    if(!files_open)  return;
-
-    for(i=0; i<files_open; i++)
-    {
-        if(edfheaderlist[i]->annots_not_read)
-        {
-            if((edfheaderlist[i]->edfplus) || (edfheaderlist[i]->bdfplus))
-            {
+    for (i = 0; i < files_open; i++) {
+        if (edfheaderlist[i]->annots_not_read) {
+            if ((edfheaderlist[i]->edfplus) || (edfheaderlist[i]->bdfplus)) {
                 edfheaderlist[i]->annots_not_read = 0;
-
                 annotations.get_annotations(edfheaderlist[i], read_nk_trigger_signal);
-
-                if(edfheaderlist[i]->annots_not_read)
-                {
+                if (edfheaderlist[i]->annots_not_read) {
                     edfplus_annotation_empty_list(&edfheaderlist[i]->annot_list);
                 }
-                else
-                {
-                    if(annotations_dock[i] == NULL)
-                    {
+                else {
+                    if (annotations_dock[i] == NULL) {
                         annotations_dock[i] = new UI_Annotationswindow(edfheaderlist[i], this);
-
                         addDockWidget(Qt::RightDockWidgetArea, annotations_dock[i]->docklist, Qt::Vertical);
+                        // Log dock widget added
                     }
                 }
             }
         }
 
-        if(edfplus_annotation_size(&edfheaderlist[i]->annot_list) > 0)
-        {
-            if(annotations_dock[i] != NULL)
-            {
+        if (edfplus_annotation_size(&edfheaderlist[i]->annot_list) > 0) {
+            if(annotations_dock[i] != NULL) {
                 annotations_dock[i]->docklist->show();
             }
         }
@@ -1394,67 +1369,46 @@ void UI_Mainwindow::show_annotations()
 void UI_Mainwindow::annotation_editor()
 {
     stop_video_generic(0);
-
     stop_playback();
 
     if(!files_open)  return;
 
-    if(files_open==1)
-    {
-        if(edfheaderlist[0]->annots_not_read)
-        {
+    if (files_open==1) {
+        if (edfheaderlist[0]->annots_not_read) {
             edfplus_annotation_empty_list(&edfheaderlist[0]->annot_list);
-
-            if(annotations_dock[0] != NULL)
-            {
+            if (annotations_dock[0] != NULL) {
                 annotations_dock[0]->docklist->close();
                 delete annotations_dock[0];
                 annotations_dock[0] = NULL;
             }
-
             edfheaderlist[0]->annots_not_read = 0;
-
             EDF_annotations annotations;
-
             annotations.get_annotations(edfheaderlist[0], read_nk_trigger_signal);
-
-            if(edfheaderlist[0]->annots_not_read)
-            {
+            if (edfheaderlist[0]->annots_not_read) {
                 QMessageBox messagewindow(QMessageBox::Critical, "Error", "Editing annotations is not possible when you abort the scanning of the file.");
                 messagewindow.exec();
-
                 return;
             }
         }
 
-        if(annotations_dock[0]==NULL)
-        {
+        if(annotations_dock[0]==NULL) {
             annotations_dock[0] = new UI_Annotationswindow(edfheaderlist[0], this);
-
             addDockWidget(Qt::RightDockWidgetArea, annotations_dock[0]->docklist, Qt::Vertical);
         }
 
         maincurve->active_markers->edf_hdr = edfheaderlist[0];
-
         annotations_dock[0]->docklist->show();
-
-        if(annotationEditDock == NULL)
-        {
+        if (annotationEditDock == NULL) {
             annotationEditDock = new UI_AnnotationEditwindow(edfheaderlist[0], this);
-
             addToolBar(Qt::BottomToolBarArea, annotationEditDock->dockedit);
-
             insertToolBarBreak(annotationEditDock->dockedit);
         }
-        else
-        {
+        else {
             annotationEditDock->set_edf_header(edfheaderlist[0]);
-
             annotationEditDock->dockedit->show();
         }
     }
-    else
-    {
+    else {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Editing annotations is possible when you have opened one file only.");
         messagewindow.exec();
     }
@@ -1465,29 +1419,23 @@ void UI_Mainwindow::show_spectrum_dock()
 {
     int i;
 
-    if((!files_open) || (!signalcomps))  return;
+    if ((!files_open) || (!signalcomps))  return;
 
-    if(signalcomps == 1)
-    {
-        for(i=0; i<MAXSPECTRUMDOCKS; i++)
-        {
+    if (signalcomps == 1) {
+        for (i = 0; i < MAXSPECTRUMDOCKS; i++) {
             if(spectrumdock[i]->dock->isHidden())  break;
         }
 
-        if(i<MAXSPECTRUMDOCKS)
-        {
+        if (i < MAXSPECTRUMDOCKS) {
             spectrumdock[i]->init(0);
         }
-        else
-        {
+        else {
             QMessageBox messagewindow(QMessageBox::Critical, "Error", "The maximum number of docked Power Spectrum windows has been reached.\n"
                                                                       "Close one first.");
             messagewindow.exec();
         }
-
         return;
     }
-
     UI_SignalChooser signalchooserdialog(this, 1);
 }
 
@@ -1496,69 +1444,53 @@ void UI_Mainwindow::show_cdsa_dock()
 {
     int i;
 
-    if((!files_open) || (!signalcomps) || live_stream_active)  return;
+    if ((!files_open) || (!signalcomps) || live_stream_active)  return;
 
-    if(signalcomps == 1)
-    {
-        if(signalcomp[0]->ecg_filter != NULL)
-        {
+    if (signalcomps == 1) {
+        if (signalcomp[0]->ecg_filter != NULL) {
             return;
         }
-
-        if(signalcomp[0]->edfhdr->edfparam[signalcomp[0]->edfsignal[0]].sf_int < 30)
-        {
+        if (signalcomp[0]->edfhdr->edfparam[signalcomp[0]->edfsignal[0]].sf_int < 30) {
             QMessageBox messagewindow(QMessageBox::Critical, "Error", "Samplefrequency must be at least 30Hz and must be an integer value.");
             messagewindow.exec();
             return;
         }
 
-        if(signalcomp[0]->edfhdr->recording_len_sec < 30)
-        {
+        if (signalcomp[0]->edfhdr->recording_len_sec < 30) {
             QMessageBox messagewindow(QMessageBox::Critical, "Error", "Recording length must be at least 30 seconds.");
             messagewindow.exec();
             return;
         }
 
-        for(i=0; i<MAXCDSADOCKS; i++)
-        {
-            if(cdsa_dock[i] == NULL)
-            {
+        for (i = 0; i < MAXCDSADOCKS; i++) {
+            if (cdsa_dock[i] == NULL) {
                 UI_cdsa_window wndw(this, signalcomp[0], i);
                 break;
             }
         }
-
         return;
     }
-
     UI_SignalChooser signalchooserdialog(this, 5);
 }
 
 
 void UI_Mainwindow::show_hypnogram()
 {
-    int i, file_num=0;
+    int i, file_num = 0;
 
     if((!files_open) || live_stream_active)  return;
 
-    for(i=0; i<MAXHYPNOGRAMDOCKS; i++)
-    {
-        if(hypnogram_dock[i] == NULL)
-        {
-            if(files_open > 1)
-            {
+    for (i = 0; i < MAXHYPNOGRAMDOCKS; i++) {
+        if (hypnogram_dock[i] == NULL) {
+            if (files_open > 1) {
                 UI_activeFileChooserWindow choose_file_dialog(&file_num, this);
-
-                if(file_num >= 0)
-                {
+                if (file_num >= 0) {
                     UI_hypnogram_window hypnogram_dialog(this, edfheaderlist[file_num], i);
                 }
             }
-            else
-            {
+            else {
                 UI_hypnogram_window hypnogram_dialog(this, edfheaderlist[0], i);
             }
-
             break;
         }
     }
@@ -1770,32 +1702,22 @@ void UI_Mainwindow::open_new_file()
 
         annotations_dock[files_open] = NULL;
 
-        if((edfhdr->edfplus || edfhdr->bdfplus) && (!live_stream_active))
-        {
-            if((edfhdr->datarecords * (unsigned long long)edfhdr->recordsize) <= maxfilesize_to_readin_annotations)
-            {
+        if ((edfhdr->edfplus || edfhdr->bdfplus) && (!live_stream_active)) {
+            if ((edfhdr->datarecords * (unsigned long long)edfhdr->recordsize) <= maxfilesize_to_readin_annotations) {
                 EDF_annotations annotations;
-
                 annotations.get_annotations(edfhdr, read_nk_trigger_signal);
-
-                if(edfhdr->annots_not_read)
-                {
+                if (edfhdr->annots_not_read) {
                     edfplus_annotation_empty_list(&edfheaderlist[files_open]->annot_list);
                 }
-                else
-                {
+                else {
                     annotations_dock[files_open] = new UI_Annotationswindow(edfheaderlist[files_open], this);
-
                     addDockWidget(Qt::RightDockWidgetArea, annotations_dock[files_open]->docklist, Qt::Vertical);
-
-                    if(!edfheaderlist[files_open]->annot_list.sz)
-                    {
+                    if (!edfheaderlist[files_open]->annot_list.sz) {
                         annotations_dock[files_open]->docklist->hide();
                     }
                 }
             }
-            else
-            {
+            else {
                 edfhdr->annots_not_read = 1;
             }
         }
@@ -1904,9 +1826,7 @@ void UI_Mainwindow::remove_recent_file_mtg_path(const char *mtg_path)
 {
     int i;
 
-
-    for(i=0; i<MAX_RECENTFILES; i++)
-    {
+    for(i=0; i<MAX_RECENTFILES; i++) {
         if(!strcmp(&recent_file_mtg_path[i][0], mtg_path))
         {
             recent_file_mtg_path[i][0] = 0;
@@ -1999,15 +1919,12 @@ void UI_Mainwindow::signalproperties_dialog() {
 
 void UI_Mainwindow::filterproperties_dialog()
 {
-    if((!files_open) || (!signalcomps))  return;
+    if ((!files_open) || (!signalcomps))  return;
 
-    if(signalcomps == 1)
-    {
+    if (signalcomps == 1) {
         AdjustFilterSettings filtersettings(signalcomp[0], maincurve);
-
         return;
     }
-
     UI_SignalChooser signalchooserdialog(this, 2);
     if (log_ui)
         ui_logger->write(UiLogger::LogEvents::CHANNELS_CHANGED);
@@ -2017,7 +1934,6 @@ void UI_Mainwindow::filterproperties_dialog()
 void UI_Mainwindow::add_signals_dialog()
 {
     if (!files_open)  return;
-
     UI_Signalswindow signalwindow(this);
     if (log_ui)
         ui_logger->write(UiLogger::LogEvents::CHANNELS_CHANGED);
@@ -2038,17 +1954,15 @@ void UI_Mainwindow::show_splashscreen()
 void UI_Mainwindow::show_file_info()
 {
     if(!files_open)  return;
-
     UI_EDFhdrwindow showhdr(this);
 }
 
 
 void UI_Mainwindow::remove_all_filters()
 {
-    int i, j,
-            update_scr=0;
+    int i, j, update_scr=0;
 
-    if(!files_open)  return;
+    if (!files_open)  return;
 
     for(i=0; i<signalcomps; i++)
     {
@@ -3805,10 +3719,8 @@ void UI_Mainwindow::recent_file_action_func(QAction *action)
 
 void UI_Mainwindow::save_montage()
 {
-    if(!files_open)  return;
-
-    if(!signalcomps)  return;
-
+    if (!files_open)  return;
+    if (!signalcomps)  return;
     UI_SaveMontagewindow save_mtg(this);
 }
 
@@ -3816,7 +3728,6 @@ void UI_Mainwindow::save_montage()
 void UI_Mainwindow::load_montage()
 {
     if(!files_open)  return;
-
     UI_LoadMontagewindow load_mtg(this);
 }
 
@@ -4268,14 +4179,10 @@ int UI_Mainwindow::get_filenum(struct edfhdrblock *ptr)
 
 void UI_Mainwindow::enable_hrv_stats_toolbar(const char *annotation, struct annotation_list *annot_list)
 {
-    if((annotation == NULL) || (annot_list == NULL))  return;
-
+    if ((annotation == NULL) || (annot_list == NULL))  return;
     strlcpy(toolbar_stats.annot_label, annotation, MAX_ANNOTATION_LEN + 1);
-
     toolbar_stats.annot_list = annot_list;
-
     toolbar_stats.sz = 0;
-
     toolbar_stats.active = 1;
 }
 
@@ -4315,21 +4222,28 @@ void UI_Mainwindow::get_unique_annotations(struct edfhdrblock *hdr)
     }
 }
 
+// Track navigating with keys
 void UI_Mainwindow::keyPressEvent(QKeyEvent *event) {
     if ((event->key() == Qt::Key_Left) || (event->key() == Qt::Key_Right)) {
         if (ui_logger != 0)
             if (log_ui)
                 ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
     }
+    else if ((event->key() == Qt::Key_Up) || (event->key() == Qt::Key_Down)) {
+        if (ui_logger != 0)
+            if (log_ui)
+                ui_logger->write(UiLogger::LogEvents::VERTICAL_CHANGED);
+    }
 }
 
+// Track window repositioning
 void UI_Mainwindow::moveEvent(QMoveEvent *event) {
-    std::cerr << "Move event!\n";
     if (ui_logger != 0)
         if (log_ui)
             ui_logger->write(UiLogger::LogEvents::WINDOW_MOVED);
 }
 
+// Track the window being resized
 void UI_Mainwindow::resizeEvent(QResizeEvent *event){
     if (ui_logger != 0)
         if (log_ui)
@@ -4339,12 +4253,18 @@ void UI_Mainwindow::resizeEvent(QResizeEvent *event){
 
 bool UI_Mainwindow::eventFilter(QObject *watched, QEvent *event) {
 
-    //std::cerr << "In the event filter\n";
     QEvent::Type event_type = event->type();
-    //std::cerr << "The event was type " << event_type << "\n";
 
+    // Track windows being opened/closed etc
     if (event_type == QEvent::WindowDeactivate) {
         std::cerr << "The window was deactivated.\n";
+        if (ui_logger != 0) {
+            if (log_ui) {
+                if (this->windowState() == Qt::WindowMinimized) {
+                    ui_logger->write(UiLogger::LogEvents::WINDOW_MINMISED);
+                }
+            }
+        }
         return true;
     }
     else if (event_type == QEvent::WindowBlocked) {
@@ -4370,11 +4290,17 @@ bool UI_Mainwindow::eventFilter(QObject *watched, QEvent *event) {
                 if (this->windowState() == Qt::WindowMinimized) {
                     ui_logger->write(UiLogger::LogEvents::WINDOW_MINMISED);
                 }
+                if (this->windowState() == Qt::WindowNoState) {
+                    ui_logger->write(UiLogger::LogEvents::WINDOW_OPENED);
+                }
                 else if (this->windowState() == Qt::WindowMaximized) {
                     ui_logger->write(UiLogger::LogEvents::WINDOW_MAXIMISED);
                 }
                 else if (this->windowState() == Qt::WindowFullScreen) {
                     ui_logger->write(UiLogger::LogEvents::WINDOW_FULL_SCREEN);
+                }
+                else if (this->windowState() == 3) {
+                    ui_logger->write(UiLogger::LogEvents::WINDOW_MINMISED);
                 }
             }
         }
@@ -4386,6 +4312,7 @@ bool UI_Mainwindow::eventFilter(QObject *watched, QEvent *event) {
 }
 
 
+// Track menu interaction
 void UI_Mainwindow::menu_opened() {
     std::cerr << "Menu opened\n";
     if (ui_logger != 0) {
@@ -4395,11 +4322,22 @@ void UI_Mainwindow::menu_opened() {
     }
 }
 
+// Track menu interaction
 void UI_Mainwindow::menu_closed() {
     std::cerr << "Menu closed\n";
     if (ui_logger != 0) {
         if (log_ui) {
             ui_logger->write(UiLogger::LogEvents::MENU_CLOSED);
+        }
+    }
+}
+
+// Track menu interaction
+void UI_Mainwindow::search_menu() {
+    std::cerr << "New hover\n";
+    if (ui_logger != 0) {
+        if (log_ui) {
+            ui_logger->write(UiLogger::LogEvents::MENU_SEARCH);
         }
     }
 }

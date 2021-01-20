@@ -34,20 +34,15 @@
 UI_SignalChooser::UI_SignalChooser(QWidget *w_parent, int job, int *sgnl_nr)
 {
   task = job;
-
   signal_nr = sgnl_nr;
-
   mainwindow = (UI_Mainwindow *)w_parent;
-
   signalchooser_dialog = new QDialog(w_parent);
 
-  if(task == 3)
-  {
+  if (task == 3) {
     signalchooser_dialog->setMinimumSize(435 * mainwindow->w_scaling, 420 * mainwindow->h_scaling);
     signalchooser_dialog->setWindowTitle("Organize signals");
   }
-  else
-  {
+  else {
     signalchooser_dialog->setMinimumSize(200 * mainwindow->w_scaling, 420 * mainwindow->h_scaling);
     signalchooser_dialog->setWindowTitle("Signals");
   }
@@ -55,14 +50,12 @@ UI_SignalChooser::UI_SignalChooser(QWidget *w_parent, int job, int *sgnl_nr)
   signalchooser_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   list = new QListWidget;
-  if(task == 3)
-  {
+  if (task == 3) {
     list->setSelectionBehavior(QAbstractItemView::SelectRows);
     list->setSelectionMode(QAbstractItemView::ExtendedSelection);
     list->setToolTip("Double-click on an item to edit properties");
   }
-  else
-  {
+  else {
     list->setSelectionBehavior(QAbstractItemView::SelectRows);
     list->setSelectionMode(QAbstractItemView::SingleSelection);
   }
@@ -70,8 +63,7 @@ UI_SignalChooser::UI_SignalChooser(QWidget *w_parent, int job, int *sgnl_nr)
   CloseButton = new QPushButton;
   CloseButton->setText("Close");
 
-  if(task == 3)
-  {
+  if (task == 3) {
     EditButton = new QPushButton;
     EditButton->setText("Edit");
 
@@ -89,8 +81,7 @@ UI_SignalChooser::UI_SignalChooser(QWidget *w_parent, int job, int *sgnl_nr)
   }
 
   QVBoxLayout *vlayout1 = new QVBoxLayout;
-  if(task == 3)
-  {
+  if (task == 3) {
     vlayout1->addStretch(1000);
     vlayout1->addWidget(EditButton);
     vlayout1->addWidget(UpButton);
@@ -259,20 +250,16 @@ void UI_SignalChooser::call_sidemenu(QListWidgetItem *)
 
 void UI_SignalChooser::signalEdit()
 {
-  int n,
-      selected_signals[MAXSIGNALS];
+  int n, selected_signals[MAXSIGNALS];
 
   n = get_selectionlist(selected_signals);
 
-  if(n < 1)
-  {
+  if (n < 1) {
     return;
   }
 
   mainwindow->maincurve->exec_sidemenu(selected_signals[0]);
-
   load_signalcomps();
-
   mainwindow->setup_viewbuf();
 }
 

@@ -52,6 +52,8 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   firfilterdialog->setWindowTitle("Add a Custom FIR filter");
   firfilterdialog->setModal(true);
   firfilterdialog->setAttribute(Qt::WA_DeleteOnClose, true);
+
+  // Needs to stay on top to avoid main window on top for TEETACSI
   firfilterdialog->setWindowFlags(Qt::WindowStaysOnTopHint);
 
   varsLabel = new QLabel;

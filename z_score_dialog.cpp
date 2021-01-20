@@ -72,11 +72,11 @@ UI_ZScoreWindow::UI_ZScoreWindow(QWidget *w_parent, UI_ZScoreWindow **w_zscoredi
   zscore_dialog = new QDialog(w_parent);
   zscore_dialog->setMinimumSize(600 * mainwindow->w_scaling, 550 * mainwindow->h_scaling);
   zscore_dialog->setWindowTitle("Z-EEG");
-  zscore_dialog->setModal(false);
+  zscore_dialog->setModal(true);
   zscore_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
   zscore_dialog->setWindowIcon(QIcon(":/images/edf.png"));
   zscore_dialog->setSizeGripEnabled(true);
-  zscore_dialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
+  zscore_dialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint);
 
   crossoverSpinbox = new QDoubleSpinBox;
   crossoverSpinbox->setRange(5.0, 9.5);

@@ -48,15 +48,12 @@ UI_edit_predefined_mtg_window::UI_edit_predefined_mtg_window(QWidget *w_parent)
   mtg_path_list->setSelectionBehavior(QAbstractItemView::SelectRows);
   mtg_path_list->setSelectionMode(QAbstractItemView::SingleSelection);
   mtg_path_list->setSpacing(1);
-  for(i=0; i < MAXPREDEFINEDMONTAGES; i++)
-  {
-    snprintf(str, 1200, "F%i : ", i + 1);
 
-    if(mainwindow->predefined_mtg_path[i][0] != 0)
-    {
+  for (i = 0; i < MAXPREDEFINEDMONTAGES; i++) {
+    snprintf(str, 1200, "F%i : ", i + 1);
+    if (mainwindow->predefined_mtg_path[i][0] != 0) {
       strlcat(str, &(mainwindow->predefined_mtg_path[i][0]), 1200);
     }
-
     new QListWidgetItem(str, mtg_path_list);
   }
 
@@ -84,9 +81,7 @@ UI_edit_predefined_mtg_window::UI_edit_predefined_mtg_window(QWidget *w_parent)
 void UI_edit_predefined_mtg_window::rowClicked(QListWidgetItem *item)
 {
   row = mtg_path_list->row(item);
-
   listItem = item;
-
   dialog = new QDialog(edit_predefined_mtg_Dialog);
   dialog->setMinimumSize(140 * mainwindow->w_scaling, 135 * mainwindow->h_scaling);
   dialog->setWindowTitle("Entry");
@@ -123,20 +118,15 @@ void UI_edit_predefined_mtg_window::adEntry()
 
   strlcpy(path, QFileDialog::getOpenFileName(0, "Select montage", QString::fromLocal8Bit(mainwindow->recent_montagedir), "MTG files (*.mtg *.MTG)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
-  if(!strcmp(path, ""))
-  {
+  if (!strcmp(path, "")) {
     return;
   }
 
   get_directory_from_path(mainwindow->recent_montagedir, path, MAX_PATH_LENGTH);
-
   strlcpy(&(mainwindow->predefined_mtg_path[row][0]), path, MAX_PATH_LENGTH);
-
   mainwindow->load_predefined_mtg_act[row]->setText(QString::fromLocal8Bit(mainwindow->predefined_mtg_path[row]));
-
   snprintf(str, 1200, "F%i : ", row + 1);
   strlcat(str, path, 1200);
-
   listItem->setText(str);
 }
 
