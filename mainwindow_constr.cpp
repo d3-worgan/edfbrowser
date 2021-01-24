@@ -667,9 +667,9 @@ UI_Mainwindow::UI_Mainwindow()
     filtermenu->addAction("Powerline interference removal for ECG", this, SLOT(add_plif_ecg_filter()));
     filtermenu->addAction("Remove all Powerline interference filters", this, SLOT(remove_all_plif_ecg_filters()));
     filtermenu->addSeparator();
-    filtermenu->addAction("Customizable FIR filter", this, SLOT(add_fir_filter()));
-    filtermenu->addAction("Remove all FIR filters", this, SLOT(remove_all_fir_filters()));
-    filtermenu->addSeparator();
+//    filtermenu->addAction("Customizable FIR filter", this, SLOT(add_fir_filter()));
+//    filtermenu->addAction("Remove all FIR filters", this, SLOT(remove_all_fir_filters()));
+//    filtermenu->addSeparator();
     filtermenu->addAction("Spike", this, SLOT(add_spike_filter()));
     filtermenu->addAction("Remove all spike filters", this, SLOT(remove_all_spike_filters()));
     menubar->addMenu(filtermenu);

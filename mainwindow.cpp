@@ -68,6 +68,7 @@ void UI_Mainwindow::closeEvent(QCloseEvent *cl_event) {
         button_nr = messagewindow.exec();
     }
 
+    // Disabled this pop up as we do not want annotations for teetacsi
 //    if (annotations_edited) {
 //        QMessageBox messagewindow;
 //        messagewindow.setText("There are unsaved annotations,\n are you sure you want to quit?");
