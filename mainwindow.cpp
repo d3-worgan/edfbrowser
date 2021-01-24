@@ -56,26 +56,34 @@ void UI_Mainwindow::exit_program() {
 
 void UI_Mainwindow::closeEvent(QCloseEvent *cl_event) {
 
-    if (log_ui)
-        ui_logger->write(UiLogger::LogEvents::FILE_CLOSED);
-
-
     int i, button_nr=0;
 
-    if (annotations_edited) {
+    if (log_ui) {
         QMessageBox messagewindow;
-        messagewindow.setText("There are unsaved annotations,\n are you sure you want to quit?");
+        messagewindow.setText("Please confirm the eye tracker has stopped recording.");
         messagewindow.setIcon(QMessageBox::Question);
-        messagewindow.setStandardButtons(QMessageBox::Cancel | QMessageBox::Close);
-        messagewindow.setDefaultButton(QMessageBox::Cancel);
+        messagewindow.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
+        messagewindow.setDefaultButton(QMessageBox::No);
+        messagewindow.setWindowFlags(Qt::WindowStaysOnTopHint);
         button_nr = messagewindow.exec();
     }
 
-    if (button_nr == QMessageBox::Cancel) {
+//    if (annotations_edited) {
+//        QMessageBox messagewindow;
+//        messagewindow.setText("There are unsaved annotations,\n are you sure you want to quit?");
+//        messagewindow.setIcon(QMessageBox::Question);
+//        messagewindow.setStandardButtons(QMessageBox::Cancel | QMessageBox::Close);
+//        messagewindow.setDefaultButton(QMessageBox::Cancel);
+//        button_nr = messagewindow.exec();
+//    }
+
+    if (button_nr == QMessageBox::No) {
         cl_event->ignore();
     }
     else {
         exit_in_progress = 1;
+        if (log_ui)
+            ui_logger->write(UiLogger::LogEvents::FILE_CLOSED);
         for (i = 0; i < MAXSPECTRUMDIALOGS; i++) {
             if (spectrumdialog[i] != NULL) {
                 delete spectrumdialog[i];
@@ -120,6 +128,7 @@ void UI_Mainwindow::closeEvent(QCloseEvent *cl_event) {
         free(video_player);
         free(annot_filter);
         cl_event->accept();
+
     }
 }
 
@@ -3810,11 +3819,8 @@ void UI_Mainwindow::show_kb_shortcuts()
                               "Minus\t\tdecrease sensitivity\n"
                               "Up Arrow\t\tshift up\n"
                               "Down Arrow\t\tshift down\n"
-                              "Ctrl-Home\t\tgo to start of file\n"
-                              "Ctrl-End\t\tgo to end of file\n"
                               "Ctrl++\t\tzoom in\n"
                               "Ctrl+-\t\tzoom out\n"
-                              "F1 - F8\t\tload predefined montage\n"
                               "Alt+Shift+C\t\tcrosshair\n"
                               "Esc\t\tremove crosshairs or floating ruler\n"
 
@@ -3822,9 +3828,6 @@ void UI_Mainwindow::show_kb_shortcuts()
                               "Backspace\t\tzoom back\n"
                               "Insert\t\tzoom in\n"
                           #ifdef Q_OS_WIN32
-                              "\nCtrl+O\t\tOpen a file\n"
-                              "Ctrl+Shift+O\t\tOpen a stream\n"
-                              "Ctrl+F4\tClose all files\n"
                               "Alt+F4\tExit program\n"
                           #else
                               "\nCtrl+O\t\tOpen a file\n"
@@ -3832,14 +3835,9 @@ void UI_Mainwindow::show_kb_shortcuts()
                               "Ctrl+W\t\tClose all files\n"
                               "Ctrl+Q\t\tExit program\n"
                           #endif
-                              "\nMousewheel\t\tshift left or right\n"
-                              "Ctrl+Mousewheel\tzoom in or out\n"
-                              "Keep middle mousebutton pressed to drag horizontally\n"
-
-                              "\nCtrl+Space\t\tToggle Playback or Pause\n"
-                              "Ctrl+Shift+V\t\tToggle Playback with video\n"
                               );
 
+    messagewindow.setWindowFlags(Qt::WindowStaysOnTopHint);
     messagewindow.exec();
 }
 

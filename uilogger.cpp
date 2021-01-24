@@ -135,7 +135,7 @@ void UiLogger::write(LogEvents log_event) {
         text += QString("\"AMPLITUDE_CHANGED\", \"data\": {\"montage_file\": \"%1.mtg\"}").arg(this->log_id);
     }
     else if (log_event == LogEvents::TIMESCALE_CHANGED) {
-        text += QString("\"TIMESCALE_CHANGED\", \"data\": {\"time_scale\": \"%1\"}").arg(main_window->pagetime_string);
+        text += QString("\"TIMESCALE_CHANGED\", \"data\": {\"time\": \"%1\", \"time_scale\": \"%2\"}").arg(main_window->viewtime_string, main_window->pagetime_string);
     }
     else if (log_event == LogEvents::TIME_POSITION_CHANGED) {
         text += QString("\"TIME_POSITION_CHANGED\", \"data\": {\"time\": \"%1\"}").arg(main_window->viewtime_string);

@@ -240,228 +240,236 @@ void ViewCurve::arrowkeys_shortcuts_global_set_enabled(bool enabled)
 }
 
 
+// Disbaled wheel events to avoid log synchronisation issue, i.e. adding log entries here record before the change happens rather than after it
 void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
 {
-    int i;
+//    int i;
 
-    long long l_tmp, trshld=100LL;
+//    long long l_tmp, trshld=100LL;
 
-    if(mainwindow->mousewheelsens < 1)  return;
+//    if(mainwindow->mousewheelsens < 1)  return;
 
-    if(mainwindow->files_open == 0)  return;
+//    if(mainwindow->files_open == 0)  return;
 
-    if(QApplication::keyboardModifiers() == Qt::ControlModifier)
-    {
-#if QT_VERSION >= 0x050C00
-        if(wheel_event->angleDelta().y() > 0)
-#else
-        if(wheel_event->delta() > 0)
-#endif
-        {
-            if((mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
-            {
-                for(i=0; i<mainwindow->files_open; i++)
-                {
-                    if(mainwindow->timescale_doubler == 50)
-                    {
-                        mainwindow->edfheaderlist[i]->viewtime += (mainwindow->pagetime * 0.3);
-                    }
-                    else
-                    {
-                        mainwindow->edfheaderlist[i]->viewtime += (mainwindow->pagetime / 4);
-                    }
+//    // If ctrl is pressed then the mouse wheel manages zoom
+//    if (QApplication::keyboardModifiers() == Qt::ControlModifier)
+//    {
+//#if QT_VERSION >= 0x050C00
+//        if (wheel_event->angleDelta().y() > 0)
+//#else
+//        if (wheel_event->delta() > 0)
+//#endif
+//        {
+//            if ((mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
+//            {
+//                for(i=0; i<mainwindow->files_open; i++)
+//                {
+//                    if(mainwindow->timescale_doubler == 50)
+//                    {
+//                        mainwindow->edfheaderlist[i]->viewtime += (mainwindow->pagetime * 0.3);
+//                    }
+//                    else
+//                    {
+//                        mainwindow->edfheaderlist[i]->viewtime += (mainwindow->pagetime / 4);
+//                    }
 
-                    l_tmp = mainwindow->edfheaderlist[i]->viewtime % TIME_DIMENSION;
+//                    l_tmp = mainwindow->edfheaderlist[i]->viewtime % TIME_DIMENSION;
 
-                    if(l_tmp < trshld)
-                    {
-                        mainwindow->edfheaderlist[i]->viewtime -= l_tmp;
-                    }
+//                    if(l_tmp < trshld)
+//                    {
+//                        mainwindow->edfheaderlist[i]->viewtime -= l_tmp;
+//                    }
 
-                    if(l_tmp > (TIME_DIMENSION - trshld))
-                    {
-                        mainwindow->edfheaderlist[i]->viewtime += (TIME_DIMENSION - l_tmp);
-                    }
-                }
-            }
+//                    if(l_tmp > (TIME_DIMENSION - trshld))
+//                    {
+//                        mainwindow->edfheaderlist[i]->viewtime += (TIME_DIMENSION - l_tmp);
+//                    }
+//                }
+//            }
 
-            if(mainwindow->viewtime_sync==VIEWTIME_UNSYNCED)
-            {
-                if(mainwindow->timescale_doubler == 50)
-                {
-                    mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (mainwindow->pagetime * 0.3);
-                }
-                else
-                {
-                    mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (mainwindow->pagetime / 4);
-                }
+//            if(mainwindow->viewtime_sync==VIEWTIME_UNSYNCED)
+//            {
+//                if(mainwindow->timescale_doubler == 50)
+//                {
+//                    mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (mainwindow->pagetime * 0.3);
+//                }
+//                else
+//                {
+//                    mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (mainwindow->pagetime / 4);
+//                }
 
-                l_tmp = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime % TIME_DIMENSION;
+//                l_tmp = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime % TIME_DIMENSION;
 
-                if(l_tmp < trshld)
-                {
-                    mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= l_tmp;
-                }
+//                if(l_tmp < trshld)
+//                {
+//                    mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= l_tmp;
+//                }
 
-                if(l_tmp > (TIME_DIMENSION - trshld))
-                {
-                    mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (TIME_DIMENSION - l_tmp);
-                }
-            }
+//                if(l_tmp > (TIME_DIMENSION - trshld))
+//                {
+//                    mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (TIME_DIMENSION - l_tmp);
+//                }
+//            }
 
-            if(mainwindow->timescale_doubler == 10)
-            {
-                mainwindow->timescale_doubler = 50;
+//            if(mainwindow->timescale_doubler == 10)
+//            {
+//                mainwindow->timescale_doubler = 50;
 
-                mainwindow->pagetime /= 2;
-            }
-            else
-            {
-                if(mainwindow->timescale_doubler == 50)
-                {
-                    mainwindow->timescale_doubler = 20;
+//                mainwindow->pagetime /= 2;
+//            }
+//            else
+//            {
+//                if(mainwindow->timescale_doubler == 50)
+//                {
+//                    mainwindow->timescale_doubler = 20;
 
-                    mainwindow->pagetime /= 2.5;
-                }
-                else
-                {
-                    mainwindow->timescale_doubler = 10;
+//                    mainwindow->pagetime /= 2.5;
+//                }
+//                else
+//                {
+//                    mainwindow->timescale_doubler = 10;
 
-                    mainwindow->pagetime /= 2;
-                }
-            }
-        }
-        else
-        {
-            if((mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
-            {
-                for(i=0; i<mainwindow->files_open; i++)
-                {
-                    if(mainwindow->timescale_doubler == 20)
-                    {
-                        mainwindow->edfheaderlist[i]->viewtime -= (mainwindow->pagetime * 0.75);
-                    }
-                    else
-                    {
-                        mainwindow->edfheaderlist[i]->viewtime -= (mainwindow->pagetime / 2);
-                    }
+//                    mainwindow->pagetime /= 2;
+//                }
+//            }
+//        }
+//        else
+//        {
+//            if((mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
+//            {
+//                for(i=0; i<mainwindow->files_open; i++)
+//                {
+//                    if(mainwindow->timescale_doubler == 20)
+//                    {
+//                        mainwindow->edfheaderlist[i]->viewtime -= (mainwindow->pagetime * 0.75);
+//                    }
+//                    else
+//                    {
+//                        mainwindow->edfheaderlist[i]->viewtime -= (mainwindow->pagetime / 2);
+//                    }
 
-                    l_tmp = mainwindow->edfheaderlist[i]->viewtime % TIME_DIMENSION;
+//                    l_tmp = mainwindow->edfheaderlist[i]->viewtime % TIME_DIMENSION;
 
-                    if(l_tmp < trshld)
-                    {
-                        mainwindow->edfheaderlist[i]->viewtime -= l_tmp;
-                    }
+//                    if(l_tmp < trshld)
+//                    {
+//                        mainwindow->edfheaderlist[i]->viewtime -= l_tmp;
+//                    }
 
-                    if(l_tmp > (TIME_DIMENSION - trshld))
-                    {
-                        mainwindow->edfheaderlist[i]->viewtime += (TIME_DIMENSION - l_tmp);
-                    }
-                }
-            }
+//                    if(l_tmp > (TIME_DIMENSION - trshld))
+//                    {
+//                        mainwindow->edfheaderlist[i]->viewtime += (TIME_DIMENSION - l_tmp);
+//                    }
+//                }
+//            }
 
-            if(mainwindow->viewtime_sync==VIEWTIME_UNSYNCED)
-            {
-                if(mainwindow->timescale_doubler == 20)
-                {
-                    mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= (mainwindow->pagetime * 0.75);
-                }
-                else
-                {
-                    mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= (mainwindow->pagetime / 2);
-                }
+//            if(mainwindow->viewtime_sync==VIEWTIME_UNSYNCED)
+//            {
+//                if(mainwindow->timescale_doubler == 20)
+//                {
+//                    mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= (mainwindow->pagetime * 0.75);
+//                }
+//                else
+//                {
+//                    mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= (mainwindow->pagetime / 2);
+//                }
 
-                l_tmp = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime % TIME_DIMENSION;
+//                l_tmp = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime % TIME_DIMENSION;
 
-                if(l_tmp < trshld)
-                {
-                    mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= l_tmp;
-                }
+//                if(l_tmp < trshld)
+//                {
+//                    mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= l_tmp;
+//                }
 
-                if(l_tmp > (TIME_DIMENSION - trshld))
-                {
-                    mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (TIME_DIMENSION - l_tmp);
-                }
-            }
+//                if(l_tmp > (TIME_DIMENSION - trshld))
+//                {
+//                    mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (TIME_DIMENSION - l_tmp);
+//                }
+//            }
 
-            if(mainwindow->timescale_doubler == 10)
-            {
-                mainwindow->timescale_doubler = 20;
+//            if(mainwindow->timescale_doubler == 10)
+//            {
+//                mainwindow->timescale_doubler = 20;
 
-                mainwindow->pagetime *= 2;
-            }
-            else
-            {
-                if(mainwindow->timescale_doubler == 20)
-                {
-                    mainwindow->timescale_doubler = 50;
-                    mainwindow->pagetime *= 2.5;
-                }
-                else
-                {
-                    mainwindow->timescale_doubler = 10;
-                    mainwindow->pagetime *= 2;
-                }
-            }
-        }
-    }
-    else
-    {
-        if((mainwindow->video_player->status == VIDEO_STATUS_PLAYING) || (mainwindow->video_player->status == VIDEO_STATUS_PAUSED))
-        {
-#if QT_VERSION >= 0x050C00
-            if(wheel_event->angleDelta().y() > 0)
-#else
-            if(wheel_event->delta() > 0)
-#endif
-            {
-                mainwindow->video_player_seek((int)((mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime - (mainwindow->pagetime / mainwindow->mousewheelsens)) / TIME_DIMENSION));
-            }
-            else
-            {
-                mainwindow->video_player_seek((int)((mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime + (mainwindow->pagetime / mainwindow->mousewheelsens)) / TIME_DIMENSION));
-            }
+//                mainwindow->pagetime *= 2;
+//            }
+//            else
+//            {
+//                if(mainwindow->timescale_doubler == 20)
+//                {
+//                    mainwindow->timescale_doubler = 50;
+//                    mainwindow->pagetime *= 2.5;
+//                }
+//                else
+//                {
+//                    mainwindow->timescale_doubler = 10;
+//                    mainwindow->pagetime *= 2;
+//                }
+//            }
+//        }
+//        if (mainwindow->ui_logger != 0)
+//            if (mainwindow->log_ui)
+//                mainwindow->ui_logger->write(UiLogger::LogEvents::ZOOM_CHANGED);
+//    }
+//    else
+//    {
+//        if((mainwindow->video_player->status == VIDEO_STATUS_PLAYING) || (mainwindow->video_player->status == VIDEO_STATUS_PAUSED))
+//        {
+//#if QT_VERSION >= 0x050C00
+//            if(wheel_event->angleDelta().y() > 0)
+//#else
+//            if(wheel_event->delta() > 0)
+//#endif
+//            {
+//                mainwindow->video_player_seek((int)((mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime - (mainwindow->pagetime / mainwindow->mousewheelsens)) / TIME_DIMENSION));
+//            }
+//            else
+//            {
+//                mainwindow->video_player_seek((int)((mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime + (mainwindow->pagetime / mainwindow->mousewheelsens)) / TIME_DIMENSION));
+//            }
 
-            if(mainwindow->video_player->status == VIDEO_STATUS_PLAYING)  return;
-        }
+//            if(mainwindow->video_player->status == VIDEO_STATUS_PLAYING)  return;
+//        }
 
-        if((mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
-        {
-            for(i=0; i<mainwindow->files_open; i++)
-            {
-#if QT_VERSION >= 0x050C00
-                if(wheel_event->angleDelta().y() > 0)
-#else
-                if(wheel_event->delta() > 0)
-#endif
-                {
-                    mainwindow->edfheaderlist[i]->viewtime -= (mainwindow->pagetime / mainwindow->mousewheelsens);
-                }
-                else
-                {
-                    mainwindow->edfheaderlist[i]->viewtime += (mainwindow->pagetime / mainwindow->mousewheelsens);
-                }
-            }
-        }
+//        if((mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
+//        {
+//            for(i=0; i<mainwindow->files_open; i++)
+//            {
+//#if QT_VERSION >= 0x050C00
+//                if(wheel_event->angleDelta().y() > 0)
+//#else
+//                if(wheel_event->delta() > 0)
+//#endif
+//                {
+//                    mainwindow->edfheaderlist[i]->viewtime -= (mainwindow->pagetime / mainwindow->mousewheelsens);
+//                }
+//                else
+//                {
+//                    mainwindow->edfheaderlist[i]->viewtime += (mainwindow->pagetime / mainwindow->mousewheelsens);
+//                }
+//            }
+//        }
 
-        if(mainwindow->viewtime_sync==VIEWTIME_UNSYNCED)
-        {
-#if QT_VERSION >= 0x050C00
-            if(wheel_event->angleDelta().y() > 0)
-#else
-            if(wheel_event->delta() > 0)
-#endif
-            {
-                mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= (mainwindow->pagetime / mainwindow->mousewheelsens);
-            }
-            else
-            {
-                mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (mainwindow->pagetime / mainwindow->mousewheelsens);
-            }
-        }
-    }
+//        if(mainwindow->viewtime_sync==VIEWTIME_UNSYNCED)
+//        {
+//#if QT_VERSION >= 0x050C00
+//            if(wheel_event->angleDelta().y() > 0)
+//#else
+//            if(wheel_event->delta() > 0)
+//#endif
+//            {
+//                mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= (mainwindow->pagetime / mainwindow->mousewheelsens);
+//            }
+//            else
+//            {
+//                mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (mainwindow->pagetime / mainwindow->mousewheelsens);
+//            }
+//        }
+//        if (mainwindow->ui_logger != 0)
+//            if (mainwindow->log_ui)
+//                mainwindow->ui_logger->write(UiLogger::LogEvents::TIME_POSITION_CHANGED);
+//    }
 
-    mainwindow->setup_viewbuf();
+//    mainwindow->setup_viewbuf();
 }
 
 
@@ -3689,8 +3697,8 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
     sidemenuButton6 = new QPushButton(sidemenu);
     sidemenuButton6->setText("Spectrum");
 
-    sidemenuButton7 = new QPushButton(sidemenu);
-    sidemenuButton7->setText("Z-EEG");
+//    sidemenuButton7 = new QPushButton(sidemenu);
+//    sidemenuButton7->setText("Z-EEG");
 
     sidemenuButton8 = new QPushButton(sidemenu);
     sidemenuButton8->setText("Remove filter");
@@ -3732,7 +3740,7 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
     gr->addWidget(sidemenuButton4, 3, 1);
     gr->addWidget(sidemenuButton5, 4, 1);
     gr->addWidget(sidemenuButton6, 5, 1);
-    gr->addWidget(sidemenuButton7, 6, 1);
+    //gr->addWidget(sidemenuButton7, 6, 1);
     gr->addWidget(sidemenuButton8, 7, 1);
     gr->addWidget(sidemenuButton9, 8, 1);
     //gr->addWidget(sidemenuButton10, 9, 1);
@@ -3758,7 +3766,7 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
     QObject::connect(sidemenuButton4,   SIGNAL(clicked()),                this,     SLOT(ColorButton()));
     QObject::connect(sidemenuButton5,   SIGNAL(clicked()),                this,     SLOT(signalInvert()));
     QObject::connect(sidemenuButton6,   SIGNAL(clicked()),                this,     SLOT(FreqSpecButton()));
-    QObject::connect(sidemenuButton7,   SIGNAL(clicked()),                this,     SLOT(Z_scoringButton()));
+    //QObject::connect(sidemenuButton7,   SIGNAL(clicked()),                this,     SLOT(Z_scoringButton()));
     QObject::connect(sidemenuButton8,   SIGNAL(clicked()),                this,     SLOT(RemovefilterButton()));
     QObject::connect(sidemenuButton9,   SIGNAL(clicked()),                this,     SLOT(RemovesignalButton()));
     //QObject::connect(sidemenuButton10,  SIGNAL(clicked()),                this,     SLOT(AdjustFilterButton()));

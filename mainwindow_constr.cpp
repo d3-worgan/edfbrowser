@@ -858,12 +858,12 @@ UI_Mainwindow::UI_Mainwindow()
     helpmenu->addAction("Manual",  this, SLOT(show_help()));
 #endif
     helpmenu->addAction("Keyboard shortcuts", this, SLOT(show_kb_shortcuts()));
-    helpmenu->addAction("About EDFbrowser", this, SLOT(show_about_dialog()));
-    helpmenu->addAction("Show splashscreen", this, SLOT(show_splashscreen()));
-    //menubar->addMenu(helpmenu);
-//    QObject::connect(helpmenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
-//    QObject::connect(helpmenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
-    //QObject::connect(helpmenu, &QMenu::hovered, this, &UI_Mainwindow::search_menu);
+//    helpmenu->addAction("About EDFbrowser", this, SLOT(show_about_dialog()));
+//    helpmenu->addAction("Show splashscreen", this, SLOT(show_splashscreen()));
+    menubar->addMenu(helpmenu);
+    QObject::connect(helpmenu, &QMenu::aboutToShow, this, &UI_Mainwindow::menu_opened);
+    QObject::connect(helpmenu, &QMenu::aboutToHide, this, &UI_Mainwindow::menu_closed);
+    QObject::connect(helpmenu, &QMenu::hovered, this, &UI_Mainwindow::search_menu);
 
     navtoolbar = new QToolBar("Navigation Bar");
     navtoolbar->setFloatable(false);
