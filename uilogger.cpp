@@ -74,7 +74,7 @@ UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path) : QObject(pa
     // Need to add double backslash so we can decode into json strings in reconstruction scripts
     int l = this->current_edf_path.length();
     for (int i = 0; i < l; i++) {
-        std::cerr << i << "\n";
+        //std::cerr << i << "\n";
         if (this->current_edf_path.at(i) == "\\") {
             std::cerr << this->current_edf_path.toStdString() << "\n";
             this->current_edf_path.insert(i, "\\");
@@ -82,11 +82,11 @@ UiLogger::UiLogger(UI_Mainwindow *parent, QString destination_path) : QObject(pa
         }
     }
 
-    std::cerr << this->current_edf_path.toStdString() << "\n";
+    //std::cerr << this->current_edf_path.toStdString() << "\n";
 
     timer = new QTimer(this);
 
-    std::cerr << "Constructed logger\n";
+    //std::cerr << "Constructed logger\n";
 
 }
 
@@ -111,7 +111,7 @@ void UiLogger::write(LogEvents log_event) {
         this->save_montage();
 
         // Give up here, we want to put a double backslash but it wont have it >:@
-        std::cerr << "File opened " << this->current_edf_path.toStdString() << "\n";
+        //std::cerr << "File opened " << this->current_edf_path.toStdString() << "\n";
         text += QString("\"FILE_OPENED\", \"data\": {\"time\": \"%1\", \"time_scale\": \"%2\", \"graph_dimensions\": %3, \"graph_box\": %4, \"montage_file\": \"%5.mtg\", \"edf_path\": \"%6\"}").arg(main_window->viewtime_string, main_window->pagetime_string, get_graph_dimensions(), get_graph_coords(), QString::number(this->log_id), this->current_edf_path);
     }
     else if (log_event == LogEvents::FILE_CLOSED) {
@@ -120,7 +120,7 @@ void UiLogger::write(LogEvents log_event) {
     }
     else if (log_event == LogEvents::MONTAGE_CHANGED) {
         this->save_montage();
-        text += QString("\"MONTAGE_CHANGED\", \"data\": {\"montage_file\": \"%1.mtg\"}").arg(this->log_id);
+        text += QString("\"MONTAGE_CHANGED\", \"data\": {\"montage_file\": \"%1.mtg\", \"time\": \"%2\"}").arg(QString::number(this->log_id), QString(main_window->pagetime_string));
     }
     else if (log_event == LogEvents::CHANNELS_CHANGED) {
         this->save_montage();
@@ -190,11 +190,11 @@ void UiLogger::write(LogEvents log_event) {
     out.setCodec("UTF-8");
 
     if (this->log_file != 0) {
-        std::cerr << "Writing to file\n";
+        //std::cerr << "Writing to file\n";
         out << text;
     }
     else {
-        std::cerr << "Not writing to file \n";
+        //std::cerr << "Not writing to file \n";
     }
 
     // Save a screenshot with each log to visualise and validate results later.

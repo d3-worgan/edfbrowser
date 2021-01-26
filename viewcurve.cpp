@@ -777,7 +777,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
                     mainwindow->zoomhistory->viewtime[mainwindow->zoomhistory->pntr][i] = mainwindow->edfheaderlist[i]->viewtime;
                 }
 
-                std::cerr << "pagetime " << mainwindow->zoomhistory->pagetime[mainwindow->zoomhistory->pntr] << " = " << mainwindow->pagetime << "\n";
+                //std::cerr << "pagetime " << mainwindow->zoomhistory->pagetime[mainwindow->zoomhistory->pntr] << " = " << mainwindow->pagetime << "\n";
                 mainwindow->zoomhistory->pagetime[mainwindow->zoomhistory->pntr] = mainwindow->pagetime;
 
                 for (i = 0; i < signalcomps; i++) {
@@ -798,7 +798,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
                 mainwindow->zoomhistory->pntr %= MAXZOOMHISTORY;
 
                 for (i = 0; i < mainwindow->files_open; i++) {
-                    std::cerr << "viewtime += pagetime / w * mouse_coordinate: " << mainwindow->edfheaderlist[i]->viewtime << " += " << mainwindow->pagetime << " / " << (double)w << " / (" << m_x << " - " << mouse_press_coordinate_x << ")\n";
+                    //std::cerr << "viewtime += pagetime / w * mouse_coordinate: " << mainwindow->edfheaderlist[i]->viewtime << " += " << mainwindow->pagetime << " / " << (double)w << " / (" << m_x << " - " << mouse_press_coordinate_x << ")\n";
                     mainwindow->edfheaderlist[i]->viewtime += (long long)(((double)mainwindow->pagetime / (double)w) * (double)mouse_press_coordinate_x);
                 }
 
@@ -819,7 +819,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
                     for (j = 0; j < mainwindow->signalcomp[i]->num_of_signals; j++) {
                         mainwindow->signalcomp[i]->sensitivity[j] =  mainwindow->signalcomp[i]->sensitivity[j] * ((double)h / (double)(m_y - mouse_press_coordinate_y));
-                        std::cerr << "sensivity" << mainwindow->signalcomp[i]->sensitivity[j] << "\n";
+                        //std::cerr << "sensivity" << mainwindow->signalcomp[i]->sensitivity[j] << "\n";
                     }
                 }
 
@@ -3626,7 +3626,7 @@ void drawCurve_stage_1_thread::run()
 
 void ViewCurve::exec_sidemenu(int signal_nr_intern)
 {
-    std::cerr << "Creating the side menu\n";
+    //std::cerr << "Creating the side menu\n";
     char str[32]={""};
 
     signal_nr = signal_nr_intern;
@@ -3732,7 +3732,7 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
     sidemenuButton15 = new QPushButton(sidemenu);
     sidemenuButton15->setText("Close");
 
-    std::cerr << "Created the buttons, adding to grid...\n";
+    //std::cerr << "Created the buttons, adding to grid...\n";
     QGridLayout *gr = new QGridLayout;
     gr->addWidget(sidemenuButton1, 0, 1);
     gr->addWidget(sidemenuButton2, 1, 1);
@@ -3776,7 +3776,7 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
     QObject::connect(sidemenuButton14,  SIGNAL(clicked()),                this,     SLOT(cdsa_button()));
     QObject::connect(sidemenuButton15,  SIGNAL(clicked()),                this,     SLOT(sidemenu_close()));
     QObject::connect(AliasLineEdit,     SIGNAL(returnPressed()),          this,     SLOT(sidemenu_close()));
-    std::cerr << "Opening the side menu\n";
+    //std::cerr << "Opening the side menu\n";
     sidemenu->exec();
 }
 

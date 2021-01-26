@@ -3739,7 +3739,7 @@ void UI_Mainwindow::load_montage()
 {
     if(!files_open)  return;
     UI_LoadMontagewindow load_mtg(this);
-    std::cerr << "New hover\n";
+    //std::cerr << "New hover\n";
     if (ui_logger != 0) {
         if (log_ui) {
             ui_logger->write(UiLogger::LogEvents::MONTAGE_CHANGED);
@@ -4263,7 +4263,7 @@ bool UI_Mainwindow::eventFilter(QObject *watched, QEvent *event) {
 
     // Track windows being opened/closed etc
     if (event_type == QEvent::WindowDeactivate) {
-        std::cerr << "The window was deactivated.\n";
+        //std::cerr << "The window was deactivated.\n";
         if (ui_logger != 0) {
             if (log_ui) {
                 if (this->windowState() == Qt::WindowMinimized) {
@@ -4274,7 +4274,7 @@ bool UI_Mainwindow::eventFilter(QObject *watched, QEvent *event) {
         return true;
     }
     else if (event_type == QEvent::WindowBlocked) {
-        std::cerr << "A modal was opened\n";
+        //std::cerr << "A modal was opened\n";
         if (ui_logger != 0) {
             if (log_ui)
                 ui_logger->write(UiLogger::LogEvents::MODAL_OPENED);
@@ -4282,7 +4282,7 @@ bool UI_Mainwindow::eventFilter(QObject *watched, QEvent *event) {
         return true;
     }
     else if (event_type == QEvent::WindowUnblocked) {
-        std::cerr << "The modal was closed.\n";
+        //std::cerr << "The modal was closed.\n";
         if (ui_logger != 0) {
             if (log_ui)
                 ui_logger->write(UiLogger::LogEvents::MODAL_CLOSED);
@@ -4290,7 +4290,7 @@ bool UI_Mainwindow::eventFilter(QObject *watched, QEvent *event) {
         return true;
     }
     else if (event_type == QEvent::WindowStateChange) {
-        std::cerr << "The window is now " << this->windowState() << "\n";
+        //std::cerr << "The window is now " << this->windowState() << "\n";
         if (ui_logger != 0) {
             if (log_ui) {
                 if (this->windowState() == Qt::WindowMinimized) {
@@ -4320,7 +4320,7 @@ bool UI_Mainwindow::eventFilter(QObject *watched, QEvent *event) {
 
 // Track menu interaction
 void UI_Mainwindow::menu_opened() {
-    std::cerr << "Menu opened\n";
+    //std::cerr << "Menu opened\n";
     if (ui_logger != 0) {
         if (log_ui) {
             ui_logger->write(UiLogger::LogEvents::MENU_OPENED);
@@ -4330,7 +4330,7 @@ void UI_Mainwindow::menu_opened() {
 
 // Track menu interaction
 void UI_Mainwindow::menu_closed() {
-    std::cerr << "Menu closed\n";
+    //std::cerr << "Menu closed\n";
     if (ui_logger != 0) {
         if (log_ui) {
             ui_logger->write(UiLogger::LogEvents::MENU_CLOSED);
@@ -4340,7 +4340,7 @@ void UI_Mainwindow::menu_closed() {
 
 // Track menu interaction
 void UI_Mainwindow::search_menu() {
-    std::cerr << "New hover\n";
+    //std::cerr << "New hover\n";
     if (ui_logger != 0) {
         if (log_ui) {
             ui_logger->write(UiLogger::LogEvents::MENU_SEARCH);

@@ -37,7 +37,6 @@ static const int dftsz_range[24]={200,1000,1024,2048,4096,5000,8192,10000,16384,
                     131072,262144,500000,524288,1000000,1048576,2097152,4194304,5000000,8388608,10000000};
 
 
-
 UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp, char *view_buf, UI_FreqSpectrumWindow **spectrdialog, int number, QWidget *w_parent)
 {
   int i;
@@ -146,7 +145,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   SpectrumDialog->setAttribute(Qt::WA_DeleteOnClose, true);
   SpectrumDialog->setMinimumSize(620 * mainwindow->w_scaling, 500 * mainwindow->h_scaling);
   SpectrumDialog->setSizeGripEnabled(true);
-  SpectrumDialog->setModal(true);
+  SpectrumDialog->setModal(true);  // Stay on top for TEETACSI
   SpectrumDialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
   if(mainwindow->spectrum_sqrt)
   {
@@ -423,6 +422,11 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   QObject::connect(overlap_box,     SIGNAL(currentIndexChanged(int)), this, SLOT(overlap_box_changed(int)));
 
   SpectrumDialog->show();
+  if (mainwindow->ui_logger != 0) {
+      if (mainwindow->log_ui) {
+          mainwindow->ui_logger->write(UiLogger::LogEvents::MODAL_OPENED);
+      }
+  }
 }
 
 
@@ -1343,6 +1347,13 @@ UI_FreqSpectrumWindow::~UI_FreqSpectrumWindow()
       break;
     }
   }
+
+  if (mainwindow->ui_logger != 0) {
+      if (mainwindow->log_ui) {
+          mainwindow->ui_logger->write(UiLogger::LogEvents::MODAL_CLOSED);
+      }
+  }
+
 }
 
 
