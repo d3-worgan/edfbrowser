@@ -1,14 +1,20 @@
-This is a fork of https://gitlab.com/Teuniz/EDFbrowser for the OpenSCORE/TEETACSI project. EDFBrowser has been modified 
-to record the state of the UI to file. It also writes screenshots to file for later validation using a python
-script.
+# EDFBrowser
+This is a fork of the original [EDFBrowser](https://gitlab.com/Teuniz/EDFbrowser) with modifications for the [OpenSCORE](https://github.com/DWonGH/OpenSCORE) and [TEETACSI](https://github.com/DWonGH/TEETACSI)
+projects. EDFBrowser has been modified to run as a feature in OpenSCORE and to record the state of the UI to file for TEETACSI.
 
-1. Open EDFBrowser from the command line. The first argument is the absolute path to an EDF file. The second 
-argument is an absolute path to the location where to save the log files.
+To build on Windows need to download Qt, Qt Creator, and install MinGW compiler tools like gcc and g++.
+
+The source code specific to OpenSCORE and TEETACSI can be found on the ui_log_reduced development branches, and pre-built ```.exe```'s and binaries can be found in the 
+releases section. Use the latest [release](https://github.com/d3-worgan/edfbrowser/releases) for the most up to date and reduced feature EDFBrowser for TEETACSI, 
+and use the [OpenSCORE](https://github.com/d3-worgan/edfbrowser/releases/tag/v2.0) version for a full featured EDFBrowser when creating score reports.
+
+To run without OpenSCORE from the command line:
+1. The first argument is the absolute path to an EDF file. The second 
+argument is an absolute path to the location where to save the log files. The third argument is a pre-defined montage (```.mtg```) file.
 2. EDFBrowser will create a directory in the specified output location. It will write a ui_log file, png screenshot
 images to the screenshots directory, and montage files to the montages directory.
 3. Close edf browser
-4. Run the reprojection script in the scripts folder. A new folder should be created with the modified screenshots
-displaying the visualisations for the tracked UI state.
+4. Use the 
 
 
 
